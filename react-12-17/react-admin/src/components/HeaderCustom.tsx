@@ -3,7 +3,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import screenfull from 'screenfull';
-import avater from '../style/imgs/b1.jpg';
+import avater from '../style/imgs/user1.png';
 import SiderCustom from './SiderCustom';
 import { Menu, Layout, Popover } from 'antd';
 import { gitOauthToken, gitOauthInfo } from '../service';

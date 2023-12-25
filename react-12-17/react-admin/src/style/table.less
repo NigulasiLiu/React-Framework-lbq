@@ -12,3 +12,28 @@
 .editable-row-operations a {
   margin-right: 8px;
 }
+
+
+.customTable .ant-table {
+  border: 1px solid #f0f0f0; /* 设置外缘边框颜色 */
+}
+
+.customTable .ant-table-cell {
+  border-bottom: none; /* 去除单元格之间的底部边框 */
+}
+
+.customTable .ant-table-tbody > tr:last-child .ant-table-cell {
+  border-bottom: 1px solid #f0f0f0; /* 为最后一行单元格添加底部边框 */
+}
+
+.customTable .ant-table-thead > tr > th {
+  border-bottom: 1px solid #f0f0f0; /* 为表头单元格添加底部边框 */
+}
+.customTable2 .ant-table {
+  border-bottom: none; /* 移除Table底部边框 */
+}
+
+.noTopBorderCard {
+  border-top: none; /* 移除Card顶部边框 */
+  box-shadow: none; /* 如果有阴影也移除掉 */
+}

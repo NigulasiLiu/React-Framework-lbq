@@ -2,10 +2,11 @@
  * Created by hao.cheng on 2017/5/8.
  */
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input,Checkbox,Button } from 'antd';
+import { Row, Col, Card, Table, Popconfirm, Input,Button } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import CustomTooltip from '../dashboard/Dashboard'
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
+import { FilterOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 
@@ -56,7 +57,7 @@ interface StatusItem {
   interface StatusPanelProps {
     statusData: StatusItem[];
   }
-  const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
+  export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
     return (
         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
         <div style={{ fontFamily: 'YouYuan, sans-serif'}}>
@@ -108,8 +109,17 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                   }
             },
             {
-                title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
+                title: () => <span style={{ fontWeight: 'bold' }}>
+                    状态 
+                    </span>,
                 dataIndex: 'status',
+                filters: [
+                    { text: '未安装', value: '未安装' },
+                    { text: '运行中', value: '运行中' },
+                    { text: '运行异常', value: '运行异常' },
+                    { text: '离线', value: '离线' },
+                  ],
+                  onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
             },
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>客户端资源使用</span>,
@@ -122,8 +132,23 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
                 dataIndex: 'operation',
+                render: (text: string, record: DataType) => (
+                    <a 
+                      href={'/login'} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      //style={{ color: 'blue' }} // 添加颜色样式
+                    >
+                      查看详情
+                    </a>
+                ),
+            },
+            
+            {
+                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+                dataIndex: 'operation',
                 render: (text: any, record: any, index: number) => {
-                    return this.state.dataSource.length > 1 ? (
+                    return this.state.dataSource.length > 0 ? (
                         <Popconfirm
                             title="Sure to delete?"
                             onConfirm={() => this.onDelete(record, index)}
@@ -150,34 +175,34 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                     clientUsage: '32',
                     updateTime: '18:00, 2023 12 16',
                 },
-                {
-                    key: '1',
-                    hostname: 'liubq34413',
-                    label: '-',
-                    group: 'default',
-                    OStype: 'Windows',
-                    risks: {      
-                        warning1: 0,
-                        warning2: 1,
-                        warning3: 0},
-                    status: '离线',
-                    clientUsage: '32',
-                    updateTime: '18:01, 2023 12 16',
-                },
-                {
-                    key: '2',
-                    hostname: 'liubq34414',
-                    label: '-',
-                    group: 'default',
-                    OStype: 'Windows',
-                    risks: {      
-                        warning1: 2,
-                        warning2: 0,
-                        warning3: 0},
-                    status: '离线',
-                    clientUsage: '32',
-                    updateTime: '18:02, 2023 12 16',
-                },
+                // {
+                //     key: '1',
+                //     hostname: 'liubq34413',
+                //     label: '-',
+                //     group: 'default',
+                //     OStype: 'Windows',
+                //     risks: {      
+                //         warning1: 0,
+                //         warning2: 1,
+                //         warning3: 0},
+                //     status: '离线',
+                //     clientUsage: '32',
+                //     updateTime: '18:01, 2023 12 16',
+                // },
+                // {
+                //     key: '2',
+                //     hostname: 'liubq34414',
+                //     label: '-',
+                //     group: 'default',
+                //     OStype: 'Windows',
+                //     risks: {      
+                //         warning1: 2,
+                //         warning2: 0,
+                //         warning3: 0},
+                //     status: '离线',
+                //     clientUsage: '32',
+                //     updateTime: '18:02, 2023 12 16',
+                // },
             ],
             count: 2,
             deleteIndex: -1,
@@ -514,6 +539,7 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                             </div>
                             <Table
                                 rowSelection={rowSelection} // 应用 rowSelection 配置
+                                //locale={{ emptyText: 'No Data' }}
                                 bordered
                                 dataSource={dataSource}
                                 columns={columns}
