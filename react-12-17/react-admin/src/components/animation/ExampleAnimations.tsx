@@ -237,10 +237,18 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
     handleAdd = () => {
         const { count, dataSource } = this.state;
         const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
+            key: '0',
+            hostname: 'liubq34412',
+            label: '-',
+            group: 'default',
+            OStype: 'Windows',
+            risks: {      
+                warning1: 0,
+                warning2: 1,
+                warning3: 2},
+            status: '离线',
+            clientUsage: '32',
+            updateTime: '18:00, 2023 12 16',
         };
         this.setState({
             dataSource: [newData, ...dataSource],
@@ -525,7 +533,8 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontWeight: 'bold' }}>主机内容</h2>
                                 <div>
-                                <Button style={buttonStyle} onClick={this.handleExport}>批量导出</Button>
+                                <Button style={buttonStyle} onClick={this.handleExport}
+                                disabled={this.state.dataSource.length === 0}>批量导出</Button>
                                 <Button style={buttonStyle} name="del" onClick={this.handleAdd}>批量添加标签</Button>
                                 <Button style={buttonStyle} name="del" onClick={this.handleAdd}>批量下发任务</Button>
                                 </div>

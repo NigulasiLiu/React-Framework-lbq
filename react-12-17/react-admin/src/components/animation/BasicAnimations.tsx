@@ -5,7 +5,7 @@ import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'rechar
 import { Link, Route, Switch, useLocation, withRouter} from 'react-router-dom';
 import { FilterOutlined } from '@ant-design/icons';
 import OverviewPanel from './OverviewPanel';
-
+import Fim from './Fim'; 
 
 
 // Define an interface for the individual status item
@@ -260,6 +260,9 @@ class BasicAnimations extends React.Component<BasicAnimationsProps,BasicAnimatio
         switch (currentPanel) {
         case 'overview':
             return <OverviewPanel statusData={this.state.statusData} />;
+        case 'fim':
+            return <Fim />;
+            // 可以根据需要添加更多的case
         // 可以根据需要添加更多的case
         default:
             return <OverviewPanel statusData={this.state.statusData} />;
@@ -467,6 +470,7 @@ class BasicAnimations extends React.Component<BasicAnimationsProps,BasicAnimatio
                     >
                     <Menu.Item key="overview">总览</Menu.Item>
                     <Menu.Item key="container">容器</Menu.Item>
+                    <Menu.Item key="fim">文件完整性检测</Menu.Item>
                     {/* 可以根据需要添加更多的Menu.Item */}
                     </Menu>
                     {/* 渲染当前激活的子面板 */}
