@@ -2,6 +2,7 @@
  * Created by hao.cheng on 2017/5/8.
  */
 import React from 'react';
+import axios from 'axios';
 import { Row, Col, Card, Table, Popconfirm, Input,Button } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import CustomTooltip from '../dashboard/Dashboard'
@@ -13,12 +14,16 @@ const { Search } = Input;
 type ExampleAnimationsProps = {};
 type ExampleAnimationsState = {
     dataSource: any[];
+    statusData:StatusItem[];
+    riskData:StatusItem[];
+    fullDataSource: any[], // 存储完整的数据源副本
     count: number;
     deleteIndex: number | null;
 
     selectedRowKeys: React.Key[];
     activeIndex: any;
     areRowsSelected: boolean;
+    searchQuery: string, // 添加这个字段来存储搜索查询
   };
 interface Risk {
     key: React.Key;
@@ -31,6 +36,12 @@ interface Risk {
     warning3: number;
     // Add other properties here if needed
   }
+  type RiskCounts = {
+    warning1: number;
+    warning2: number;
+    warning3: number;
+};
+
   interface DataType {
     key: React.Key;
     hostname: string;
@@ -175,43 +186,108 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                     clientUsage: '32',
                     updateTime: '18:00, 2023 12 16',
                 },
-                // {
-                //     key: '1',
-                //     hostname: 'liubq34413',
-                //     label: '-',
-                //     group: 'default',
-                //     OStype: 'Windows',
-                //     risks: {      
-                //         warning1: 0,
-                //         warning2: 1,
-                //         warning3: 0},
-                //     status: '离线',
-                //     clientUsage: '32',
-                //     updateTime: '18:01, 2023 12 16',
-                // },
-                // {
-                //     key: '2',
-                //     hostname: 'liubq34414',
-                //     label: '-',
-                //     group: 'default',
-                //     OStype: 'Windows',
-                //     risks: {      
-                //         warning1: 2,
-                //         warning2: 0,
-                //         warning3: 0},
-                //     status: '离线',
-                //     clientUsage: '32',
-                //     updateTime: '18:02, 2023 12 16',
-                // },
             ],
+            statusData: [],
+            riskData: [],
             count: 2,
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
             selectedRowKeys: [], // 这里用来存储勾选的行的 key 值
             areRowsSelected: false,
+            searchQuery: '', // 添加这个字段来存储搜索查询
+
+            fullDataSource: [], // 存储完整的数据源副本
         };
     }
     columns: any;
+    async componentDidMount() {
+        try {
+            const response = await axios.get('http://localhost:5000/api/files1');
+            if (response.data) {
+                this.setState({
+                    dataSource: response.data,
+                });
+                this.processChartData(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    processChartData(data:DataType[]) {
+        const statusData = this.extractStatusData(data);
+        const riskData = this.extractRiskData(data);
+
+        this.setState({
+            statusData,
+            riskData,
+        });
+    }
+
+    extractStatusData(data: DataType[]): StatusItem[] {
+        let statusCounts = data.reduce((acc: { [key: string]: number }, item) => {
+            acc[item.status] = (acc[item.status] || 0) + 1;
+            return acc;
+        }, {});
+    
+        type StatusColorsAndLabels = {
+            [key in '未安装' | '运行中' | '运行异常' | '离线']: {
+                color: string;
+                label: string;
+            };
+        };
+        
+        const statusColorsAndLabels: StatusColorsAndLabels = {
+            '未安装': { color: '#E5E8EF', label: '未安装' },
+            '运行中': { color: '#22BC44', label: '运行中' },
+            '运行异常': { color: '#FBB12E', label: '运行异常' },
+            '离线': { color: '#EA635F', label: '离线' },
+            // ... 其他状态
+        };
+        
+    
+        return Object.keys(statusCounts).map(key => {
+            const statusInfo = statusColorsAndLabels[key as keyof StatusColorsAndLabels];
+            return {
+                color: statusInfo ? statusInfo.color : '#000',
+                label: statusInfo ? statusInfo.label : key,
+                value: statusCounts[key],
+            };
+        });
+    }
+    
+
+    extractRiskData(data: DataType[]): StatusItem[] {
+        let riskCounts: { [key: string]: number } = { warning1: 0, warning2: 0, warning3: 0 };
+    
+        data.forEach(item => {
+            riskCounts.warning1 += item.risks.warning1;
+            riskCounts.warning2 += item.risks.warning2;
+            riskCounts.warning3 += item.risks.warning3;
+        });
+    
+        const riskColorsAndLabels: { [key in 'warning1' | 'warning2' | 'warning3']: { color: string; label: string } } = {
+            warning1: { color: 'red', label: '告警' },
+            warning2: { color: 'orange', label: '风险' },
+            warning3: { color: 'yellow', label: '基线' },
+            // ... 其他可能的风险级别
+        };
+        
+    
+        return Object.keys(riskCounts).map(key => {
+            const riskInfo = riskColorsAndLabels[key as keyof typeof riskColorsAndLabels];
+            return {
+                color: riskInfo.color,
+                label: riskInfo.label,
+                value: riskCounts[key as keyof typeof riskCounts],
+            };
+        });
+    }
+    
+    
+
+
+
     onSelectChange = (selectedRowKeys: React.Key[]) => {
         this.setState({ selectedRowKeys ,
             areRowsSelected: selectedRowKeys.length > 0,});
@@ -307,38 +383,27 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
         element.click();
         document.body.removeChild(element);
     };
+    handleSearch = (query:any) => {
+        this.setState({ searchQuery: query });
     
-    // handleExport = () => {
-    //     const { dataSource, selectedRowKeys } = this.state;
-
-    //     // 过滤出已选中的行数据
-    //     const selectedData = dataSource.filter((row: DataType) => selectedRowKeys.includes(row.key));
-
-    //     // 转换数据为CSV格式
-    //     const csvData = this.convertToCSV(selectedData);
-
-    //     // 触发下载
-    //     this.triggerDownload(csvData, 'export.csv');
-    // };
-    // convertToCSV = (data: DataType[]) => {
-    //     // 导出的CSV中所有字段
-    //     const headers = Object.keys(data[0]).join(',');
-    //     const rows = data.map((row: DataType) => {
-    //         const riskValues = Object.values(row.risks).join(',');
-    //         return `${row.key},${row.hostname},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
-    //     });
-    //     return [headers, ...rows].join('\n');
-    // };
-    // triggerDownload = (data: string, filename: string) => {
-    //     const element = document.createElement('a');
-    //     element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-    //     element.download = filename;
-    //     element.style.display = 'none';
-    //     document.body.appendChild(element);
-    //     element.click();
-    //     document.body.removeChild(element);
-    // };
-      
+        // 过滤 dataSource，匹配任何字段
+        const filteredDataSource = this.state.dataSource.filter(item => {
+            // 检查每个字段是否包含搜索字符串
+            return Object.values(item).some(value => {
+                // 确保值是字符串类型
+                if (typeof value === 'string') {
+                    return value.toLowerCase().includes(query.toLowerCase());
+                }
+                return false;
+            });
+        });
+    
+        this.setState({ dataSource: filteredDataSource });
+    };
+    
+    
+    
+    
 
     render() {
         const { dataSource } = this.state;
@@ -542,7 +607,7 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                             <div style={{ marginBottom: 16 }}>
                                 <Input.Search
                                 placeholder="请选择筛选条件并搜索"
-                                onSearch={this.handleAdd}//
+                                onSearch={this.handleSearch}//
                                 style={{ width: '100%' }}
                                 />
                             </div>

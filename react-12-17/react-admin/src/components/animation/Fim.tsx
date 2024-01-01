@@ -2,7 +2,9 @@
 
 import React from 'react';
 import axios from 'axios';
-import { Table, Button, Input, Card, Col } from 'antd';
+import { Table, Button, Input, Card, Col, DatePicker, Row } from 'antd';
+const { RangePicker } = DatePicker;
+
 interface FimProps {
 }
 // Define the data item structure based on your MySQL data
@@ -24,6 +26,7 @@ type FimState = {
     deleteIndex: number | null;
     //最新采集数据状态
     lastUpdated: string | null;
+    searchQuery: string; // 添加搜索查询状态
   };
 
 class Fim extends React.Component<{}, FimState> {
@@ -38,6 +41,7 @@ class Fim extends React.Component<{}, FimState> {
         deleteIndex: null,
 
         lastUpdated: null,
+        searchQuery: '', // 初始化搜索查询为空字符串
         };
     // 获取最新数据的方法
     fetchLatestData = async () => {
@@ -126,6 +130,27 @@ class Fim extends React.Component<{}, FimState> {
         onChange: this.onSelectChange,
       };
     // The render method for the table component
+    handleSearch = (query: string) => {
+        this.setState({ searchQuery: query });
+    
+        // 如果搜索查询为空，则重置数据源
+        if (!query) {
+            this.fetchLatestData(); // 或者设置为原始数据源
+            return;
+        }
+    
+        // 过滤 dataSource
+        const filteredDataSource = this.state.dataSource.filter(item => {
+            // 这里可以根据需要过滤多个字段
+            return item.filename.toLowerCase().includes(query.toLowerCase()) ||
+                   item.content_md5.toLowerCase().includes(query.toLowerCase()) //||
+                   // ... 其他字段条件
+        });
+    
+        this.setState({ dataSource: filteredDataSource });
+    };
+    
+    
     render() {
         const { dataSource, selectedRowKeys } = this.state;
         const rowSelection = {
@@ -142,26 +167,33 @@ class Fim extends React.Component<{}, FimState> {
             <Card bordered={false}
             bodyStyle={{ padding: '4px' }}
             >
-            <div style={{ marginBottom: '16px' }}>
+
+            <div style={{ marginBottom: '16px', fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+            <Row gutter={16} style={{ display: 'flex', alignItems: 'center' }}>
+                <Col flex="none">
                 <Button 
-                style={{
-                    color: this.state.dataSource.length === 0 ? '#ccc' : 'inherit' // Dim the font color if dataSource is empty
-                }}
-                onClick={this.handleExport}
-                disabled={this.state.dataSource.length === 0} // Optionally disable the button
-                > 
-                批量导出</Button>
+                    style={{ marginRight: 8, color: this.state.dataSource.length === 0 ? '#ccc' : 'inherit' }}
+                    onClick={this.handleExport}
+                    disabled={this.state.dataSource.length === 0}
+                >
+                    批量导出
+                </Button>
                 <Button onClick={this.fetchLatestData}>采集最新数据</Button>
-                <span style={{ marginLeft: '20px', border: 'none'}}>
-                最近更新时间: {this.state.lastUpdated ? this.state.lastUpdated : '-'}
+                </Col>
+                <Col flex="auto" style={{ textAlign: 'left', marginLeft: 10 }}>
+                <span>
+                    最近更新时间: {this.state.lastUpdated ? this.state.lastUpdated : '-'}
                 </span>
-                
-                </div>
-            
+                </Col>
+                <Col flex="none" style={{ marginLeft: 'auto' }}>
+                <RangePicker style={{ width: 200 }} />
+                </Col>
+            </Row>
+            </div>
             <div style={{ marginBottom: 16 }}>
                 <Input.Search
-                placeholder="请选择筛选条件并搜索"
-                onSearch={this.handleAdd} // Replace with actual search handler
+                placeholder="搜索文件名或MD5哈希值"
+                onSearch={this.handleSearch} // Replace with actual search handler
                 style={{ width: '100%' }}
                 />
             </div>
