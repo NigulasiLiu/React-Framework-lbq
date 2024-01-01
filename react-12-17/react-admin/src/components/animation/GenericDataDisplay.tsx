@@ -1,6 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Menu } from 'antd';
+//import styled from 'styled-components'; // 确保你已经安装了 styled-components
+
+
 const { RangePicker } = DatePicker;
 
 interface GenericDataDisplayProps {
@@ -120,6 +123,7 @@ class GenericDataDisplay extends React.Component<GenericDataDisplayProps, Generi
       <Menu
         mode="inline"
         onSelect={this.handleApplicationTypeSelect}
+        className="custom-menu" // 应用自定义类名
       >
         {applicationTypes.map(type => (
           <Menu.Item key={type}>{type}</Menu.Item>
@@ -182,14 +186,16 @@ class GenericDataDisplay extends React.Component<GenericDataDisplayProps, Generi
       <Row>
         {/* Conditionally render the sidebar for applications */}
         {currentPanel === 'applications' && (
-          <Col md={6}>
+          <Col md={6} style={{ paddingRight: '12px',borderRight: '2px solid #ccc' }}>
             {/* Render Sidebar here */}
             {this.renderSidebar()}
           </Col>
         )}
 
         {/* Main content area */}
-        <Col md={currentPanel === 'applications' ? 18 : 24}>
+        <Col md={currentPanel === 'applications' ? 18 : 24} style={{
+      paddingLeft: currentPanel === 'applications' ? '12px' : '0px'
+    }} >
           <Card bordered={false} bodyStyle={{ padding: '4px' }}>
             <div style={{ marginBottom: '16px' }}>
               <Row gutter={16} style={{ display: 'flex', alignItems: 'center' }}>
@@ -215,7 +221,7 @@ class GenericDataDisplay extends React.Component<GenericDataDisplayProps, Generi
             </div>
             <div style={{ marginBottom: 16 }}>
               <Input.Search
-                placeholder="搜索..."
+                placeholder="搜索任何字段可能出现的值"
                 onSearch={this.handleSearch}
                 style={{ width: '100%' }}
               />
