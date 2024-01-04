@@ -21,115 +21,72 @@ const menus: {
 } = {
     menus: [
         // 菜单相关路由
-        { key: '/app/dashboard/index', title: '安全概览', icon: 'mobile', component: 'Dashboard' },
+        { key: 'dashboard/index', title: '安全概览', icon: 'mobile', component: 'Dashboard' },
+        {
+            key: '/app/ui',
+            title: 'UI',
+            icon: 'scan',
+            subs: [
+                { key: '/app/ui/buttons', title: '按钮', component: 'Buttons' },
+                { key: '/app/ui/icons', title: '图标', component: 'Icons' },
+                { key: '/app/ui/spins', title: '加载中', component: 'Spins' },
+                { key: '/app/ui/modals', title: '对话框', component: 'Modals' },
+                { key: '/app/ui/notifications', title: '通知提醒框', component: 'Notifications' },
+                { key: '/app/ui/tabs', title: '标签页', component: 'Tabs' },
+                { key: '/app/ui/banners', title: '轮播图', component: 'Banners' },
+                { key: '/app/ui/wysiwyg', title: '富文本', component: 'WysiwygBundle' },
+                { key: '/app/ui/drags', title: '拖拽', component: 'Drags' },
+                { key: '/app/ui/map', title: '画廊', component: 'MapUi' },
+                { key: '/app/ui/map', title: '地图', component: 'MapUi' },
+            ],
+        },
         {
             key: '/app/animation',
             title: '资产中心',
             icon: 'rocket',
             subs: [
                 {
-                    key: '/app/animation/zczw',
-                    title: '资产指纹',
-                    component: 'ZCZW',
-                },
-                {
                     key: '/app/animation/exampleAnimations',
-                    title: '主机列表',
+                    title: '主机列表-动画案例',
                     component: 'ExampleAnimations',
                 },
                 {
-                    key: '/app/animation/rqjq',
-                    title: '容器集群',
-                    component: 'rqjq',
+                    key: '/app/animation/basicAnimations',
+                    title: '资产指纹-基础动画',
+                    component: 'BasicAnimations',
                 },
             ],
         },
         {
-            key: '/app/hcp', //影响菜单下拉
-            title: '主机和容器防护',
+            key: '/app/table',
+            title: '表格',
             icon: 'copy',
             subs: [
+                { key: '/app/table/basicTable', title: '基础表格', component: 'BasicTable' },
+                { key: '/app/table/advancedTable', title: '高级表格', component: 'AdvancedTable' },
                 {
-                    key: '/app/hcp/rqjc',
-                    title: '入侵检测',
-                    subs: [
-                        {
-                            key: '/app/hcp/rqjc/gjlb',
-                            title: '告警列表',
-                            component: 'hcpgjlb',
-                        },
-                        {
-                            key: '/app/hcp/rqjc/bmd',
-                            title: '白名单',
-                            component: 'hcpbmd',
-                        },
-                    ],
-                },
-                {
-                    key: '/app/hcp/fxff',
-                    title: '风险防范',
-                    subs: [
-                        {
-                            key: '/app/hcp/fxff/Ldlb',
-                            title: '漏洞列表',
-                            component: 'Ldlb',
-                        },
-                        {
-                            key: '/app/hcp/fxff/jxjc',
-                            title: '基线检查',
-                            component: 'jxjc',
-                        },
-                    ],
+                    key: '/app/table/asynchronousTable',
+                    title: '异步表格',
+                    component: 'AsynchronousTable',
                 },
             ],
         },
         {
-            key: '/app/ARP',
-            title: '应用运行时防护',
+            key: '/app/chart',
+            title: '图表',
             icon: 'area-chart',
             subs: [
-                { key: '/app/ARP/status', title: '运行状态', component: 'status' },
-                { key: '/app/ARP/configuration', title: '配置管理', component: 'configuration' },
-                {
-                    key: '/app/ARP/rqjc',
-                    title: '入侵检测',
-                    subs: [
-                        {
-                            key: '/app/ARP/rqjc/gjlb',
-                            title: '告警列表',
-                            component: 'ARPgjlb',
-                        },
-                        {
-                            key: '/app/ARP/rqjc/bmd',
-                            title: '白名单',
-                            component: 'ARPbmd',
-                        },
-                    ],
-                },
-
+                { key: '/app/chart/echarts', title: 'echarts', component: 'Echarts' },
+                { key: '/app/chart/recharts', title: 'recharts', component: 'Recharts' },
             ],
         },
         {
-            key: '/app/CCP',
-            title: '容器集群防护',
+            key: '/subs4',
+            title: '页面',
             icon: 'switcher',
             subs: [
-                {
-                    key: '/app/CCP/rqjc',
-                    title: '入侵检测',
-                    subs: [
-                        {
-                            key: '/app/CCP/rqjc/gjlb',
-                            title: '告警列表',
-                            component: 'CCPgjlb',
-                        },
-                        {
-                            key: '/app/CCP/rqjc/bmd',
-                            title: '白名单',
-                            component: 'CCPbmd',
-                        },
-                    ],
-                },
+                { key: '/login', title: '登录' },
+                { key: '/404', title: '404' },
             ],
         },
         {

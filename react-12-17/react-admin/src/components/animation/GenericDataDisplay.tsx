@@ -242,7 +242,7 @@ class GenericDataDisplay extends React.Component<GenericDataDisplayProps, Generi
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <Row>
                     {/* Conditionally render the sidebar for applications */}
-                    {currentPanel === 'applications1' && (
+                    {currentPanel === 'applications' && (
                         <Col md={6} style={{ paddingRight: '12px', borderRight: '1px solid #ccc' }}>
                             {/* Render Sidebar here */}
                             {this.renderSidebar()}
@@ -251,9 +251,9 @@ class GenericDataDisplay extends React.Component<GenericDataDisplayProps, Generi
 
                     {/* Main content area */}
                     <Col
-                        md={currentPanel === 'applications1' ? 18 : 24}
+                        md={currentPanel === 'applications' ? 18 : 24}
                         style={{
-                            paddingLeft: currentPanel === 'applications1' ? '12px' : '0px',
+                            paddingLeft: currentPanel === 'applications' ? '12px' : '0px',
                         }}
                     >
                         <Card bordered={false} bodyStyle={{ padding: '4px' }}>

@@ -4,6 +4,9 @@
  */
 import Loadable from 'react-loadable';
 import Loading from './widget/Loading';
+import BasicTable from './tables/BasicTables';
+import AdvancedTable from './tables/AdvancedTables';
+import AsynchronousTable from './tables/AsynchronousTable';
 import Echarts from './charts/Echarts';
 import Recharts from './charts/Recharts';
 import Icons from './ui/Icons';
@@ -15,18 +18,7 @@ import Tabs from './ui/Tabs';
 import Banners from './ui/banners';
 import Drags from './ui/Draggable';
 import Dashboard from './dashboard/Dashboard';
-import ZCZW from './animation/BasicAnimations';
-import hcpgjlb from './hcp/gjlb';
-import hcpbmd from './hcp/bmd';
-import ARPgjlb from './ARP/rqjc/gjlb';
-import ARPbmd from './ARP/rqjc/bmd';
-import CCPgjlb from './CCP/rqjc/gjlb';
-import CCPbmd from './CCP/rqjc/bmd';
-import configuration from './ARP/configuration';
-import status from './ARP/status';
-import Ldlb from './hcp/Ldlb';
-import jxjc from './hcp/jxjc';
-import rqjq from './animation/ExampleAnimations'
+import BasicAnimations from './animation/BasicAnimations';
 import ExampleAnimations from './animation/ExampleAnimations';
 import AuthBasic from './auth/Basic';
 import RouterEnter from './auth/RouterEnter';
@@ -46,6 +38,9 @@ const WysiwygBundle = Loadable({
 });
 
 export default {
+    BasicTable,
+    AdvancedTable,
+    AsynchronousTable,
     Echarts,
     Recharts,
     Icons,
@@ -57,7 +52,7 @@ export default {
     Banners,
     Drags,
     Dashboard,
-    ZCZW,
+    BasicAnimations,
     ExampleAnimations,
     AuthBasic,
     RouterEnter,
@@ -70,15 +65,4 @@ export default {
     Sub1,
     Sub2,
     Env,
-    hcpgjlb,
-    hcpbmd,
-    ARPgjlb,
-    ARPbmd,
-    CCPgjlb,
-    CCPbmd,
-    configuration,
-    status,
-    Ldlb,
-    jxjc,
-    rqjq
 } as any;

@@ -1,0 +1,58 @@
+.container {
+  position: relative;
+}
+.table-container {
+  height: calc(100vh - 200px); /* 根据你页面其他元素的高度调整这个值 */
+  overflow: auto; /* 如果表格内容超出高度，显示滚动条 */
+}
+
+.currentTime {
+  min-width: 133px;
+  line-height: 28px;
+  font-size: 16px;
+  color: #1d2129;
+  white-space: nowrap;
+}
+.sidebar {
+  position: fixed;
+  right: -500px; /* 设置为负值，使侧边栏开始时在屏幕外 */
+  top: 0;
+  width: 500px; /* 侧边栏的宽度 */
+  height: 100%; /* 侧边栏的高度 */
+  background: #f9f9f9; /* 侧边栏的背景颜色 */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.5); /* 侧边栏的阴影效果 */
+  transition: right 0.3s; /* 平滑过渡效果 */
+  overflow: auto; /* 如果内容超出，出现滚动条 */
+  z-index: 1000; /* 确保侧边栏在顶层 */
+}
+
+.sidebar.open {
+  right: 0; /* 当添加.open类时，将侧边栏移动到视图内 */
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px; /* 距离顶部的距离 */
+  right: 10px; /* 距离右侧的距离 */
+  border: none;
+  background: none;
+  font-size: 24px ;
+  cursor: pointer;
+}
+
+/* 当侧边栏打开时, 为了更好的用户体验, 你可能还想添加一个半透明背景覆盖主内容 */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 500; /* 确保这个值低于.sidebar的z-index */
+}
+
+/* 当侧边栏打开时显示遮罩层 */
+.overlay.open {
+  display: block;
+}
