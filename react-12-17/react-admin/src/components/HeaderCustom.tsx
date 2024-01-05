@@ -19,6 +19,8 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
+import { Row, Col } from 'antd';
+
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -69,29 +71,19 @@ const HeaderCustom = (props: HeaderCustomProps) => {
         umbrella.removeLocalStorage('user');
         history.push('/login');
     };
+    //用于隐藏标题
+    //const [isSiderVisible, setIsSiderVisible] = useState(true);
+
     return (
-        <Header className="custom-theme header">
-            {responsive?.isMobile ? (
-                <Popover
-                    content={<SiderCustom popoverHide={turn.turnOff} />}
-                    trigger="click"
-                    placement="bottomLeft"
-                    visible={visible}
-                    onVisibleChange={(visible) => (visible ? turn.turnOn() : turn.turnOff())}
-                >
-                    <BarsOutlined className="header__trigger custom-trigger" />
-                </Popover>
-            ) : props.collapsed ? (
-                <MenuUnfoldOutlined
-                    className="header__trigger custom-trigger"
-                    onClick={props.toggle}
-                />
-            ) : (
-                <MenuFoldOutlined
-                    className="header__trigger custom-trigger"
-                    onClick={props.toggle}
-                />
-            )}
+    <Row align="middle" className="header-row">
+        <Col span={24}>
+        <Header className="header-row  header-border"
+                    style={{
+                        zIndex: 2, // 设置顶侧栏的z-index为2
+                        borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
+                        // 其他已有样式
+                    }}>
+
             <Menu
                 mode="horizontal"
                 style={{ lineHeight: '64px', float: 'right' }}
@@ -130,6 +122,8 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                 </SubMenu>
             </Menu>
         </Header>
+        </Col>
+    </Row>
     );
 };
 

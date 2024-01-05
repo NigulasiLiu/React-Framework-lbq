@@ -5,8 +5,8 @@ import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'rechar
 import { Link, Route, Switch, useLocation, withRouter } from 'react-router-dom';
 import { FilterOutlined } from '@ant-design/icons';
 import OverviewPanel from './OverviewPanel';
-import Fim from './Fim';
-import GenericDataDisplay from './GenericDataDisplay';
+import ContainerCluster from './ContainerCluster';
+import DataDisplayTable from './DataDisplayTable';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -20,11 +20,11 @@ interface StatusPanelProps {
     statusData: StatusItem[];
 }
 
-type BasicAnimationsProps = {};
+type AssetFingerprintProps = {};
 interface GenericDataItem {
     [key: string]: any;
 }
-type BasicAnimationsState = {
+type AssetFingerprintState = {
     dataSource: any[];
     topData: {
         fim: GenericDataItem[];
@@ -119,6 +119,12 @@ const fimColumns = [
         title: '文件名',
         dataIndex: 'filename',
         key: 'filename',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 100, // 最小宽度100px
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
     },
     {
         title: 'MD5哈希值',
@@ -129,11 +135,23 @@ const fimColumns = [
         title: '创建时间',
         dataIndex: 'ctime',
         key: 'ctime',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 170, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
     },
     {
         title: '修改时间',
         dataIndex: 'mtime',
         key: 'mtime',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 170, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
         sorter: (a: any, b: any) => b.mtime - a.mtime,
         //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
     },
@@ -141,11 +159,25 @@ const fimColumns = [
         title: '访问时间',
         dataIndex: 'atime',
         key: 'atime',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 170, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
     },
     {
         title: '状态',
         dataIndex: 'status',
-        key: 'status',
+        key: 'status',                
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 100, // 最小宽度100px
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
     },
     {
         title: '文件名哈希值',
@@ -567,7 +599,7 @@ const applicationsColumns = [
     },
 ];
 
-class BasicAnimations extends React.Component<BasicAnimationsProps, BasicAnimationsState> {
+class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFingerprintState> {
     constructor(props: any) {
         super(props);
         this.columns = [
@@ -807,105 +839,144 @@ class BasicAnimations extends React.Component<BasicAnimationsProps, BasicAnimati
                     />
                 );
             // case 'fim':
-            //     return <Fim />;
+            //     return <ContainerCluster />;
             case 'fim':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/fim"
                         columns={fimColumns}
                         currentPanel={currentPanel}
+
                         onTopDataChange={this.onTopDataChange}
                         rankLabel="mtime"
+                        timeColumnIndex={['ctime','mtime','atime']}
+
                         selectedRowKeys={this.state.panelSelectedRowKeys.fim}
                         onSelectChange={(keys: any) => this.onSelectChange(keys, 'fim')}
                     />
                 );
             case 'container':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/container"
                         columns={containerColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
+
                         selectedRowKeys={this.state.panelSelectedRowKeys.container}
                         onSelectChange={(keys: any) => this.onSelectChange(keys, 'container')}
                     />
                 );
             case 'open-ports':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/open-ports"
                         columns={openPortsColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys['open-ports']}
                         onSelectChange={(keys: any) => this.onSelectChange(keys, 'open-ports')}
                     />
                 );
             case 'running-processes':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/running-processes"
                         columns={runningProcessesColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys['running-processes']}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'running-processes')}
                     />
                 );
             case 'system-users':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/system-users"
                         columns={systemUsersColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys['system-users']}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'system-users')}
                     />
                 );
             case 'scheduled-tasks':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/scheduled-tasks"
                         columns={scheduledTasksColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys['scheduled-tasks']}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'scheduled-tasks')}
                     />
                 );
             case 'system-services':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/system-services"
                         columns={systemServicesColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys['system-services']}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'system-services')}
                     />
                 );
             case 'system-software':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/system-software"
                         columns={systemSoftwareColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys['system-software']}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'system-software')}
                     />
                 );
             case 'applications':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/applications"
                         columns={applicationsColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
+                         
                         selectedRowKeys={this.state.panelSelectedRowKeys.applications}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'applications')}
                     />
                 );
             case 'kernel-modules':
                 return (
-                    <GenericDataDisplay
+                    <DataDisplayTable
                         apiEndpoint="http://localhost:5000/api/files/kernel-modules"
                         columns={kernelModulesColumns}
                         currentPanel={currentPanel}
+
+                        onTopDataChange={this.onTopDataChange}
+                        rankLabel=""
                         selectedRowKeys={this.state.panelSelectedRowKeys['kernel-modules']}
                         onSelectChange={(keys) => this.onSelectChange(keys, 'kernel-modules')}
                     />
@@ -1006,118 +1077,17 @@ class BasicAnimations extends React.Component<BasicAnimationsProps, BasicAnimati
     };
 
     render() {
-        const animations = [
-            'bounce',
-            'flash',
-            'rubberBand',
-            'shake',
-            'headShake',
-            'swing',
-            'tada',
-            'wobble',
-            'jello',
-            'bounceIn',
-            'bounceInDown',
-            'bounceInLeft',
-            'bounceInRight',
-            'bounceOut',
-            'bounceOutDown',
-            'bounceOutLeft',
-            'bounceOutLeft',
-            'bounceOutUp',
-            'fadeIn',
-            'fadeInDown',
-            'fadeInDownBig',
-            'fadeInLeft',
-            'fadeInLeftBig',
-            'fadeInRight',
-            'fadeInRightBig',
-            'fadeInUp',
-            'fadeInUpBig',
-            'fadeOut',
-            'fadeOutDown',
-            'fadeOutDownBig',
-            'fadeOutLeft',
-            'fadeOutLeftBig',
-            'fadeOutRight',
-            'fadeOutRightBig',
-            'fadeOutUp',
-            'fadeOutUpBig',
-            'flipInX',
-            'flipInY',
-            'flipOutX',
-            'flipOutY',
-            'lightSpeedIn',
-            'lightSpeedOut',
-            'rotateIn',
-            'rotateInDownLeft',
-            'rotateInDownRight',
-            'rotateInUpLeft',
-            'rotateInUpRight',
-            'rotateOut',
-            'rotateOutDownLeft',
-            'rotateOutDownRight',
-            'rotateOutUpLeft',
-            'rotateOutUpRight',
-            'hinge',
-            'jackInTheBox',
-            'rollIn',
-            'rollOut',
-            'zoomIn',
-            'zoomInDown',
-            'zoomInLeft',
-            'zoomInRight',
-            'zoomInUp',
-            'zoomOut',
-            'zoomOutDown',
-            'zoomOutLeft',
-            'zoomOutRight',
-            'zoomOutUp',
-            'slideInDown',
-            'slideInLeft',
-            'slideInRight',
-            'slideInUp',
-            'slideOutDown',
-            'slideOutLeft',
-            'slideOutRight',
-            'slideOutUp',
-        ];
-        const { dataSource } = this.state;
-        const columns = this.columns;
-        const rowSelection = this.renderRowSelection();
-        // Conditional button style
-        const buttonStyle = this.state.areRowsSelected
-            ? { fontWeight: 'bold' as 'bold', color: 'red' }
-            : { fontWeight: 'normal' as 'normal', color: 'grey' };
-
-        const alertDataOne = [
-            { name: '运行中', value: 7, color: '#22BC44' }, //GREEN
-            { name: '运行异常', value: 2, color: '#FBB12E' }, //ORANGE
-            { name: '离线', value: 5, color: '#EA635F' }, //RED
-            { name: '未安装', value: 1, color: '#E5E8EF' }, //GREY
-        ];
-        const alertDataTwo = [
-            { name: '无风险主机', value: 13, color: '#E5E8EF' }, //GREY
-            { name: '存在告警', value: 1, color: '#FBB12E' }, //ORANGE
-        ];
-        const alertDataThree = [
-            { name: '无风险主机', value: 13, color: '#E5E8EF' }, //GREY
-            { name: '存在高可利用漏洞', value: 1, color: '#EA635F' }, //RED
-        ];
-        const alertDataFour = [
-            { name: '无风险主机', value: 13, color: '#E5E8EF' }, //GREY
-            { name: '存在高危基线', value: 2, color: '#4086FF' }, //BLUE
-        ];
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <BreadcrumbCustom breads={['资产中心', '资产指纹']} />
                 <div>
                     {/* 资产指纹面板的导航菜单 */}
+                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                     <Menu
                         onClick={this.handleMenuClick}
                         selectedKeys={[this.state.currentPanel]}
                         mode="horizontal"
+                        style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                     >
                         <Menu.Item key="overview">总览</Menu.Item>
                         <Menu.Item key="container">容器</Menu.Item>
@@ -1131,13 +1101,17 @@ class BasicAnimations extends React.Component<BasicAnimationsProps, BasicAnimati
                         <Menu.Item key="applications">应用</Menu.Item>
                         <Menu.Item key="kernel-modules">内核模块</Menu.Item>
                         {/* 可以根据需要添加更多的Menu.Item */}
+                        {/* 使用透明div作为flex占位符 */}
+                        <div style={{ flexGrow: 1 }}></div>
+                        
                     </Menu>
                     {/* 渲染当前激活的子面板 */}
                     <Card>{this.renderCurrentPanel()}</Card>
+                </Row>
                 </div>
             </div>
         );
     }
 }
 
-export default BasicAnimations;
+export default AssetFingerprint;

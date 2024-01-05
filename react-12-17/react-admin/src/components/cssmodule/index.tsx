@@ -9,16 +9,16 @@ import { Col, Card, Row } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import styles from './index.module.less';
 
-class Cssmodule extends Component {
+class VirusScanning extends Component {
     render() {
         return (
             <div>
-                <BreadcrumbCustom breads={['cssModule']} />
+                <BreadcrumbCustom breads={['VirusScanning']} />
                 <Row gutter={16}>
                     <Col md={24}>
-                        <Card title="cssModule" bordered={false}>
+                        <Card title="VirusScanning" bordered={false}>
                             <div className={styles.header}>
-                                <p>Hello CssModule</p>
+                                <p>Hello VirusScanning</p>
                             </div>
                         </Card>
                     </Col>
@@ -28,4 +28,4 @@ class Cssmodule extends Component {
     }
 }
 
-export default Cssmodule;
+export default VirusScanning;

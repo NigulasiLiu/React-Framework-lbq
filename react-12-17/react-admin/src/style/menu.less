@@ -74,7 +74,11 @@
 .custom-menu .ant-menu {
     background-color: white !important;
 }
-
+.custom-menu::after {
+    content: '';
+    flex-grow: 1;
+  }
+  
 .custom-sidebar {
     background-color: white;
     // 可以添加其他样式以确保覆盖任何可能的默认样式

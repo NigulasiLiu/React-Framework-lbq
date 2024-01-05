@@ -1,99 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { IFMenu } from '../routes/config';
+import { IFMenu } from '../routes/config'; // 确保这个路径是正确的
 import { MenuProps } from 'antd/lib/menu';
 
+// 渲染单个菜单项
 const renderMenuItem = (
     item: IFMenu // item.route 菜单单独跳转的路由
 ) => (
-    <Menu.Item key={item.key}>
+    <Menu.Item key={item.key} className="menu-item">
         <Link to={(item.route || item.key) + (item.query || '')}>
-            {/* {item.icon && <Icon type={item.icon} />} */}
             <span className="nav-text">{item.title}</span>
         </Link>
     </Menu.Item>
 );
 
+// 渲染有子菜单的菜单项
 const renderSubMenu = (item: IFMenu) => {
     return (
         <Menu.SubMenu
             key={item.key}
-            title={
-                <span>
-                    {/* {item.icon && <Icon type={item.icon} />} */}
-                    <span className="nav-text">{item.title+1}</span>
-                </span>
-            }
+            title={<span className="nav-text">{item.title}</span>}
+            className="submenu-item"
         >
-            {item.subs!.map((sub) => (sub.subs ? renderSubMenu(sub) : renderMenuItem(sub)))}
+            {item.subs!.map(renderMenu)}
         </Menu.SubMenu>
     );
 };
 
+// 递归渲染菜单项和子菜单
+const renderMenu = (item: IFMenu) => {
+    return item.subs && item.subs.length > 0
+        ? renderSubMenu(item)
+        : renderMenuItem(item);
+};
+
+// SiderMenu 组件和之前一样
+
+
 type SiderMenuProps = MenuProps & {
-    menus: any;
-    onClick: (e: any) => void;
-    selectedKeys: string[];
-    openKeys?: string[];
-    onOpenChange: (v: string[]) => void;
+    menus: IFMenu[];
 };
 
 const SiderMenu = ({ menus, ...props }: SiderMenuProps) => {
-    const [dragItems, setDragItems] = useState<any>([]);
-
-    useEffect(() => {
-        setDragItems(menus);
-    }, [menus]);
-
-    const reorder = (list: any, startIndex: number, endIndex: number) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-        return result;
-    };
-    const onDragEnd = (result: any) => {
-        // dropped outside the list
-        if (!result.destination) {
-            return;
-        }
-
-        const _items = reorder(dragItems, result.source.index, result.destination.index);
-        setDragItems(_items);
-    };
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-                {(provided, snapshot) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
-                        {dragItems.map((item: IFMenu, index: number) => (
-                            <Draggable key={item.key} draggableId={item.key} index={index}>
-                                {(provided, snapshot) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        onDragStart={(e: React.DragEvent<any>) =>
-                                            provided.dragHandleProps &&
-                                            provided.dragHandleProps.onDragStart(e as any)
-                                        }
-                                    >
-                                        <Menu {...props}>
-                                            {item.subs!
-                                                ? renderSubMenu(item)
-                                                : renderMenuItem(item)}
-                                        </Menu>
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>
+      <div className="sider-menu"> {/* 应用了带有轮廓线的样式 */}
+        <Menu {...props} mode="inline">
+          {menus.map(renderMenu)}
+        </Menu>
+      </div>
     );
-};
-
+  };
 export default React.memo(SiderMenu);

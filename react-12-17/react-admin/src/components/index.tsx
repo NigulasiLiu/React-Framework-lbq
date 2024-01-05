@@ -15,7 +15,6 @@ import Tabs from './ui/Tabs';
 import Banners from './ui/banners';
 import Drags from './ui/Draggable';
 import Dashboard from './dashboard/Dashboard';
-import ZCZW from './animation/BasicAnimations';
 import hcpgjlb from './hcp/gjlb';
 import hcpbmd from './hcp/bmd';
 import ARPgjlb from './ARP/rqjc/gjlb';
@@ -26,11 +25,12 @@ import configuration from './ARP/configuration';
 import status from './ARP/status';
 import Ldlb from './hcp/Ldlb';
 import jxjc from './hcp/jxjc';
-import rqjq from './animation/ExampleAnimations'
-import ExampleAnimations from './animation/ExampleAnimations';
+import HostInventory from './AssetsCenter/HostInventory';
+import ContainerCluster from './AssetsCenter/ContainerCluster'
+import AssetFingerprint from './AssetsCenter/AssetFingerprint';
 import AuthBasic from './auth/Basic';
 import RouterEnter from './auth/RouterEnter';
-import Cssmodule from './cssmodule';
+import VirusScanning from './cssmodule';
 import MapUi from './ui/map';
 import QueryParams from './extension/QueryParams';
 import Visitor from './extension/Visitor';
@@ -57,12 +57,13 @@ export default {
     Banners,
     Drags,
     Dashboard,
-    ZCZW,
-    ExampleAnimations,
+    AssetFingerprint,
+    HostInventory,
+    ContainerCluster,
     AuthBasic,
     RouterEnter,
     WysiwygBundle,
-    Cssmodule,
+    VirusScanning,
     MapUi,
     QueryParams,
     Visitor,
@@ -79,6 +80,5 @@ export default {
     configuration,
     status,
     Ldlb,
-    jxjc,
-    rqjq
+    jxjc
 } as any;

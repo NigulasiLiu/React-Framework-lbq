@@ -13,8 +13,8 @@ const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
 
-type ExampleAnimationsProps = {};
-type ExampleAnimationsState = {
+type HostInventoryProps = {};
+type HostInventoryState = {
   dataSource: any[];
   count: number;
   deleteIndex: number | null;
@@ -65,7 +65,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 };
 
 
-class Ldlb extends React.Component<ExampleAnimationsProps, ExampleAnimationsState> {
+class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
   constructor(props: any) {
     super(props);
     this.columns = [

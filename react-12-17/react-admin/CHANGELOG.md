@@ -57,11 +57,11 @@
 
 #### 2018-01-12
 
--   增加 cssmodule 的支持（css, less）
+-   增加 VirusScanning 的支持（css, less）
 
     -   建议用 css 预处理器，文件名为 xxx.module.less，引入相应组件即可使用。
 
-    -   具体做法参见新增模块，路由后缀：/app/cssModule。[点击访问](http://cheng_haohao.oschina.io/reactadmin/#/app/cssModule)
+    -   具体做法参见新增模块，路由后缀：/app/VirusScanning。[点击访问](http://cheng_haohao.oschina.io/reactadmin/#/app/VirusScanning)
 
 #### 2018-10-13
 

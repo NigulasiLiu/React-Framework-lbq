@@ -1665,8 +1665,8 @@ this.tinycolor = tinycolor;
 @btn-primary-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
 @btn-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
 
-@btn-primary-color: #fff;
-@btn-primary-bg: @primary-color;
+@btn-primary-color: #000000;
+@btn-primary-bg: #000000; //@primary-color
 
 @btn-default-color: @text-color;
 @btn-default-bg: @component-background;
@@ -2626,7 +2626,7 @@ html {
 }
 .ant-btn:hover,
 .ant-btn:focus {
-  color: color(~`colorPalette("@{primary-color}", 5)`);
+  color: #4086FF;//color(~`colorPalette("@{primary-color}", 5)`);
   background-color: #fff;
   border-color: color(~`colorPalette("@{primary-color}", 5)`);
 }
@@ -2640,7 +2640,7 @@ html {
 }
 .ant-btn:active,
 .ant-btn.active {
-  color: color(~`colorPalette("@{primary-color}", 7)`);
+  color: #4086FF;//color(~`colorPalette("@{primary-color}", 7)`);
   background-color: #fff;
   border-color: color(~`colorPalette("@{primary-color}", 7)`);
 }
@@ -8768,13 +8768,13 @@ body {
 }
 .ant-menu-root.ant-menu-inline .ant-menu-submenu-selected,
 .ant-menu-root.ant-menu-vertical .ant-menu-submenu-selected {
-  color: #F1F2F6;
+  color: #4086FF;
 }
 .ant-menu-root.ant-menu-inline .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
 .ant-menu-root.ant-menu-vertical .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
 .ant-menu-root.ant-menu-inline .ant-menu-submenu-active,
 .ant-menu-root.ant-menu-vertical .ant-menu-submenu-active {
-  color: #F1F2F6;
+  color: #4086FF;
 }
 .ant-menu-root.ant-menu-inline .ant-menu-submenu-title .ant-menu-submenu-arrow::before,
 .ant-menu-root.ant-menu-vertical .ant-menu-submenu-title .ant-menu-submenu-arrow::before,

@@ -23,24 +23,24 @@ const menus: {
         // 菜单相关路由
         { key: '/app/dashboard/index', title: '安全概览', icon: 'mobile', component: 'Dashboard' },
         {
-            key: '/app/animation',
+            key: '/app/AssetsCenter',
             title: '资产中心',
             icon: 'rocket',
             subs: [
                 {
-                    key: '/app/animation/zczw',
-                    title: '资产指纹',
-                    component: 'ZCZW',
-                },
-                {
-                    key: '/app/animation/exampleAnimations',
+                    key: '/app/AssetsCenter/HostInventory',
                     title: '主机列表',
-                    component: 'ExampleAnimations',
+                    component: 'HostInventory',
                 },
                 {
-                    key: '/app/animation/rqjq',
+                    key: '/app/AssetsCenter/AssetFingerprint',
+                    title: '资产指纹',
+                    component: 'AssetFingerprint',
+                },
+                {
+                    key: '/app/AssetsCenter/ContainerCluster',
                     title: '容器集群',
-                    component: 'rqjq',
+                    component: 'ContainerCluster',
                 },
             ],
         },
@@ -147,14 +147,14 @@ const menus: {
             ],
         },
         {
-            key: '/app/cssModule',
-            title: 'cssModule',
+            key: '/app/VirusScanning',
+            title: '病毒扫描',
             icon: 'star',
-            component: 'Cssmodule',
+            component: 'VirusScanning',
         },
         {
             key: '/app/extension',
-            title: '功能扩展',
+            title: '系统管理',
             icon: 'bars',
             subs: [
                 {
@@ -190,6 +190,20 @@ const menus: {
                     key: '/app/extension/env',
                     title: '环境配置',
                     component: 'Env',
+                },
+            ],
+        },
+        {
+            key: '/app/auth',
+            title: '系统监控',
+            icon: 'safety',
+            subs: [
+                { key: '/app/auth/basic', title: '基础演示', component: 'AuthBasic' },
+                {
+                    key: '/app/auth/routerEnter',
+                    title: '路由拦截',
+                    component: 'RouterEnter',
+                    requireAuth: 'auth/testPage',
                 },
             ],
         },

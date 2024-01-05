@@ -3,16 +3,15 @@
  */
 import React from 'react';
 import axios from 'axios';
-import { Row, Col, Card, Table, Popconfirm, Input,Button } from 'antd';
+import { Row, Col, Card, Table, Popconfirm} from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import CustomTooltip from '../dashboard/Dashboard'
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
-import { FilterOutlined } from '@ant-design/icons';
+import DataDisplayTable from './DataDisplayTable';
 
-const { Search } = Input;
+//const { Search } = Input;
 
-type ExampleAnimationsProps = {};
-type ExampleAnimationsState = {
+type HostInventoryProps = {};
+type HostInventoryState = {
     dataSource: any[];
     statusData:StatusItem[];
     riskData:StatusItem[];
@@ -79,16 +78,16 @@ interface StatusItem {
             <span>{status.value}</span>
           </div>
         ))}
-      </div>//</div>
+      </div>
 
     );
   };
 
 
-class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleAnimationsState> {
+class HostInventory extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
         super(props);
-        this.columns = [
+        this.hostinventoryColumns = [
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>主机名称</span>,
                 dataIndex: 'hostname',
@@ -199,10 +198,10 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
             fullDataSource: [], // 存储完整的数据源副本
         };
     }
-    columns: any;
+    hostinventoryColumns: any;
     async componentDidMount() {
         try {
-            const response = await axios.get('http://localhost:5000/api/files1');
+            const response = await axios.get('http://localhost:5000/api/hostinventory');
             if (response.data) {
                 this.setState({
                     dataSource: response.data,
@@ -292,6 +291,16 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
         this.setState({ selectedRowKeys ,
             areRowsSelected: selectedRowKeys.length > 0,});
     };
+    ////为不同panel的勾选框设置状态
+    // onSelectChange = (selectedKeys: React.Key[], panel: string) => {
+    //     // 根据panel来设置对应的选中行keys
+    //     this.setState((prevState) => ({
+    //         panelSelectedRowKeys: {
+    //             ...prevState.panelSelectedRowKeys,
+    //             [panel]: selectedKeys,
+    //         },
+    //     }));
+    // };
     // Define the rowSelection object inside the render method
     renderRowSelection = () => {
         return {
@@ -407,7 +416,7 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
 
     render() {
         const { dataSource } = this.state;
-        const columns = this.columns;
+        const hostinventoryColumns = this.hostinventoryColumns;
         const rowSelection = this.renderRowSelection();
         // Conditional button style
         const buttonStyle = this.state.areRowsSelected
@@ -450,12 +459,12 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-                <BreadcrumbCustom breads={['资产中心', '主机列表']} />
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/> 
+               
+                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}> 
                     <Col span={8} >
                         <Card /*title="主机状态分布" 产生分界线*/style={{fontWeight: 'bolder', width: '100%', height:300}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold' }}>主机状态分布</h2>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机状态分布</h2>
                         </div>
                         <Row gutter={0}>
                             <Col span={12} >
@@ -493,7 +502,7 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                     <Col span={16} style={{margin: '2 2' }}>
                         <Card /*title="主机风险分布"*/ style={{fontWeight: 'bolder', width: '100%', height:300}}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold' }}>主机风险分布</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
                             </div>
                             <Row gutter={0}>
                             <Col span={5}>
@@ -596,15 +605,9 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                         <div className="gutter-box">
                         <Card bordered={false}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontWeight: 'bold' }}>主机内容</h2>
-                                <div>
-                                <Button style={buttonStyle} onClick={this.handleExport}
-                                disabled={this.state.dataSource.length === 0}>批量导出</Button>
-                                <Button style={buttonStyle} name="del" onClick={this.handleAdd}>批量添加标签</Button>
-                                <Button style={buttonStyle} name="del" onClick={this.handleAdd}>批量下发任务</Button>
-                                </div>
+                                <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>主机内容</h2>
                             </div>
-                            <div style={{ marginBottom: 16 }}>
+                            {/* <div style={{ marginBottom: 16 }}>
                                 <Input.Search
                                 placeholder="请选择筛选条件并搜索"
                                 onSearch={this.handleSearch}//
@@ -614,7 +617,8 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                             <Table
                                 rowSelection={rowSelection} // 应用 rowSelection 配置
                                 //locale={{ emptyText: 'No Data' }}
-                                bordered
+                                //bordered
+                                className="customTable"
                                 dataSource={dataSource}
                                 columns={columns}
                                 rowClassName={(record, index) => {
@@ -622,6 +626,13 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
                                     return 'animated zoomOutLeft min-black';
                                 return 'animated fadeInRight';
                                 }}
+                            /> */}
+                            <DataDisplayTable
+                                apiEndpoint="http://localhost:5000/api/files/container"
+                                columns={hostinventoryColumns}
+                                currentPanel={"hostinventory"}
+                                selectedRowKeys={this.state.selectedRowKeys}
+                                onSelectChange={(keys: any) => this.onSelectChange(keys)}
                             />
                             </Card>
                         </div>
@@ -632,4 +643,4 @@ class ExampleAnimations extends React.Component<ExampleAnimationsProps, ExampleA
     }
 }
 
-export default ExampleAnimations;
+export default HostInventory;

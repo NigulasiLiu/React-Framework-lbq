@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import './card.less'; // 确保路径正确
-import { Row, Col, Card, Timeline,Typography } from 'antd';
+import { Row, Col, Card, Statistic,Typography } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { HashRouter as Router, Route, Switch, Redirect,Link } from 'react-router-dom';
 import { PieChart, Pie, Cell,Label, LineChart, TooltipProps, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
@@ -81,202 +81,528 @@ class Dashboard extends React.Component {
   return (
            
     <div className="gutter-example button-demo">
-        <BreadcrumbCustom />
-        <Row gutter={10}>
-            {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+      <Row gutter={[12, 6]} >
+    <Col className="gutter-row" md={18}>    
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+          {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+          <Col className="gutter-row" md={24}>
+          <Card /*title="主机状态分布" 产生分界线*/
+            style={{fontWeight: 'bolder', width: '100%', height:200}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+            </div>
+            <Row gutter={[6, 6]}>
             <Col className="gutter-row" md={6}>
-                <div className="gutter-box">
-                    <Card bordered={false}>
-                        <div className="card-content">
-                            <div className="text-muted"><Link to="/app/ui/buttons">主机</Link></div>
-                            <h2>0</h2>
-                        </div>
-                    </Card>
-                </div>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>主机</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
             </Col>
             <Col className="gutter-row" md={6}>
-                <div className="gutter-box">
-                    <Card bordered={false}>
-                        <div className="card-content">
-                            <div className="text-muted"><Link to="/app/ui/buttons">集群</Link></div>
-                            <h2>0</h2>
-                        </div>
-                    </Card>
-                </div>
-            </Col>
-            <Col className="gutter-row" md={6}>
-                <div className="gutter-box">
-                    <Card bordered={false}>
-                        <div className="card-content">
-                        <div className="text-muted"><Link to="/app/ui/buttons">容器</Link></div>
-                            <h2>0</h2>
-                        </div>
-                    </Card>
-                </div>
-            </Col>
-            <Col className="gutter-row" md={6}>
-                <div className="gutter-box">
-                    <Card bordered={false}>
-                        <div className="card-content">
-                        <div className="text-muted"><Link to="/app/ui/buttons">RASP注入进程</Link></div>
-                            <h2>0</h2>
-                        </div>
-                    </Card>
-                </div>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>集群</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>              <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>容器</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>              <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                    <Col pull={2} span={24}>
+                        <Statistic title={'RASP注入进程'} value={13} />
+                    </Col>
+                    
+              </Card>
             </Col>
             </Row>
-            
-    
-    <Card title="入侵报警" extra={<Text type="secondary">近7天</Text>} style={{ width: '100%' }}>
-        <Row gutter={16}>
-          <Col span={15}>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={alertData}>
-                <XAxis dataKey="day" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </Col>
-          {/* <Row gutter={10}> */}
-          <Col span={3}>
-            <Title level={4}>主机告警</Title>
-            {alertStats.types.map((type, index) => (
-              <div key={index} style={{ marginBottom: '10px' }}>
-                <Text>{type.name}: </Text>
-                <Text>{type.count}</Text>
-              </div>
-            ))}
-            <div style={{ marginTop: '20px' }}>
-              <Text strong>总告警个数: </Text>
-              <Text strong>{alertStats.total}</Text>
-            </div>
-          </Col>
-          <Col span={3}>
-            <Title level={4}>主机1告警</Title>
-            {alertStats.types.map((type, index) => (
-              <div key={index} style={{ marginBottom: '10px' }}>
-                <Text>{type.name}: </Text>
-                <Text>{type.count}</Text>
-              </div>
-            ))}
-            <div style={{ marginTop: '20px' }}>
-              <Text strong>总告警个数: </Text>
-              <Text strong>{alertStats.total}</Text>
-            </div>
-          </Col>
-          <Col span={3}>
-            <Title level={4}>主机2告警</Title>
-            {alertStats.types.map((type, index) => (
-              <div key={index} style={{ marginBottom: '10px' }}>
-                <Text>{type.name}: </Text>
-                <Text>{type.count}</Text>
-              </div>
-            ))}
-            <div style={{ marginTop: '20px' }}>
-              <Text strong>总告警个数: </Text>
-              <Text strong>{alertStats.total}</Text>
-            </div>
-          </Col>
-          {/* </Row> */}
-        </Row>
-      </Card>
 
-      <Row gutter={4}>
-      <Col span={12}>
-      <Card title="主机风险分布" style={{ width: '100%' }}>
-        <Row gutter={1}>
-        <Col span={8}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={alertDataOne}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {alertDataOne.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                  <Label value={'待处理告警：'+`${Math.round(alertDataOne[0].value/(alertDataOne[0].value+alertDataOne[1].value)*100)}%`} position="center" />
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+          </Card>
           </Col>
-          <Col span={8}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={alertDataTwo}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {alertDataTwo.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                  <Label value={'高危漏洞：'+`${Math.round(alertDataTwo[0].value/(alertDataTwo[0].value+alertDataTwo[1].value)*100)}%`} position="center" />
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-          </Col>
-          <Col span={8}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={alertDataThree}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {alertDataThree.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                  <Label value={'待加固基线：'+`${Math.round(alertDataThree[0].value/(alertDataThree[0].value+alertDataThree[1].value)*100)}%`} position="center" />
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-          </Col>
+      </Row>
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+            {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+            <Col className="gutter-row" md={24}>
+            <Card /*title="主机状态分布" 产生分界线*/
+              style={{fontWeight: 'bolder', width: '100%', height:400}}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                  <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>入侵告警</h2>
+              </div>
+              <Row gutter={[6, 6]}>
+              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                  <Row>
+                      <Col pull={2} span={24}>
+                          <Statistic title={<span>主机</span>} value={13} />
+                      </Col>
+                      
+                  </Row>
+                </Card>
+              </Col>
+              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                  <Row>
+                      <Col pull={2} span={24}>
+                          <Statistic title={<span>集群</span>} value={13} />
+                      </Col>
+                      
+                  </Row>
+                </Card>
+              </Col>              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                  <Row>
+                      <Col pull={2} span={24}>
+                          <Statistic title={<span>容器</span>} value={13} />
+                      </Col>
+                      
+                  </Row>
+                </Card>
+              </Col>              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                      <Col pull={2} span={24}>
+                          <Statistic title={'RASP注入进程'} value={13} />
+                      </Col>
+                      
+                </Card>
+              </Col>
+              </Row>
+
+            </Card>
+            </Col>
         </Row>
-      </Card>
-      </Col>
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+          {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+          <Col className="gutter-row" md={24}>
+          <Card /*title="主机状态分布" 产生分界线*/
+            style={{fontWeight: 'bolder', width: '100%', height:400}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
+            </div>
+            <Row gutter={[6, 6]}>
+            <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>主机</span>} value={13} />
+                    </Col>
                     
-      <Col span={12}>
-      <Card title="入侵报警" extra={<Text type="secondary">近7天</Text>} style={{ width: '100%' }}>
+                </Row>
+              </Card>
+            </Col>
+            <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>集群</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>              <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>容器</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>              <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                    <Col pull={2} span={24}>
+                        <Statistic title={'RASP注入进程'} value={13} />
+                    </Col>
+                    
+              </Card>
+            </Col>
+            </Row>
 
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={alertData}>
-                <XAxis dataKey="day" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          {/* <Row gutter={10}> */}
-          {/* </Row> */}
-      </Card>
-      </Col>
+          </Card>
+          </Col>
       </Row>      
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+            {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+            <Col className="gutter-row" md={24}>
+            <Card /*title="主机状态分布" 产生分界线*/
+              style={{fontWeight: 'bolder', width: '100%', height:400}}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                  <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基线风险 Top3</h2>
+              </div>
+              <Row gutter={[6, 6]}>
+              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                  <Row>
+                      <Col pull={2} span={24}>
+                          <Statistic title={<span>主机</span>} value={13} />
+                      </Col>
+                      
+                  </Row>
+                </Card>
+              </Col>
+              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                  <Row>
+                      <Col pull={2} span={24}>
+                          <Statistic title={<span>集群</span>} value={13} />
+                      </Col>
+                      
+                  </Row>
+                </Card>
+              </Col>              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                  <Row>
+                      <Col pull={2} span={24}>
+                          <Statistic title={<span>容器</span>} value={13} />
+                      </Col>
+                      
+                  </Row>
+                </Card>
+              </Col>              <Col className="gutter-row" md={6}>
+                <Card
+                  bordered={false}
+                  style={{
+                      height: '100px',
+                      width: '230px',
+                      minWidth: '200px', // 最小宽度300px，而非100px
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                  }}
+                  >
+                      <Col pull={2} span={24}>
+                          <Statistic title={'RASP注入进程'} value={13} />
+                      </Col>
+                      
+                </Card>
+              </Col>
+              </Row>
 
-            </div>
+            </Card>
+            </Col>
+      </Row>       
+    </Col>     
+    <Col className="gutter-row" md={6}>
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+        {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+        <Col className="gutter-row" md={24}>
+        <Card /*title="主机状态分布" 产生分界线*/
+          style={{fontWeight: 'bolder', width: '100%', height:350}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+          </div>
+          <Row gutter={[6, 6]}>
+            <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>主机</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>
+
+          </Row>
+        </Card>
+        </Col>
+      </Row>
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+        {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+        <Col className="gutter-row" md={24}>
+        <Card /*title="主机状态分布" 产生分界线*/
+          style={{fontWeight: 'bolder', width: '100%', height:350}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+          </div>
+          <Row gutter={[6, 6]}>
+            <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>主机</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>
+
+          </Row>
+        </Card>
+        </Col>
+      </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+        {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+        <Col className="gutter-row" md={24}>
+        <Card /*title="主机状态分布" 产生分界线*/
+          style={{fontWeight: 'bolder', width: '100%', height:350}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+          </div>
+          <Row gutter={[6, 6]}>
+            <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>主机</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>
+
+          </Row>
+        </Card>
+        </Col>
+      </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+        {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+        <Col className="gutter-row" md={24}>
+        <Card /*title="主机状态分布" 产生分界线*/
+          style={{fontWeight: 'bolder', width: '100%', height:350}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+          </div>
+          <Row gutter={[6, 6]}>
+            <Col className="gutter-row" md={6}>
+              <Card
+                bordered={false}
+                style={{
+                    height: '100px',
+                    width: '230px',
+                    minWidth: '200px', // 最小宽度300px，而非100px
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                }}
+                >
+                <Row>
+                    <Col pull={2} span={24}>
+                        <Statistic title={<span>主机</span>} value={13} />
+                    </Col>
+                    
+                </Row>
+              </Card>
+            </Col>
+
+          </Row>
+        </Card>
+        </Col>
+      </Row>
+    </Col>  
+      </Row>
+    
+    </div>
         );
     }
 }

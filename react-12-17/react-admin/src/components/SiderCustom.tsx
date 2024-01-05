@@ -9,6 +9,7 @@ import SiderMenu from './SiderMenu';
 import { useAlita } from 'redux-alita';
 import { useSwitch } from '../utils/hooks';
 import { usePrevious } from 'ahooks';
+import logo from '../style/imgs/owl.png';
 const { Sider } = Layout;
 
 type SiderCustomProps = RouteComponentProps<any> & {
@@ -76,10 +77,20 @@ const SiderCustom = (props: SiderCustomProps) => {
             trigger={null}
             breakpoint="lg"
             collapsed={collapsed}
-            style={{ overflowY: 'auto' }}
-            className="sider-custom"
+            style={{
+                overflowY: 'auto',
+                borderRight: '2px solid #E5E6EB', // 添加了右侧轮廓线
+                zIndex: 1, // 确保Sider总是在底层
+            }}
         >
-            <div className="logo" />
+            {/* Logo和Title的容器 */}
+            <div className="logo-title-container" 
+            style={{ padding: '1px,1px', margin: '0px,0px',display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                <img src={logo} alt="Logo" style={{ width: '80px', height: '80px', marginRight: '8px' }} />
+                <h2 style={{ fontFamily: "'YouYuan', sans-serif", 
+                fontWeight: 'bold',padding: '22px,6px', margin: '10px,0px', color: 'rgba(0, 0, 0, 0.85)', 
+                display: 'flex', alignItems: 'center' }}>Security Platform</h2>
+            </div>
             <SiderMenu
                 menus={[...routes.menus, ...smenus]}
                 onClick={menuClick}
@@ -88,14 +99,14 @@ const SiderCustom = (props: SiderCustomProps) => {
                 openKeys={firstHide ? [] : menu.openKeys}
                 onOpenChange={openMenu}
             />
-            <style>
+            {/* <style>
                 {`
                     #nprogress .spinner{
                         left: ${collapsed ? '70px' : '206px'};
                         right: 0 !important;
                     }
                     `}
-            </style>
+            </style> */}
         </Sider>
     );
 };

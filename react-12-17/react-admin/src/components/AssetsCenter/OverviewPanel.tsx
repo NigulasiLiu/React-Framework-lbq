@@ -4,7 +4,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { StatusItem } from './Interfaces';
-import { StatusPanel } from './ExampleAnimations';
+import { StatusPanel } from './HostInventory';
 
 type DataItem = {
     key: string;
@@ -318,6 +318,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -331,6 +333,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 <Col span={2} style={{ position: 'relative', top: '-3.5px' }}>
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('container')}
                                     />
@@ -344,6 +347,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -361,6 +366,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('open-ports')}
                                     />
@@ -374,6 +380,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -391,6 +399,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('running-processes')}
                                     />
@@ -404,6 +413,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -421,6 +432,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('system-users')}
                                     />
@@ -434,6 +446,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -451,6 +465,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('scheduled-tasks')}
                                     />
@@ -464,6 +479,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -481,6 +498,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('system-services')}
                                     />
@@ -494,6 +512,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -511,8 +531,9 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
-                                        onClick={() => this.goToPanel('system-softwares')}
+                                        onClick={() => this.goToPanel('system-software')}
                                     />
                                 </Col>
                             </Row>
@@ -541,6 +562,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('fim')}
                                     />
@@ -554,6 +576,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             style={{
                                 height: '75px',
                                 width: '110px',
+                                minWidth: 110, // 最小宽度100px
+                                maxWidth: 110, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -571,6 +595,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 >
                                     <Button
                                         type="link"
+                                        style={{ color: '#000' }}
                                         icon={<RightOutlined />}
                                         onClick={() => this.goToPanel('kernel-modules')}
                                     />

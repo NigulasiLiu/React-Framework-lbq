@@ -1,8 +1,9 @@
-// Fim.tsx
+// ContainerCluster.tsx
 
 import React from 'react';
 import axios from 'axios';
 import { Table, Button, Input, Card, Col, DatePicker, Row } from 'antd';
+import DataDisplayTable from './DataDisplayTable';
 const { RangePicker } = DatePicker;
 
 interface FimProps {
@@ -29,7 +30,7 @@ type FimState = {
     searchQuery: string; // 添加搜索查询状态
   };
 
-class Fim extends React.Component<{}, FimState> {
+class ContainerCluster extends React.Component<{}, FimState> {
     constructor(props: FimProps) {
         super(props);
         this.fetchLatestData = this.fetchLatestData.bind(this);
@@ -64,41 +65,36 @@ class Fim extends React.Component<{}, FimState> {
     }
     
     // Define your table columns based on the DataItem interface
-    columns = [
+    containerColumns = [
     {
-        title: '文件名',
-        dataIndex: 'filename',
-        key: 'filename',
+        title: '集群',
+        dataIndex: 'cluster',
+        key: 'cluster',
     },
     {
-        title: 'MD5哈希值',
-        dataIndex: 'content_md5',
-        key: 'content_md5',
+        title: '集群版本',
+        dataIndex: 'version',
+        key: 'version',
     },
     {
-        title: '创建时间',
-        dataIndex: 'ctime',
-        key: 'ctime',
+        title: '节点数',
+        dataIndex: 'nodeNumber',
+        key: 'nodeNumber',
     },
     {
-        title: '修改时间',
-        dataIndex: 'mtime',
-        key: 'mtime',
+        title: '安全组件状态',
+        dataIndex: 'componentStatus',
+        key: 'componentStatus',
     },
     {
-        title: '访问时间',
-        dataIndex: 'atime',
-        key: 'atime',
+        title: '风险',
+        dataIndex: 'risk',
+        key: 'risk',
     },
     {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-    },
-    {
-        title: '文件名哈希值',
-        dataIndex: 'filename_md5',
-        key: 'filename_md5',
+        title: '操作',
+        dataIndex: 'op',
+        key: 'op',
     },
     ];
     onSelectChange = (selectedRowKeys: React.Key[]) => {
@@ -163,58 +159,48 @@ class Fim extends React.Component<{}, FimState> {
         : { fontWeight: 'normal' as 'normal', color: 'grey' }; 
         return (
         <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-            <Col md={24}>
-            <Card bordered={false}
-            bodyStyle={{ padding: '4px' }}
-            >
+        <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                    <Col md={24}>
+                        <div className="gutter-box">
+                        <Card bordered={false}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>容器集群</h2>
+                            </div>
+                            {/* <div style={{ marginBottom: 16 }}>
+                                <Input.Search
+                                placeholder="请选择筛选条件并搜索"
+                                onSearch={this.handleSearch}//
+                                style={{ width: '100%' }}
+                                />
+                            </div>
+                            <Table
+                                rowSelection={rowSelection} // 应用 rowSelection 配置
+                                //locale={{ emptyText: 'No Data' }}
+                                //bordered
+                                className="customTable"
+                                dataSource={dataSource}
+                                columns={columns}
+                                rowClassName={(record, index) => {
+                                if (this.state.deleteIndex === record.key)
+                                    return 'animated zoomOutLeft min-black';
+                                return 'animated fadeInRight';
+                                }}
+                            /> */}
+                            <DataDisplayTable
+                                apiEndpoint="http://localhost:5000/api/files/hostinventory"
+                                columns={this.containerColumns}
+                                currentPanel={"hostinventory"}
+                                selectedRowKeys={this.state.selectedRowKeys}
+                                onSelectChange={(keys: any) => this.onSelectChange(keys)}
+                            />
+                            </Card>
+                        </div>
+                    </Col>
 
-            <div style={{ marginBottom: '16px', fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-            <Row gutter={16} style={{ display: 'flex', alignItems: 'center' }}>
-                <Col flex="none">
-                <Button 
-                    style={{ marginRight: 8, color: this.state.dataSource.length === 0 ? '#ccc' : 'inherit' }}
-                    onClick={this.handleExport}
-                    disabled={this.state.dataSource.length === 0}
-                >
-                    批量导出
-                </Button>
-                <Button onClick={this.fetchLatestData}>采集最新数据</Button>
-                </Col>
-                <Col flex="auto" style={{ textAlign: 'left', marginLeft: 10 }}>
-                <span>
-                    最近更新时间: {this.state.lastUpdated ? this.state.lastUpdated : '-'}
-                </span>
-                </Col>
-                <Col flex="none" style={{ marginLeft: 'auto' }}>
-                <RangePicker style={{ width: 200 }} />
-                </Col>
-            </Row>
-            </div>
-            <div style={{ marginBottom: 16 }}>
-                <Input.Search
-                placeholder="搜索文件名或MD5哈希值"
-                onSearch={this.handleSearch} // Replace with actual search handler
-                style={{ width: '100%' }}
-                />
-            </div>
-            <Table<DataItem>
-                className="customTable"
-                rowSelection={rowSelection}
-                pagination={false}
-                dataSource={this.state.dataSource}
-                columns={this.columns}
-                rowKey="id" // Use 'id' as the unique key for each row
-                rowClassName={(record: DataItem, index) => { // Make sure to type 'record' as 'DataItem'
-                    if (this.state.deleteIndex === record.id) // Use 'record.id' instead of 'record.key'
-                        return 'animated zoomOutLeft min-black';
-                    return 'animated fadeInRight';
-                }}
-            />
-            </Card>   
-            </Col> 
+        </Row>
         </div>
         );
       }
 }
 
-export default Fim;
+export default ContainerCluster;
