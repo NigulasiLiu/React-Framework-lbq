@@ -5,6 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { StatusItem } from './Interfaces';
 import { StatusPanel } from './HostInventory';
+import DataCard from '../DataCard';
 
 type DataItem = {
     key: string;
@@ -148,6 +149,7 @@ const generateColumns = (tableName: string, tableName_s: string, tableName_list:
         },
     },
 ];
+//显示从接口得到的数据时，默认进度条成为灰色，需要修改generateColumns-->generateColumns1
 const generateColumns1 = (tableName: string, tableName_s: string, tableName_list: string[]) => {
     const showProgress = tableName !== '文件完整性校验-最新变更二进制文件 TOP5'; // 判断是否要显示进度条
 
@@ -375,7 +377,20 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Card>
                     </Col>
                     <Col span={2}>
-                        <Card
+                    <DataCard
+                        title="运行进程"
+                        value={13}
+                        valueItem={[
+                          { value: '13', color: '#F6F7FB' },
+                          // Add more additional statistics as needed
+                        ]}
+                        panelId="running-processes"
+                        height="75px"
+                        width="110px"
+                        backgroundColor="#F6F7FB"
+                        navigate={false}
+                    />
+                        {/* <Card
                             bordered={false}
                             style={{
                                 height: '75px',
@@ -405,7 +420,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                     />
                                 </Col>
                             </Row>
-                        </Card>
+                        </Card> */}
                     </Col>
                     <Col span={2}>
                         <Card
@@ -719,7 +734,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 </Col>
                                 <Col span={2}> </Col>
                                 <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                    <StatusPanel statusData={status_data} />
+                                    <StatusPanel statusData={status_data} orientation="horizontal"/>
                                 </div>
                             </Row>
                         </Card>

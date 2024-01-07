@@ -224,7 +224,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
     };
     // 渲染侧边栏组件
     renderSidebar = () => {
-        const applicationTypes = ['全部应用', '数据库', 'Web服务器', 'DevOps工具', '缓存服务']; // 示例应用类型
+        const applicationTypes = ['全部应用', '数据库', 'Web服务器', 'DevOps工具', '缓存服务']; // 示例应用类型，后续最好读取后再构造菜单
         return (
             <Menu
                 mode="inline"
@@ -246,12 +246,12 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             onChange: this.onSelectChange,
         };
         const isButtonDisabled = dataSource.length === 0 || selectedRowKeys.length === 0;
-        return (
-            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+        return (//Table的宽度被设置为1430px
+            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1430px', maxWidth: '100%' }}>
+                <Row gutter={[12, 6]} style={{ marginTop: '10px'}}>
                     {/* Conditionally render the sidebar for applications */}
                     {currentPanel === 'applications' && (
-                        <Col md={6} style={{ paddingRight: '12px', borderRight: '1px solid #ccc' }}>
+                        <Col md={4} style={{ paddingRight: '12px', borderRight: '1px solid #ccc' }}>
                             {/* Render Sidebar here */}
                             {this.renderSidebar()}
                         </Col>
@@ -259,7 +259,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
 
                     {/* Main content area */}
                     <Col
-                        md={currentPanel === 'applications' ? 18 : 24}
+                        md={currentPanel === 'applications' ? 20 : 24}
                         style={{
                             paddingLeft: currentPanel === 'applications' ? '12px' : '0px',
                         }}
@@ -299,7 +299,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                 <Button
                                     icon={<SyncOutlined />}
                                     onClick={this.fetchLatestData}
-                                    style={{ marginLeft: '27px' }}
+                                    style={{ marginLeft: currentPanel === 'applications' ? '12px' : '27px' }}
                                 />
                             </div>
                             <Table

@@ -206,6 +206,8 @@ const containerColumns = [
         title: '运行状态',
         dataIndex: 'runStatus',
         key: 'runStatus',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '镜像ID',
@@ -254,6 +256,38 @@ const openPortsColumns = [
         title: '端口类别',
         dataIndex: 'portCategory',
         key: 'portCategory',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    {
+        title: '进程ID',
+        dataIndex: 'processId',
+        key: 'processId',
+    },
+    {
+        title: '进程名',
+        dataIndex: 'processName',
+        key: 'processName',
+    },
+    {
+        title: '进程命令行',
+        dataIndex: 'processCmd',
+        key: 'processCmd',
+    },
+    {
+        title: '用户ID',
+        dataIndex: 'userId',
+        key: 'userId',
+    },
+    {
+        title: '用户名',
+        dataIndex: 'userName',
+        key: 'userName',
+    },
+    {
+        title: '最新扫描时间',
+        dataIndex: 'latestScanningTime',
+        key: 'latestScanningTime',
     },
     // ... 其他字段定义
 ];
@@ -274,6 +308,8 @@ const runningProcessesColumns = [
         title: '标记',
         dataIndex: 'tag',
         key: 'tag',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '进程名',
@@ -443,6 +479,8 @@ const systemServicesColumns = [
         title: '类型',
         dataIndex: 'type',
         key: 'type',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '执行命令',
@@ -463,6 +501,8 @@ const systemServicesColumns = [
         title: '是否自动重启',
         dataIndex: 'autoRestart',
         key: 'autoRestart',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
         // 这里假设 autoRestart 是布尔值，可以根据需要进行调整
         //render: (text, record) => (record.autoRestart ? '是' : '否'),
     },
@@ -488,6 +528,8 @@ const systemSoftwareColumns = [
         title: '类型',
         dataIndex: 'type',
         key: 'type',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '版本',
@@ -527,6 +569,8 @@ const kernelModulesColumns = [
         title: '状态',
         dataIndex: 'status',
         key: 'status',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '内存地址',

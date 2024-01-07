@@ -67,6 +67,10 @@ const HeaderCustom = (props: HeaderCustomProps) => {
     const menuClick = (e: any) => {
         e.key === 'logout' && logout();
     };
+    // 用于处理SubMenu标题点击的函数
+    const handleSubMenuClick = (e:any) => {
+    // 可以在这里添加自定义逻辑，或者什么都不做以保持默认行为
+    };
     const logout = () => {
         umbrella.removeLocalStorage('user');
         history.push('/login');
@@ -83,16 +87,38 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                         borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
                         // 其他已有样式
                     }}>
-
+            {/* {responsive?.isMobile ? (
+                <Popover
+                    content={<SiderCustom popoverHide={turn.turnOff} />}
+                    trigger="click"
+                    placement="bottomLeft"
+                    visible={visible}
+                    onVisibleChange={(visible) => (visible ? turn.turnOn() : turn.turnOff())}
+                >
+                    <BarsOutlined className=" header-row" />
+                </Popover>
+            ) : props.collapsed ? (
+                <MenuUnfoldOutlined
+                    className=" header-row"
+                    onClick={props.toggle}
+                />
+            ) : (
+                <MenuFoldOutlined
+                    className=" header-row"
+                    onClick={props.toggle}
+                />
+            )} */}
             <Menu
                 mode="horizontal"
                 style={{ lineHeight: '64px', float: 'right' }}
                 onClick={menuClick}
             >
-                <Menu.Item key="pwa">
+            {/* Add version info here */}
+
+                {/* <Menu.Item key="pwa">
                     <PwaInstaller />
-                </Menu.Item>
-                <Menu.Item key="full">
+                </Menu.Item> */}
+                <Menu.Item key="full" >
                     <ArrowsAltOutlined onClick={screenFull} />
                 </Menu.Item>
                 {/* <Menu.Item key="1">
@@ -101,6 +127,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                     </Badge>
                 </Menu.Item> */}
                 <SubMenu
+                    onTitleClick={handleSubMenuClick} // 添加了onTitleClick事件处理
                     title={
                         <span className="avatar">
                             <img src={avater} alt="头像" />

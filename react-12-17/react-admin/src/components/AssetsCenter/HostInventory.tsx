@@ -66,22 +66,78 @@ interface StatusItem {
   // Define an interface for the props expected by the StatusPanel component
   interface StatusPanelProps {
     statusData: StatusItem[];
+    orientation: 'vertical' | 'horizontal'; // 添加方向属性
   }
-  export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
+  
+//   export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) => {
+//     const containerStyle: React.CSSProperties = {
+//         display: 'flex',
+//         flexDirection: orientation === 'vertical' ? 'column' : 'row',
+//         alignItems: 'center',
+//       };
+    
+//     return (
+//       <div style={containerStyle}>
+//         {statusData.map((status, index) => (
+//           <div key={index} style={{ display: 'flex', alignItems: 'center', margin: orientation === 'vertical' ? '8px 0' : '0 8px' }}>
+//             <span style={{ 
+//               height: '10px',
+//               width: '10px',
+//               backgroundColor: status.color,
+//               borderRadius: '50%',
+//               display: 'inline-block',
+//               marginRight: '8px'
+//             }}></span>
+//             <span style={{ flexGrow: 1 }}>{status.label}</span>
+//             <span>{status.value}</span>
+//           </div>
+//         ))}
+//       </div>
+//     );
+//   };
+export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) => {
+    const containerStyle: React.CSSProperties = {
+      display: 'flex',
+      flexDirection: orientation === 'vertical' ? 'column' : 'row',
+      alignItems: 'flex-start',
+      gap: orientation === 'horizontal' ? '7px' : '0', // 设置水平方向的间隔
+    };
+  
+    const itemStyle: React.CSSProperties = {
+      display: 'flex',
+      justifyContent: orientation === 'vertical' ? 'space-between' : 'flex-start',
+      alignItems: 'center',
+      width: orientation === 'vertical' ? '100%' : undefined,
+    };
+  
+    const valueStyle: React.CSSProperties = {
+      marginLeft: orientation === 'vertical' ? '5px' : '0', // 设置垂直方向的间隔
+    };
+  
     return (
-        //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
-        <div style={{ fontFamily: 'YouYuan, sans-serif'}}>
+      <div style={containerStyle}>
         {statusData.map((status, index) => (
-          <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
-            <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-            <span>{status.value}</span>
+          <div key={index} style={itemStyle}>
+            <span style={{
+              height: '10px',
+              width: '10px',
+              backgroundColor: status.color,
+              borderRadius: '50%',
+              display: 'inline-block',
+              marginRight: '8px'
+            }}></span>
+            <span style={{ flexGrow: 1 }}>{status.label}</span>
+            {orientation === 'vertical' && (
+              <span style={valueStyle}>{status.value}</span>
+            )}
           </div>
         ))}
       </div>
-
     );
   };
+  
+  
+  
 
 
 class HostInventory extends React.Component<HostInventoryProps, HostInventoryState> {
@@ -423,7 +479,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
             ? { fontWeight: 'bold' as 'bold', color: 'red' } 
             : { fontWeight: 'normal' as 'normal', color: 'grey' }; 
 
-
+        //扇形图数据
         const alertDataOne = [
             { name: '运行中', value: 7, color: '#22BC44' },//GREEN
             { name: '运行异常', value: 2, color: '#FBB12E' },//ORANGE
@@ -443,7 +499,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
             { name: '存在高危基线', value: 2, color: '#4086FF' }//BLUE
         ];
           
-
+        //StatusLabel数据
         const statusData: StatusItem[] = [
         { color: '#22BC44', label: '运行中 ', value: 7 },
         { color: '#FBB12E', label: '运行异常 ', value: 2 },
@@ -456,6 +512,11 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
         { color: '#EA635F', label: '存在漏洞的主机 ', value: 2 },
         { color: '#4086FF', label: '存在高危基线的主机 ', value: 2 },
         ];
+        const riskData: StatusItem[] = [
+            { color: '#E53F3F', label: '高风险 ', value: 1 },
+            { color: '#FEC746', label: '中风险 ', value: 1 },
+            { color: '#468DFF', label: '低风险 ', value: 2 },
+            ];
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
@@ -494,13 +555,13 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             </Col>
                             <Col span={2}> </Col>
                             <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                            <StatusPanel statusData={statusData} />
+                            <StatusPanel statusData={statusData} orientation="vertical"/>
                             </div>
                             </Row>
                         </Card>
                     </Col>
                     <Col span={16} style={{margin: '2 2' }}>
-                        <Card /*title="主机风险分布"*/ style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                        <Card style={{fontWeight: 'bolder', width: '100%', height:300}}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
                             </div>
@@ -595,7 +656,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             <Col span={2} > </Col>
                             <Col span={6} >
                             <div style={{ transform: 'translateY(40px)' }}>
-                                <StatusPanel statusData={statusData1} />
+                                <StatusPanel statusData={statusData1} orientation="vertical"/>
                             </div>
                             </Col>
                             </Row>
