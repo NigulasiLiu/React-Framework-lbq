@@ -2,13 +2,11 @@
 import './YourComponent.css'; // 确保引入了CSS文件
 
 
-/**
- * Created by hao.cheng on 2017/5/8.
- */
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
+import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
+import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -63,7 +61,49 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 
   );
 };
-
+const vulnerabilityColumns = [
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>漏洞名称</span>,
+    dataIndex: 'alarmName',
+    //width: '13%',
+  },
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>影响资产数</span>,
+    dataIndex: 'affectedAsset',
+  },
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>漏洞特征</span>,
+    dataIndex: 'tz',
+  },
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
+    dataIndex: 'level',
+    filters: [
+      { text: '紧急', value: '紧急' },
+      { text: '高危', value: '高危' },
+      { text: '低危', value: '低危' },
+      { text: '中危', value: '中危' },
+    ],
+    onFilter: (value: string | number | boolean, record: DataType1) => record.level.includes(value as string),
+  },
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
+    dataIndex: 'status',
+    filters: [
+        { text: '已处理', value: '已处理' },
+        { text: '未处理', value: '未处理' },
+    ],
+    onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
+},
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
+    dataIndex: 'occurrenceTime',
+  },
+  {
+    title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+    dataIndex: 'operation',
+  },
+];
 
 class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
   constructor(props: any) {
@@ -350,84 +390,117 @@ class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
 
     return (
       <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-        <BreadcrumbCustom breads={['主机和容器防护', '漏洞列表']} />
         <Row gutter={[12, 6]}/*(列间距，行间距)*/>
-          <Col span={24}>
-            <Card title="漏洞概览" >
-              <Row gutter={12}>
-
-                <Col span={6}>
-                  {/* <h2>最近扫描时间（每日自动扫描）</h2> */}
-                  <div className="container">
-                    <Row gutter={24}>
-                    <h2>最近扫描时间（每日自动扫描）</h2>
-                    <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
-                    <button onClick={this.toggleSidebar}>立即检查</button>
-                    </Row>
-                    <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
-                    <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
-                      <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
-                      <p>侧边栏内容</p>
-                    </div>
+          <Col className="gutter-row" md={24}>    
+            <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+                <Col className="gutter-row" md={24}>
+                <Card /*title="主机状态分布" 产生分界线*/
+                  style={{fontWeight: 'bolder', width: '100%', height:200}}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞概览</h2>
                   </div>
-                </Col>
+                  <Row gutter={[6, 6]}>
+                    <Col className="gutter-row" md={5} style={{ marginLeft: '15px' }}>
+                    <div className="container">
+                      <Row gutter={24}>
+                      <h2 style={{ fontSize: '16px' }}>最近扫描时间（每日自动扫描）</h2>
+                      <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
+                      <button onClick={this.toggleSidebar}>立即检查</button>
+                      </Row>
+                      <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
+                      <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+                        <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
+                        <p>侧边栏内容</p>
+                      </div>
+                    </div>
+                    </Col>
+                    <Col className="gutter-row" md={8}>
+                      <Card
+                        bordered={false}
+                        style={{
+                            height: '100px',
+                            width: '440px',
+                            minWidth: '200px', // 最小宽度300px，而非100px
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                        }}
+                        >
+                        <Row>
+                            <Col pull={2} span={24}>
+                                <Statistic title={<span>待处理高可利用漏洞</span>} value={1} />
+                            </Col>
+                            
+                        </Row>
+                      </Card>
+                    </Col>
+                    <Col className="gutter-row" md={5}>
+                      <Card
+                        bordered={false}
+                        style={{
+                            height: '100px',
+                            width: '280px',
+                            minWidth: '200px', // 最小宽度300px，而非100px
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                        }}
+                        >
+                        <Row>
+                            <Col pull={2} span={24}>
+                                <Statistic title={<span>累计处理的漏洞</span>} value={0} />
+                            </Col>
+                            
+                        </Row>
+                      </Card>
+                    </Col>              
+                    <Col className="gutter-row" md={5}style={{ marginLeft: '10px' }}>
+                      <Card
+                        bordered={false}
+                        style={{
+                            height: '100px',
+                            width: '280px',
+                            minWidth: '200px', // 最小宽度300px，而非100px
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                        }}
+                        >
+                        <Row>
+                            <Col pull={2} span={24}>
+                                <Statistic title={<span>累计忽略的漏洞</span>} value={0} />
+                            </Col>
+                            
+                        </Row>
+                      </Card>
+                    </Col> 
+                  </Row>
 
-                <Col span={8}>
-                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                    <Row gutter={0} style={{ height: '100%' }}>
-                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>待处理高可利用漏洞</h2>
-                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
-                      </Col>
-                      <Col span={12} style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <StatusPanel statusData={statusData} />
-                      </Col>
-                    </Row>
-                  </Card>
+                </Card>
                 </Col>
-
-                <Col span={5}>
-                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                    <Row gutter={0} style={{ height: '100%' }}>
-                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>累计处理的漏洞</h2>
-                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
-                      </Col>
-                    </Row>
-                  </Card>
-                </Col>
-
-                <Col span={5}>
-                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                    <Row gutter={0} style={{ height: '100%' }}>
-                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>累计忽略的漏洞</h2>
-                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
-                      </Col>
-                    </Row>
-                  </Card>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-
+            </Row>
+          </Col>  
           <Col md={24}>
-            <div className="gutter-box">
-              <Card title="告警内容" bordered={false}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16, fontWeight: 'bold' }}>
-                    <Button style={{ marginRight: '10px' }} onClick={this.handleExport} disabled={dataSource.length === 0}>批量导出</Button>
-                    {/* <Button style={{ marginRight: '10px' }} name="del" onClick={this.handleAdd}>批量处理</Button> */}
-                    <RangePicker onChange={this.onDateRangeChange} />
-                </div>
-                <div style={{ marginBottom: 16 }}>
-                  <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
-                </div>
-                <div className="table-container">
-                <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={this.columns} />
-                </div>
-              </Card>
-            </div>
+              <div className="gutter-box">
+              <Card bordered={false}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>漏洞内容</h2>
+                  </div>
+                  <DataDisplayTable
+                      apiEndpoint="http://localhost:5000/api/files/vulnerability"
+                      columns={vulnerabilityColumns}
+                      currentPanel={"vulnerabilityDetect"}
+                      selectedRowKeys={this.state.selectedRowKeys}
+                      onSelectChange={(keys: any) => this.onSelectChange(keys)}
+                  />
+                  </Card>
+              </div>
           </Col>
+
         </Row>
       </div>
     );

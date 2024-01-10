@@ -71,15 +71,17 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
   );
 };
 
+
+
 class Dashboard extends React.Component<DashboardProps> {
     
     render() {
       const alertData = [
-        { day: 'Monday', value: 30 },
-        { day: 'Tuesday', value: 10 },
-        { day: 'Wednesday', value: 50 },
-        { day: 'Thursday', value: 20 },
-        { day: 'Friday', value: 40 },
+        { day: '12-01', value: 30 },
+        { day: '12-02', value: 10 },
+        { day: '12-03', value: 50 },
+        { day: '12-04', value: 20 },
+        { day: '12-05', value: 40 },
         // ...更多数据点
       ];
       
@@ -94,23 +96,21 @@ class Dashboard extends React.Component<DashboardProps> {
             ]
           };
 
-          const alertDataOne = [
-            { name: '待处理告警', value: 16, color: '#0088FE' },
-            { name: '已处理告警', value: 35, color: '#00C49F' },
-          ];
       
           // 第二类告警的数据集
           const alertDataTwo = [
             { name: '待处理告警', value: 75, color: '#FFBB28' },
-            { name: '已处理告警', value: 25, color: '#FF8042' },
+            { name: '已处理告警', value: 25, color: '#E5E8EF' },
           ];
 
-          // 第三类告警的数据集
           const alertDataThree = [
-            { name: '待处理告警', value: 175, color: '#0FBB28' },
-            { name: '已处理告警', value: 25, color: '#0F8042' },
+            { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
+            { name: '存在高可利用漏洞', value: 1, color: '#EA635F' }//RED
+            ];
+            const alertDataFour = [
+              { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
+              { name: '存在高危基线', value: 2, color: '#4086FF' }//BLUE
           ];
-
           const riskData: StatusItem[] = [
             { color: '#E53F3F', label: '高风险 ', value: 1 },
             { color: '#FEC746', label: '中风险 ', value: 1 },
@@ -126,7 +126,7 @@ class Dashboard extends React.Component<DashboardProps> {
           //     </text>
           //   );
           // };
-          const labels = ['PlatForm最佳实现-centos基线检查', '等保三级-centos基线检查', '等保二级-centos基线检查'];
+          const labels = ['OWL最佳实现-centos基线检查', '等保三级-centos基线检查', '等保二级-centos基线检查'];
           const values = [16, 19, 15];
           const colors = ['#ff4d4f', '#faad14', '#52c41a']; // 指定每个进度条的颜色
 
@@ -239,7 +239,7 @@ class Dashboard extends React.Component<DashboardProps> {
                   <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>入侵告警</h2>
               </div>
               <Row gutter={[6, 6]}>
-                <Col span={18}>
+                <Col span={19}>
                 <div style={{
                     // borderTop: '2px solid #E5E6EB',
                     // borderBottom: '2px solid #E5E6EB',
@@ -257,7 +257,7 @@ class Dashboard extends React.Component<DashboardProps> {
 
                 </div>
                 </Col>
-                <Col span={6}>
+                <Col span={5}>
                 <DataCard
                         title="主机和容器安全告警"
                         value={5}
@@ -360,7 +360,7 @@ class Dashboard extends React.Component<DashboardProps> {
                   <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
               </div>
               <Row gutter={[6, 6]}>
-                <Col span={18}>
+                <Col span={19}>
                 <div style={{
                     // borderTop: '2px solid #E5E6EB',
                     // borderBottom: '2px solid #E5E6EB',
@@ -378,7 +378,7 @@ class Dashboard extends React.Component<DashboardProps> {
 
                 </div>
                 </Col>
-                <Col span={6}>
+                <Col span={5}>
                 <DataCard
                         title="待处理高可利用漏洞"
                         value={5}
@@ -428,14 +428,14 @@ class Dashboard extends React.Component<DashboardProps> {
     <Col className="gutter-row" md={7}>
       <Col className="gutter-row" md={24}>
         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-        <Card /*title="主机状态分布" 产生分界线*/
-          style={{fontWeight: 'bolder', width: '100%', height:350,backgroundColor:'#ffffff'}}>
+        <Card /*title="OWL 介绍*/
+          style={{fontWeight: 'bolder', width: '100%', height:380,backgroundColor:'#ffffff'}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>Owl Security介绍</h2>
+              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>OWL Security</h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
               <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '6px' }}>
-                Owl Security是一个云原生的基于主机的安全(入侵检测与风险识别)解决方案
+                OWL Security是一个云原生的基于主机的安全(入侵检测与风险识别)解决方案
               </h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
@@ -446,19 +446,19 @@ class Dashboard extends React.Component<DashboardProps> {
           <div style={{ marginBottom: 3}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3, marginLeft: 16,fontWeight: 'bold'}}>
               <p><GithubOutlined /> <a 
+              style={{ color: '#1964F5' }}
               href="https://github.com" 
               target="_blank" 
-              rel="noopener noreferrer"
-              color= "black">GitHub</a></p>
+              rel="noopener noreferrer">GitHub</a></p>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 ,marginLeft: 16,fontWeight: 'bold'}}>
               <p><GlobalOutlined /> <a 
-              color= "black"
+              style={{ color: '#1964F5' }}
               href="https://yourwebsite.com" target="_blank" rel="noopener noreferrer">Official website</a></p>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 ,marginLeft: 16,fontWeight: 'bold'}}>    
               <p><MailOutlined /> <a 
-              color= "black"
+              style={{ color: '#1964F5' }}
               href="mailto:elkeid@bytedance.com">elkeid@bytedance.com</a></p>
           </div>
             </div>                
@@ -467,7 +467,7 @@ class Dashboard extends React.Component<DashboardProps> {
       </Col>
       <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
         <Col className="gutter-row" md={24}>
-        <Card /*title="主机状态分布" 产生分界线*/
+        <Card /*title="主机风险扇形图" */
           style={{fontWeight: 'bolder', width: '100%', height:250}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
               <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
@@ -511,7 +511,7 @@ class Dashboard extends React.Component<DashboardProps> {
               <ResponsiveContainer width="100%" height={150}>
                   <PieChart>
                       <Pie className="pie-chart-segment"
-                      data={alertDataTwo}
+                      data={alertDataThree}
                       cx="50%"
                       cy="50%"
                       innerRadius={39}
@@ -520,10 +520,10 @@ class Dashboard extends React.Component<DashboardProps> {
                       dataKey="value"
                       outerRadius={56} // 如果悬停则扇形半径变大
                       >
-                      {alertDataTwo.map((entry, index) => (
+                      {alertDataThree.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
-                      <Label value={'高可用漏洞:'+`${Math.round(alertDataTwo[1].value/(alertDataTwo[0].value+alertDataTwo[1].value)*100)}%`} 
+                      <Label value={'高可用漏洞:'+`${Math.round(alertDataThree[1].value/(alertDataThree[0].value+alertDataThree[1].value)*100)}%`} 
                       position="center" 
                       style={{ fontSize: '14px' }}
                       />
@@ -537,7 +537,7 @@ class Dashboard extends React.Component<DashboardProps> {
               <ResponsiveContainer width="100%" height={150}>
                   <PieChart>
                       <Pie className="pie-chart-segment"
-                      data={alertDataTwo}
+                      data={alertDataFour}
                       cx="50%"
                       cy="50%"
                       innerRadius={39}
@@ -546,10 +546,10 @@ class Dashboard extends React.Component<DashboardProps> {
                       dataKey="value"
                       outerRadius={56} // 如果悬停则扇形半径变大
                       >
-                      {alertDataTwo.map((entry, index) => (
+                      {alertDataFour.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
-                      <Label value={'待加固基线:'+`${Math.round(alertDataTwo[1].value/(alertDataTwo[0].value+alertDataTwo[1].value)*100)}%`} 
+                      <Label value={'待加固基线:'+`${Math.round(alertDataFour[1].value/(alertDataFour[0].value+alertDataFour[1].value)*100)}%`} 
                       position="center" 
                       style={{ fontSize: '14px' }}
                       />
@@ -563,68 +563,144 @@ class Dashboard extends React.Component<DashboardProps> {
         </Card>
         </Col>
       </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-        {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
         <Col className="gutter-row" md={24}>
-        <Card /*title="主机状态分布" 产生分界线*/
-          style={{fontWeight: 'bolder', width: '100%', height:350}}>
+        <Card /*title="Agent 概览*/
+          style={{fontWeight: 'bolder', width: '100%', height:330}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
               <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>Agent概览</h2>
           </div>
           <Row gutter={[6, 6]}>
-            <Col className="gutter-row" md={6}>
-              <Card
-                bordered={false}
-                style={{
-                    height: '100px',
-                    width: '230px',
-                    minWidth: '200px', // 最小宽度300px，而非100px
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                }}
-                >
-                <Row>
-                    <Col pull={2} span={24}>
-                        <Statistic title={<span>主机</span>} value={13} />
-                    </Col>
-                    
-                </Row>
-              </Card>
+            <Col className="gutter-row" span={12}>
+            <div style={{ marginBottom: '20px' }}>
+              <DataCard
+                      title="在线 Agent"
+                      value={0}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
+                      </div>
+              <DataCard
+                      title="离线 Agent"
+                      value={0}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
+            </Col>
+            <Col className="gutter-row" span={12}>
+            <div style={{ marginBottom: '20px' }}>
+              <DataCard
+                      title="CPU AVG"
+                      value={"0%"}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
+                      </div>
+              <DataCard
+                      title="Mem AVG"
+                      value={"0B"}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
             </Col>
 
           </Row>
         </Card>
         </Col>
       </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-        {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
         <Col className="gutter-row" md={24}>
-        <Card /*title="主机状态分布" 产生分界线*/
-          style={{fontWeight: 'bolder', width: '100%', height:350}}>
+        <Card /*title="后端服务状态*/
+          style={{fontWeight: 'bolder', width: '100%', height:440}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>后端服务状态</h2>
           </div>
           <Row gutter={[6, 6]}>
-            <Col className="gutter-row" md={6}>
-              <Card
-                bordered={false}
-                style={{
-                    height: '100px',
-                    width: '230px',
-                    minWidth: '200px', // 最小宽度300px，而非100px
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                }}
-                >
-                <Row>
-                    <Col pull={2} span={24}>
-                        <Statistic title={<span>主机</span>} value={13} />
-                    </Col>
-                    
-                </Row>
-              </Card>
+            <Col className="gutter-row" span={12}>
+            <div style={{ marginBottom: '20px' }}>
+              <DataCard
+                      title="服务一"
+                      value={0}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
+                      </div>
+              <DataCard
+                      title="服务二"
+                      value={0}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
+            </Col>
+            <Col className="gutter-row" span={12}>
+            <div style={{ marginBottom: '20px' }}>
+              <DataCard
+                      title="服务三"
+                      value={"0%"}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
+                      </div>
+              <DataCard
+                      title="服务四"
+                      value={"0B"}
+                      valueItem={[]}
+                      panelId=""
+                      height="100px"
+                      width="170px"
+                      backgroundColor="#F6F7FB"
+                      navigate={true}
+                      showTopBorder={false}
+                      showBottomBorder={false}
+                      showLeftBorder={false}
+                      showRightBorder={false}/>
             </Col>
 
           </Row>

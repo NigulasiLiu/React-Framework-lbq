@@ -2,9 +2,12 @@
  * Created by hao.cheng on 2017/5/8.
  */
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
+import { Statistic,Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
+import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
+import StatusPanel from '../AssetsCenter/HostInventory'
+
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -54,25 +57,68 @@ interface StatusItem {
 }
 
 // Define an interface for the props expected by the StatusPanel component
-interface StatusPanelProps {
-    statusData: StatusItem[];
-}
-export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
-    return (
-        //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
-        <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
-            {statusData.map((status, index) => (
-                <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
-                    <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-                    <span>{status.value}</span>
-                </div>
-            ))}
-        </div>//</div>
+// interface StatusPanelProps {
+//     statusData: StatusItem[];
+//     orientation: 'horizontal' | 'vertical';
+//   }
+// export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
+//     return (
+//         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
+//         <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
+//             {statusData.map((status, index) => (
+//                 <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//                     <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
+//                     <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
+//                     <span>{status.value}</span>
+//                 </div>
+//             ))}
+//         </div>//</div>
 
-    );
-};
+//     );
+// };
+// 内核模块表的列定义
 
+const hostalertColumns = [
+    {
+        title: '告警名称',
+        dataIndex: 'alertName',
+        key: 'alertName',
+    },
+    {
+        title: '影响资产',
+        dataIndex: 'affectedAssets',
+        key: 'affectedAssets',
+    },
+    {
+        title: '告警类型',
+        dataIndex: 'alertClass',
+        key: 'alertClass',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    {
+        title: '级别',
+        dataIndex: 'level',
+        key: 'level',
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    {
+        title: '发生时间',
+        dataIndex: 'occurTimestamp',
+        key: 'occurTimestamp',
+    },
+    {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+    },
+];
 
 class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
@@ -329,94 +375,108 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
             ? { fontWeight: 'bold' as 'bold', color: 'red' }
             : { fontWeight: 'normal' as 'normal', color: 'grey' };
 
-        const StatusPanel: React.FC<{ statusData: StatusItem[] }> = ({ statusData }) => (
-            <Row gutter={[16, 16]}>
-                {statusData.map((item, index) => (
-                    <Col span={12} key={index}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <div style={{ backgroundColor: item.color, width: 20, height: 20, borderRadius: '50%', marginRight: 10 }}></div>
-                            <div>
-                                <span>{item.label}</span>
-                                <span style={{ marginLeft: 10 }}>{item.value}</span>
-                            </div>
-                        </div>
-                    </Col>
-                ))}
-            </Row>
-        );
-
-        // 状态数据
         const statusData: StatusItem[] = [
-            { color: '#E63F3F', label: '紧急', value: 7 },
-            { color: '#846BCE', label: '高风险', value: 2 },
-            { color: '#FEC745', label: '中风险', value: 5 },
-            { color: '#468DFF', label: '低风险', value: 1 },
+        { color: '#22BC44', label: '运行中 ', value: 7 },
+        { color: '#FBB12E', label: '运行异常 ', value: 2 },
+        { color: '#EA635F', label: '离线 ', value: 5 },
+        { color: '#E5E8EF', label: '未安装 ', value: 1 },
         ];
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <BreadcrumbCustom breads={['主机和容器防护', '告警列表']} />
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/>
-                    <Col span={8}>
-                        <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                            <Row gutter={0} style={{ height: '100%' }}>
-                                <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                                    <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>待处理告警</h2>
-                                    <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
+                {/* <BreadcrumbCustom breads={['主机和容器防护', '告警列表']} /> */}
+                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                    <Col className="gutter-row" md={24}>
+                    <Card /*title="主机状态分布" 产生分界线*/
+                        style={{fontWeight: 'bolder', width: '100%', height:200}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>告警概览</h2>
+                        </div>
+                        <Row gutter={[6, 6]}>
+                            <Col className="gutter-row" md={10}>
+                            <Card
+                                bordered={false}
+                                style={{
+                                    height: '100px',
+                                    width: '570px',
+                                    minWidth: '200px', // 最小宽度300px，而非100px
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                }}
+                                >
+                                <Col style={{ marginRight: '350px' }} span={24}>
+                                    <Statistic title={<span>待处理告警</span>} value={1} />
                                 </Col>
-                                <Col span={12} style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <StatusPanel statusData={statusData} />
+                                <Col>
+                                    {/* <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+                                        <StatusPanel statusData={statusData} orientation="horizontal"/>
+                                    </div> */}
                                 </Col>
-                            </Row>
-                        </Card>
-                    </Col>
+                            </Card>
+                            </Col>
+                            <Col className="gutter-row" md={7}>
+                            <Card
+                                bordered={false}
+                                style={{
+                                    height: '100px',
+                                    width: '400px',
+                                    minWidth: '200px', // 最小宽度300px，而非100px
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                }}
+                                >
+                                <Row>
+                                    <Col style={{ marginRight: '250px' }} span={24}>
+                                        <Statistic title={<span>集群</span>} value={0} />
+                                    </Col>
+                                    
+                                </Row>
+                            </Card>
+                            </Col>            
+                            <Col className="gutter-row" md={7}>
+                            <Card
+                                bordered={false}
+                                style={{
+                                    height: '100px',
+                                    width: '400px',
+                                    minWidth: '200px', // 最小宽度300px，而非100px
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                }}
+                                >
+                                <Row>
+                                    <Col style={{ marginRight: '250px' }} span={24}>
+                                        <Statistic title={<span>容器</span>} value={0} />
+                                    </Col>
+                                    
+                                </Row>
+                            </Card>
+                            </Col>              
+                        </Row>
 
-                    <Col span={8}>
-                        <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                            <Row gutter={0} style={{ height: '100%' }}>
-                                <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                                    <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>累计处理的告警</h2>
-                                    <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
-                                </Col>
-                                {/* <Col span={12} style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <StatusPanel statusData={statusData} />
-                                </Col> */}
-                            </Row>
-                        </Card>
+                    </Card>
                     </Col>
-
-                    <Col span={8}>
-                        <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                            <Row gutter={0} style={{ height: '100%' }}>
-                                <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                                    <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>白名单规则数</h2>
-                                    <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
-                                </Col>
-                                {/* <Col span={12} style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <StatusPanel statusData={statusData} />
-                                </Col> */}
-                            </Row>
-                        </Card>
-                    </Col>
-   
+                </Row>
+                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
                     <Col md={24}>
                         <div className="gutter-box">
-                            <Card bordered={false}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                                    <h2 style={{ fontWeight: 'bold' }}>告警内容</h2>
-                                    <div>
-                                        <Button style={{ marginRight: '10px' }} onClick={this.handleExport} disabled={dataSource.length === 0}>批量导出</Button>
-                                        <Button style={{ marginRight: '10px' }} name="del" onClick={this.handleAdd}>批量处理</Button>
-                                        {/* 使用 RangePicker 替代 DatePicker */}
-                                        <RangePicker onChange={this.onDateRangeChange} />
-                                    </div>
-                                </div>
-                                <div style={{ marginBottom: 16 }}>
-                                    <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
-                                </div>
-                                <div className="table-container">
-                                <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={this.columns} />
-                                </div>
+                        <Card bordered={false}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>告警内容</h2>
+                            </div>
+                            <DataDisplayTable
+                                apiEndpoint="http://localhost:5000/api/files/hostalertlist"
+                                columns={hostalertColumns}
+                                currentPanel={"hostAlertlist"}
+                                selectedRowKeys={this.state.selectedRowKeys}
+                                onSelectChange={(keys: any) => this.onSelectChange(keys)}
+                            />
                             </Card>
                         </div>
                     </Col>

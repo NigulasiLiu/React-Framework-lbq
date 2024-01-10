@@ -111,7 +111,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientatio
     };
   
     const valueStyle: React.CSSProperties = {
-      marginLeft: orientation === 'vertical' ? '5px' : '0', // 设置垂直方向的间隔
+      marginLeft: orientation === 'vertical' ? '40px' : '0', // 设置垂直方向的间隔
     };
   
     return (
@@ -506,13 +506,13 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
         { color: '#EA635F', label: '离线 ', value: 5 },
         { color: '#E5E8EF', label: '未安装 ', value: 1 },
         ];
-        const statusData1: StatusItem[] = [
+        const riskDta: StatusItem[] = [
         { color: '#E5E8EF', label: '无风险主机 ', value: 13 },
         { color: '#FBB12E', label: '存在告警的主机 ', value: 1 },
         { color: '#EA635F', label: '存在漏洞的主机 ', value: 2 },
         { color: '#4086FF', label: '存在高危基线的主机 ', value: 2 },
         ];
-        const riskData: StatusItem[] = [
+        const riskData1: StatusItem[] = [
             { color: '#E53F3F', label: '高风险 ', value: 1 },
             { color: '#FEC746', label: '中风险 ', value: 1 },
             { color: '#468DFF', label: '低风险 ', value: 2 },
@@ -656,12 +656,14 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             <Col span={2} > </Col>
                             <Col span={6} >
                             <div style={{ transform: 'translateY(40px)' }}>
-                                <StatusPanel statusData={statusData1} orientation="vertical"/>
+                                <StatusPanel statusData={riskDta} orientation="vertical"/>
                             </div>
                             </Col>
                             </Row>
                         </Card>
                     </Col>
+                </Row>
+                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
                     <Col md={24}>
                         <div className="gutter-box">
                         <Card bordered={false}>

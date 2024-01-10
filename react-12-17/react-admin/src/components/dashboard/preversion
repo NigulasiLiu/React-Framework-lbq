@@ -228,3 +228,253 @@
           </Card>
 
 
+import React from 'react';
+import { Table, Progress } from 'antd';
+type DataItem = {
+    key: string;
+    id: string;
+    value: number;
+    color: string; // 添加 color 属性
+};
+type BaseItem = {
+    key: string;
+    color: string; // 添加 color 属性
+};
+interface DataTableProps {
+    dataItems: DataItem[];
+    baseDataItems: BaseItem[];
+    tableName: string;
+    tableName_s: string;
+    tableName_list: string[];
+    goToPanel: (panelName: string) => void;
+    // 可以根据需要添加更多props
+}
+const DataTable = ({
+    dataItems,
+    baseDataItems,
+    tableName,
+    tableName_s,
+    tableName_list,
+    goToPanel,
+}: DataTableProps) => {
+
+    const generateColumns = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => [
+    
+        // {
+        //     title: () => (
+        //         <span
+        //           style={{ fontWeight: 'bold', cursor: 'pointer' }}
+        //         >
+        //           {tableName}
+        //         </span>
+        //       ),
+        //     key: 'id',
+        //     render: (text: any, record: DataItem, index: number) => {
+        //         const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
+        //         return (
+        //             <div>
+        //                 <span
+        //                     style={{
+        //                         lineHeight: '15px',
+        //                         height: '15px',
+        //                         width: '15px',
+        //                         backgroundColor: colorOrder[index], // 使用record.color作为背景色
+        //                         borderRadius: '50%',
+        //                         display: 'inline-block',
+        //                         marginRight: '16px',
+        //                         position: 'relative',
+        //                         textAlign: 'center',
+        //                         fontSize: '12px',
+        //                         color: textColor,
+        //                     }}
+        //                 >
+        //                     {index + 1} {/* 在圆形中显示index + 1 */}
+        //                 </span>
+        //                 {record.id}
+        //             </div>
+        //         );
+        //     },
+        // },
+        {
+            title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }} 
+            onClick={() => goToPanel(tableName)}>{tableName}</span>,
+            key: 'id',
+            render: (text: any, record: DataItem, index: number) => {
+              const textColor = index < 3 ? 'white' : 'grey';
+              return (
+                <div style={{ cursor: 'pointer' }} 
+                onClick={() => goToPanel(record.id)}>
+                  <span
+                    style={{
+                      lineHeight: '15px',
+                      height: '15px',
+                      width: '15px',
+                      backgroundColor: colorOrder[index],
+                      borderRadius: '50%',
+                      display: 'inline-block',
+                      marginRight: '16px',
+                      position: 'relative',
+                      textAlign: 'center',
+                      fontSize: '12px',
+                      color: textColor,
+                    }}
+                  >
+                    {index + 1}
+                  </span>
+                  {record.id}
+                </div>
+              );
+            },
+          },
+        {
+            title: () => <div style={{ textAlign: 'right', fontWeight: 'bold' }}>{tableName_s}</div>,
+            dataIndex: 'value',
+            key: 'value',
+            render: (value: number) => {
+                const percent = Math.round((value / maxValue[tableName_list.indexOf(tableName)]) * 100); // 计算百分比
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Progress percent={percent} strokeColor="#4086FF" showInfo={false} />
+                        <div style={{ marginLeft: '20px' }}>{value}</div>
+                    </div>
+                );
+            },
+        },
+    ];
+    //显示从接口得到的数据时，默认进度条成为灰色，需要修改generateColumns-->generateColumns1
+    const generateColumns1 = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
+        const showProgress = tableName !== '文件完整性校验-最新变更二进制文件 TOP5'; // 判断是否要显示进度条
+    
+        return [
+            {
+                title: () => <span style={{ fontWeight: 'bold' }}>{tableName}</span>,
+                key: 'id',
+                render: (text: any, record: DataItem, index: number) => {
+                    const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
+                    return (
+                        <div>
+                            <span
+                                style={{
+                                    lineHeight: '15px',
+                                    height: '15px',
+                                    width: '15px',
+                                    backgroundColor: colorOrder[index], // 使用record.color作为背景色
+                                    borderRadius: '50%',
+                                    display: 'inline-block',
+                                    marginRight: '16px',
+                                    position: 'relative',
+                                    textAlign: 'center',
+                                    fontSize: '12px',
+                                    color: textColor,
+                                }}
+                            >
+                                {index + 1} {/* 在圆形中显示index + 1 */}
+                            </span>
+                            {record.id}
+                        </div>
+                    );
+                },
+            },
+            {
+                title: () => (
+                    <div style={{ textAlign: 'right', fontWeight: 'bold' }}>{tableName_s}</div>
+                ),
+                dataIndex: 'value',
+                key: 'value',
+                render: (value: number) => {
+                    if (showProgress) {
+                        const percent = Math.round(
+                            (value / maxValue[tableName_list.indexOf(tableName)]) * 100
+                        ); // 计算百分比
+                        return (
+                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Progress percent={percent} strokeColor="#4086FF" showInfo={false} />
+                                <div style={{ marginLeft: '20px' }}>{value}</div>
+                            </div>
+                        );
+                    } else {
+                        return <div style={{ textAlign: 'right' }}>{value}</div>;
+                    }
+                },
+            },
+        ];
+    };
+    // 计算最大值
+    const maxValue = Math.max(...dataItems.map((item) => item.value));
+
+    // 定义columns
+    const columns = generateColumns(tableName, tableName_s, tableName_list, goToPanel);
+
+    return (
+        <Table
+            className="customTable"
+            dataSource={dataItems}
+            columns={columns}
+            pagination={false}
+            rowKey="id"
+            // onRow逻辑根据需要添加
+        />
+    );
+};
+
+export default DataTable;
+
+
+          <Col span={24}>
+            <Card title="漏洞概览" >
+              <Row gutter={12}>
+
+                <Col span={6}>
+                  {/* <h2>最近扫描时间（每日自动扫描）</h2> */}
+                  <div className="container">
+                    <Row gutter={24}>
+                    <h2>最近扫描时间（每日自动扫描）</h2>
+                    <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
+                    <button onClick={this.toggleSidebar}>立即检查</button>
+                    </Row>
+                    <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
+                    <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+                      <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
+                      <p>侧边栏内容</p>
+                    </div>
+                  </div>
+                </Col>
+
+                <Col span={8}>
+                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
+                    <Row gutter={0} style={{ height: '100%' }}>
+                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
+                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>待处理高可利用漏洞</h2>
+                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
+                      </Col>
+                      <Col span={12} style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <StatusPanel statusData={statusData} />
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+
+                <Col span={5}>
+                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
+                    <Row gutter={0} style={{ height: '100%' }}>
+                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
+                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>累计处理的漏洞</h2>
+                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+
+                <Col span={5}>
+                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
+                    <Row gutter={0} style={{ height: '100%' }}>
+                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
+                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>累计忽略的漏洞</h2>
+                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>1</h2>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              </Row>
+            </Card>
+          </Col>

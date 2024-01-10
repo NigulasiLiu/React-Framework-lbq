@@ -5,9 +5,12 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
+import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
+
 
 type HostInventoryProps = {};
 type HostInventoryState = {
@@ -55,7 +58,53 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 
     );
 };
+const whiteColumns = [
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>加白名称</span>,
+        dataIndex: 'whitelistName',
+        //width: '13%',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>加白描述</span>,
+        dataIndex: 'whitelistDescription',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>加白范围</span>,
+        dataIndex: 'whitelistScope',
+        filters: [
+            { text: '全局', value: '全局' },
+            { text: '非全局', value: '非全局' },
+        ],
+        onFilter: (value: string | number | boolean, record: DataType1) => record.whitelistScope.includes(value as string),
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>匹配告警名</span>,
+        dataIndex: 'matchAlarmName',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>匹配方式</span>,
+        dataIndex: 'matchMethod',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>操作时间</span>,
+        dataIndex: 'occurrenceTime',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+        dataIndex: 'operation',
+        render: (text: string, record: DataType1) => (
+            <a
+                href={'/login'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#1964F5' }}// 添加颜色样式
+            >
+                查看详情
+            </a>
+        ),
+    },
 
+];
 
 class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
@@ -105,21 +154,6 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
                     </a>
                 ),
             },
-
-            // {
-            //     title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-            //     dataIndex: 'operation',
-            //     render: (text: any, record: any, index: number) => {
-            //         return this.state.dataSource.length > 0 ? (
-            //             <Popconfirm
-            //                 title="Sure to delete?"
-            //                 onConfirm={() => this.onDelete(record, index)}
-            //             >
-            //                 <span>Delete</span>
-            //             </Popconfirm>
-            //         ) : null;
-            //     },
-            // },
         ];
         this.state = {
             dataSource: [
@@ -171,19 +205,42 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
             areRowsSelected: selectedRowKeys.length > 0,
         });
     };
+    filterDataSource = () => {
+        const { dataSource, selectedDateRange } = this.state;
+        const [startDateStr, endDateStr] = selectedDateRange;
+        
+        const filteredDataSource = dataSource.filter(item => {
+            const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
+            const startDate = startDateStr ? moment(startDateStr, 'YYYY-MM-DD') : null;
+            const endDate = endDateStr ? moment(endDateStr, 'YYYY-MM-DD') : null;
+
+            return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) &&
+                   (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
+        });
+
+        this.setState({ dataSource: filteredDataSource });
+    };
     // Define the rowSelection object inside the render method
-
-
+    // onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
+    //     if (dates) {
+    //         // 用户选择了日期范围
+    //         const [start, end] = dateStrings; // 使用 dateStrings，它是日期的字符串表示
+    //         this.setState({ selectedDateRange: [start, end] });
+    //     } else {
+    //         // 用户清除了日期选择
+    //         this.setState({ selectedDateRange: [null, null] });
+    //     }
+    // };
     onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
         if (dates) {
-            // 用户选择了日期范围
-            const [start, end] = dateStrings; // 使用 dateStrings，它是日期的字符串表示
-            this.setState({ selectedDateRange: [start, end] });
+            const [start, end] = dateStrings;
+            this.setState({ selectedDateRange: [start, end] }, this.filterDataSource);
         } else {
-            // 用户清除了日期选择
-            this.setState({ selectedDateRange: [null, null] });
+            this.setState({ selectedDateRange: [null, null] }, this.filterDataSource);
         }
     };
+    
+    
 
 
     onDelete = (record: any, index: number) => {
@@ -215,26 +272,20 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
 
     render() {
         const { dataSource, selectedRowKeys, selectedDateRange } = this.state;
-        // Conditional button style
-
+        // 根据 selectedDateRange 过滤 dataSource
         const filteredDataSource = dataSource.filter(item => {
-            // 解析 occurrenceTime 字符串为 moment 对象
             const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
-    
-            // 将 selectedDateRange 中的字符串转换为 moment 对象，如果为 null 则保持为 null
-            const [startDateStr, endDateStr] = selectedDateRange;
-            const startDate = startDateStr ? moment(startDateStr, 'YYYY-MM-DD') : null;
-            const endDate = endDateStr ? moment(endDateStr, 'YYYY-MM-DD') : null;
-    
-            // 检查 itemDate 是否在选定的日期范围内
-            return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) && 
+            const startDate = selectedDateRange[0] ? moment(selectedDateRange[0], 'YYYY-MM-DD') : null;
+            const endDate = selectedDateRange[1] ? moment(selectedDateRange[1], 'YYYY-MM-DD') : null;
+
+            return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) &&
                    (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
         });
+        
 
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <BreadcrumbCustom breads={['主机和容器防护', '白名单']} />
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/>
    
                     <Col md={24}>

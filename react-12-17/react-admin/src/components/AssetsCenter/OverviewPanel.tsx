@@ -7,6 +7,29 @@ import { StatusItem } from './Interfaces';
 import { StatusPanel } from './HostInventory';
 import DataCard from '../DataCard';
 
+interface GenericDataItem {
+    [key: string]: any;
+}
+interface OverviewPanelProps extends RouteComponentProps {
+    statusData: StatusItem[];
+    changePanel: (panelName: string) => void; //切换子panel
+    topData: {
+        fim: GenericDataItem[];
+        container: GenericDataItem[];
+        openPorts: GenericDataItem[];
+        runningProcesses: GenericDataItem[];
+        systemUsers: GenericDataItem[];
+        scheduledTasks: GenericDataItem[];
+        systemServices: GenericDataItem[];
+        systemSoftware: GenericDataItem[];
+        applications: GenericDataItem[];
+        kernelModules: GenericDataItem[];
+    };
+}
+
+type OverviewPanelState = {
+    activeIndex: any;
+};
 type DataItem = {
     key: string;
     id: string;
@@ -80,60 +103,106 @@ const status_data: StatusItem[] = [
     { label: 'Exited', value: 5, color: '#EA635F' }, //RED
     { label: 'Unknown', value: 1, color: '#E5E8EF' }, //GREY
 ];
+const findMaxValue = (dataItems: DataItem[]) => {
+    return Math.max(...dataItems.map(item => item.value), 0); // 加上0以处理空数组的情况
+};
 
 // 找到最大值
 const maxValue = [
-    Math.max(...port_data.map((item) => item.value)),
-    Math.max(...softerware_data.map((item) => item.value)),
-    Math.max(...service_data.map((item) => item.value)),
-    Math.max(...progress_data.map((item) => item.value)),
-    Math.max(...fim_data.map((item) => item.value)),
-    Math.max(...app_data.map((item) => item.value)),
-    Math.max(...core_data.map((item) => item.value)),
+    findMaxValue(port_data),
+    findMaxValue(softerware_data),
+    findMaxValue(service_data),
+    findMaxValue(progress_data),
+    findMaxValue(fim_data),
+    findMaxValue(app_data),
+    findMaxValue(core_data),
 ];
+
 // 告警颜色-固定
-const colorOrder = port_data.map((item) => item.color); // Keep original color order
+const colorOrder = baseDataItems.map((item) => item.color); // Keep original color order
 
+const sortDataItems = (dataItems: DataItem[]) => {
+    return [...dataItems].sort((a, b) => b.value - a.value);
+};
 const sortedData = [
-    [...port_data].sort((a, b) => b.value - a.value),
-    [...softerware_data].sort((a, b) => b.value - a.value),
-    [...service_data].sort((a, b) => b.value - a.value),
-    [...progress_data].sort((a, b) => b.value - a.value),
-    [...fim_data].sort((a, b) => b.value - a.value),
-    [...app_data].sort((a, b) => b.value - a.value),
-    [...core_data].sort((a, b) => b.value - a.value),
+    sortDataItems(port_data),
+    sortDataItems(softerware_data),
+    sortDataItems(service_data),
+    sortDataItems(progress_data),
+    sortDataItems(fim_data),
+    sortDataItems(app_data),
+    sortDataItems(core_data),
 ];
 
-const generateColumns = (tableName: string, tableName_s: string, tableName_list: string[]) => [
+
+const generateColumns = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => [
+    
+    // {
+    //     title: () => (
+    //         <span
+    //           style={{ fontWeight: 'bold', cursor: 'pointer' }}
+    //         >
+    //           {tableName}
+    //         </span>
+    //       ),
+    //     key: 'id',
+    //     render: (text: any, record: DataItem, index: number) => {
+    //         const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
+    //         return (
+    //             <div>
+    //                 <span
+    //                     style={{
+    //                         lineHeight: '15px',
+    //                         height: '15px',
+    //                         width: '15px',
+    //                         backgroundColor: colorOrder[index], // 使用record.color作为背景色
+    //                         borderRadius: '50%',
+    //                         display: 'inline-block',
+    //                         marginRight: '16px',
+    //                         position: 'relative',
+    //                         textAlign: 'center',
+    //                         fontSize: '12px',
+    //                         color: textColor,
+    //                     }}
+    //                 >
+    //                     {index + 1} {/* 在圆形中显示index + 1 */}
+    //                 </span>
+    //                 {record.id}
+    //             </div>
+    //         );
+    //     },
+    // },
     {
-        title: () => <span style={{ fontWeight: 'bold' }}>{tableName}</span>,
+        title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }} 
+        onClick={() => goToPanel(tableName)}>{tableName}</span>,
         key: 'id',
         render: (text: any, record: DataItem, index: number) => {
-            const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
-            return (
-                <div>
-                    <span
-                        style={{
-                            lineHeight: '15px',
-                            height: '15px',
-                            width: '15px',
-                            backgroundColor: colorOrder[index], // 使用record.color作为背景色
-                            borderRadius: '50%',
-                            display: 'inline-block',
-                            marginRight: '16px',
-                            position: 'relative',
-                            textAlign: 'center',
-                            fontSize: '12px',
-                            color: textColor,
-                        }}
-                    >
-                        {index + 1} {/* 在圆形中显示index + 1 */}
-                    </span>
-                    {record.id}
-                </div>
-            );
+          const textColor = index < 3 ? 'white' : 'grey';//后两个图标背景为灰色
+          return (
+            <div style={{ cursor: 'pointer' }} 
+            onClick={() => goToPanel(record.id)}>
+              <span
+                style={{
+                  lineHeight: '15px',
+                  height: '15px',
+                  width: '15px',
+                  backgroundColor: colorOrder[index],
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  marginRight: '16px',
+                  position: 'relative',
+                  textAlign: 'center',
+                  fontSize: '12px',
+                  color: textColor,
+                }}
+              >
+                {index + 1}
+              </span>
+              {record.id}
+            </div>
+          );
         },
-    },
+      },
     {
         title: () => <div style={{ textAlign: 'right', fontWeight: 'bold' }}>{tableName_s}</div>,
         dataIndex: 'value',
@@ -149,13 +218,14 @@ const generateColumns = (tableName: string, tableName_s: string, tableName_list:
         },
     },
 ];
-//显示从接口得到的数据时，默认进度条成为灰色，需要修改generateColumns-->generateColumns1
-const generateColumns1 = (tableName: string, tableName_s: string, tableName_list: string[]) => {
+//显示从接口得到stime数据时，去除进度条，需要修改generateColumns-->generateColumns1
+const generateColumns1 = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
     const showProgress = tableName !== '文件完整性校验-最新变更二进制文件 TOP5'; // 判断是否要显示进度条
 
     return [
         {
-            title: () => <span style={{ fontWeight: 'bold' }}>{tableName}</span>,
+            title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }} 
+            onClick={() => goToPanel(tableName)}>{tableName}</span>,
             key: 'id',
             render: (text: any, record: DataItem, index: number) => {
                 const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
@@ -219,39 +289,17 @@ const tableNames = [
     '容器运行状态分布',
 ];
 const tableName_s = ['指纹数', '变更时间', ''];
-const columns = [
-    generateColumns(tableNames[0], tableName_s[0], tableNames),
-    generateColumns(tableNames[1], tableName_s[0], tableNames),
-    generateColumns(tableNames[2], tableName_s[0], tableNames),
-    generateColumns(tableNames[3], tableName_s[0], tableNames),
-    generateColumns1(tableNames[4], tableName_s[1], tableNames),
-    generateColumns(tableNames[5], tableName_s[0], tableNames),
-    generateColumns(tableNames[6], tableName_s[0], tableNames),
-    generateColumns(tableNames[7], tableName_s[2], tableNames),
-];
-interface GenericDataItem {
-    [key: string]: any;
-}
-interface OverviewPanelProps extends RouteComponentProps {
-    statusData: StatusItem[];
-    changePanel: (panelName: string) => void; //切换子panel
-    topData: {
-        fim: GenericDataItem[];
-        container: GenericDataItem[];
-        openPorts: GenericDataItem[];
-        runningProcesses: GenericDataItem[];
-        systemUsers: GenericDataItem[];
-        scheduledTasks: GenericDataItem[];
-        systemServices: GenericDataItem[];
-        systemSoftware: GenericDataItem[];
-        applications: GenericDataItem[];
-        kernelModules: GenericDataItem[];
-    };
+function convertUnixTimeToDateTime(unixTime:any) {
+    // 将 Unix 时间戳转换为毫秒
+    const date = new Date(unixTime * 1000);
+
+    // 转换为本地时间格式，格式为 "年月日时分秒"
+    // toLocaleString 默认使用运行代码环境的地区设置
+    const formattedDateTime = date.toLocaleString();
+
+    return formattedDateTime;
 }
 
-type OverviewPanelState = {
-    activeIndex: any;
-};
 class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelState> {
     constructor(props: any) {
         super(props);
@@ -290,12 +338,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
     };
 
     render() {
-        // 自定义的边框样式
-        const borderStyle = {
-            border: '1px solid #d9d9d9', // 例如，使用浅灰色作为边框颜色
-            padding: '4px', // 根据需要添加一些内边距
-            borderRadius: '4px', // 如果需要圆角边框
-        };
         // 将GenericDataItem[]转换为DataItem[]，根据rankLabel字段进行排序和转换
         function convertToDataItems(
             genericDataItems: GenericDataItem[],
@@ -306,11 +348,21 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 return {
                     key: baseDataItems[index].key,
                     id: item.id || 'N/A',
-                    value: item[rankLabel] || 0,
+                    value: item[rankLabel] || 0,//convertUnixTimeToDateTime(item[rankLabel]) || 0,
                     color: baseDataItems[index].color,
                 };
             });
         }
+        const columns = [
+            generateColumns(tableNames[0], tableName_s[0], tableNames, this.goToPanel),
+            generateColumns(tableNames[1], tableName_s[0], tableNames, this.goToPanel),
+            generateColumns(tableNames[2], tableName_s[0], tableNames, this.goToPanel),
+            generateColumns(tableNames[3], tableName_s[0], tableNames, this.goToPanel), 
+            generateColumns1(tableNames[4], tableName_s[1], tableNames, this.goToPanel),
+            generateColumns(tableNames[5], tableName_s[0], tableNames, this.goToPanel),
+            generateColumns(tableNames[6], tableName_s[0], tableNames, this.goToPanel),
+            generateColumns(tableNames[7], tableName_s[2], tableNames, this.goToPanel),
+        ];
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <Row gutter={[8, 16]}>
@@ -377,7 +429,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Card>
                     </Col>
                     <Col span={2}>
-                    <DataCard
+                    {/* <DataCard
                         title="运行进程"
                         value={13}
                         valueItem={[
@@ -389,8 +441,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         width="110px"
                         backgroundColor="#F6F7FB"
                         navigate={false}
-                    />
-                        {/* <Card
+                    /> */}
+                        <Card
                             bordered={false}
                             style={{
                                 height: '75px',
@@ -420,7 +472,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                     />
                                 </Col>
                             </Row>
-                        </Card> */}
+                        </Card>
                     </Col>
                     <Col span={2}>
                         <Card
@@ -629,6 +681,13 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             pagination={false}
                             rowKey="id"
                         />
+{/*                         
+                        <DataTable
+                    tableNames={tableNames}
+                    tableName_s={tableName_s}
+                    sortedData={sortedData}
+                    goToPanel={this.goToPanel}
+                /> */}
                     </Col>
                     <Col span={12}>
                         <Table<DataItem>
@@ -734,7 +793,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 </Col>
                                 <Col span={2}> </Col>
                                 <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                    <StatusPanel statusData={status_data} orientation="horizontal"/>
+                                    <StatusPanel statusData={status_data} orientation="vertical"/>
                                 </div>
                             </Row>
                         </Card>

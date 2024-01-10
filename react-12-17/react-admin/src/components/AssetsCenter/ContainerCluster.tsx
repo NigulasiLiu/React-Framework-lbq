@@ -189,7 +189,7 @@ class ContainerCluster extends React.Component<{}, FimState> {
                             <DataDisplayTable
                                 apiEndpoint="http://localhost:5000/api/files/hostinventory"
                                 columns={this.containerColumns}
-                                currentPanel={"hostinventory"}
+                                currentPanel={"containerClusterlist"}
                                 selectedRowKeys={this.state.selectedRowKeys}
                                 onSelectChange={(keys: any) => this.onSelectChange(keys)}
                             />

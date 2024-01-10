@@ -2,8 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Menu } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
+import moment, { Moment } from 'moment';
 
 const { RangePicker } = DatePicker;
+type RangeValue<T> = [T | null, T | null] | null;
 
 interface DataDisplayTableProps {
     apiEndpoint: string;
@@ -27,7 +29,9 @@ interface DataDisplayTableState {
     lastUpdated: string | null;
     searchQuery: string;
     selectedApplicationType: string | null; //用于展示与原型功能不同的panel
+    selectedDateRange: [string | null, string | null];
 }
+
 
 class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDisplayTableState> {
     constructor(props: DataDisplayTableProps) {
@@ -38,6 +42,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             lastUpdated: null,
             searchQuery: '',
             selectedApplicationType: null,
+            selectedDateRange: [null,null]
         };
     }
 
@@ -237,6 +242,15 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             </Menu>
         );
     };
+    onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
+        if (dates) {
+            const [start, end] = dateStrings;
+            this.setState({ selectedDateRange: [start, end] });
+        } else {
+            this.setState({ selectedDateRange: [null, null] });
+        }
+    };
+    
     render() {
         const { dataSource, selectedRowKeys, lastUpdated } = this.state;
         const { currentPanel } = this.props; // 从props中获取currentPanel
@@ -246,6 +260,15 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             onChange: this.onSelectChange,
         };
         const isButtonDisabled = dataSource.length === 0 || selectedRowKeys.length === 0;
+        const filteredDataSource = dataSource.filter(item => {
+            const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
+            const [startDateStr, endDateStr] = this.state.selectedDateRange;
+            const startDate = startDateStr ? moment(startDateStr, 'YYYY-MM-DD') : null;
+            const endDate = endDateStr ? moment(endDateStr, 'YYYY-MM-DD') : null;
+            return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) && 
+                   (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
+        });
+        
         return (//Table的宽度被设置为1430px
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1430px', maxWidth: '100%' }}>
                 <Row gutter={[12, 6]} style={{ marginTop: '10px'}}>
@@ -269,7 +292,8 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                 <Row gutter={16} style={{ display: 'flex', alignItems: 'center' }}>
                                     <Col flex="none">
                                         <Button
-                                            style={{ marginRight: 8 }}
+                                            style={{ marginRight: 8, 
+                                                opacity: isButtonDisabled ? 0.5 : 1 }}
                                             onClick={this.handleExport}
                                             disabled={isButtonDisabled}
                                         >
@@ -282,7 +306,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                     </Col>
                                     {this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
                                     <Col flex="none" style={{ marginLeft: 'auto' }}>
-                                        <RangePicker style={{ width: 200 }} />
+                                        <RangePicker style={{ width: 200 }} onChange={this.onDateRangeChange}/>
                                     </Col>
                                     )}
                                     {/* <Col flex="none" style={{ marginLeft: 'auto' }}>
