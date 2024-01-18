@@ -5,7 +5,6 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { StatusItem } from './Interfaces';
 import { StatusPanel } from './HostInventory';
-import DataCard from '../DataCard';
 
 interface GenericDataItem {
     [key: string]: any;

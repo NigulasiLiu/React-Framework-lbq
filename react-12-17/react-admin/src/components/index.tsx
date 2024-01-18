@@ -38,6 +38,7 @@ import MultipleMenu from './extension/MultipleMenu';
 import Sub1 from './smenu/Sub1';
 import Sub2 from './smenu/Sub2';
 import Env from './env';
+import DetailsPage from './DetailsPage/DetailsPage';
 
 const WysiwygBundle = Loadable({
     // 按需加载富文本配置
@@ -80,5 +81,6 @@ export default {
     configuration,
     status,
     Ldlb,
-    jxjc
+    jxjc,
+    DetailsPage
 } as any;

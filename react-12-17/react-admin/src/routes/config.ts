@@ -207,8 +207,15 @@ const menus: {
                 },
             ],
         },
+        {
+            key: '/app/detailspage', // 假设使用动态路径参数
+            title: '详情页面',
+            component: 'DetailsPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
     ],
-    others: [], // 非菜单相关路由
+    others: [
+    ], // 非菜单相关路由
 };
 
 export default menus;

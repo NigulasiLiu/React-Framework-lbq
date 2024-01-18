@@ -1,15 +1,14 @@
 
 import './YourComponent.css'; // 确保引入了CSS文件
 import zhCN from 'antd/es/locale/zh_CN';
-import {Statistic} from 'antd';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
-/**
- * Created by hao.cheng on 2017/5/8.
- */
+import { Tooltip } from 'antd';
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, ConfigProvider } from 'antd';
+import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, ConfigProvider,Statistic } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
+import MySidebar from './MySidebar';
+
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -25,18 +24,21 @@ type HostInventoryState = {
   activeIndex: any;
   areRowsSelected: boolean;
   isSidebarOpen: boolean;
+  riskItemCount:number;
 };
 
 
 interface DataType1 {
   key: React.Key;
-  alarmName: string;        // 告警名称
-  affectedAsset: string;    // 影响资产
-  status: string;           // 状态
-  jcx: string;
-  fxx: string;
-  occurrenceTime: string;   // 发生时间
+  ip: string;                // IP
+  check_name: string;        // 基线名称
+  details: string;           // 检查详情
+  adjustment_requirement: string;  // 调整建议
+  status: string;            // 状态
+  last_checked: string;      // 最新扫描时间
+  instruction: string;       // 指令
 }
+
 
 interface StatusItem {
   color: string;
@@ -65,41 +67,44 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 };
 const vulnerabilityColumns = [
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>基线名称</span>,
-    dataIndex: 'alarmName',
+    title: () => <span style={{ fontWeight: 'bold' }}>IP</span>,
+    dataIndex: 'ip',
     //width: '13%',
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>影响主机数</span>,
-    dataIndex: 'affectedAsset',
+    title: () => <span style={{ fontWeight: 'bold' }}>基线名称</span>,
+    dataIndex: 'check_name',
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>检查项</span>,
-    dataIndex: 'jcx',
+    title: () => <span style={{ fontWeight: 'bold' }}>检查详情</span>,
+    dataIndex: 'details',
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>风险项</span>,
-    dataIndex: 'fxx',
+    title: () => <span style={{ fontWeight: 'bold' }}>调整建议</span>,
+    dataIndex: 'adjustment_requirement',
+    render: (text: string, record: DataType1) => (
+      <Tooltip title={record.instruction}>
+        {text}
+      </Tooltip>
+    ),
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>风险状态</span>,
+    title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
     dataIndex: 'status',
     filters: [
-      { text: '有风险', value: '有风险' },
-      { text: '无风险', value: '无风险' },
     ],
     onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
   },
   {
     title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
-    dataIndex: 'occurrenceTime',
+    dataIndex: 'last_checked',
     sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
     sortDirections: ['ascend', 'descend'],
   },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-    dataIndex: 'operation',
-  },
+  // {
+  //   title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+  //   dataIndex: 'operation',
+  // },
 ];
 
 class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
@@ -184,6 +189,7 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
       selectedDateRange: [null, null],
       isSidebarOpen: false,
       currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
+      riskItemCount:5,
     };
   }
   columns: any;
@@ -295,10 +301,11 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
     // 假设您希望导出的CSV中包括所有字段
     const headers = Object.keys(data[0]).join(',');
     const rows = data.map((row: DataType1) => {
-      return `${row.key},${row.alarmName},${row.affectedAsset},${row.jcx},${row.fxx},${row.status},${row.occurrenceTime}`;
+      return `${row.key},${row.ip},${row.check_name},${row.details},${row.adjustment_requirement},${row.status},${row.last_checked},${row.instruction}`;
     });
     return [headers, ...rows].join('\n');
-  };
+};
+
 
   triggerDownload = (data: string, filename: string) => {
     const element = document.createElement('a');
@@ -349,14 +356,13 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
       </Row>
     );
 
-    // 状态数据
-    const statusData: StatusItem[] = [
-      { color: '#E63F3F', label: '严重', value: 7 },
-      { color: '#846BCE', label: '高危', value: 2 },
-      { color: '#FEC745', label: '中危', value: 5 },
-      { color: '#468DFF', label: '低危', value: 1 },
+    const scanResult: StatusItem[] = [
+      { color: 'green', label: '通过项', value: 7 },
+      { color: '#E53F3F', label: '严重风险项', value: 2 },
+      { color: '#846BCE', label: '高危风险项', value: 5 },
+      { color: '#FEC745', label: '中危风险项', value: 1 },
+      { color: '#468DFF', label: '低危风险项', value: 1 },
     ];
-
     return (
       <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
         <Row gutter={[12, 6]}/*(列间距，行间距)*/>
@@ -371,7 +377,7 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
                       <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基线概览</h2>
                   </div>
                   <Row gutter={[6, 6]}>
-                    <Col className="gutter-row" md={6} style={{ marginLeft: '15px' }}>
+                    <Col className="gutter-row" md={6} style={{ marginLeft: '15px',marginTop: '10px'  }}>
                     {/* <h2>最近扫描时间（每日自动扫描）</h2> */}
                     <div className="container" style={{
                     // borderTop: '2px solid #E5E6EB',
@@ -385,8 +391,13 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
                       </Row>
                       <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
                       <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
-                        <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
-                        <p>侧边栏内容</p>
+                      <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
+                          <MySidebar
+                            statusData={scanResult}
+                            isSidebarOpen={this.state.isSidebarOpen}
+                            toggleSidebar={this.toggleSidebar}
+                            riskItemCount={this.state.riskItemCount} // 传递风险项的数量
+                          />
                       </div>
                     </div>
                     </Col>
@@ -463,10 +474,11 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
               <div className="gutter-box">
               <Card bordered={false}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>漏洞内容</h2>
+                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>基线内容</h2>
                   </div>
                   <DataDisplayTable
-                      apiEndpoint="http://localhost:5000/api/files/vulnerability"
+                      apiEndpoint="http://localhost:5000/api/files/log"
+                      sqlTableName='windows_security_checks'
                       columns={vulnerabilityColumns}
                       currentPanel={"vulnerabilityDetect"}
                       selectedRowKeys={this.state.selectedRowKeys}
@@ -475,84 +487,7 @@ class jxjc extends React.Component<HostInventoryProps, HostInventoryState> {
                   </Card>
               </div>
           </Col>
-          <Col span={24}>
-            <Card title="基线概览" >
-              <Row gutter={12}>
 
-                <Col span={6}>
-                  {/* <h2>最近扫描时间（每日自动扫描）</h2> */}
-                  <div className="container">
-                    <Row gutter={24}>
-                      <h2>最近扫描时间（每日自动扫描）</h2>
-                      <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
-                      <button onClick={this.toggleSidebar}>立即检查</button>
-                    </Row>
-                    <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
-                    <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
-                      <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
-                      <p>侧边栏内容</p>
-                    </div>
-                  </div>
-                </Col>
-
-                <Col span={6}>
-                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                    <Row gutter={0} style={{ height: '100%' }}>
-                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>最近检查通过率</h2>
-                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>80{"%"}</h2>
-                      </Col>
-                      {/* <Col span={12} style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <StatusPanel statusData={statusData} />
-                      </Col> */}
-                    </Row>
-                  </Card>
-                </Col>
-
-                <Col span={6}>
-                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                    <Row gutter={0} style={{ height: '100%' }}>
-                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>检查主机数</h2>
-                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>4</h2>
-                      </Col>
-                    </Row>
-                  </Card>
-                </Col>
-
-                <Col span={6}>
-                  <Card style={{ fontWeight: 'bolder', height: 130, backgroundColor: '#F6F7FB' }}>
-                    <Row gutter={0} style={{ height: '100%' }}>
-                      <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', fontWeight: 'bold', paddingLeft: '20px' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold' }}>检查项</h2>
-                        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>12</h2>
-                      </Col>
-                    </Row>
-                  </Card>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-
-          <Col md={24}>
-            <div className="gutter-box">
-              <Card title="基线内容" bordered={false}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16, fontWeight: 'bold' }}>
-                  <Button style={{ marginRight: '10px' }} onClick={this.handleExport} disabled={dataSource.length === 0}>批量导出</Button>
-                  {/* <Button style={{ marginRight: '10px' }} name="del" onClick={this.handleAdd}>批量处理</Button> */}
-                  <RangePicker onChange={this.onDateRangeChange} />
-                </div>
-                <div style={{ marginBottom: 16 }}>
-                  <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
-                </div>
-                <div className="table-container">
-                  <ConfigProvider locale={zhCN}>
-                  <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={this.columns} />
-                  </ConfigProvider>
-                </div>
-              </Card>
-            </div>
-          </Col>
         </Row>
       </div>
     );

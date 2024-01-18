@@ -7,6 +7,8 @@ import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
+import MySidebar from './MySidebar';
+
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -22,6 +24,7 @@ type HostInventoryState = {
   activeIndex: any;
   areRowsSelected: boolean;
   isSidebarOpen: boolean;
+  riskItemCount: number;
 };
 
 
@@ -208,12 +211,13 @@ class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
       ],
       count: 2,
       deleteIndex: -1,
-      activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
+      activeIndex:[-1,-1,-1,-1],
       selectedRowKeys: [], // 这里用来存储勾选的行的 key 值
       areRowsSelected: false,
       selectedDateRange: [null, null],
       isSidebarOpen: false,
       currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
+      riskItemCount: 5, // 初始化风险项的数量
     };
   }
   columns: any;
@@ -387,6 +391,13 @@ class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
       { color: '#FEC745', label: '中危', value: 5 },
       { color: '#468DFF', label: '低危', value: 1 },
     ];
+    const scanResult: StatusItem[] = [
+      { color: 'green', label: '通过项', value: 7 },
+      { color: '#E53F3F', label: '严重风险项', value: 2 },
+      { color: '#846BCE', label: '高危风险项', value: 5 },
+      { color: '#FEC745', label: '中危风险项', value: 1 },
+      { color: '#468DFF', label: '低危风险项', value: 1 },
+    ];
 
     return (
       <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
@@ -401,19 +412,24 @@ class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
                       <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞概览</h2>
                   </div>
                   <Row gutter={[6, 6]}>
-                    <Col className="gutter-row" md={5} style={{ marginLeft: '15px' }}>
-                    <div className="container">
-                      <Row gutter={24}>
-                      <h2 style={{ fontSize: '16px' }}>最近扫描时间（每日自动扫描）</h2>
-                      <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
-                      <button onClick={this.toggleSidebar}>立即检查</button>
-                      </Row>
-                      <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
-                      <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
-                        <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
-                        <p>侧边栏内容</p>
+                    <Col className="gutter-row" md={5} style={{ marginLeft: '15px',marginTop: '10px' }}>
+                      <div className="container">
+                        <Row gutter={24}>
+                          <h2 style={{ fontSize: '16px' }}>最近扫描时间（每日自动扫描）</h2>
+                          <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
+                          <button onClick={this.toggleSidebar}>立即检查</button>
+                        </Row>
+                        <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
+                        <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+                          <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
+                          <MySidebar
+                            statusData={scanResult}
+                            isSidebarOpen={this.state.isSidebarOpen}
+                            toggleSidebar={this.toggleSidebar}
+                            riskItemCount={this.state.riskItemCount} // 传递风险项的数量
+                          />
+                        </div>
                       </div>
-                    </div>
                     </Col>
                     <Col className="gutter-row" md={8}>
                       <Card
@@ -507,27 +523,5 @@ class Ldlb extends React.Component<HostInventoryProps, HostInventoryState> {
   }
 }
 
-
-
-
-// function Ldlb() {
-//   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-//   const toggleSidebar = () => {
-//     setSidebarOpen(!isSidebarOpen);
-//   };
-
-//   return (
-//     <div className="container">
-//       <button onClick={toggleSidebar}>立即检查</button>
-//       <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={toggleSidebar}></div>
-//       <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
-//         <button onClick={toggleSidebar} className="close-btn">&times;</button>
-//         {/* 侧边栏内容 */}
-//         <p>侧边栏内容</p>
-//       </div>
-//     </div>
-//   );
-// }
 
 export default Ldlb;

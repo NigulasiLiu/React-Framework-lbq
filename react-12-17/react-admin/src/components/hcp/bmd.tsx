@@ -23,7 +23,7 @@ type HostInventoryState = {
     areRowsSelected: boolean;
 };
 
-interface DataType1 {
+interface WhiteListColumDataType {
     key: React.Key;
     whitelistName: string;    // 加白名称
     whitelistDescription: string; // 加白描述
@@ -33,31 +33,31 @@ interface DataType1 {
     occurrenceTime: string;   // 发生时间
 }
 
-interface StatusItem {
-    color: string;
-    label: string;
-    value: number;
-}
+// interface StatusItem {
+//     color: string;
+//     label: string;
+//     value: number;
+// }
 
-// Define an interface for the props expected by the StatusPanel component
-interface StatusPanelProps {
-    statusData: StatusItem[];
-}
-export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
-    return (
-        //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
-        <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
-            {statusData.map((status, index) => (
-                <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
-                    <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-                    <span>{status.value}</span>
-                </div>
-            ))}
-        </div>//</div>
+// // Define an interface for the props expected by the StatusPanel component
+// interface StatusPanelProps {
+//     statusData: StatusItem[];
+// }
+// export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
+//     return (
+//         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
+//         <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
+//             {statusData.map((status, index) => (
+//                 <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//                     <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
+//                     <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
+//                     <span>{status.value}</span>
+//                 </div>
+//             ))}
+//         </div>//</div>
 
-    );
-};
+//     );
+// };
 const whiteColumns = [
     {
         title: () => <span style={{ fontWeight: 'bold' }}>加白名称</span>,
@@ -75,7 +75,7 @@ const whiteColumns = [
             { text: '全局', value: '全局' },
             { text: '非全局', value: '非全局' },
         ],
-        onFilter: (value: string | number | boolean, record: DataType1) => record.whitelistScope.includes(value as string),
+        onFilter: (value: string | number | boolean, record: WhiteListColumDataType) => record.whitelistScope.includes(value as string),
     },
     {
         title: () => <span style={{ fontWeight: 'bold' }}>匹配告警名</span>,
@@ -92,7 +92,7 @@ const whiteColumns = [
     {
         title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
         dataIndex: 'operation',
-        render: (text: string, record: DataType1) => (
+        render: (text: string, record: WhiteListColumDataType) => (
             <a
                 href={'/login'}
                 target="_blank"
@@ -126,7 +126,7 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
                     { text: '全局', value: '全局' },
                     { text: '非全局', value: '非全局' },
                 ],
-                onFilter: (value: string | number | boolean, record: DataType1) => record.whitelistScope.includes(value as string),
+                onFilter: (value: string | number | boolean, record: WhiteListColumDataType) => record.whitelistScope.includes(value as string),
             },
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>匹配告警名</span>,
@@ -143,7 +143,7 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
                 dataIndex: 'operation',
-                render: (text: string, record: DataType1) => (
+                render: (text: string, record: WhiteListColumDataType) => (
                     <a
                         href={'/login'}
                         target="_blank"
@@ -302,7 +302,7 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
                                     <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
                                 </div>
                                 <div className="table-container">
-                                <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={this.columns} />
+                                <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={whiteColumns} />
                                 </div>
                             </Card>
                         </div>

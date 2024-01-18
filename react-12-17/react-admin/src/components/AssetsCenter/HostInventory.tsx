@@ -108,6 +108,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientatio
       justifyContent: orientation === 'vertical' ? 'space-between' : 'flex-start',
       alignItems: 'center',
       width: orientation === 'vertical' ? '100%' : undefined,
+      margin: '3px',
     };
   
     const valueStyle: React.CSSProperties = {
@@ -210,20 +211,20 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                 ),
             },
             
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-                dataIndex: 'operation',
-                render: (text: any, record: any, index: number) => {
-                    return this.state.dataSource.length > 0 ? (
-                        <Popconfirm
-                            title="Sure to delete?"
-                            onConfirm={() => this.onDelete(record, index)}
-                        >
-                            <span>Delete</span>
-                        </Popconfirm>
-                    ) : null;
-                },
-            },
+            // {
+            //     title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+            //     dataIndex: 'operation',
+            //     render: (text: any, record: any, index: number) => {
+            //         return this.state.dataSource.length > 0 ? (
+            //             <Popconfirm
+            //                 title="Sure to delete?"
+            //                 onConfirm={() => this.onDelete(record, index)}
+            //             >
+            //                 <span>Delete</span>
+            //             </Popconfirm>
+            //         ) : null;
+            //     },
+            // },
         ];
         this.state = {
             dataSource: [

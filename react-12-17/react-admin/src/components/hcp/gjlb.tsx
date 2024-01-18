@@ -6,7 +6,6 @@ import { Statistic,Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker 
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
-import StatusPanel from '../AssetsCenter/HostInventory'
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -40,7 +39,7 @@ interface DataType {
 }
 // Define an interface for the individual status item
 
-interface DataType1 {
+interface AlertColumDataType {
     key: React.Key;
     alarmName: string;        // 告警名称
     affectedAsset: string;    // 影响资产
@@ -78,11 +77,66 @@ interface StatusItem {
 // };
 // 内核模块表的列定义
 
+interface StatusPanelProps {
+    statusData: StatusItem[];
+    orientation: 'vertical' | 'horizontal'; // 添加方向属性
+  }
+  
+const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) => {
+    const containerStyle: React.CSSProperties = {
+      display: 'flex',
+      flexDirection: orientation === 'vertical' ? 'column' : 'row',
+      alignItems: 'flex-start',
+      gap: orientation === 'horizontal' ? '7px' : '0', // 设置水平方向的间隔
+    };
+  
+    const itemStyle: React.CSSProperties = {
+      display: 'flex',
+      justifyContent: orientation === 'vertical' ? 'space-between' : 'flex-start',
+      alignItems: 'center',
+      width: orientation === 'vertical' ? '100%' : undefined,
+    };
+  
+    const valueStyle: React.CSSProperties = {
+      marginLeft: orientation === 'vertical' ? '40px' : '0', // 设置垂直方向的间隔
+    };
+  
+    return (
+      <div style={containerStyle}>
+        {statusData.map((status, index) => (
+          <div key={index} style={itemStyle}>
+            <span style={{
+              height: '10px',
+              width: '10px',
+              backgroundColor: status.color,
+              borderRadius: '50%',
+              display: 'inline-block',
+              marginRight: '8px'
+            }}></span>
+            <span style={{ flexGrow: 1 }}>{status.label}</span>
+            {orientation === 'vertical' && (
+              <span style={valueStyle}>{status.value}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
 const hostalertColumns = [
     {
         title: '告警名称',
         dataIndex: 'alertName',
         key: 'alertName',
+        render: (text: string, record: AlertColumDataType) => (
+            <a
+                href={'/login'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#1964F5' }}// 添加颜色样式
+            >
+                {text}
+            </a>
+        ),
     },
     {
         title: '影响资产',
@@ -142,7 +196,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                     { text: '资产探测', value: '资产探测' },
                     { text: '恶意破坏', value: '恶意破坏' },
                 ],
-                onFilter: (value: string | number | boolean, record: DataType1) => record.alarmType.includes(value as string),
+                onFilter: (value: string | number | boolean, record: AlertColumDataType) => record.alarmType.includes(value as string),
             },
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
@@ -153,7 +207,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                     { text: '低风险', value: '低风险' },
                     { text: '中风险', value: '中风险' },
                 ],
-                onFilter: (value: string | number | boolean, record: DataType1) => record.level.includes(value as string),
+                onFilter: (value: string | number | boolean, record: AlertColumDataType) => record.level.includes(value as string),
             },
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
@@ -163,7 +217,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                     { text: '未处理', value: '未处理' },
                     { text: '误报', value: '误报' },
                 ],
-                onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
+                onFilter: (value: string | number | boolean, record: AlertColumDataType) => record.status.includes(value as string),
             },
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>发生时间</span>,
@@ -172,7 +226,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
             {
                 title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
                 dataIndex: 'operation',
-                render: (text: string, record: DataType1) => (
+                render: (text: string, record: AlertColumDataType) => (
                     <a
                         href={'/login'}
                         target="_blank"
@@ -318,7 +372,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
         const { dataSource, selectedRowKeys } = this.state;
 
         // 过滤出已选中的行数据
-        const selectedData = dataSource.filter((row: DataType1) => selectedRowKeys.includes(row.key));
+        const selectedData = dataSource.filter((row: AlertColumDataType) => selectedRowKeys.includes(row.key));
 
         // 检查是否有选中的行
         if (selectedData.length === 0) {
@@ -333,10 +387,10 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
         this.triggerDownload(csvData, 'export.csv');
     };
 
-    convertToCSV = (data: DataType1[]) => {
+    convertToCSV = (data: AlertColumDataType[]) => {
         // 假设您希望导出的CSV中包括所有字段
         const headers = Object.keys(data[0]).join(',');
-        const rows = data.map((row: DataType1) => {
+        const rows = data.map((row: AlertColumDataType) => {
             return `${row.key},${row.alarmName},${row.affectedAsset},${row.alarmType},${row.level},${row.status},${row.occurrenceTime}`;
         });
         return [headers, ...rows].join('\n');
@@ -371,15 +425,12 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                    (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
         });
 
-        const buttonStyle = this.state.areRowsSelected
-            ? { fontWeight: 'bold' as 'bold', color: 'red' }
-            : { fontWeight: 'normal' as 'normal', color: 'grey' };
 
         const statusData: StatusItem[] = [
-        { color: '#22BC44', label: '运行中 ', value: 7 },
-        { color: '#FBB12E', label: '运行异常 ', value: 2 },
-        { color: '#EA635F', label: '离线 ', value: 5 },
-        { color: '#E5E8EF', label: '未安装 ', value: 1 },
+        { color: '#EA635F', label: '紧急 ', value: 7 },
+        { color: '#FEC746', label: '中风险 ', value: 2 },
+        { color: '#846CCE', label: '高风险 ', value: 5 },
+        { color: '#468DFF', label: '低风险 ', value: 1 },
         ];
 
         return (
@@ -394,27 +445,24 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                         </div>
                         <Row gutter={[6, 6]}>
                             <Col className="gutter-row" md={10}>
-                            <Card
-                                bordered={false}
-                                style={{
-                                    height: '100px',
-                                    width: '570px',
-                                    minWidth: '200px', // 最小宽度300px，而非100px
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                }}
+                                <Card
+                                    bordered={false}
+                                    style={{
+                                        height: '100px',
+                                        width: '570px',
+                                        minWidth: '200px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#F6F7FB',
+                                    }}
                                 >
-                                <Col style={{ marginRight: '350px' }} span={24}>
-                                    <Statistic title={<span>待处理告警</span>} value={1} />
-                                </Col>
-                                <Col>
-                                    {/* <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                        <StatusPanel statusData={statusData} orientation="horizontal"/>
-                                    </div> */}
-                                </Col>
-                            </Card>
+                                    <Row style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                                        <Col style={{ marginRight: '350px'}} span={12}>
+                                            <Statistic title={<span>待处理告警</span>} value={1} />
+                                        </Col>
+                                    </Row>
+                                </Card>
                             </Col>
                             <Col className="gutter-row" md={7}>
                             <Card
@@ -469,9 +517,13 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                         <Card bordered={false}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>告警内容</h2>
+                                <button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }}>
+                                添加告警
+                            </button>
                             </div>
                             <DataDisplayTable
                                 apiEndpoint="http://localhost:5000/api/files/hostalertlist"
+                                externalDataSource={dataSource}
                                 columns={hostalertColumns}
                                 currentPanel={"hostAlertlist"}
                                 selectedRowKeys={this.state.selectedRowKeys}

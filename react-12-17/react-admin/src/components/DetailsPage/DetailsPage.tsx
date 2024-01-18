@@ -1,13 +1,9 @@
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, Menu, Layout } from 'antd';
-import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
-import { Link, Route, Switch, useLocation, withRouter } from 'react-router-dom';
-import { FilterOutlined } from '@ant-design/icons';
-import OverviewPanel from './OverviewPanel';
-import ContainerCluster from './ContainerCluster';
-import DataDisplayTable from './DataDisplayTable';
-
+import { Row, Col, Card, Table, Popconfirm, Button, Menu,} from 'antd';
+import OverviewPanel from '../AssetsCenter/OverviewPanel';
+import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import { RouteComponentProps, withRouter  } from 'react-router-dom';
+import HostOverview from './HostOverview';
 // Define an interface for the individual status item
 interface StatusItem {
     color: string;
@@ -20,11 +16,14 @@ interface StatusPanelProps {
     statusData: StatusItem[];
 }
 
-type AssetFingerprintProps = {};
+interface DetailsPageProps extends RouteComponentProps<{ id: string }> {
+    // ...其他props定义
+  }
 interface GenericDataItem {
     [key: string]: any;
 }
-type AssetFingerprintState = {
+type DetailsPageState = {
+    selectedHostName:string;
     dataSource: any[];
     topData: {
         fim: GenericDataItem[];
@@ -643,7 +642,7 @@ const applicationsColumns = [
     },
 ];
 
-class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFingerprintState> {
+class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     constructor(props: any) {
         super(props);
         this.columns = [
@@ -728,6 +727,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             },
         ];
         this.state = {
+            selectedHostName: '-1',
             statusData: [], // 初始状态
             animated: false,
             animatedOne: -1,
@@ -793,11 +793,11 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
 
-            currentPanel: 'overview', // 默认选中的面板
+            currentPanel: 'HostOverview', // 默认选中的面板
             selectedRowKeys: [], // 这里用来存储勾选的行的 key 值
             areRowsSelected: false,
             panelSelectedRowKeys: {
-                overview: [],
+                HostOverview: [],
                 fim: [],
                 container: [],
                 'open-ports': [],
@@ -812,7 +812,10 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             },
         };
     }
-
+    componentDidMount() {
+        const { id } = this.props.match.params;
+        this.setState({ selectedHostName: id });
+    }
     // 父组件中
     handleDataReceived = (data: any[]) => {
         // 处理从子组件接收到的数据
@@ -821,16 +824,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     changePanel = (panelName: string) => {
         this.setState({ currentPanel: panelName });
     };
-    // animatedAll = (checked: boolean) => {
-    // checked && this.setState({ animated: true });
-    // !checked && this.setState({ animated: false });
-    // };
-    // animatedOne = (i: number) => {
-    //     this.setState({ animatedOne: i });
-    // };
-    // animatedOneOver = () => {
-    //     this.setState({ animatedOne: -1 });
-    // };
     //为不同panel的勾选框设置状态
     onSelectChange = (selectedKeys: React.Key[], panel: string) => {
         // 根据panel来设置对应的选中行keys
@@ -870,24 +863,105 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
         this.setState({ statusData: localStatusData });
     }
 
+
+    // Define the rowSelection object inside the render method
+    renderRowSelection = () => {
+        return {
+            selectedRowKeys: this.state.selectedRowKeys,
+            onChange: (selectedRowKeys: React.Key[]) => {
+                this.setState({ selectedRowKeys });
+            },
+            // Add other rowSelection properties and methods as needed
+        };
+    };
+    onDelete = (record: any, index: number) => {
+        const dataSource = [...this.state.dataSource];
+        dataSource.splice(index, 1);
+        this.setState({ deleteIndex: record.key });
+        setTimeout(() => {
+            this.setState({ dataSource });
+        }, 500);
+    };
+    handleAdd = () => {
+        const { count, dataSource } = this.state;
+        const newData = {
+            key: count,
+            name: `Edward King ${count}`,
+            age: 32,
+            address: `London, Park Lane no. ${count}`,
+        };
+        this.setState({
+            dataSource: [newData, ...dataSource],
+            count: count + 1,
+        });
+    };
+    handleMouseEnter = (_: any, index: number) => {
+        // 使用 map 来更新数组中特定索引的值
+        this.setState((prevState) => ({
+            activeIndex: prevState.activeIndex.map((val: number, i: number) =>
+                i === index ? index : val
+            ),
+        }));
+    };
+    handleMouseLeave = () => {
+        // 重置所有索引为 -1
+        this.setState({
+            activeIndex: this.state.activeIndex.map(() => -1),
+        });
+    };
+    handleExport = () => {
+        const { dataSource, selectedRowKeys } = this.state;
+
+        // 过滤出已选中的行数据
+        const selectedData = dataSource.filter((row: DataType) =>
+            selectedRowKeys.includes(row.key)
+        );
+
+        // 检查是否有选中的行
+        if (selectedData.length === 0) {
+            alert('没有选中的行');
+            return;
+        }
+
+        // 转换数据为CSV格式
+        const csvData = this.convertToCSV(selectedData);
+
+        // 触发下载
+        this.triggerDownload(csvData, 'export.csv');
+    };
+    convertToCSV = (data: DataType[]) => {
+        // 假设您希望导出的CSV中包括所有字段
+        const headers = Object.keys(data[0]).join(',');
+        const rows = data.map((row: DataType) => {
+            const riskValues = Object.values(row.risks).join(',');
+            return `${row.key},${row.hostname},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
+        });
+        return [headers, ...rows].join('\n');
+    };
+    triggerDownload = (data: string, filename: string) => {
+        const element = document.createElement('a');
+        element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
+        element.download = filename;
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    };
+
     // 渲染当前激活的子面板
     renderCurrentPanel() {
         const { currentPanel } = this.state;
         switch (currentPanel) {
-            case 'overview':
+            case 'HostOverview':
                 return (
-                    <OverviewPanel
-                        changePanel={this.changePanel}
-                        topData={this.state.topData}
-                        statusData={this.state.statusData}
+                    <HostOverview
+                    changePanel={this.changePanel}
                     />
                 );
-            // case 'fim':
-            //     return <ContainerCluster />;
             case 'fim':
                 return (
                     <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/log"
+                        apiEndpoint="http://localhost:5000/api/files/fim"
                         columns={fimColumns}
                         currentPanel={currentPanel}
 
@@ -895,10 +969,10 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         rankLabel="mtime"
                         timeColumnIndex={['ctime','mtime','atime']}
 
-                        sqlTableName='fileinfo'
-                        
                         selectedRowKeys={this.state.panelSelectedRowKeys.fim}
                         onSelectChange={(keys: any) => this.onSelectChange(keys, 'fim')}
+
+                        hostName={this.state.selectedHostName}
                     />
                 );
             case 'container':
@@ -1029,101 +1103,13 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 );
             default:
                 return (
-                    <OverviewPanel
-                        changePanel={this.changePanel}
-                        topData={this.state.topData}
-                        statusData={this.state.statusData}
+                    <HostOverview
+                    changePanel={this.changePanel}
                     />
                 );
         }
     }
-
-    // Define the rowSelection object inside the render method
-    renderRowSelection = () => {
-        return {
-            selectedRowKeys: this.state.selectedRowKeys,
-            onChange: (selectedRowKeys: React.Key[]) => {
-                this.setState({ selectedRowKeys });
-            },
-            // Add other rowSelection properties and methods as needed
-        };
-    };
-    onDelete = (record: any, index: number) => {
-        const dataSource = [...this.state.dataSource];
-        dataSource.splice(index, 1);
-        this.setState({ deleteIndex: record.key });
-        setTimeout(() => {
-            this.setState({ dataSource });
-        }, 500);
-    };
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
-        this.setState({
-            dataSource: [newData, ...dataSource],
-            count: count + 1,
-        });
-    };
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState((prevState) => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) =>
-                i === index ? index : val
-            ),
-        }));
-    };
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
-    handleExport = () => {
-        const { dataSource, selectedRowKeys } = this.state;
-
-        // 过滤出已选中的行数据
-        const selectedData = dataSource.filter((row: DataType) =>
-            selectedRowKeys.includes(row.key)
-        );
-
-        // 检查是否有选中的行
-        if (selectedData.length === 0) {
-            alert('没有选中的行');
-            return;
-        }
-
-        // 转换数据为CSV格式
-        const csvData = this.convertToCSV(selectedData);
-
-        // 触发下载
-        this.triggerDownload(csvData, 'export.csv');
-    };
-    convertToCSV = (data: DataType[]) => {
-        // 假设您希望导出的CSV中包括所有字段
-        const headers = Object.keys(data[0]).join(',');
-        const rows = data.map((row: DataType) => {
-            const riskValues = Object.values(row.risks).join(',');
-            return `${row.key},${row.hostname},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
-        });
-        return [headers, ...rows].join('\n');
-    };
-    triggerDownload = (data: string, filename: string) => {
-        const element = document.createElement('a');
-        element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-        element.download = filename;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
-
     render() {
-
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <div>
@@ -1135,24 +1121,23 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         mode="horizontal"
                         style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                     >
-                        <Menu.Item key="overview">总览</Menu.Item>
-                        <Menu.Item key="container">容器</Menu.Item>
-                        <Menu.Item key="open-ports">开放端口</Menu.Item>
-                        <Menu.Item key="running-processes">运行进程</Menu.Item>
-                        <Menu.Item key="system-users">系统用户</Menu.Item>
-                        <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
-                        <Menu.Item key="system-services">系统服务</Menu.Item>
-                        <Menu.Item key="system-software">系统软件</Menu.Item>
-                        <Menu.Item key="fim">文件完整性检测</Menu.Item>
-                        <Menu.Item key="applications">应用</Menu.Item>
-                        <Menu.Item key="kernel-modules">内核模块</Menu.Item>
+                        <Menu.Item key="hostoverview">主机概览</Menu.Item>
+                        <Menu.Item key="container">安全告警</Menu.Item>
+                        <Menu.Item key="open-ports">漏洞风险</Menu.Item>
+                        <Menu.Item key="running-processes">基线风险</Menu.Item>
+                        <Menu.Item key="system-users">运行时安全告警</Menu.Item>
+                        <Menu.Item key="scheduled-tasks">病毒查杀</Menu.Item>
+                        <Menu.Item key="system-services">性能监控</Menu.Item>
+                        <Menu.Item key="system-software">资产指纹</Menu.Item>
                         {/* 可以根据需要添加更多的Menu.Item */}
                         {/* 使用透明div作为flex占位符 */}
                         <div style={{ flexGrow: 1 }}></div>
                         
                     </Menu>
                     {/* 渲染当前激活的子面板 */}
-                    <Card>{this.renderCurrentPanel()}</Card>
+                    <Card style={{backgroundColor: '#F6F7FB' }}
+                    >{this.renderCurrentPanel()}
+                    </Card>
                 </Row>
                 </div>
             </div>
@@ -1160,4 +1145,4 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     }
 }
 
-export default AssetFingerprint;
+export default withRouter(DetailsPage);

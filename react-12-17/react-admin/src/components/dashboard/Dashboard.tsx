@@ -1,8 +1,4 @@
-/**
- * Created by hao.cheng on 2017/5/3.
- */
 import React from 'react';
-import './card.less'; // 确保路径正确
 import { Row, Col, Card, Statistic,Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
@@ -11,6 +7,7 @@ import DataCard from '../DataCard';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+//import './card.less'; // 确保路径正确
 
 
 interface StatusItem {
