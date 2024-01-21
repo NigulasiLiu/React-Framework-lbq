@@ -166,26 +166,6 @@ class ContainerCluster extends React.Component<{}, FimState> {
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>容器集群</h2>
                             </div>
-                            {/* <div style={{ marginBottom: 16 }}>
-                                <Input.Search
-                                placeholder="请选择筛选条件并搜索"
-                                onSearch={this.handleSearch}//
-                                style={{ width: '100%' }}
-                                />
-                            </div>
-                            <Table
-                                rowSelection={rowSelection} // 应用 rowSelection 配置
-                                //locale={{ emptyText: 'No Data' }}
-                                //bordered
-                                className="customTable"
-                                dataSource={dataSource}
-                                columns={columns}
-                                rowClassName={(record, index) => {
-                                if (this.state.deleteIndex === record.key)
-                                    return 'animated zoomOutLeft min-black';
-                                return 'animated fadeInRight';
-                                }}
-                            /> */}
                             <DataDisplayTable
                                 apiEndpoint="http://localhost:5000/api/files/hostinventory"
                                 columns={this.containerColumns}

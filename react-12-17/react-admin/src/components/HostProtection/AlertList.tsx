@@ -11,7 +11,11 @@ const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
 
-type HostInventoryProps = {};
+type HostInventoryProps = {
+    apiEndpoint:string;
+    columns:any[];
+    currentPanel:string;
+};
 type HostInventoryState = {
     dataSource: any[];
     count: number;
@@ -54,28 +58,6 @@ interface StatusItem {
     label: string;
     value: number;
 }
-
-// Define an interface for the props expected by the StatusPanel component
-// interface StatusPanelProps {
-//     statusData: StatusItem[];
-//     orientation: 'horizontal' | 'vertical';
-//   }
-// export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
-//     return (
-//         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
-//         <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
-//             {statusData.map((status, index) => (
-//                 <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//                     <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
-//                     <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-//                     <span>{status.value}</span>
-//                 </div>
-//             ))}
-//         </div>//</div>
-
-//     );
-// };
-// 内核模块表的列定义
 
 interface StatusPanelProps {
     statusData: StatusItem[];
@@ -174,7 +156,7 @@ const hostalertColumns = [
     },
 ];
 
-class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
+class AlertList extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
         super(props);
         this.columns = [
@@ -255,41 +237,6 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
         ];
         this.state = {
             dataSource: [
-                // {
-                //     key: '0',
-                //     hostname: 'CPU使用率过高',
-                //     label: '-',
-                //     group: 'default',
-                //     OStype: 'Windows',
-                //     risks: {
-                //         warning1: 0,
-                //         warning2: 1,
-                //         warning3: 2
-                //     },
-                //     status: '离线',
-                //     clientUsage: '32',
-                //     updateTime: '18:00, 2023 12 16',
-                // },  
-                {
-                    key: '2',
-                    alarmName: '硬盘使用率过高',
-                    affectedAsset: '服务器Y',
-                    alarmType: '暴力破解',
-                    level: '中风险',
-                    status: '未处理',
-                    occurrenceTime: '2023-12-28 09:15:00',
-                    action: '查看详情'
-                },
-                {
-                    key: '3',
-                    alarmName: '应用程序崩溃',
-                    affectedAsset: '应用服务器Z',
-                    alarmType: '恶意破坏',
-                    level: '紧急',
-                    status: '已处理',
-                    occurrenceTime: '2023-12-28 10:30:00',
-                    action: '查看详情'
-                }
             ],
             count: 2,
             deleteIndex: -1,
@@ -354,20 +301,6 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
             count: count + 1,
         });
     };
-
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState(prevState => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) => (i === index ? index : val)),
-        }));
-    };
-
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
     handleExport = () => {
         const { dataSource, selectedRowKeys } = this.state;
 
@@ -410,7 +343,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
     render() {
         const { dataSource, selectedRowKeys, selectedDateRange } = this.state;
         // Conditional button style
-
+        const { apiEndpoint, columns } = this.props;
         const filteredDataSource = dataSource.filter(item => {
             // 解析 occurrenceTime 字符串为 moment 对象
             const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
@@ -435,7 +368,6 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                {/* <BreadcrumbCustom breads={['主机和容器防护', '告警列表']} /> */}
                 <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                     <Col className="gutter-row" md={24}>
                     <Card /*title="主机状态分布" 产生分界线*/
@@ -449,7 +381,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                                     bordered={false}
                                     style={{
                                         height: '100px',
-                                        width: '570px',
+                                        width: '520px',
                                         minWidth: '200px',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -457,11 +389,25 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                                         backgroundColor: '#F6F7FB',
                                     }}
                                 >
+                                    {/* <Row style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                                        <Col style={{ marginRight: '350px'}} span={6}>
+                                            <Statistic title={<span>待处理告警</span>} value={1} />
+                                        </Col>
+                                        <Col  span={4}>
+                                            <div style={{ marginLeft: '350px',marginRight: '-150px' }}>
+                                            <StatusPanel statusData={statusData} orientation="vertical"/>
+                                            </div>   
+                                        </Col> 
+                                    </Row> */}
                                     <Row style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Col style={{ marginRight: '350px'}} span={12}>
                                             <Statistic title={<span>待处理告警</span>} value={1} />
                                         </Col>
+                                        {/* <Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <StatusPanel statusData={statusData} orientation="vertical" />
+                                        </Col> */}
                                     </Row>
+
                                 </Card>
                             </Col>
                             <Col className="gutter-row" md={7}>
@@ -469,7 +415,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                                 bordered={false}
                                 style={{
                                     height: '100px',
-                                    width: '400px',
+                                    width: '360px',
                                     minWidth: '200px', // 最小宽度300px，而非100px
                                     display: 'flex',
                                     alignItems: 'center',
@@ -479,7 +425,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                                 >
                                 <Row>
                                     <Col style={{ marginRight: '250px' }} span={24}>
-                                        <Statistic title={<span>集群</span>} value={0} />
+                                        <Statistic title={<span>累计处理的告警</span>} value={0} />
                                     </Col>
                                     
                                 </Row>
@@ -490,7 +436,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                                 bordered={false}
                                 style={{
                                     height: '100px',
-                                    width: '400px',
+                                    width: '370px',
                                     minWidth: '200px', // 最小宽度300px，而非100px
                                     display: 'flex',
                                     alignItems: 'center',
@@ -500,7 +446,7 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                                 >
                                 <Row>
                                     <Col style={{ marginRight: '250px' }} span={24}>
-                                        <Statistic title={<span>容器</span>} value={0} />
+                                        <Statistic title={<span>白名单规则数</span>} value={0} />
                                     </Col>
                                     
                                 </Row>
@@ -522,10 +468,10 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
                             </button>
                             </div>
                             <DataDisplayTable
-                                apiEndpoint="http://localhost:5000/api/files/hostalertlist"
-                                externalDataSource={dataSource}
-                                columns={hostalertColumns}
-                                currentPanel={"hostAlertlist"}
+                                apiEndpoint={this.props.apiEndpoint}
+                                //externalDataSource={dataSource}
+                                columns={this.props.columns}
+                                currentPanel={this.props.currentPanel}
                                 selectedRowKeys={this.state.selectedRowKeys}
                                 onSelectChange={(keys: any) => this.onSelectChange(keys)}
                             />
@@ -538,4 +484,4 @@ class gjlb extends React.Component<HostInventoryProps, HostInventoryState> {
     }
 }
 
-export default gjlb;
+export default AlertList;

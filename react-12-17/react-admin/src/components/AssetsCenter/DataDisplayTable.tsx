@@ -17,7 +17,7 @@ interface DataDisplayTableProps {
     apiEndpoint: string;
     externalDataSource?: GenericDataItem[]; // 接口无数据时，可直接接受预定义的样例数据
     columns: any[];
-    currentPanel?: string; // 新增一个可选的currentPanel属性
+    currentPanel?: string; 
     timeColumnIndex?: string[];
     rankLabel?: string; //设定每个panel需要排序的的字段用于展示在overview
     selectedRowKeys?: React.Key[]; // 可选属性，代表被选中行的keys，用于控制独立的key
@@ -29,11 +29,6 @@ interface DataDisplayTableProps {
     sqlTableName?:string;
     fields?:string[];
 }
-
-interface GenericDataItem {
-    [key: string]: any;
-}
-
 interface DataDisplayTableState {
     dataSource: GenericDataItem[];
     selectedRowKeys: React.Key[];
@@ -49,6 +44,11 @@ interface DataDisplayTableState {
     selectedSearchField:string;
 }
 
+
+interface GenericDataItem {
+    [key: string]: any;
+}
+
 class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDisplayTableState> {
     constructor(props: DataDisplayTableProps) {
         super(props);
@@ -59,8 +59,6 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             searchQuery: '',
             selectedApplicationType: null,
             selectedDateRange: [null,null],
-
-            
             currentPage: 1, // 当前页数
             pageSize: 12, // 每页显示的行数
             selectedSearchField:'',
@@ -177,55 +175,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         }
     };
 
-    // fetchLatestData = async () => {
-    //     try {
-    //         const { apiEndpoint, hostName,sqlTableName,fields } = this.props;
-    //         let fieldsQuery = fields && fields.length > 0 ? fields.join(',') : '*';
-    //         let endpoint = `${apiEndpoint}?table=${sqlTableName}&fields=${fieldsQuery}`;
-    
-    //         const response = await axios.get(endpoint);
-    //                     // 检查响应中的数据是否为空
-    //                     if (response.data && response.data.length > 0) {
-    //                         const rankLabel = this.props.rankLabel ?? 'defaultRankField'; // 使用 props 中的 rankLabel 或默认值
-    //                         const sortedData = response.data.sort((a: any, b: any) => {
-    //                             // 如果 rankLabel 字段不存在，则视为 0
-    //                             const aValue = a[rankLabel] ?? 0;
-    //                             const bValue = b[rankLabel] ?? 0;
-    //                             return bValue - aValue;
-    //                         });
-            
-    //                         // 获取排序后的前五条数据
-    //                         const topFiveData = sortedData.slice(0, 5);
-            
-    //                         this.setState({
-    //                             //dataSource: response.data,
-    //                             dataSource: this.convertUnixTimeColumns(response.data),
-    //                             lastUpdated: new Date().toLocaleString(),
-    //                         });
-    //                         //this.props.currentPanel可能为空，在加一层判断
-    //                         if (this.props.onTopDataChange && this.props.currentPanel) {
-    //                             this.props.onTopDataChange(this.props.currentPanel, topFiveData);
-    //                         }
-    //                     } else {
-    //                         // 如果数据为空，则设置dataSource为空数组，并将lastUpdated设置为null
-    //                         this.setState({
-    //                             dataSource: [],
-    //                             lastUpdated: null,
-    //                         });
-    //                     }
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-            
-    //         const externalData = this.props.externalDataSource;
-    //         if (externalData && externalData.length > 0) {
-    //             this.setState({
-    //             dataSource: externalData,
-    //             lastUpdated: new Date().toLocaleString(),
-    //             });
-    //         }
-    //     }
-        
-    // };
+
     extractFieldVarieties = <T extends keyof GenericDataItem>(fieldName: T): Array<{text: string, value: string}> => {
         const { dataSource } = this.state;
         const fieldVarieties = new Set<GenericDataItem[T]>();
@@ -478,7 +428,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         const currentData = this.state.dataSource.slice(startIndex, endIndex);
 
         return (//Table的宽度被设置为1430px
-            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1430px', maxWidth: '100%' }}>
+            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1330px', maxWidth: '100%' }}>
                 <Row gutter={[12, 6]} style={{ marginTop: '10px'}}>
                     {/* Conditionally render the sidebar for applications */}
                     {currentPanel === 'applications' && (
@@ -528,7 +478,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                     <Input.Search
                                         placeholder="搜索已选字段"
                                         onSearch={this.handleSearch}
-                                        style={{ width: '77%' }}
+                                        style={{ width: currentPanel === 'applications' ? '67%' : '77%' }}
                                     />
                                     <Button
                                         icon={<SyncOutlined />}

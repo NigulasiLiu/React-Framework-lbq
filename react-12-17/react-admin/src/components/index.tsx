@@ -15,16 +15,16 @@ import Tabs from './ui/Tabs';
 import Banners from './ui/banners';
 import Drags from './ui/Draggable';
 import Dashboard from './dashboard/Dashboard';
-import hcpgjlb from './hcp/gjlb';
-import hcpbmd from './hcp/bmd';
+import hcpAlertList from './HostProtection/HostAlertList';
+import hcpWhiteList from './HostProtection/HostWhiteList';
 import ARPgjlb from './ARP/rqjc/gjlb';
 import ARPbmd from './ARP/rqjc/bmd';
-import CCPgjlb from './CCP/rqjc/gjlb';
-import CCPbmd from './CCP/rqjc/bmd';
+import CCPgjlb from './CCP/CCPAlertList';
+import CCPbmd from './CCP/CCPWhiteList';
 import configuration from './ARP/configuration';
 import status from './ARP/status';
-import Ldlb from './hcp/Ldlb';
-import jxjc from './hcp/jxjc';
+import VulnerabilityList from './HostProtection/VulnerabilityList';
+import BaselineDetectList from './HostProtection/BaselineDetectList';
 import HostInventory from './AssetsCenter/HostInventory';
 import ContainerCluster from './AssetsCenter/ContainerCluster'
 import AssetFingerprint from './AssetsCenter/AssetFingerprint';
@@ -72,15 +72,15 @@ export default {
     Sub1,
     Sub2,
     Env,
-    hcpgjlb,
-    hcpbmd,
+    hcpAlertList,
+    hcpWhiteList,
     ARPgjlb,
     ARPbmd,
     CCPgjlb,
     CCPbmd,
     configuration,
     status,
-    Ldlb,
-    jxjc,
+    VulnerabilityList,
+    BaselineDetectList,
     DetailsPage
 } as any;

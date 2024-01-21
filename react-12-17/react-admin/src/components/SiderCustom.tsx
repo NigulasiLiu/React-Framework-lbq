@@ -77,6 +77,8 @@ const SiderCustom = (props: SiderCustomProps) => {
             trigger={null}
             breakpoint="lg"
             collapsed={collapsed}
+            collapsedWidth={50} // 设置折叠状态下的宽度
+            width={165} // 设置展开状态下的宽度
             style={{
                 overflowY: 'auto',
                 borderRight: '2px solid #E5E6EB', // 添加了右侧轮廓线
@@ -86,10 +88,10 @@ const SiderCustom = (props: SiderCustomProps) => {
             {/* Logo和Title的容器 */}
             <div className="logo-title-container" 
             style={{ padding: '1px,1px', margin: '0px,0px',display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-                <img src={logo} alt="Logo" style={{ width: '80px', height: '80px', marginRight: '8px' }} />
+                <img src={logo} alt="Logo" style={{ width: '60px', height: '60px', marginRight: '10px' }} />
                 <h2 style={{ fontFamily: "'YouYuan', sans-serif", 
                 fontWeight: 'bold',padding: '22px,6px', margin: '10px,0px', color: 'rgba(0, 0, 0, 0.85)', 
-                display: 'flex', alignItems: 'center' }}>Security Platform</h2>
+                display: 'flex', alignItems: 'center',fontSize:'16px' }}>Security Platform</h2>
             </div>
             <SiderMenu
                 menus={[...routes.menus, ...smenus]}

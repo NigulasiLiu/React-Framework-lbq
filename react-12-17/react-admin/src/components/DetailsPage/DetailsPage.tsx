@@ -4,6 +4,8 @@ import OverviewPanel from '../AssetsCenter/OverviewPanel';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
 import { RouteComponentProps, withRouter  } from 'react-router-dom';
 import HostOverview from './HostOverview';
+import HostDetailsTable from './HostDetailsTable';
+import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../../utils/tableUtils';
 // Define an interface for the individual status item
 interface StatusItem {
     color: string;
@@ -798,16 +800,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             areRowsSelected: false,
             panelSelectedRowKeys: {
                 HostOverview: [],
-                fim: [],
-                container: [],
-                'open-ports': [],
-                'running-processes': [],
-                'system-users': [],
-                'scheduled-tasks': [],
-                'system-services': [],
-                'system-software': [],
-                applications: [],
-                'kernel-modules': [],
+                'hostalertlist': [],
+                'vulnerabilityalertlist': [],
+                'baselineDetectalertlist': [],
+                'runningalertlist': [],
+                'virusscanning': [],
+                'assetfingerprint': [],
                 // 根据您的应用添加或删除面板
             },
         };
@@ -958,150 +956,79 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     changePanel={this.changePanel}
                     />
                 );
-            case 'fim':
+            case 'hostalertlist':
                 return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/fim"
+                    <HostDetailsTable
+                    route="http://localhost:5000/api/files/logs/hostalertlist"
+                    columns={hostalertColumns}
+                    currentPanel={currentPanel}
+                    titleName="告警概览"
+                    selectedRowKeys={this.state.panelSelectedRowKeys.hostalertlist}
+                    onSelectChange={(keys: any) => this.onSelectChange(keys, 'hostalertlist')}
+
+                    />
+                );    
+            case 'vulnerabilityalertlist':
+                return (
+                    <HostDetailsTable
+                    route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
+                    columns={vulnerabilityColumns}
+                    currentPanel={currentPanel}
+                    titleName="漏洞概览"
+                    selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
+                    onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
+
+                    />
+                );   
+            case 'baselineDetectalertlist':
+                return (
+                    <HostDetailsTable
+                    route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
+                    columns={baselineDetectColumns}
+                    currentPanel={currentPanel}
+                    titleName="基线概览"
+                    selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
+                    onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
+
+                    />
+                );  
+                case 'runningalertlist':
+                    return (
+                        <HostDetailsTable
+                        route="http://localhost:5000/api/files/logs/runningalertlist"
+                        columns={hostalertColumns}
+                        currentPanel={currentPanel}
+                        titleName="告警概览"
+                        selectedRowKeys={this.state.panelSelectedRowKeys.runningalertlist}
+                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'runningalertlist')}
+    
+                        />
+                    );                  
+                case 'virusscanning':
+                    return (
+                        <HostDetailsTable
+                        route="http://localhost:5000/api/files/logs/virusscanning"
                         columns={fimColumns}
                         currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel="mtime"
-                        timeColumnIndex={['ctime','mtime','atime']}
-
-                        selectedRowKeys={this.state.panelSelectedRowKeys.fim}
-                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'fim')}
-
-                        hostName={this.state.selectedHostName}
-                    />
-                );
-            case 'container':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/container"
-                        columns={containerColumns}
+                        titleName="病毒扫描"
+                        selectedRowKeys={this.state.panelSelectedRowKeys.virusscanning}
+                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'virusscanning')}
+    
+                        />
+                    );                  
+                case 'assetfingerprint':
+                    return (
+                        <HostDetailsTable
+                        route="http://localhost:5000/api/files/logs/assetfingerprint"
+                        columns={fimColumns}
                         currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-
-                        selectedRowKeys={this.state.panelSelectedRowKeys.container}
-                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'container')}
-                    />
-                );
-            case 'open-ports':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/open-ports"
-                        columns={openPortsColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys['open-ports']}
-                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'open-ports')}
-                    />
-                );
-            case 'running-processes':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/running-processes"
-                        columns={runningProcessesColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys['running-processes']}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'running-processes')}
-                    />
-                );
-            case 'system-users':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/system-users"
-                        columns={systemUsersColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys['system-users']}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'system-users')}
-                    />
-                );
-            case 'scheduled-tasks':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/scheduled-tasks"
-                        columns={scheduledTasksColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys['scheduled-tasks']}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'scheduled-tasks')}
-                    />
-                );
-            case 'system-services':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/system-services"
-                        columns={systemServicesColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys['system-services']}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'system-services')}
-                    />
-                );
-            case 'system-software':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/system-software"
-                        columns={systemSoftwareColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys['system-software']}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'system-software')}
-                    />
-                );
-            case 'applications':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/applications"
-                        columns={applicationsColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                         
-                        selectedRowKeys={this.state.panelSelectedRowKeys.applications}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'applications')}
-                    />
-                );
-            case 'kernel-modules':
-                return (
-                    <DataDisplayTable
-                        apiEndpoint="http://localhost:5000/api/files/kernel-modules"
-                        columns={kernelModulesColumns}
-                        currentPanel={currentPanel}
-
-                        onTopDataChange={this.onTopDataChange}
-                        rankLabel=""
-                        selectedRowKeys={this.state.panelSelectedRowKeys['kernel-modules']}
-                        onSelectChange={(keys) => this.onSelectChange(keys, 'kernel-modules')}
-                    />
-                );
-            default:
+                        titleName="资产指纹"
+                        selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
+                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
+    
+                        />
+                    );     
+                default:
                 return (
                     <HostOverview
                     changePanel={this.changePanel}
@@ -1122,13 +1049,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                     >
                         <Menu.Item key="hostoverview">主机概览</Menu.Item>
-                        <Menu.Item key="container">安全告警</Menu.Item>
-                        <Menu.Item key="open-ports">漏洞风险</Menu.Item>
-                        <Menu.Item key="running-processes">基线风险</Menu.Item>
-                        <Menu.Item key="system-users">运行时安全告警</Menu.Item>
-                        <Menu.Item key="scheduled-tasks">病毒查杀</Menu.Item>
-                        <Menu.Item key="system-services">性能监控</Menu.Item>
-                        <Menu.Item key="system-software">资产指纹</Menu.Item>
+                        <Menu.Item key="hostalertlist">安全告警</Menu.Item>
+                        <Menu.Item key="vulnerabilityalertlist">漏洞风险</Menu.Item>
+                        <Menu.Item key="baselineDetectalertlist">基线风险</Menu.Item>
+                        <Menu.Item key="runningalertlist">运行时安全告警</Menu.Item>
+                        <Menu.Item key="virusscanning">病毒查杀</Menu.Item>
+                        <Menu.Item key="performancemonitor">性能监控</Menu.Item>
+                        <Menu.Item key="assetfingerprint">资产指纹</Menu.Item>
                         {/* 可以根据需要添加更多的Menu.Item */}
                         {/* 使用透明div作为flex占位符 */}
                         <div style={{ flexGrow: 1 }}></div>

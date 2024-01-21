@@ -365,14 +365,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <Row gutter={[8, 16]}>
-                    <Col span={2}>
+                    <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -394,14 +394,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -427,7 +427,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    <Col span={3}>
                     {/* <DataCard
                         title="运行进程"
                         value={13}
@@ -445,9 +445,9 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -473,14 +473,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -506,14 +506,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -539,14 +539,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -572,14 +572,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    {/* <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -604,13 +604,13 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 </Col>
                             </Row>
                         </Card>
-                    </Col>
+                    </Col> */}
                     <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '160px',
+                                width: '150px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -619,7 +619,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         >
                             <Row>
                                 <Col pull={2} span={22}>
-                                    <Statistic title={<span>文件完整性校验</span>} value={0} />
+                                    <Statistic title={<span>完整性校验</span>} value={0} />
                                 </Col>
                                 <Col
                                     pull={0}
@@ -636,14 +636,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Row>
                         </Card>
                     </Col>
-                    <Col span={2}>
+                    <Col span={3}>
                         <Card
                             bordered={false}
                             style={{
                                 height: '75px',
-                                width: '110px',
-                                minWidth: 110, // 最小宽度100px
-                                maxWidth: 110, // 最大宽度200px
+                                width: '150px',
+                                minWidth: 80, // 最小宽度100px
+                                maxWidth: 200, // 最大宽度200px
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',

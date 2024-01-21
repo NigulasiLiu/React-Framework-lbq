@@ -49,7 +49,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
         const color = colors[index] || 'red'; // 默认颜色为红色，如果没有指定颜色
 
         return (
-          <div key={index} style={{ marginBottom: '60px' }}> {/* 增加行与行之间的距离 */}
+          <div key={index} style={{ marginBottom: '40px' }}> {/* 增加行与行之间的距离 */}
             {/* Label with sequence number and YouYuan font */}
             <div style={{ fontFamily: 'YouYuan', marginBottom: '10px' }}>
               {`${index + 1}. ${label}`} {/* 添加序号 */}
@@ -139,7 +139,7 @@ class Dashboard extends React.Component<DashboardProps> {
           <Card /*title="主机状态分布" 产生分界线*/
             style={{fontWeight: 'bolder', width: '100%', height:200}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+                <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
             </div>
             <Row gutter={[6, 6]}>
             <Col className="gutter-row" md={6}>
@@ -147,7 +147,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 bordered={false}
                 style={{
                     height: '100px',
-                    width: '230px',
+                    width: '200px',
                     minWidth: '200px', // 最小宽度300px，而非100px
                     display: 'flex',
                     alignItems: 'center',
@@ -168,7 +168,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 bordered={false}
                 style={{
                     height: '100px',
-                    width: '230px',
+                    width: '200px',
                     minWidth: '200px', // 最小宽度300px，而非100px
                     display: 'flex',
                     alignItems: 'center',
@@ -188,7 +188,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 bordered={false}
                 style={{
                     height: '100px',
-                    width: '230px',
+                    width: '200px',
                     minWidth: '200px', // 最小宽度300px，而非100px
                     display: 'flex',
                     alignItems: 'center',
@@ -208,7 +208,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 bordered={false}
                 style={{
                     height: '100px',
-                    width: '230px',
+                    width: '200px',
                     minWidth: '200px', // 最小宽度300px，而非100px
                     display: 'flex',
                     alignItems: 'center',
@@ -231,18 +231,18 @@ class Dashboard extends React.Component<DashboardProps> {
             {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
             <Col className="gutter-row" md={24}>
             <Card /*title="主机状态分布" 产生分界线*/
-              style={{fontWeight: 'bolder', width: '100%', height:400}}>
+              style={{fontWeight: 'bolder', width: '100%', height:350}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                  <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>入侵告警</h2>
+                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>入侵告警</h2>
               </div>
               <Row gutter={[6, 6]}>
-                <Col span={19}>
+                <Col span={18}>
                 <div style={{
                     // borderTop: '2px solid #E5E6EB',
                     // borderBottom: '2px solid #E5E6EB',
                     // borderLeft: '2px solid #E5E6EB',
                     borderRight: '3px solid #E5E6EB'}}>
-                <ResponsiveContainer width="98%" height={300}>
+                <ResponsiveContainer width="98%" height={250}>
                   <LineChart data={alertData}>
                     <XAxis dataKey="day" />
                     <YAxis hide /> {/* 隐藏 Y 轴 */}
@@ -254,7 +254,7 @@ class Dashboard extends React.Component<DashboardProps> {
 
                 </div>
                 </Col>
-                <Col span={5}>
+                <Col span={6}>
                 <DataCard
                         title="主机和容器安全告警"
                         value={5}
@@ -264,8 +264,8 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                           { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
-                        panelId="/app/hcp/rqjc/gjlb"
-                        height="85px"
+                        panelId="/app/HostProtection/rqjc/gjlb"
+                        height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
                         navigate={true}
@@ -285,7 +285,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
                         panelId="/app/ARP/rqjc/gjlb"
-                        height="85px"
+                        height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
                         navigate={true}
@@ -305,7 +305,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
                         panelId="/app/CCP/rqjc/gjlb"
-                        height="85px"
+                        height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
                         navigate={true}
@@ -352,18 +352,18 @@ class Dashboard extends React.Component<DashboardProps> {
           <Col className="gutter-row" md={24}>
 
           <Card /*title="主机状态分布" 产生分界线*/
-              style={{fontWeight: 'bolder', width: '100%', height:400}}>
+              style={{fontWeight: 'bolder', width: '100%', height:350}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                  <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
+                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
               </div>
               <Row gutter={[6, 6]}>
-                <Col span={19}>
+                <Col span={18}>
                 <div style={{
                     // borderTop: '2px solid #E5E6EB',
                     // borderBottom: '2px solid #E5E6EB',
                     // borderLeft: '2px solid #E5E6EB',
                     borderRight: '3px solid #E5E6EB'}}>
-                <ResponsiveContainer width="98%" height={300}>
+                <ResponsiveContainer width="98%" height={250}>
                   <LineChart data={alertData}>
                     <XAxis dataKey="day" />
                     <YAxis hide /> {/* 隐藏 Y 轴 */}
@@ -375,7 +375,7 @@ class Dashboard extends React.Component<DashboardProps> {
 
                 </div>
                 </Col>
-                <Col span={5}>
+                <Col span={6}>
                 <DataCard
                         title="待处理高可利用漏洞"
                         value={5}
@@ -385,8 +385,8 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                           { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
-                        panelId="/app/hcp/rqjc/gjlb"
-                        height="85px"
+                        panelId="/app/HostProtection/rqjc/gjlb"
+                        height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
                         navigate={true}
@@ -406,9 +406,9 @@ class Dashboard extends React.Component<DashboardProps> {
             {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
             <Col className="gutter-row" md={24}>
             <Card /*title="主机状态分布" 产生分界线*/
-              style={{fontWeight: 'bolder', width: '100%', height:400}}>
+              style={{fontWeight: 'bolder', width: '100%', height:330}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                  <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基线风险 Top3</h2>
+                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>基线风险 Top3</h2>
               <StatusPanel statusData={riskData} orientation="horizontal" />
               </div>
               <Row gutter={[6, 6]}>
@@ -426,9 +426,9 @@ class Dashboard extends React.Component<DashboardProps> {
       <Col className="gutter-row" md={24}>
         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
         <Card /*title="OWL 介绍*/
-          style={{fontWeight: 'bolder', width: '100%', height:380,backgroundColor:'#ffffff'}}>
+          style={{fontWeight: 'bolder', width: '100%', height:350,backgroundColor:'#ffffff'}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>OWL Security</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>OWL Security</h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
               <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '6px' }}>
@@ -441,19 +441,19 @@ class Dashboard extends React.Component<DashboardProps> {
               </h2>
           </div>
           <div style={{ marginBottom: 3}}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3, marginLeft: 16,fontWeight: 'bold'}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2, marginLeft: 16,fontWeight: 'bold'}}>
               <p><GithubOutlined /> <a 
               style={{ color: '#1964F5' }}
               href="https://github.com" 
               target="_blank" 
               rel="noopener noreferrer">GitHub</a></p>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 ,marginLeft: 16,fontWeight: 'bold'}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 ,marginLeft: 16,fontWeight: 'bold'}}>
               <p><GlobalOutlined /> <a 
               style={{ color: '#1964F5' }}
               href="https://yourwebsite.com" target="_blank" rel="noopener noreferrer">Official website</a></p>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 ,marginLeft: 16,fontWeight: 'bold'}}>    
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 ,marginLeft: 16,fontWeight: 'bold'}}>    
               <p><MailOutlined /> <a 
               style={{ color: '#1964F5' }}
               href="mailto:elkeid@bytedance.com">elkeid@bytedance.com</a></p>
@@ -465,10 +465,10 @@ class Dashboard extends React.Component<DashboardProps> {
       <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
         <Col className="gutter-row" md={24}>
         <Card /*title="主机风险扇形图" */
-          style={{fontWeight: 'bolder', width: '100%', height:250}}>
+          style={{fontWeight: 'bolder', width: '100%', height:220}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
-              <Col pull={0} span={2} style={{ position: 'relative', top: '-5px',right:'220px' }}>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
+              <Col pull={0} span={2} style={{ position: 'relative', top: '-6px',right:'210px' }}>
                 <Button
                   type="link"
                   style={{ color: '#000' }}
@@ -477,7 +477,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 />
               </Col>
           </div>
-          <Row gutter={[6, 6]}>
+          <Row style={{marginTop:'-25px'}} gutter={[6, 6]}>
             <Col span={8}>
               <ResponsiveContainer width="100%" height={150}>
                   <PieChart>
@@ -489,14 +489,14 @@ class Dashboard extends React.Component<DashboardProps> {
                       fill="#8884d8"
                       paddingAngle={5}
                       dataKey="value"
-                      outerRadius={56} // 如果悬停则扇形半径变大
+                      outerRadius={50} // 如果悬停则扇形半径变大
                       >
                       {alertDataTwo.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                       <Label value={'待处理告警:'+`${Math.round(alertDataTwo[1].value/(alertDataTwo[0].value+alertDataTwo[1].value)*100)}%`} 
                       position="center" 
-                      style={{ fontSize: '14px' }}
+                      style={{ fontSize: '11px' }}
                       />
                       </Pie>
 
@@ -515,14 +515,14 @@ class Dashboard extends React.Component<DashboardProps> {
                       fill="#8884d8"
                       paddingAngle={5}
                       dataKey="value"
-                      outerRadius={56} // 如果悬停则扇形半径变大
+                      outerRadius={50} // 如果悬停则扇形半径变大
                       >
                       {alertDataThree.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                       <Label value={'高可用漏洞:'+`${Math.round(alertDataThree[1].value/(alertDataThree[0].value+alertDataThree[1].value)*100)}%`} 
                       position="center" 
-                      style={{ fontSize: '14px' }}
+                      style={{ fontSize: '11px' }}
                       />
                       </Pie>
 
@@ -541,14 +541,14 @@ class Dashboard extends React.Component<DashboardProps> {
                       fill="#8884d8"
                       paddingAngle={5}
                       dataKey="value"
-                      outerRadius={56} // 如果悬停则扇形半径变大
+                      outerRadius={50} // 如果悬停则扇形半径变大
                       >
                       {alertDataFour.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                       <Label value={'待加固基线:'+`${Math.round(alertDataFour[1].value/(alertDataFour[0].value+alertDataFour[1].value)*100)}%`} 
                       position="center" 
-                      style={{ fontSize: '14px' }}
+                      style={{ fontSize: '11px' }}
                       />
                       </Pie>
 
@@ -564,7 +564,7 @@ class Dashboard extends React.Component<DashboardProps> {
         <Card /*title="Agent 概览*/
           style={{fontWeight: 'bolder', width: '100%', height:330}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>Agent概览</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>Agent概览</h2>
           </div>
           <Row gutter={[6, 6]}>
             <Col className="gutter-row" span={12}>
@@ -575,7 +575,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -589,7 +589,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -605,7 +605,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -619,7 +619,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -634,9 +634,9 @@ class Dashboard extends React.Component<DashboardProps> {
       </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
         <Col className="gutter-row" md={24}>
         <Card /*title="后端服务状态*/
-          style={{fontWeight: 'bolder', width: '100%', height:440}}>
+          style={{fontWeight: 'bolder', width: '100%', height:330}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>后端服务状态</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>后端服务状态</h2>
           </div>
           <Row gutter={[6, 6]}>
             <Col className="gutter-row" span={12}>
@@ -647,7 +647,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -661,7 +661,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -677,7 +677,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}
@@ -691,7 +691,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       valueItem={[]}
                       panelId=""
                       height="100px"
-                      width="170px"
+                      width="155px"
                       backgroundColor="#F6F7FB"
                       navigate={true}
                       showTopBorder={false}

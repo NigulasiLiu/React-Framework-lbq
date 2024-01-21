@@ -12,7 +12,11 @@ type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
 
 
-type HostInventoryProps = {};
+type HostInventoryProps = {
+    apiEndpoint:string;
+    columns:any[];
+    currentPanel:string;
+};
 type HostInventoryState = {
     dataSource: any[];
     count: number;
@@ -106,7 +110,7 @@ const whiteColumns = [
 
 ];
 
-class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
+class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
         super(props);
         this.columns = [
@@ -286,7 +290,7 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/>
+                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
    
                     <Col md={24}>
                         <div className="gutter-box">
@@ -301,9 +305,21 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
                                 <div style={{ marginBottom: 16 }}>
                                     <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
                                 </div>
-                                <div className="table-container">
-                                <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={whiteColumns} />
-                                </div>
+                                <DataDisplayTable
+                                apiEndpoint={this.props.apiEndpoint}
+                                //externalDataSource={dataSource}
+                                columns={this.props.columns}
+                                currentPanel={this.props.currentPanel}
+                                selectedRowKeys={this.state.selectedRowKeys}
+                                onSelectChange={(keys: any) => this.onSelectChange(keys)}
+                            />
+                                {/* <div className="customTabler">
+                                <Table 
+                                rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} 
+                                bordered 
+                                dataSource={filteredDataSource} 
+                                columns={whiteColumns} />
+                                </div> */}
                             </Card>
                         </div>
                     </Col>
@@ -313,4 +329,4 @@ class bmd extends React.Component<HostInventoryProps, HostInventoryState> {
     }
 }
 
-export default bmd;
+export default WhiteList;

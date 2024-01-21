@@ -44,8 +44,8 @@ type SiderMenuProps = MenuProps & {
 
 const SiderMenu = ({ menus, ...props }: SiderMenuProps) => {
     return (
-      <div className="sider-menu"> {/* 应用了带有轮廓线的样式 */}
-        <Menu {...props} mode="inline">
+      <div className="sider-menu"> {/* 应用了带有轮廓线的样式 style={{fontSize: '13px',}}*/}
+        <Menu {...props} mode="inline" >
           {menus.map(renderMenu)}
         </Menu>
       </div>

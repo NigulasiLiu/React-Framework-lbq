@@ -554,7 +554,8 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             </ResponsiveContainer> 
                             
                             </Col>
-                            <Col span={2}> </Col>
+                            <Col span={2}> 
+                            </Col>
                             <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
                             <StatusPanel statusData={statusData} orientation="vertical"/>
                             </div>

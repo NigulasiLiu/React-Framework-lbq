@@ -45,39 +45,39 @@ const menus: {
             ],
         },
         {
-            key: '/app/hcp', //影响菜单下拉
+            key: '/app/HostProtection', //影响菜单下拉
             title: '主机和容器防护',
             icon: 'copy',
             subs: [
                 {
-                    key: '/app/hcp/rqjc',
+                    key: '/app/HostProtection/rqjc',
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/hcp/rqjc/gjlb',
+                            key: '/app/HostProtection/rqjc/hcpAlertList',
                             title: '告警列表',
-                            component: 'hcpgjlb',
+                            component: 'hcpAlertList',
                         },
                         {
-                            key: '/app/hcp/rqjc/bmd',
+                            key: '/app/HostProtection/rqjc/hcpWhiteList',
                             title: '白名单',
-                            component: 'hcpbmd',
+                            component: 'hcpWhiteList',
                         },
                     ],
                 },
                 {
-                    key: '/app/hcp/fxff',
+                    key: '/app/HostProtection/fxff',
                     title: '风险防范',
                     subs: [
                         {
-                            key: '/app/hcp/fxff/Ldlb',
+                            key: '/app/HostProtection/fxff/VulnerabilityList',
                             title: '漏洞列表',
-                            component: 'Ldlb',
+                            component: 'VulnerabilityList',
                         },
                         {
-                            key: '/app/hcp/fxff/jxjc',
+                            key: '/app/HostProtection/fxff/BaselineDetectList',
                             title: '基线检查',
-                            component: 'jxjc',
+                            component: 'BaselineDetectList',
                         },
                     ],
                 },
