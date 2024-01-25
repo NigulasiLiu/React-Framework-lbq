@@ -15,12 +15,12 @@ import Tabs from './ui/Tabs';
 import Banners from './ui/banners';
 import Drags from './ui/Draggable';
 import Dashboard from './dashboard/Dashboard';
-import hcpAlertList from './HostProtection/HostAlertList';
-import hcpWhiteList from './HostProtection/HostWhiteList';
-import ARPgjlb from './ARP/rqjc/gjlb';
-import ARPbmd from './ARP/rqjc/bmd';
-import CCPgjlb from './CCP/CCPAlertList';
-import CCPbmd from './CCP/CCPWhiteList';
+import HCPAlertList from './HostProtection/HostAlertList';
+import HCPWhiteList from './HostProtection/HostWhiteList';
+import ARPAlertList from './ARP/rqjc/ARPAlertList';
+import ARPWhiteList from './ARP/rqjc/ARPWhiteList';
+import CCPAlertList from './CCP/CCPAlertList';
+import CCPWhiteList from './CCP/CCPWhiteList';
 import configuration from './ARP/configuration';
 import status from './ARP/status';
 import VulnerabilityList from './HostProtection/VulnerabilityList';
@@ -30,7 +30,8 @@ import ContainerCluster from './AssetsCenter/ContainerCluster'
 import AssetFingerprint from './AssetsCenter/AssetFingerprint';
 import AuthBasic from './auth/Basic';
 import RouterEnter from './auth/RouterEnter';
-import VirusScanning from './cssmodule';
+import VirusScanning from './VirusScanning/VirusScanning';
+import VirusScanningWhiteList from './VirusScanning/VirusScanningWhiteList';
 import MapUi from './ui/map';
 import QueryParams from './extension/QueryParams';
 import Visitor from './extension/Visitor';
@@ -65,6 +66,7 @@ export default {
     RouterEnter,
     WysiwygBundle,
     VirusScanning,
+    VirusScanningWhiteList,
     MapUi,
     QueryParams,
     Visitor,
@@ -72,12 +74,12 @@ export default {
     Sub1,
     Sub2,
     Env,
-    hcpAlertList,
-    hcpWhiteList,
-    ARPgjlb,
-    ARPbmd,
-    CCPgjlb,
-    CCPbmd,
+    HCPAlertList,
+    HCPWhiteList,
+    ARPAlertList,
+    ARPWhiteList,
+    CCPAlertList,
+    CCPWhiteList,
     configuration,
     status,
     VulnerabilityList,

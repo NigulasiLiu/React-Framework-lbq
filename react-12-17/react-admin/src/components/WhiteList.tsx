@@ -3,9 +3,8 @@
  */
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
-import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import DataDisplayTable from './AssetsCenter/DataDisplayTable';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -296,7 +295,7 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
                         <div className="gutter-box">
                             <Card bordered={false}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                                    <h2 style={{ fontWeight: 'bold' }}>白名单</h2>
+                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>白名单</h2>
                                     <div>
                                         {/* 使用 RangePicker 替代 DatePicker */}
                                         <RangePicker onChange={this.onDateRangeChange} />

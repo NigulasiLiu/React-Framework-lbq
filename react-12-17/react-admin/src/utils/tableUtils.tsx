@@ -1,7 +1,14 @@
 import React from 'react';
 import { Tooltip } from 'antd';
+import { Select } from 'antd';
 
-interface DataType {
+const { Option } = Select;
+export interface DetailItem {
+    hostIP: string;
+    alert_type: string;
+    event_time: string;
+}
+export interface DataType {
     key: React.Key;
     hostname: string;
     label: string;
@@ -16,7 +23,7 @@ interface DataType {
     clientUsage: string;
     updateTime: string;
 }
-interface AlertDataType {
+export interface AlertDataType {
     key: React.Key;
     alarmName: string;        // 告警名称
     affectedAsset: string;    // 影响资产
@@ -26,7 +33,7 @@ interface AlertDataType {
     tz: string;
     occurrenceTime: string;   // 发生时间
   }
-  interface WhiteListColumDataType {
+  export interface WhiteListColumDataType {
     key: React.Key;
     whitelistName: string;    // 加白名称
     whitelistDescription: string; // 加白描述
@@ -36,7 +43,7 @@ interface AlertDataType {
     occurrenceTime: string;   // 发生时间
 }
 
-interface BaseLineDataType {
+export interface BaseLineDataType {
     key: React.Key;
     ip: string;                // IP
     check_name: string;        // 基线名称
@@ -46,10 +53,10 @@ interface BaseLineDataType {
     last_checked: string;      // 最新扫描时间
     instruction: string;       // 指令
   }
-interface GenericDataItem {
+export interface GenericDataItem {
     [key: string]: any;
 }
-interface Risk {
+export interface Risk {
     key: React.Key;
     name: string;
     age: string;
@@ -61,7 +68,7 @@ interface Risk {
     // Add other properties here if needed
 }
 
-interface AlertColumDataType {
+export interface AlertColumDataType {
     key: React.Key;
     alarmName: string;        // 告警名称
     affectedAsset: string;    // 影响资产
@@ -71,11 +78,171 @@ interface AlertColumDataType {
     occurrenceTime: string;   // 发生时间
 }
 
-interface StatusItem {
+export interface StatusItem {
     color: string;
     label: string;
     value: number;
 }
+
+export const hostinventoryColumns = [
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>主机ID</span>,
+        dataIndex: 'id',
+        key: 'id',
+        //width: '13%',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>主机IP</span>,
+        dataIndex: 'ip',
+        key: 'ip',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>协议</span>,
+        dataIndex: 'protocol',
+        key: 'protocol',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>开放端口</span>,
+        dataIndex: 'port',
+        key: 'port',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>服务</span>,
+        dataIndex: 'service',
+        key: 'service',
+        // render: (risks:Risk, record:any) => {
+        //     return (
+        //         <div>
+        //           <div>告警 {risks.warning1}</div>
+        //           <div>风险 {risks.warning2}</div>
+        //           <div>基线 {risks.warning3}</div>
+        //         </div>
+        //     );
+        //   }
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>服务版本</span>,
+        dataIndex: 'version',
+        key: 'version',
+        // render: (risks:Risk, record:any) => {
+        //     return (
+        //         <div>
+        //           <div>告警 {risks.warning1}</div>
+        //           <div>风险 {risks.warning2}</div>
+        //           <div>基线 {risks.warning3}</div>
+        //         </div>
+        //     );
+        //   }
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>
+            操作系统 
+            </span>,
+        dataIndex: 'ostype',
+        key: 'ostype',
+        filters: [
+          ],
+          onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    // {
+    //     title: () => <span style={{ fontWeight: 'bold' }}>客户端资源使用</span>,
+    //     dataIndex: 'clientUsage',
+    //     key: 'ip',
+    // },
+    // {
+    //     title: () => <span style={{ fontWeight: 'bold' }}>更新时刻</span>,
+    //     dataIndex: 'updateTime',
+    //     key: 'ip',
+    // },
+    // {
+    //     title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+    //     dataIndex: 'operation',
+    //     key: 'ip',
+    //     // render: (text: string, record: DataType) => (
+    //     //     <a 
+    //     //       href={'/login'} 
+    //     //       target="_blank" 
+    //     //       rel="noopener noreferrer"
+    //     //       //style={{ color: 'blue' }} // 添加颜色样式
+    //     //     >
+    //     //       查看详情
+    //     //     </a>
+    //     // ),
+    // },
+    
+    // {
+    //     title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+    //     dataIndex: 'operation',
+    //     render: (text: any, record: any, index: number) => {
+    //         return this.state.dataSource.length > 0 ? (
+    //             <Popconfirm
+    //                 title="Sure to delete?"
+    //                 onConfirm={() => this.onDelete(record, index)}
+    //             >
+    //                 <span>Delete</span>
+    //             </Popconfirm>
+    //         ) : null;
+    //     },
+    // },
+];
+
+
+
+export const fimColumns_new = [
+    {
+        title: '文件名',
+        dataIndex: 'file_path',
+        key: 'file_path',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '告警时间',
+        dataIndex: 'event_time',
+        key: 'event_time',
+        sorter: (a: any, b: any) => b.mtime - a.mtime,
+    },
+    {
+        title: '主机名',
+        dataIndex: 'hostname',
+        key: 'hostname',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '主机IP',
+        dataIndex: 'hostIP',
+        key: 'hostIP',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+        //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
+    },
+    {
+        title: '告警类型',
+        dataIndex: 'alert_type',
+        key: 'alert_type',                
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+];
 export const whiteColumns = [
     {
         title: () => <span style={{ fontWeight: 'bold' }}>加白名称</span>,
@@ -787,8 +954,110 @@ export const baselineDetectColumns = [
     //   dataIndex: 'operation',
     // },
   ];
+export const RASPProcessColums = [
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>主机名称</span>,
+    dataIndex: 'ip',
+    width: '13%',
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>进程命令行</span>,
+    dataIndex: 'check_name',
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>进程ID</span>,
+    dataIndex: 'details',
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>运行时类型</span>,
+    dataIndex: 'adjustment_requirement',
+    filters: [
+    ],
+    onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+
+    render: (text: string, record: BaseLineDataType) => (
+    <Tooltip title={record.instruction}>
+        {text}
+    </Tooltip>
+    ),
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>最后出现时间</span>,
+    dataIndex: 'details',
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>保护出现时间</span>,
+    dataIndex: 'details',
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
+    dataIndex: 'status',
+    filters: [
+    ],
+    onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+},
+{
+    title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+    dataIndex: 'operation',
+},
+];
+export const ConfigurationColums = [
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>主机标签</span>,
+        dataIndex: 'ip',
+        width: '13%',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>进程命令行</span>,
+        dataIndex: 'check_name',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>IP</span>,
+        dataIndex: 'details',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>运行时类型</span>,
+        dataIndex: 'adjustment_requirement',
+        filters: [
+        ],
+        onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+    
+        render: (text: string, record: BaseLineDataType) => (
+        <Tooltip title={record.instruction}>
+            {text}
+        </Tooltip>
+        ),
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>环境变量</span>,
+        dataIndex: 'details',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>存活时间</span>,
+        dataIndex: 'details',
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>是否开启保护</span>,
+        dataIndex: 'status',
+        filters: [
+        ],
+        onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+    },
+    {
+        title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+        dataIndex: 'operation',
+    },
+    ];
+
+// 步骤 3: 生成 columns (根据您的需求来定制)
+export const fimcolumns_2 = [
+    { title: 'Path', dataIndex: 'path', key: 'path' },
+    { title: 'Host IP', dataIndex: 'hostIP', key: 'hostIP' },
+    { title: 'Alert Type', dataIndex: 'alert_type', key: 'alert_type' },
+    { title: 'Event Time', dataIndex: 'event_time', key: 'event_time' }
+];
 // 定义类型，如果你的项目中有相应的类型定义
-interface PanelSelectedRowKeys {
+export interface PanelSelectedRowKeys {
     [key: string]: React.Key[];
 }
 
@@ -801,3 +1070,4 @@ export const onSelectChange = (selectedKeys: React.Key[], panel: string, panelSe
         [panel]: selectedKeys,
     });
 };
+

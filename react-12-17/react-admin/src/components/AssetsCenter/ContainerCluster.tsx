@@ -164,7 +164,7 @@ class ContainerCluster extends React.Component<{}, FimState> {
                         <div className="gutter-box">
                         <Card bordered={false}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>容器集群</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>容器集群</h2>
                             </div>
                             <DataDisplayTable
                                 apiEndpoint="http://localhost:5000/api/files/hostinventory"

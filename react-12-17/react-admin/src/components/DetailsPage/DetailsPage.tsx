@@ -6,6 +6,8 @@ import { RouteComponentProps, withRouter  } from 'react-router-dom';
 import HostOverview from './HostOverview';
 import HostDetailsTable from './HostDetailsTable';
 import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../../utils/tableUtils';
+import AlertList from '../AlertList';
+
 // Define an interface for the individual status item
 interface StatusItem {
     color: string;
@@ -958,15 +960,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 );
             case 'hostalertlist':
                 return (
-                    <HostDetailsTable
-                    route="http://localhost:5000/api/files/logs/hostalertlist"
+                    <div style={{marginTop:'-20px'}}>
+                    <AlertList 
+                    apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/1"} 
                     columns={hostalertColumns}
-                    currentPanel={currentPanel}
-                    titleName="告警概览"
-                    selectedRowKeys={this.state.panelSelectedRowKeys.hostalertlist}
-                    onSelectChange={(keys: any) => this.onSelectChange(keys, 'hostalertlist')}
-
-                    />
+                    currentPanel='hostalertlist'
+                />
+                    </div>
                 );    
             case 'vulnerabilityalertlist':
                 return (
@@ -994,15 +994,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 );  
                 case 'runningalertlist':
                     return (
-                        <HostDetailsTable
-                        route="http://localhost:5000/api/files/logs/runningalertlist"
+                        <div style={{marginTop:'-20px'}}>
+                        <AlertList 
+                        apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"} 
                         columns={hostalertColumns}
-                        currentPanel={currentPanel}
-                        titleName="告警概览"
-                        selectedRowKeys={this.state.panelSelectedRowKeys.runningalertlist}
-                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'runningalertlist')}
-    
-                        />
+                        currentPanel='runningalertlist'
+                    />
+                        </div>
                     );                  
                 case 'virusscanning':
                     return (

@@ -4,9 +4,10 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card, Table, Popconfirm} from 'antd';
-import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
 import DataDisplayTable from './DataDisplayTable';
+import { hostinventoryColumns } from '../../utils/tableUtils';
+import FetchAPIDataTable from './FetchAPIDataTable';
 
 //const { Search } = Input;
 
@@ -144,88 +145,88 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientatio
 class HostInventory extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
         super(props);
-        this.hostinventoryColumns = [
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>主机名称</span>,
-                dataIndex: 'hostname',
-                //width: '13%',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>标签</span>,
-                dataIndex: 'label',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>地域</span>,
-                dataIndex: 'group',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作系统</span>,
-                dataIndex: 'OStype',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>风险</span>,
-                dataIndex: 'risks',
-                render: (risks:Risk, record:any) => {
-                    return (
-                        <div>
-                          <div>告警 {risks.warning1}</div>
-                          <div>风险 {risks.warning2}</div>
-                          <div>基线 {risks.warning3}</div>
-                        </div>
-                    );
-                  }
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>
-                    状态 
-                    </span>,
-                dataIndex: 'status',
-                filters: [
-                    { text: '未安装', value: '未安装' },
-                    { text: '运行中', value: '运行中' },
-                    { text: '运行异常', value: '运行异常' },
-                    { text: '离线', value: '离线' },
-                  ],
-                  onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>客户端资源使用</span>,
-                dataIndex: 'clientUsage',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>更新时刻</span>,
-                dataIndex: 'updateTime',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-                dataIndex: 'operation',
-                render: (text: string, record: DataType) => (
-                    <a 
-                      href={'/login'} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      //style={{ color: 'blue' }} // 添加颜色样式
-                    >
-                      查看详情
-                    </a>
-                ),
-            },
+        // this.hostinventoryColumns = [
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>主机名称</span>,
+        //         dataIndex: 'hostname',
+        //         //width: '13%',
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>标签</span>,
+        //         dataIndex: 'label',
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>地域</span>,
+        //         dataIndex: 'group',
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>操作系统</span>,
+        //         dataIndex: 'OStype',
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>风险</span>,
+        //         dataIndex: 'risks',
+        //         render: (risks:Risk, record:any) => {
+        //             return (
+        //                 <div>
+        //                   <div>告警 {risks.warning1}</div>
+        //                   <div>风险 {risks.warning2}</div>
+        //                   <div>基线 {risks.warning3}</div>
+        //                 </div>
+        //             );
+        //           }
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>
+        //             状态 
+        //             </span>,
+        //         dataIndex: 'status',
+        //         filters: [
+        //             { text: '未安装', value: '未安装' },
+        //             { text: '运行中', value: '运行中' },
+        //             { text: '运行异常', value: '运行异常' },
+        //             { text: '离线', value: '离线' },
+        //           ],
+        //           onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>客户端资源使用</span>,
+        //         dataIndex: 'clientUsage',
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>更新时刻</span>,
+        //         dataIndex: 'updateTime',
+        //     },
+        //     {
+        //         title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+        //         dataIndex: 'operation',
+        //         render: (text: string, record: DataType) => (
+        //             <a 
+        //               href={'/login'} 
+        //               target="_blank" 
+        //               rel="noopener noreferrer"
+        //               //style={{ color: 'blue' }} // 添加颜色样式
+        //             >
+        //               查看详情
+        //             </a>
+        //         ),
+        //     },
             
-            // {
-            //     title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-            //     dataIndex: 'operation',
-            //     render: (text: any, record: any, index: number) => {
-            //         return this.state.dataSource.length > 0 ? (
-            //             <Popconfirm
-            //                 title="Sure to delete?"
-            //                 onConfirm={() => this.onDelete(record, index)}
-            //             >
-            //                 <span>Delete</span>
-            //             </Popconfirm>
-            //         ) : null;
-            //     },
-            // },
-        ];
+        //     // {
+        //     //     title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+        //     //     dataIndex: 'operation',
+        //     //     render: (text: any, record: any, index: number) => {
+        //     //         return this.state.dataSource.length > 0 ? (
+        //     //             <Popconfirm
+        //     //                 title="Sure to delete?"
+        //     //                 onConfirm={() => this.onDelete(record, index)}
+        //     //             >
+        //     //                 <span>Delete</span>
+        //     //             </Popconfirm>
+        //     //         ) : null;
+        //     //     },
+        //     // },
+        // ];
         this.state = {
             dataSource: [
                 {
@@ -255,7 +256,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
             fullDataSource: [], // 存储完整的数据源副本
         };
     }
-    hostinventoryColumns: any;
+    //hostinventoryColumns: any;
     async componentDidMount() {
         try {
             const response = await axios.get('http://localhost:5000/api/hostinventory');
@@ -473,7 +474,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
 
     render() {
         const { dataSource } = this.state;
-        const hostinventoryColumns = this.hostinventoryColumns;
+        //const hostinventoryColumns = this.hostinventoryColumns;
         const rowSelection = this.renderRowSelection();
         // Conditional button style
         const buttonStyle = this.state.areRowsSelected
@@ -529,7 +530,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机状态分布</h2>
                         </div>
                         <Row gutter={0}>
-                            <Col span={12} >
+                            <Col span={12}>
                             <ResponsiveContainer width="100%" height={200}>
                             <PieChart >
                                 <Pie 
@@ -692,12 +693,18 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                                 return 'animated fadeInRight';
                                 }}
                             /> */}
-                            <DataDisplayTable
+                            {/* <DataDisplayTable
                                 apiEndpoint="http://localhost:5000/api/files/container"
                                 columns={hostinventoryColumns}
                                 currentPanel={"hostinventory"}
                                 selectedRowKeys={this.state.selectedRowKeys}
                                 onSelectChange={(keys: any) => this.onSelectChange(keys)}
+                            /> */}
+                            <FetchAPIDataTable
+                                apiEndpoint="http://localhost:5000/api/asset_mapping/query_all"
+                                timeColumnIndex={[]}
+                                columns={hostinventoryColumns}
+                                currentPanel="hostinventory"
                             />
                             </Card>
                         </div>

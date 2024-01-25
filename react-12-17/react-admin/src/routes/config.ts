@@ -54,14 +54,14 @@ const menus: {
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/HostProtection/rqjc/hcpAlertList',
+                            key: '/app/HostProtection/rqjc/HCPAlertList',
                             title: '告警列表',
-                            component: 'hcpAlertList',
+                            component: 'HCPAlertList',
                         },
                         {
-                            key: '/app/HostProtection/rqjc/hcpWhiteList',
+                            key: '/app/HostProtection/rqjc/HCPWhiteList',
                             title: '白名单',
-                            component: 'hcpWhiteList',
+                            component: 'HCPWhiteList',
                         },
                     ],
                 },
@@ -95,14 +95,14 @@ const menus: {
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/ARP/rqjc/gjlb',
+                            key: '/app/ARP/rqjc/ARPAlertList',
                             title: '告警列表',
-                            component: 'ARPgjlb',
+                            component: 'ARPAlertList',
                         },
                         {
-                            key: '/app/ARP/rqjc/bmd',
+                            key: '/app/ARP/rqjc/ARPWhiteList',
                             title: '白名单',
-                            component: 'ARPbmd',
+                            component: 'ARPWhiteList',
                         },
                     ],
                 },
@@ -119,38 +119,55 @@ const menus: {
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/CCP/rqjc/gjlb',
+                            key: '/app/CCP/rqjc/CCPAlertList',
                             title: '告警列表',
-                            component: 'CCPgjlb',
+                            component: 'CCPAlertList',
                         },
                         {
-                            key: '/app/CCP/rqjc/bmd',
+                            key: '/app/CCP/rqjc/CCPWhiteList',
                             title: '白名单',
-                            component: 'CCPbmd',
+                            component: 'CCPWhiteList',
                         },
                     ],
                 },
             ],
         },
-        {
-            key: '/app/auth',
-            title: '权限管理',
-            icon: 'safety',
-            subs: [
-                { key: '/app/auth/basic', title: '基础演示', component: 'AuthBasic' },
-                {
-                    key: '/app/auth/routerEnter',
-                    title: '路由拦截',
-                    component: 'RouterEnter',
-                    requireAuth: 'auth/testPage',
-                },
-            ],
-        },
+        // {
+        //     key: '/app/auth',
+        //     title: '权限管理',
+        //     icon: 'safety',
+        //     subs: [
+        //         { key: '/app/auth/basic', title: '基础演示', component: 'AuthBasic' },
+        //         {
+        //             key: '/app/auth/routerEnter',
+        //             title: '路由拦截',
+        //             component: 'RouterEnter',
+        //             requireAuth: 'auth/testPage',
+        //         },
+        //     ],
+        // },
+        // {
+        //     key: '/app/VirusScanning',
+        //     title: '病毒扫描',
+        //     icon: 'star',
+        //     component: 'VirusScanning',
+        // },
         {
             key: '/app/VirusScanning',
             title: '病毒扫描',
             icon: 'star',
-            component: 'VirusScanning',
+            subs: [
+                {
+                    key: '/app/VirusScanning/VirusScanning',
+                    title: '病毒扫描',
+                    component: 'VirusScanning',
+                },
+                {
+                    key: '/app/VirusScanning/VirusScanningWhiteList',
+                    title: '白名单',
+                    component: 'VirusScanningWhiteList',
+                },
+            ],
         },
         {
             key: '/app/extension',

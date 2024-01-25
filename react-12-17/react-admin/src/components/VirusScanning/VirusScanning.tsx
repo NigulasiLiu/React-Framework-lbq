@@ -1,10 +1,10 @@
+
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic } from 'antd';
-import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
+import MySidebar from '../HostProtection/MySidebar';
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
-import { RASPProcessColums } from '../../utils/tableUtils';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -88,30 +88,23 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) =>
     </div>
   );
 };
-const vulnerabilityColumns = [
+const virusscanningColumns = [
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>漏洞名称</span>,
+    title: () => <span style={{ fontWeight: 'bold' }}>告警名称</span>,
     dataIndex: 'alarmName',
     //width: '13%',
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>影响资产数</span>,
+    title: () => <span style={{ fontWeight: 'bold' }}>影响资产</span>,
     dataIndex: 'affectedAsset',
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>漏洞特征</span>,
+    title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
     dataIndex: 'tz',
   },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
+    title: () => <span style={{ fontWeight: 'bold' }}>MD5</span>,
     dataIndex: 'level',
-    filters: [
-      { text: '紧急', value: '紧急' },
-      { text: '高危', value: '高危' },
-      { text: '低危', value: '低危' },
-      { text: '中危', value: '中危' },
-    ],
-    onFilter: (value: string | number | boolean, record: DataType1) => record.level.includes(value as string),
   },
   {
     title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
@@ -123,7 +116,7 @@ const vulnerabilityColumns = [
     onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
 },
   {
-    title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
+    title: () => <span style={{ fontWeight: 'bold' }}>发生时间</span>,
     dataIndex: 'occurrenceTime',
   },
   {
@@ -132,48 +125,10 @@ const vulnerabilityColumns = [
   },
 ];
 
-class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState> {
+class VirusScanning extends React.Component<HostInventoryProps, HostInventoryState> {
   constructor(props: any) {
     super(props);
-    this.columns = [
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>漏洞名称</span>,
-        dataIndex: 'alarmName',
-        //width: '13%',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>影响资产数</span>,
-        dataIndex: 'affectedAsset',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>漏洞特征</span>,
-        dataIndex: 'tz',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
-        dataIndex: 'level',
-        filters: [
-          { text: '紧急', value: '紧急' },
-          { text: '高危', value: '高危' },
-          { text: '低危', value: '低危' },
-          { text: '中危', value: '中危' },
-        ],
-        onFilter: (value: string | number | boolean, record: DataType1) => record.level.includes(value as string),
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-        dataIndex: 'status',
-        filters: [
-            { text: '已处理', value: '已处理' },
-            { text: '未处理', value: '未处理' },
-        ],
-        onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
-    },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
-        dataIndex: 'occurrenceTime',
-      },
-    ];
+    this.columns = [];
     this.state = {
       dataSource: [
       ],
@@ -307,46 +262,12 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
         (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
     });
 
-
-    // 状态数据
-    const statusData: StatusItem[] = [
-      { color: '#E63F3F', label: '严重', value: 7 },
-      { color: '#846BCE', label: '高危', value: 2 },
-      { color: '#FEC745', label: '中危', value: 5 },
-      { color: '#468DFF', label: '低危', value: 1 },
-    ];
-    const scanResult: StatusItem[] = [
-      { color: 'green', label: '通过项', value: 7 },
-      { color: '#E53F3F', label: '严重风险项', value: 2 },
-      { color: '#846BCE', label: '高危风险项', value: 5 },
-      { color: '#FEC745', label: '中危风险项', value: 1 },
-      { color: '#468DFF', label: '低危风险项', value: 1 },
-    ];
-        //扇形图数据
-        const RASPdata_1: StatusItem[] = [
-          { label: '已被RASP识别', value: 7, color: '#F8C95F' },//橙色
-          { label: '等待注入', value: 2, color: '#8C6D58' },//土色
-          { label: '等待RASP识别', value: 5, color: '#5595F7' },//暗蓝色
+    const virusstatusData: StatusItem[] = [
+        { color: '#EA635F', label: '紧急 ', value: 7 },
+        { color: '#FEC746', label: '中风险 ', value: 2 },
+        { color: '#846CCE', label: '高风险 ', value: 5 },
+        { color: '#468DFF', label: '低风险 ', value: 1 },
         ];
-        //扇形图数据
-        const RASPdata_2: StatusItem[] = [
-        { label: '已注入', value: 5, color: '#8C75C3' },//紫色
-        { label: '进程已消失', value: 1, color: '#40DBA9' }//浅绿色
-        ];
-        const RASPdata_3: StatusItem[] = [...RASPdata_1, ...RASPdata_2];
-
-        const runningStatusData_1: StatusItem[] = [
-            { label: 'Python', value: 7, color: '#F8C95F' },//橙色
-            { label: 'Java', value: 2, color: '#8C6D58' },//土色
-            { label: 'NodeJS', value: 5, color: '#5595F7' },//暗蓝色
-        ];
-        //扇形图数据
-        const runningStatusData_2: StatusItem[] = [
-        { label: 'PHP', value: 5, color: '#8C75C3' },//紫色
-        { label: 'Golang', value: 1, color: '#40DBA9' }//浅绿色
-        ];  
-        const runningStatusData_3: StatusItem[] = [...runningStatusData_1, ...runningStatusData_2];
-
     return (
       <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
         <Row gutter={[12, 6]}/*(列间距，行间距)*/>
@@ -357,65 +278,35 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
                 <Card /*title="主机状态分布" 产生分界线*/
                   style={{fontWeight: 'bolder', width: '100%', height:220}}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>RASP概览</h2>
+                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>病毒扫描</h2>
                   </div>
                   <Row gutter={[6, 6]}>
-                    <Col className="gutter-row" span={12}>
-                      <Card
-                        bordered={false}
-                        style={{
-                            height: '100px',
-                            width: '620px',
-                            minWidth: '200px', // 最小宽度300px，而非100px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                        >
-                        <Row style={{ width: '100%',marginTop: '0px',paddingRight: '10px' }}>
-                            <Col span={4} style={{ paddingTop:'20px',width:'200px',height:'90px'}}>
-                                <Statistic title={<span>RASP状态分布</span>} value={0} />
-                            </Col>
-                            <Col span={6} style={{ width:'100px'}}>
-                            <ResponsiveContainer width="100%" height={90}>
-                            <PieChart >
-                                <Pie 
-                                data={RASPdata_3}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={24}
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="value"
-                                onMouseEnter={(e) => this.handleMouseEnter(e, 0)}//0代表第一个扇形图
-                                onMouseLeave={this.handleMouseLeave}
-                                outerRadius={this.state.activeIndex[0] === 0 ? 30 : 28} // 0代表第一个扇形图，如果悬停则扇形半径变大
-                                className={this.state.activeIndex === 0 ? 'pie-hovered' : 'pie-normal'}
-                                >
-                                {RASPdata_3.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                                </Pie>
-                                {/* <Tooltip content={<CustomTooltip />} /> */}
-                            </PieChart>
-                            </ResponsiveContainer> 
-                            </Col>
-                            <Col span={7} style={{ paddingTop:'15px',width:'440px',height:'100px'}}>
-                                <StatusPanel statusData={RASPdata_1} orientation="vertical" />
-                            </Col>
-                            <Col span={7} style={{ paddingTop:'25px',paddingLeft:'20px',width:'440px',height:'100px'}}>
-                                <StatusPanel statusData={RASPdata_2} orientation="vertical" />
-                            </Col>
+                    <Col className="gutter-row" span={4} style={{ marginLeft: '15px',marginTop: '10px' }}>
+                      <div className="container">
+                        <Row gutter={24}>
+                          <h2 style={{ fontSize: '16px' }}>最近扫描时间:</h2>
+                          <span className="currentTime" style={{ marginRight: '10px',marginBottom:'8px' }}>{currentTime}</span>
+                          <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleSidebar}>立即扫描</Button>
+                          <Button style={{backgroundColor:'white',color:'black'}}onClick={this.toggleSidebar}>全部扫描任务</Button>
                         </Row>
-                      </Card>
+                        <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
+                        <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+                          <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
+                          <MySidebar
+                            statusData={virusstatusData}
+                            isSidebarOpen={this.state.isSidebarOpen}
+                            toggleSidebar={this.toggleSidebar}
+                            riskItemCount={this.state.riskItemCount} // 传递风险项的数量
+                          />
+                        </div>
+                      </div>
                     </Col>
-                    <Col className="gutter-row" span={12}>
+                    <Col className="gutter-row" span={9}>
                       <Card
                         bordered={false}
                         style={{
                             height: '100px',
-                            width: '620px',
+                            width: '470px',
                             minWidth: '200px', // 最小宽度300px，而非100px
                             display: 'flex',
                             alignItems: 'center',
@@ -424,14 +315,14 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
                         }}
                         >
                         <Row style={{ width: '100%',marginTop: '0px',paddingRight: '10px' }}>
-                            <Col span={4} style={{ paddingTop:'20px',width:'200px',height:'90px'}}>
-                                <Statistic title={<span>运行时统计</span>} value={0} />
+                            <Col span={8} style={{ paddingTop:'20px',width:'400px',height:'90px'}}>
+                                <Statistic title={<span>待处理告警</span>} value={1} />
                             </Col>
-                            <Col span={6} style={{ width:'100px'}}>
+                            <Col span={9} style={{ width:'400px'}}>
                             <ResponsiveContainer width="100%" height={90}>
                             <PieChart >
                                 <Pie 
-                                data={RASPdata_3}
+                                data={virusstatusData}
                                 cx="50%"
                                 cy="50%"
                                 innerRadius={24}
@@ -443,7 +334,7 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
                                 outerRadius={this.state.activeIndex[0] === 0 ? 30 : 28} // 0代表第一个扇形图，如果悬停则扇形半径变大
                                 className={this.state.activeIndex === 0 ? 'pie-hovered' : 'pie-normal'}
                                 >
-                                {RASPdata_3.map((entry, index) => (
+                                {virusstatusData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                                 </Pie>
@@ -451,17 +342,55 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
                             </PieChart>
                             </ResponsiveContainer> 
                             </Col>
-                            <Col span={7} style={{ paddingTop:'15px',width:'440px',height:'100px'}}>
-                                <StatusPanel statusData={runningStatusData_1} orientation="vertical" />
-                            </Col>
-                            <Col span={7} style={{ paddingTop:'25px',paddingLeft:'20px',width:'440px',height:'100px'}}>
-                                <StatusPanel statusData={runningStatusData_2} orientation="vertical" />
+                            <Col span={7} style={{ width:'400px',height:'100px',paddingTop:'5px'}}>
+                                <StatusPanel statusData={virusstatusData} orientation="vertical" />
                             </Col>
                             
                         </Row>
                       </Card>
-                    </Col>   
-
+                    </Col>
+                    <Col className="gutter-row" span={5}>
+                      <Card
+                        bordered={false}
+                        style={{
+                            height: '100px',
+                            width: '260px',
+                            minWidth: '200px', // 最小宽度300px，而非100px
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                        }}
+                        >
+                        <Row>
+                            <Col pull={2} span={24} style={{ marginRight: '50px'}}>
+                                <Statistic title={<span>累计处理告警</span>} value={0} />
+                            </Col>
+                            
+                        </Row>
+                      </Card>
+                    </Col>              
+                    <Col className="gutter-row" span={5}style={{ marginLeft: '10px' }}>
+                      <Card
+                        bordered={false}
+                        style={{
+                            height: '100px',
+                            width: '240px',
+                            minWidth: '200px', // 最小宽度300px，而非100px
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                        }}
+                        >
+                        <Row>
+                            <Col pull={2} span={24} style={{ marginRight: '50px'}}>
+                                <Statistic title={<span>白名单规则数</span>} value={0} />
+                            </Col>
+                            
+                        </Row>
+                      </Card>
+                    </Col> 
                   </Row>
 
                 </Card>
@@ -472,12 +401,12 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
               <div className="gutter-box">
               <Card bordered={false}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>RASP进程列表</h2>
+                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>扫描结果</h2>
                   </div>
                   <DataDisplayTable
-                      apiEndpoint="http://localhost:5000/api/files/RASPProcess"
-                      columns={RASPProcessColums}
-                      currentPanel={"RASPProcess"}
+                      apiEndpoint="http://localhost:5000/api/files/vulnerability"
+                      columns={virusscanningColumns}
+                      currentPanel={"vulnerabilityDetect"}
                       selectedRowKeys={this.state.selectedRowKeys}
                       onSelectChange={(keys: any) => this.onSelectChange(keys)}
                   />
@@ -492,4 +421,4 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
 }
 
 
-export default RASPStatus;
+export default VirusScanning;

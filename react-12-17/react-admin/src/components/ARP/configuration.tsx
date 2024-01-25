@@ -5,6 +5,8 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
+import { ConfigurationColums } from '../../utils/tableUtils';
+import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -57,7 +59,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 };
 
 
-class configuration extends React.Component<HostInventoryProps, HostInventoryState> {
+class Configuration extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
         super(props);
         this.columns = [
@@ -196,20 +198,6 @@ class configuration extends React.Component<HostInventoryProps, HostInventorySta
     };
     handleAdd = () => {
         const { count, dataSource } = this.state;
-        // const newData = {
-        //     key: '1',
-        //     alarmName: '网络连接失败',
-        //     affectedAsset: '路由器X',
-        //     alarmType: '恶意破坏',
-        //     level: '高风险',
-        //     status: '未处理',
-        //     occurrenceTime: '2023-12-28 08:00:00',
-        //     action: '查看详情'
-        // };
-        // this.setState({
-        //     dataSource: [newData, ...dataSource],
-        //     count: count + 1,
-        // });
     };
   
 
@@ -234,25 +222,21 @@ class configuration extends React.Component<HostInventoryProps, HostInventorySta
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <BreadcrumbCustom breads={['应用运行时防护', '配置管理']} />
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/>
+                <Row gutter={[12, 6]} /*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
    
                     <Col md={24}>
                         <div className="gutter-box">
-                            <Card bordered={false}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                                    <h2 style={{ fontWeight: 'bold' }}>配置管理</h2>
-                                    <div>
-                                        {/* 使用 RangePicker 替代 DatePicker */}
-                                        <Button style={{ marginRight: '10px' }} name="del" >新建配置</Button>
-                                    </div>
-                                </div>
-                                <div style={{ marginBottom: 16 }}>
-                                    <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
-                                </div>
-                                <div className="table-container">
-                                <Table rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} bordered dataSource={filteredDataSource} columns={this.columns} />
-                                </div>
+                             <Card bordered={false}>
+                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>配置管理</h2>
+                             </div>
+                                <DataDisplayTable
+                                    apiEndpoint="http://localhost:5000/api/files/configuration"
+                                    columns={ConfigurationColums}
+                                    currentPanel={"configuration"}
+                                    selectedRowKeys={this.state.selectedRowKeys}
+                                    onSelectChange={(keys: any) => this.onSelectChange(keys)}
+                                />
                             </Card>
                         </div>
                     </Col>
@@ -262,4 +246,4 @@ class configuration extends React.Component<HostInventoryProps, HostInventorySta
     }
 }
 
-export default configuration;
+export default Configuration;

@@ -1,5 +1,3 @@
-
-import './YourComponent.css'; // 确保引入了CSS文件
 import zhCN from 'antd/es/locale/zh_CN';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
 import { Tooltip } from 'antd';
@@ -8,6 +6,8 @@ import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, ConfigPro
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import MySidebar from './MySidebar';
+import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import { baselineDetectColumns } from '../../utils/tableUtils';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -65,47 +65,47 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 
   );
 };
-const baselineDetectColumns = [
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>IP</span>,
-    dataIndex: 'ip',
-    //width: '13%',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>基线名称</span>,
-    dataIndex: 'check_name',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>检查详情</span>,
-    dataIndex: 'details',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>调整建议</span>,
-    dataIndex: 'adjustment_requirement',
-    render: (text: string, record: DataType1) => (
-      <Tooltip title={record.instruction}>
-        {text}
-      </Tooltip>
-    ),
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-    dataIndex: 'status',
-    filters: [
-    ],
-    onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
-    dataIndex: 'last_checked',
-    sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
-    sortDirections: ['ascend', 'descend'],
-  },
-  // {
-  //   title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-  //   dataIndex: 'operation',
-  // },
-];
+// const baselineDetectColumns = [
+//   {
+//     title: () => <span style={{ fontWeight: 'bold' }}>IP</span>,
+//     dataIndex: 'ip',
+//     //width: '13%',
+//   },
+//   {
+//     title: () => <span style={{ fontWeight: 'bold' }}>基线名称</span>,
+//     dataIndex: 'check_name',
+//   },
+//   {
+//     title: () => <span style={{ fontWeight: 'bold' }}>检查详情</span>,
+//     dataIndex: 'details',
+//   },
+//   {
+//     title: () => <span style={{ fontWeight: 'bold' }}>调整建议</span>,
+//     dataIndex: 'adjustment_requirement',
+//     render: (text: string, record: DataType1) => (
+//       <Tooltip title={record.instruction}>
+//         {text}
+//       </Tooltip>
+//     ),
+//   },
+//   {
+//     title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
+//     dataIndex: 'status',
+//     filters: [
+//     ],
+//     onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
+//   },
+//   {
+//     title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
+//     dataIndex: 'last_checked',
+//     sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
+//     sortDirections: ['ascend', 'descend'],
+//   },
+//   // {
+//   //   title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
+//   //   dataIndex: 'operation',
+//   // },
+// ];
 
 class BaselineDetectList extends React.Component<HostInventoryProps, HostInventoryState> {
   constructor(props: any) {
@@ -476,14 +476,20 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                       <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>基线内容</h2>
                   </div>
-                  <DataDisplayTable
+                  {/* <DataDisplayTable
                       apiEndpoint="http://localhost:5000/api/files/log"
                       sqlTableName='windows_security_checks'
                       columns={baselineDetectColumns}
                       currentPanel={"vulnerabilityDetect"}
                       selectedRowKeys={this.state.selectedRowKeys}
                       onSelectChange={(keys: any) => this.onSelectChange(keys)}
-                  />
+                  /> */}
+                  <FetchAPIDataTable
+                    apiEndpoint="http://localhost:5000/api/baseline_check/linux/query_ip"
+                    timeColumnIndex={['last_checked']}
+                    columns={baselineDetectColumns}
+                    currentPanel="baseline_check_linux"
+                    />
                   </Card>
               </div>
           </Col>
