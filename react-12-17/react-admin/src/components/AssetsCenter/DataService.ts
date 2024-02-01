@@ -12,20 +12,27 @@ export const fetchDataFromAPI = async ({ apiEndpoint}: FetchDataParams): Promise
     //let fieldsQuery = fields && fields.length > 0 ? fields.join(',') : '*';
     let endpoint = `${apiEndpoint}`;//?table=${sqlTableName}&fields=${fieldsQuery}
 
-    const response = await axios.get(endpoint, {
-        headers: {
-            Authorization: `aa.bb.cc` // 示例 JWT 令牌
-        }
-    });
-    if (response.data && response.data.length > 0) {
-        return response.data;
+    // const response = await axios.get(endpoint, {
+    //     headers: {
+    //         Authorization: `aa.bb.cc` // 示例 JWT 令牌
+    //     }
+    // });
+    const response = await axios.get(endpoint);
+     if (response.data) {//&& response.data.status === 200，注意，当response包含message和status两个字段时，不能够用 && response.data.length > 0 判断，因为length属性以及不存在了
+        const messageJsonString = JSON.stringify(response.data.message, null, 2);
+        console.log("Received message:", messageJsonString);
+        return response.data.message;
+        // const messageJsonString = JSON.stringify(response.data, null, 2);
+        // console.log("Received message:", messageJsonString);
+        // return response.data;
     }
-    throw new Error('No data received');
+
+    throw new Error('No data received from endpoint');
 };
 
 export const buildRangeQueryParams = (startDate: string, endDate: string, timeColumnDataIndex: string) => {
     // 构建查询字符串或参数对象
-    return `?start_time=${startDate}&end_time=${endDate}&field=${timeColumnDataIndex}`;
+    return `/query_time?field=${timeColumnDataIndex}&start_time=${startDate}&end_time=${endDate}`;
 };
 // processData 函数
 export const processData = (data: GenericDataItem[], timeColumnIndex?: string[]): GenericDataItem[] => {
@@ -47,9 +54,20 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
 };
 
 // 辅助函数：将 UNIX 时间戳转换为可读的日期格式
+// 辅助函数：将 UNIX 时间戳转换为指定格式的日期字符串
 export const convertUnixTime = (timestamp: number): string => {
-    return new Date(timestamp * 1000).toLocaleString();
+    const date = new Date(timestamp * 1000);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
+
+
 
 
 // export const autoPopulateFilters = (columns:any[], dataSource:GenericDataItem[]) => {

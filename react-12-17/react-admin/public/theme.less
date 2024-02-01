@@ -6424,9 +6424,12 @@ form .ant-upload {
   border-bottom: 0;
 }
 .ant-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #000000;
 }
-.ant-pagination-item {
+.ant-pagination-item {  
   background-color: #fff;
   border: 1px solid #d9d9d9;
   border-radius: 2px;
@@ -6436,26 +6439,28 @@ form .ant-upload {
 }
 .ant-pagination-item:focus,
 .ant-pagination-item:hover {
-  border-color: @primary-color;
+  border-color: #4086FF;
+  background-color: #4086FF; /* 添加这一行 */
 }
 .ant-pagination-item:focus a,
 .ant-pagination-item:hover a {
-  color: @primary-color;
+  color: #fff;
 }
 .ant-pagination-item-active {
   background: #fff;
-  border-color: @primary-color;
+  border-color: #4086FF;
+  color: #4086FF;
 }
 .ant-pagination-item-active a {
-  color: @primary-color;
+  color: #4086FF;
 }
 .ant-pagination-item-active:focus,
 .ant-pagination-item-active:hover {
-  border-color: color(~`colorPalette("@{primary-color}", 5)`);
+  border-color: #fff;//color(~`colorPalette("@{primary-color}", 5)`);
 }
 .ant-pagination-item-active:focus a,
 .ant-pagination-item-active:hover a {
-  color: color(~`colorPalette("@{primary-color}", 5)`);
+  color: #fff;//color(~`colorPalette("@{primary-color}", 5)`);
 }
 .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-link-icon,
 .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-link-icon {
@@ -6878,6 +6883,7 @@ form .ant-upload {
   color: rgba(0, 0, 0, 0.25);
 }
 .ant-select-selection {
+  color: #000000;
   background-color: #fff;
   border: 1px solid #d9d9d9;
   border-top-width: 1.02px;
@@ -7002,7 +7008,7 @@ form .ant-upload {
 }
 .ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item-selected .ant-select-selected-icon,
 .ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item-selected:hover .ant-select-selected-icon {
-  color: @primary-color;
+  color: #000;//@primary-color;
 }
 .ant-skeleton-header .ant-skeleton-avatar {
   background: #f2f2f2;

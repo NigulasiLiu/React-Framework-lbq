@@ -5,6 +5,7 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
 import DataDisplayTable from './AssetsCenter/DataDisplayTable';
+import FetchAPIDataTable from './AssetsCenter/FetchAPIDataTable';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -61,53 +62,7 @@ interface WhiteListColumDataType {
 
 //     );
 // };
-const whiteColumns = [
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>加白名称</span>,
-        dataIndex: 'whitelistName',
-        //width: '13%',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>加白描述</span>,
-        dataIndex: 'whitelistDescription',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>加白范围</span>,
-        dataIndex: 'whitelistScope',
-        filters: [
-            { text: '全局', value: '全局' },
-            { text: '非全局', value: '非全局' },
-        ],
-        onFilter: (value: string | number | boolean, record: WhiteListColumDataType) => record.whitelistScope.includes(value as string),
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>匹配告警名</span>,
-        dataIndex: 'matchAlarmName',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>匹配方式</span>,
-        dataIndex: 'matchMethod',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>操作时间</span>,
-        dataIndex: 'occurrenceTime',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-        dataIndex: 'operation',
-        render: (text: string, record: WhiteListColumDataType) => (
-            <a
-                href={'/login'}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#1964F5' }}// 添加颜色样式
-            >
-                查看详情
-            </a>
-        ),
-    },
 
-];
 
 class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
@@ -296,12 +251,8 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
                             <Card bordered={false}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                                     <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>白名单</h2>
-                                    <div>
-                                        {/* 使用 RangePicker 替代 DatePicker */}
-                                        <RangePicker onChange={this.onDateRangeChange} />
-                                    </div>
                                 </div>
-                                <div style={{ marginBottom: 16 }}>
+                                {/* <div style={{ marginBottom: 16 }}>
                                     <Search placeholder="请选择筛选条件并搜索" onSearch={this.handleAdd} style={{ width: '100%' }} />
                                 </div>
                                 <DataDisplayTable
@@ -311,14 +262,13 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
                                 currentPanel={this.props.currentPanel}
                                 selectedRowKeys={this.state.selectedRowKeys}
                                 onSelectChange={(keys: any) => this.onSelectChange(keys)}
-                            />
-                                {/* <div className="customTabler">
-                                <Table 
-                                rowSelection={{ selectedRowKeys, onChange: this.onSelectChange }} 
-                                bordered 
-                                dataSource={filteredDataSource} 
-                                columns={whiteColumns} />
-                                </div> */}
+                            /> */}
+                                <FetchAPIDataTable
+                                    apiEndpoint={this.props.apiEndpoint}
+                                    timeColumnIndex={[]}
+                                    columns={this.props.columns}
+                                    currentPanel={this.props.currentPanel}
+                                    />
                             </Card>
                         </div>
                     </Col>

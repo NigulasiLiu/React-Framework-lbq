@@ -44,7 +44,7 @@ class Login extends React.Component<LoginProps> {
                 });
                 localStorage.setItem("user", JSON.stringify(response.data));
                 //this.props.history.push("/");
-                this.props.history.push('/app/AssetsCenter/HostInventory');
+                this.props.history.push('/app/dashboard/index');
             } else {
                 // 处理意外的响应或显示错误消息
             }
@@ -89,8 +89,22 @@ class Login extends React.Component<LoginProps> {
                             <Button
                                 type="primary"
                                 htmlType="submit"
-                                className="login-form-button"
-                                style={{ width: '100%' }}
+                                //className="login-form-button"
+                                style={{
+                                    width: '100%',
+                                    marginBottom: '10px',
+                                    marginTop: '10px',
+                                    fontWeight:10,
+                                    backgroundColor: 'rgba(0, 0, 0,0.6)',
+                                    border: 'none',
+                                    color: 'white',
+                                }}
+                                // onMouseOver={() => {
+                                //     this.style.backgroundColor = 'rgba(74, 144, 226, 0.2)';
+                                // }}
+                                // onMouseOut={() => {
+                                //     this.style.backgroundColor = 'rgba(30, 36, 44, 0.2)';
+                                // }}
                             >
                                 登录
                             </Button>

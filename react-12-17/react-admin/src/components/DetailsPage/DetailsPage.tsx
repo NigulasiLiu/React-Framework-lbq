@@ -7,6 +7,8 @@ import HostOverview from './HostOverview';
 import HostDetailsTable from './HostDetailsTable';
 import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../../utils/tableUtils';
 import AlertList from '../AlertList';
+import VirusScanning from '../VirusScanning/VirusScanning';
+import PerformanceMonitor from './PerformanceMonitor';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -1004,16 +1006,18 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     );                  
                 case 'virusscanning':
                     return (
-                        <HostDetailsTable
-                        route="http://localhost:5000/api/files/logs/virusscanning"
-                        columns={fimColumns}
-                        currentPanel={currentPanel}
-                        titleName="病毒扫描"
-                        selectedRowKeys={this.state.panelSelectedRowKeys.virusscanning}
-                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'virusscanning')}
-    
-                        />
-                    );                  
+                        <div style={{ marginTop:'-20px'}}>
+                        <VirusScanning
+                        hostID=""
+                        pageWidth={1320}
+                        /></div>
+                    );    
+                case 'performancemonitor':
+                    return (
+                        <div style={{ marginTop:'-20px'}}>
+                        <PerformanceMonitor
+                        /></div>
+                    );          
                 case 'assetfingerprint':
                     return (
                         <HostDetailsTable

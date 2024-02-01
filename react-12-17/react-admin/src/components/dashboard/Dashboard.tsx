@@ -5,16 +5,10 @@ import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { PieChart, Pie, Cell,Label, LineChart, TooltipProps, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
 import DataCard from '../DataCard';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
+import { StatusItem } from '../../utils/tableUtils';
 import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-//import './card.less'; // 确保路径正确
 
-
-interface StatusItem {
-  color: string;
-  label: string;
-  value: number;
-}
 
 // const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
 //     if (active && payload && payload.length) {
@@ -31,11 +25,10 @@ interface StatusItem {
 interface ProgressPanelProps {
   labels: string[];
   values: number[];
-  colors: string[]; // 新增颜色数组
+  colors: string[]; 
   max?: number;
 }
 interface DashboardProps extends RouteComponentProps {
-  // ... other props if there are any
 }
   
 export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, colors, max }) => {
@@ -68,8 +61,6 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
   );
 };
 
-
-
 class Dashboard extends React.Component<DashboardProps> {
     
     render() {
@@ -81,51 +72,39 @@ class Dashboard extends React.Component<DashboardProps> {
         { day: '12-05', value: 40 },
         // ...更多数据点
       ];
-      
-      
-          const alertStats = {
-            total: 15,
-            types: [
-              { name: 'SQL注入', count: 3 },
-              { name: 'XSS跨站', count: 4 },
-              { name: '命令注入', count: 5 },
-              { name: '未知攻击', count: 3 },
-            ]
-          };
 
-      
-          // 第二类告警的数据集
-          const alertDataTwo = [
-            { name: '待处理告警', value: 75, color: '#FFBB28' },
-            { name: '已处理告警', value: 25, color: '#E5E8EF' },
-          ];
+      // 第二类告警的数据集
+      const alertDataTwo = [
+        { name: '待处理告警', value: 75, color: '#FFBB28' },
+        { name: '已处理告警', value: 25, color: '#E5E8EF' },
+      ];
 
-          const alertDataThree = [
-            { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
-            { name: '存在高可利用漏洞', value: 1, color: '#EA635F' }//RED
-            ];
-            const alertDataFour = [
-              { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
-              { name: '存在高危基线', value: 2, color: '#4086FF' }//BLUE
-          ];
-          const riskData: StatusItem[] = [
-            { color: '#E53F3F', label: '高风险 ', value: 1 },
-            { color: '#FEC746', label: '中风险 ', value: 1 },
-            { color: '#468DFF', label: '低风险 ', value: 2 },
-            ];
-          // const renderCustomLabel = () => {
-          //   console.log('okkkkk')
-          //   const percent = (alertDataTwo[0].value / (alertDataTwo[0].value + alertDataTwo[1].value) * 100).toFixed(0);
-          //   return (
-          //     <text fill="black" textAnchor="middle" dominantBaseline="central">
-          //       <tspan x="50%" dy="-1em">待处理告警</tspan>
-          //       <tspan x="50%" dy="1.2em">{`${percent}%`}</tspan>
-          //     </text>
-          //   );
-          // };
-          const labels = ['OWL最佳实现-centos基线检查', '等保三级-centos基线检查', '等保二级-centos基线检查'];
-          const values = [16, 19, 15];
-          const colors = ['#ff4d4f', '#faad14', '#52c41a']; // 指定每个进度条的颜色
+      const alertDataThree = [
+        { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
+        { name: '存在高可利用漏洞', value: 1, color: '#EA635F' }//RED
+      ];
+      const alertDataFour = [
+        { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
+        { name: '存在高危基线', value: 2, color: '#4086FF' }//BLUE
+      ];
+      const riskData: StatusItem[] = [
+        { color: '#E53F3F', label: '高风险 ', value: 1 },
+        { color: '#FEC746', label: '中风险 ', value: 1 },
+        { color: '#468DFF', label: '低风险 ', value: 2 },
+      ];
+      // const renderCustomLabel = () => {
+      //   console.log('okkkkk')
+      //   const percent = (alertDataTwo[0].value / (alertDataTwo[0].value + alertDataTwo[1].value) * 100).toFixed(0);
+      //   return (
+      //     <text fill="black" textAnchor="middle" dominantBaseline="central">
+      //       <tspan x="50%" dy="-1em">待处理告警</tspan>
+      //       <tspan x="50%" dy="1.2em">{`${percent}%`}</tspan>
+      //     </text>
+      //   );
+      // };
+      const labels = ['OWL最佳实现-centos基线检查', '等保三级-centos基线检查', '等保二级-centos基线检查'];
+      const values = [16, 19, 15];
+      const colors = ['#ff4d4f', '#faad14', '#52c41a']; // 指定每个进度条的颜色
 
           
   return (
@@ -134,9 +113,8 @@ class Dashboard extends React.Component<DashboardProps> {
       <Row gutter={[12, 6]} >
     <Col className="gutter-row" md={17}>    
       <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-          {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
           <Col className="gutter-row" md={24}>
-          <Card /*title="主机状态分布" 产生分界线*/
+          <Card  
             style={{fontWeight: 'bolder', width: '100%', height:200}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                 <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
@@ -227,10 +205,9 @@ class Dashboard extends React.Component<DashboardProps> {
           </Card>
           </Col>
       </Row>
-      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-            {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}> 
             <Col className="gutter-row" md={24}>
-            <Card /*title="主机状态分布" 产生分界线*/
+            <Card  
               style={{fontWeight: 'bolder', width: '100%', height:350}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                   <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>入侵告警</h2>
@@ -264,7 +241,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                           { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
-                        panelId="/app/HostProtection/rqjc/gjlb"
+                        panelId="/app/HostProtection/HostAlertList"
                         height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
@@ -284,7 +261,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                           { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
-                        panelId="/app/ARP/rqjc/gjlb"
+                        panelId="/app/ARP/ARPAlertList"
                         height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
@@ -304,7 +281,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '0', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                           { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
-                        panelId="/app/CCP/rqjc/gjlb"
+                        panelId="/app/CCP/CCPAlertList"
                         height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
@@ -316,32 +293,6 @@ class Dashboard extends React.Component<DashboardProps> {
                         //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
                     />
                 </Col>
-                {/* <Col span={3}>
-                  <Title level={4}>主机1告警</Title>
-                  {alertStats.types.map((type, index) => (
-                    <div key={index} style={{ marginBottom: '10px' }}>
-                      <Text>{type.name}: </Text>
-                      <Text>{type.count}</Text>
-                    </div>
-                  ))}
-                  <div style={{ marginTop: '20px' }}>
-                    <Text strong>总告警个数: </Text>
-                    <Text strong>{alertStats.total}</Text>
-                  </div>
-                </Col>
-                <Col span={3}>
-                  <Title level={4}>主机2告警</Title>
-                  {alertStats.types.map((type, index) => (
-                    <div key={index} style={{ marginBottom: '10px' }}>
-                      <Text>{type.name}: </Text>
-                      <Text>{type.count}</Text>
-                    </div>
-                  ))}
-                  <div style={{ marginTop: '20px' }}>
-                    <Text strong>总告警个数: </Text>
-                    <Text strong>{alertStats.total}</Text>
-                  </div>
-                </Col> */}
               </Row>
 
             </Card>
@@ -351,7 +302,7 @@ class Dashboard extends React.Component<DashboardProps> {
           {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
           <Col className="gutter-row" md={24}>
 
-          <Card /*title="主机状态分布" 产生分界线*/
+          <Card  
               style={{fontWeight: 'bolder', width: '100%', height:350}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                   <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
@@ -385,7 +336,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                           { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
-                        panelId="/app/HostProtection/rqjc/gjlb"
+                        panelId="/app/HostProtection/HostAlertList"
                         height="75px"
                         width="210px"
                         backgroundColor="#ffffff"
@@ -402,10 +353,9 @@ class Dashboard extends React.Component<DashboardProps> {
             </Card>
           </Col>
       </Row>      
-      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-            {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
+      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}> 
             <Col className="gutter-row" md={24}>
-            <Card /*title="主机状态分布" 产生分界线*/
+            <Card  
               style={{fontWeight: 'bolder', width: '100%', height:330}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                   <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>基线风险 Top3</h2>

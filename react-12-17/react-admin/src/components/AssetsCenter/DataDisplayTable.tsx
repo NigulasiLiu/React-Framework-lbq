@@ -408,14 +408,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             onChange: this.onSelectChange,
         };
         const isButtonDisabled = dataSource.length === 0 || selectedRowKeys.length === 0;
-        const filteredDataSource = dataSource.filter(item => {
-            const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
-            const [startDateStr, endDateStr] = this.state.selectedDateRange;
-            const startDate = startDateStr ? moment(startDateStr, 'YYYY-MM-DD') : null;
-            const endDate = endDateStr ? moment(endDateStr, 'YYYY-MM-DD') : null;
-            return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) &&
-                   (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
-        });
+
 
         // 根据当前页数和每页显示的行数截取数据
         const startIndex = (this.state.currentPage - 1) * this.state.pageSize;
@@ -489,7 +482,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                         {/* <Button onClick={fetchData}>采集最新数据</Button> */}
                                     </Col>
                                     <Col flex="auto" style={{ textAlign: 'left', marginLeft: 10 }}>
-                                        <span>最近更新时间: {lastUpdated ? lastUpdated : '-'}</span>
+                                        <span>最近更新時間: {lastUpdated ? lastUpdated : '-'}</span>
                                     </Col>
                                     {this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
                                     <Col flex="none" style={{ marginLeft: 'auto' }}>

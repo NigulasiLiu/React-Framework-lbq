@@ -1,9 +1,8 @@
 import React from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Menu,Pagination, Select } from 'antd';
 import SidebarComponent from '../SubComponents/SidebarComponent'
-import { SyncOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
-import { buildRangeQueryParams,fetchDataFromAPI, processData } from './DataService';
+import { buildRangeQueryParams} from './DataService';
 
 const { Option } = Select;
 
@@ -29,6 +28,8 @@ interface CustomDataTableProps {
     onUpdateSearchField: (field: string) => void;
     onUpdateSearchQuery: (query: string) => void;
     onUpdateRangeField:(queryParams:string) => void;
+    onDeleteSelected:(selectedRowKeys: React.Key[]) => void;
+    onSelectedRowKeysChange:(selectedRowKeys: React.Key[]) => void;
 }
 
 interface CustomDataTableState {
@@ -69,8 +70,9 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         };
     }
     componentDidMount() {
-        this.props.fetchLatestData('','','')
+        this.props.fetchLatestData('all','','')
         //const newColumns = autoPopulateFilters();
+        //渲染筛选器等等
     }
     componentDidUpdate(prevProps: any, prevState:any) {
 
@@ -91,12 +93,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                     
                     // 重置各种筛选条件
                     searchQuery: '',
-                    selectedSearchField: '', 
+                    selectedSearchField: 'all', 
                     selectrangequeryParams: '',
                     
                     selectedApplicationType: null,//只用于‘应用’这个子页面
                     selectedDateRange: [null, null],//日期筛选器重置
-                    currentPage: 1,
 
 
                 },
@@ -111,68 +112,40 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
     onSelectChange = (selectedRowKeys: React.Key[]) => {
         this.setState({ selectedRowKeys });
+        //傳遞給父組件以構建DELETE請求，刪除在數據庫中刪除被選中的條目
+        if (this.props.onSelectedRowKeysChange) {
+            this.props.onSelectedRowKeysChange(selectedRowKeys);
+        }
     };
-    handlePageChange = (page: number, pageSize?: number) => {
-        this.setState({ currentPage: page });
-        // 如果需要，也可以在这里处理 pageSize 的变化
-    };
-    // onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
-    //     if (dates) {
-    //         const [start, end] = dateStrings;
-    //         this.setState({ selectedDateRange: [start, end] });
-    //     } else {
-    //         this.setState({ selectedDateRange: [null, null] });
-    //     }
-    //     const { selectedDateRange } = this.state;
-    //     const { timeColumnIndex } = this.props;
-    //     if (selectedDateRange[0] && selectedDateRange[1] && timeColumnIndex) {
-    //         // 假设 timeColumnIndex 是一个包含 dataIndex 的数组
-    //         const timeColumnDataIndex = timeColumnIndex[0]; // 选择适当的索引或字段
-    
-    //         const startDate = moment(selectedDateRange[0]).format('YYYY-MM-DD');
-    //         const endDate = moment(selectedDateRange[1]).format('YYYY-MM-DD');
-            
-    //         const selectedqueryParams = buildRangeQueryParams(startDate, endDate, timeColumnDataIndex);
-    //         this.setState({ selectrangequeryParams: selectedqueryParams});
 
-    //         //调用 API
-    //         try{
-    //             this.handleRangeFieldChange(selectedqueryParams);
-    //             this.props.fetchLatestData('', '', selectedqueryParams);
-    //         }catch(error){
-    //                 console.error('Error fetching data:', error);
-    //         }
-    //     };
-    // }
-    onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
-        if (dates) {
-            const [start, end] = dateStrings;
-            this.setState({ selectedDateRange: [start, end] });
-        } else {
-            this.setState({ selectedDateRange: [null, null] });
-        }
-        const { selectedDateRange } = this.state;
-        const { timeColumnIndex } = this.props;
-        if (selectedDateRange[0] && selectedDateRange[1] && timeColumnIndex) {
-            // 转换日期为 Unix 时间戳（秒）
-            const startDateTimestamp = moment(selectedDateRange[0]).startOf('day').unix();
-            const endDateTimestamp = moment(selectedDateRange[1]).endOf('day').unix();
-    
-            const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
-            this.setState({ selectrangequeryParams: selectedqueryParams });
-    
-            this.handleRangeFieldChange(selectedqueryParams);
-            this.props.fetchLatestData('', '', selectedqueryParams);
-            // 调用 API
-            // try {
-            //     this.handleRangeFieldChange(selectedqueryParams);
-            //     this.props.fetchLatestData('', '', selectedqueryParams);
-            // } catch (error) {
-            //     console.error('Error fetching data:', error);
-            // }
-        }
+    handlePageChange = (page: number, pageSize?: number) => {
+        this.setState({ 
+            currentPage: page, 
+            pageSize: pageSize?pageSize:10,
+            selectedRowKeys: [] // 重置行选择
+        });
     };
-    
+    autoPopulateFilters = () => {
+        const { columns, externalDataSource } = this.props;
+
+        const newColumns = columns.map(column => {
+          if (column.onFilter && externalDataSource) {
+            const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
+            const filters = Array.from(fieldVarieties).map(variety => ({
+              text: (
+                <span style={{ color: '#000'}}>
+                  {variety ? variety.toString() : ''}
+                </span>
+              ),
+              value: variety,
+            }));
+            return { ...column, filters };
+          }
+          return column;
+        });
+
+        return newColumns;
+    };
     // 渲染侧边栏组件
     renderSidebar = () => {
         const applicationTypes = ['全部应用', '数据库', 'Web服务器', 'DevOps工具', '缓存服务']; // 示例应用类型，后续最好读取后再构造菜单
@@ -182,27 +155,51 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             // <SidebarComponent onApplicationTypeSelect={this.props.handleApplicationTypeSelect} />
         );
     };
-    handleExport = () => {
-        const { externalDataSource } = this.props;
 
+    handleExport = () => {
+        const { externalDataSource, columns } = this.props;
+    
         // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
         if (this.state.selectedRowKeys.length === 0 || externalDataSource.length === 0) {
             alert('没有可导出的数据');
             return;
         }
+    
+        // 筛选出要导出的数据
         const dataToExport = externalDataSource.filter((item) => this.state.selectedRowKeys.includes(item.id));
-        const jsonString = JSON.stringify(dataToExport, null, 2);
-        const blob = new Blob([jsonString], { type: 'application/json' });
+    
+        // 创建 CSV 字符串
+        let csvContent = '';
+    
+        // 添加标题行（从 columns 获取列标题）
+        const headers = columns.map(column => `"${column.title}"`).join(",");
+        csvContent += headers + "\r\n";
+    
+        // 添加数据行（根据 columns 的 dataIndex 来获取值）
+        dataToExport.forEach(item => {
+            const row = columns.map(column => {
+                const value = item[column.dataIndex];
+                return `"${value}"`; // 用引号包裹，以便正确处理包含逗号或换行符的数据
+            }).join(",");
+            csvContent += row + "\r\n";
+        });
+    
+        // UTF-8 编码的字节顺序标记 (BOM)
+        const BOM = "\uFEFF";
+    
+        // 创建 Blob 对象
+        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
         const href = URL.createObjectURL(blob);
+    
+        // 创建下载链接并点击
         const link = document.createElement('a');
         link.href = href;
-        link.download = 'export.json';
+        link.download = 'export.csv';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
     
-    // 处理侧边栏选择事件
     handleApplicationTypeSelect = (e: any) => {
         const applicationType = e.key;
         // 选择新的应用类型后，也重置selectedRowKeys
@@ -230,10 +227,43 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             </Select>
         );
     };
-    handleRangeFieldChange = (queryParams: string) => {
-        this.props.onUpdateRangeField(queryParams);
-        this.setState({ selectrangequeryParams: queryParams });
-      };
+
+    handleDeleteSelected = () => {
+        // 调用父组件的删除方法
+        if (this.props.onDeleteSelected) {
+            this.props.onDeleteSelected(this.state.selectedRowKeys);
+        }
+
+        // 重置选中的行
+        this.setState({ selectedRowKeys: [] });
+    };
+    onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
+        if (dates) {
+            const [start, end] = dateStrings;
+            this.setState({ selectedDateRange: [start, end] });
+    
+            const { timeColumnIndex } = this.props;
+            if (timeColumnIndex) {
+                // 转换日期为 Unix 时间戳（秒）
+                const startDateTimestamp = moment(start).unix();
+                const endDateTimestamp = moment(end).unix();
+                
+                const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
+                
+                this.props.onUpdateRangeField(selectedqueryParams);
+                this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
+                    // 在状态更新后立即触发数据获取
+                    this.props.fetchLatestData('', '', selectedqueryParams);
+                });
+            }
+        } else {
+            this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
+                // 当日期范围被清空时，重置数据
+                this.props.fetchLatestData('all', '', '');
+            });
+        }
+    };
+    
     handleSearchFieldChange = (selectedField: string) => {
         this.props.onUpdateSearchField(selectedField);
         this.setState({ selectedSearchField: selectedField });
@@ -247,13 +277,14 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
 
     render() {
-        const { externalDataSource, columns } = this.props;
-        const { currentPage, pageSize, total } = this.state;
+        // const { externalDataSource, columns } = this.props;
+        // const { currentPage, pageSize, total } = this.state;
         
         const rowSelection = {//checkbox勾选状态独立
             selectedRowKeys:this.state.selectedRowKeys,
             onChange: this.onSelectChange,
         };
+        const newColumns = this.autoPopulateFilters();
 
         const isButtonDisabled = this.props.externalDataSource.length === 0 || this.state.selectedRowKeys.length === 0;
         return (//Table的宽度被设置为1330px
@@ -279,18 +310,26 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                             <Row gutter={16} style={{ display: 'flex', alignItems: 'center' }}>
                                 <Col flex="none">
                                     <Button
-                                        style={{ marginRight: 8,
+                                        style={{ 
                                             opacity: isButtonDisabled ? 0.5 : 1 }}
                                         onClick={this.handleExport}
                                         disabled={isButtonDisabled}
                                     >
                                         批量导出
                                     </Button>
-                                    <Button onClick={() =>this.props.fetchLatestData('', '', '')}>采集最新数据</Button>
+                                    <Button
+                                        style={{ 
+                                            opacity: isButtonDisabled ? 0.5 : 1 }}
+                                        onClick={this.handleDeleteSelected}
+                                        disabled={isButtonDisabled}
+                                    >
+                                    刪除選中行
+                                    </Button>
+                                    <Button onClick={() =>this.props.fetchLatestData('all', '', '')}>采集最新数据</Button>
                                     {/* <Button onClick={fetchData}>采集最新数据</Button> */}
                                 </Col>
                                 <Col flex="auto" style={{ textAlign: 'left', marginLeft: 10 }}>
-                                    <span>最近更新时间: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
+                                    <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
                                 </Col>
                                 {this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
                                 <Col flex="none" style={{ marginLeft: 'auto' }}>
@@ -308,7 +347,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 <Input.Search
                                     placeholder="搜索已选字段"
                                     onSearch={this.handleSearch}
-                                    style={{ width: this.props.currentPanel === 'applications' ? '67%' : '77%' }}
+                                    style={{ width: this.props.currentPanel === 'applications' ? '67%' : '83%' }}
                                 />
                                 {/* <Button
                                     icon={<SyncOutlined />}
@@ -321,37 +360,23 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                         <Table
                             className="customTable"
                             rowSelection={rowSelection}
-                            pagination={false}
+                            //pagination={false}
                             dataSource={this.props.externalDataSource}
-                            columns={this.props.columns}
-                            rowKey="id"
+                            columns={newColumns}
+                            rowKey={this.props.columns[0].dataIndex}//使用第一个字段区分各个row，最好是PK
                             //locale={{ emptyText: 'No Data' }} // 可以指定无数据时展示的文本
                         />
-                        <Pagination // 分页组件
-                        current={this.state.currentPage}
-                        pageSize={this.state.pageSize}
-                        total={this.props.externalDataSource.length} // 总行数
-                        onChange={this.handlePageChange} // 处理分页切换
-                        showSizeChanger={false} // 不显示每页行数切换
-                        style={{ marginTop: '16px', textAlign: 'center' }}
-                    />
+                        {/* <Pagination // 分页组件
+                            current={this.state.currentPage}
+                            pageSize={this.state.pageSize}
+                            total={this.props.externalDataSource.length} // 总行数
+                            onChange={this.handlePageChange} // 处理分页切换
+                            showSizeChanger={false} // 不显示每页行数切换
+                            style={{ marginTop: '16px', textAlign: 'center' }}
+                    /> */}
                     </Card>
                 </Col>
             </Row>
-            
-            {/* <Table
-                    className="customTable"
-                    dataSource={externalDataSource}
-                    columns={columns}
-                    pagination={false} // 禁用表格自带的分页
-                />
-                <Pagination
-                    current={currentPage}
-                    pageSize={pageSize}
-                    total={total}
-                    onChange={this.handlePageChange}
-                    // 根据需要添加其他分页属性
-                /> */}
         </div>
         );
     }

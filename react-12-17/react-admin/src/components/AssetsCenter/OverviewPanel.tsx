@@ -2,15 +2,12 @@ import React from 'react';
 import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { StatusItem } from './Interfaces';
+import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../../utils/tableUtils';
 import { StatusPanel } from './HostInventory';
-
-interface GenericDataItem {
-    [key: string]: any;
-}
+import CustomPieChart from '../charts/CustomPieChart';
 interface OverviewPanelProps extends RouteComponentProps {
     statusData: StatusItem[];
+    //currentPanel: string;
     changePanel: (panelName: string) => void; //切换子panel
     topData: {
         fim: GenericDataItem[];
@@ -28,16 +25,6 @@ interface OverviewPanelProps extends RouteComponentProps {
 
 type OverviewPanelState = {
     activeIndex: any;
-};
-type DataItem = {
-    key: string;
-    id: string;
-    value: number;
-    color: string; // 添加 color 属性
-};
-type BaseItem = {
-    key: string;
-    color: string; // 添加 color 属性
 };
 const baseDataItems: BaseItem[] = [
     { key: '1', color: '#F24040' },
@@ -134,43 +121,7 @@ const sortedData = [
 ];
 
 
-const generateColumns = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => [
-    
-    // {
-    //     title: () => (
-    //         <span
-    //           style={{ fontWeight: 'bold', cursor: 'pointer' }}
-    //         >
-    //           {tableName}
-    //         </span>
-    //       ),
-    //     key: 'id',
-    //     render: (text: any, record: DataItem, index: number) => {
-    //         const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
-    //         return (
-    //             <div>
-    //                 <span
-    //                     style={{
-    //                         lineHeight: '15px',
-    //                         height: '15px',
-    //                         width: '15px',
-    //                         backgroundColor: colorOrder[index], // 使用record.color作为背景色
-    //                         borderRadius: '50%',
-    //                         display: 'inline-block',
-    //                         marginRight: '16px',
-    //                         position: 'relative',
-    //                         textAlign: 'center',
-    //                         fontSize: '12px',
-    //                         color: textColor,
-    //                     }}
-    //                 >
-    //                     {index + 1} {/* 在圆形中显示index + 1 */}
-    //                 </span>
-    //                 {record.id}
-    //             </div>
-    //         );
-    //     },
-    // },
+const generateColumns2 = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => [
     {
         title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }} 
         onClick={() => goToPanel(tableName)}>{tableName}</span>,
@@ -217,19 +168,20 @@ const generateColumns = (tableName: string, tableName_s: string, tableName_list:
         },
     },
 ];
-//显示从接口得到stime数据时，去除进度条，需要修改generateColumns-->generateColumns1
-const generateColumns1 = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
+//显示从接口得到stime数据时，去除进度条
+const generateColumns = (tableName: string, tableName_s: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
     const showProgress = tableName !== '文件完整性校验-最新变更二进制文件 TOP5'; // 判断是否要显示进度条
 
     return [
         {
             title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }} 
-            onClick={() => goToPanel(tableName)}>{tableName}</span>,
+            onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
             key: 'id',
             render: (text: any, record: DataItem, index: number) => {
                 const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
                 return (
-                    <div>
+                    <div style={{ cursor: 'pointer' }} 
+                    onClick={() => goToPanel(record.id)}>
                         <span
                             style={{
                                 lineHeight: '15px',
@@ -276,7 +228,15 @@ const generateColumns1 = (tableName: string, tableName_s: string, tableName_list
         },
     ];
 };
-
+const tbName:GenericDataItem={
+    '开放端口 TOP5':'open-ports',
+    '系统软件 TOP5':'system-software',
+    '系统服务 TOP5':'system-services',
+    '运行进程 TOP5':'running-processes',
+    '文件完整性校验-最新变更二进制文件 TOP5':'fim',
+    '应用 TOP5':'applications',
+    '内核模块 TOP5':'kernel-modules',
+    '容器运行状态分布':'container',}
 const tableNames = [
     '开放端口 TOP5',
     '系统软件 TOP5',
@@ -288,16 +248,7 @@ const tableNames = [
     '容器运行状态分布',
 ];
 const tableName_s = ['指纹数', '变更时间', ''];
-function convertUnixTimeToDateTime(unixTime:any) {
-    // 将 Unix 时间戳转换为毫秒
-    const date = new Date(unixTime * 1000);
 
-    // 转换为本地时间格式，格式为 "年月日时分秒"
-    // toLocaleString 默认使用运行代码环境的地区设置
-    const formattedDateTime = date.toLocaleString();
-
-    return formattedDateTime;
-}
 
 class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelState> {
     constructor(props: any) {
@@ -306,13 +257,17 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             activeIndex: [-1], //一个扇形图
         };
     }
-
     // 修改后的函数，使其能够导航到对应的子面板
     goToPanel = (panelName: string) => {
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
-    };
 
+    };
+    goToPanelAndSearch = (panelName: string, param: string) => {
+        // 更新父组件的状态，changePanel 的函数负责这个逻辑
+        this.props.changePanel(panelName);
+
+    };
     renderEmpty = () => {
         return (
             <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -357,7 +312,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             generateColumns(tableNames[1], tableName_s[0], tableNames, this.goToPanel),
             generateColumns(tableNames[2], tableName_s[0], tableNames, this.goToPanel),
             generateColumns(tableNames[3], tableName_s[0], tableNames, this.goToPanel), 
-            generateColumns1(tableNames[4], tableName_s[1], tableNames, this.goToPanel),
+            generateColumns(tableNames[4], tableName_s[1], tableNames, this.goToPanel),
             generateColumns(tableNames[5], tableName_s[0], tableNames, this.goToPanel),
             generateColumns(tableNames[6], tableName_s[0], tableNames, this.goToPanel),
             generateColumns(tableNames[7], tableName_s[2], tableNames, this.goToPanel),
@@ -758,37 +713,16 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         <Card className="noTopBorderCard" style={{ height: 238 }}>
                             <Row gutter={0}>
                                 <Col span={12}>
-                                    <ResponsiveContainer width="100%" height={200}>
-                                        <PieChart>
-                                            <Pie
-                                                data={status_data}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={54}
-                                                fill="#8884d8"
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                                onMouseEnter={(e) => this.handleMouseEnter(e, 0)} //0代表第一个扇形图
-                                                onMouseLeave={this.handleMouseLeave}
-                                                outerRadius={
-                                                    this.state.activeIndex[0] === 0 ? 80 : 72
-                                                } // 0代表第一个扇形图，如果悬停则扇形半径变大
-                                                className={
-                                                    this.state.activeIndex === 0
-                                                        ? 'pie-hovered'
-                                                        : 'pie-normal'
-                                                }
-                                            >
-                                                {status_data.map((entry, index) => (
-                                                    <Cell
-                                                        key={`cell-${index}`}
-                                                        fill={entry.color}
-                                                    />
-                                                ))}
-                                            </Pie>
-                                            {/* <Tooltip content={<CustomTooltip />} /> */}
-                                        </PieChart>
-                                    </ResponsiveContainer>
+                                    <CustomPieChart
+                                    data={status_data}
+                                    innerRadius={54}
+                                    deltaRadius={8}
+                                    outerRadius={80}
+                                    cardWidth={200}
+                                    cardHeight={200}
+                                    hasDynamicEffect={true}
+                                    >
+                                    </CustomPieChart>
                                 </Col>
                                 <Col span={2}> </Col>
                                 <div style={{ transform: 'translateX(40px) translateY(40px)' }}>

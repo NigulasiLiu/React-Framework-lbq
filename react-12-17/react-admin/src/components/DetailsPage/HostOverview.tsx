@@ -5,27 +5,14 @@ import React from 'react';
 import { Row, Col, Card, Statistic, Typography ,Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import { PieChart, Pie, Cell,Label, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
-import DataCard from '../DataCard';
+import { PieChart, Pie, Cell,Label, ResponsiveContainer} from 'recharts';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
+import { StatusItem } from '../../utils/tableUtils';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 const { Text } = Typography;
 
 
-interface StatusItem {
-  color: string;
-  label: string;
-  value: number;
-}
-
-interface ProgressPanelProps {
-  labels: string[];
-  values: number[];
-  colors: string[]; // 新增颜色数组
-  max?: number;
-}
 interface HostOverviewProps extends RouteComponentProps {
   // ... other props if there are any
     changePanel: (panelName: string) => void; //切换子panel
@@ -35,12 +22,6 @@ type HostOverviewState={
     
     activeIndex: any;
 } 
-const status_data: StatusItem[] = [
-    { label: 'Created', value: 7, color: '#22BC44' }, //GREEN
-    { label: 'Running', value: 2, color: '#FBB12E' }, //ORANGE
-    { label: 'Exited', value: 5, color: '#EA635F' }, //RED
-    { label: 'Unknown', value: 1, color: '#E5E8EF' }, //GREY
-];
 
 class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> {
     constructor(props: any) {
@@ -71,10 +52,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         this.props.changePanel(panelName);
     };
     render() {
-        const labels = ['OWL最佳实现-centos基线检查', '等保三级-centos基线检查', '等保二级-centos基线检查'];
-        const values = [16, 19, 15];
-        const colors = ['#ff4d4f', '#faad14', '#52c41a']; // 指定每个进度条的颜色
-
         const data = {
         '主机名称': '395ba454ae35',
         '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
@@ -106,31 +83,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         'DNS服务器': '192.168.218.2',
         // ... any other data fields
         };
-        const status_data: StatusItem[] = [
-            { label: 'Created', value: 7, color: '#22BC44' }, //GREEN
-            { label: 'Running', value: 2, color: '#FBB12E' }, //ORANGE
-            { label: 'Exited', value: 5, color: '#EA635F' }, //RED
-            { label: 'Unknown', value: 1, color: '#E5E8EF' }, //GREY
-        ];
-        const alertData2 = [
-        { name: '紧急', value: 5, color: '#EA635F' },//RED
-        { name: '高风险', value: 1, color: '#846CCE' },//紫
-        { name: '中风险', value: 1, color: '#FBB12E' },//ORANGE
-        { name: '低风险', value: 1, color: '#468DFF' }//蓝
-        ];
-        const alertData3 = [
-        { name: '严重', value: 1, color: '#EA635F' },//RED
-        { name: '高危', value: 1, color: '#846CCE' },//紫
-        { name: '中危', value: 1, color: '#FBB12E' },//ORANGE
-        { name: '低危', value: 1, color: '#468DFF' }//蓝
-        ];
-        
-        const alertData4 = [
-        { name: '高危', value: 1, color: '#EA635F' },//RED
-        { name: '中危', value: 1, color: '#FBB12E' },//ORANGE
-        { name: '低危', value: 1, color: '#468DFF' }//蓝
-        ];
-        
         const alertData2_:StatusItem[] = [
             { label: '紧急', value: 5, color: '#EA635F' },//RED
             { label: '高风险', value: 1, color: '#846CCE' },//紫
@@ -297,9 +249,8 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         ];
         const agentversion='1.7.0.24';
   return (
-
         <div style={{ width: '100%' }}>
-            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1425,border:'false'}}>{/*maxWidth:1260*/}
+            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>{/*maxWidth:1260*/}
                 <Row gutter={[8,16]}>
                     <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
@@ -537,19 +488,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 </Card>
                             </Col>
                             <Col span={2}>
-                            {/* <DataCard
-                                title="运行进程"
-                                value={13}
-                                valueItem={[
-                                    { value: '13', color: '#F6F7FB' },
-                                    // Add more additional statistics as needed
-                                ]}
-                                panelId="running-processes"
-                                height="75px"
-                                width="110px"
-                                backgroundColor="#F6F7FB"
-                                navigate={false}
-                            /> */}
                                 <Card
                                     bordered={false}
                                     style={{
@@ -757,12 +695,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                             </div>
                         </Row>
                         <Row>
-                        <DataDisplayTable
-                                apiEndpoint="http://localhost:5000/api/files/diskinfo"
-                                columns={diskColumns}
-                                rankLabel=''
-                                timeColumnIndex={[]}
-                            />
+                        <FetchAPIDataTable
+                            apiEndpoint="http://localhost:5000/api/files/diskinfo"
+                            timeColumnIndex={[]}
+                            columns={diskColumns}
+                            currentPanel="hostOverviewdiskinfolist"
+                        />
                         </Row>
                     </Card>
                 </Row>
@@ -775,12 +713,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                             </div>
                         </Row>
                         <Row>
-                        <DataDisplayTable
-                                apiEndpoint="http://localhost:5000/api/files/netinfo"
-                                columns={netColumns}
-                                rankLabel=''
-                                timeColumnIndex={[]}
-                            />
+                        <FetchAPIDataTable
+                            apiEndpoint="http://localhost:5000/api/files/netinfo"
+                            timeColumnIndex={[]}
+                            columns={netColumns}
+                            currentPanel="hostOverviewnetinfolist"
+                        />
                         </Row>
                     </Card>
                 </Row>
@@ -793,12 +731,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                             </div>
                         </Row>
                         <Row>
-                        <DataDisplayTable
-                                apiEndpoint="http://localhost:5000/api/files/plugininfo"
-                                columns={pluginColumns}
-                                rankLabel=''
-                                timeColumnIndex={[]}
-                            />
+                        <FetchAPIDataTable
+                            apiEndpoint="http://localhost:5000/api/files/plugininfo"
+                            timeColumnIndex={[]}
+                            columns={pluginColumns}
+                            currentPanel="hostOverviewplugininfolist"
+                        />
                         </Row>
                     </Card>
                 </Row>

@@ -1,0 +1,147 @@
+
+<ResponsiveContainer width="100%" height={200}>
+    <PieChart >
+        <Pie 
+        data={alertDataOne}
+        cx="50%"
+        cy="50%"
+        innerRadius={54}
+        fill="#8884d8"
+        paddingAngle={5}
+        dataKey="value"
+        onMouseEnter={(e) => this.handleMouseEnter(e, 0)}//0代表第一个扇形图
+        onMouseLeave={this.handleMouseLeave}
+        outerRadius={this.state.activeIndex[0] === 0 ? 80 : 72} // 0代表第一个扇形图，如果悬停则扇形半径变大
+        className={this.state.activeIndex === 0 ? 'pie-hovered' : 'pie-normal'}
+        >
+        {alertDataOne.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+        ))}
+        </Pie>
+        {/* <Tooltip content={<CustomTooltip />} /> */}
+    </PieChart>
+
+    </ResponsiveContainer> 
+
+
+
+    <Col span={5}>
+        <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+                <Pie className="pie-chart-segment"
+                data={alertDataTwo}
+                cx="50%"
+                cy="50%"
+                innerRadius={54}
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+                onMouseEnter={(e) => this.handleMouseEnter(e, 1)}
+                onMouseLeave={this.handleMouseLeave}
+                outerRadius={this.state.activeIndex[1] === 1 ? 80 : 72} // 如果悬停则扇形半径变大
+                
+                >
+                {alertDataTwo.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+                <Label value={'待处理告警:'+`${Math.round(alertDataTwo[1].value/(alertDataTwo[0].value+alertDataTwo[1].value)*100)}%`} 
+                position="center" 
+                style={{ fontSize: '14px' }}
+                />
+                </Pie>
+
+                {/* <Tooltip content={<CustomTooltip />} /> */}
+            </PieChart>
+            </ResponsiveContainer>
+
+        </Col>
+        <Col span={5}>
+        <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+                <Pie className="pie-chart-segment"
+                data={alertDataThree}
+                cx="50%"
+                cy="50%"
+                innerRadius={54}
+                onMouseEnter={(e) => this.handleMouseEnter(e, 2)}
+                onMouseLeave={this.handleMouseLeave}
+                outerRadius={this.state.activeIndex[2] === 2 ? 80 : 72} // 如果悬停则扇形半径变大
+                
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+                >
+                {alertDataThree.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+                <Label
+                value={'高危漏洞:'+`${Math.round(alertDataThree[1].value / (alertDataThree[0].value + alertDataThree[1].value) * 100)}%`}
+                position="center"
+                style={{ fontSize: '14px' }} // Set the font size as desired
+                />
+                </Pie>
+                
+            </PieChart>
+            </ResponsiveContainer>
+        </Col>
+        <Col span={5}>
+            <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+                <Pie className="pie-chart-segment"
+                data={alertDataFour}
+                cx="50%"
+                cy="50%"
+                innerRadius={54}
+                onMouseEnter={(e) => this.handleMouseEnter(e, 3)}
+                onMouseLeave={this.handleMouseLeave}
+                outerRadius={this.state.activeIndex[3] === 3 ? 80 : 72} // 如果悬停则扇形半径变大
+                
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+                
+                >
+                {alertDataFour.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+                <Label value={'待加固基线:'+`${Math.round(alertDataFour[1].value/(alertDataFour[0].value+alertDataFour[1].value)*100)}%`} 
+                position="center" style={{ fontSize: '14px' }}/>
+                </Pie>
+                
+            </PieChart>
+
+            </ResponsiveContainer>
+        </Col>
+
+        
+        <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+                <Pie
+                    data={status_data}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={54}
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    dataKey="value"
+                    onMouseEnter={(e) => this.handleMouseEnter(e, 0)} //0代表第一个扇形图
+                    onMouseLeave={this.handleMouseLeave}
+                    outerRadius={
+                        this.state.activeIndex[0] === 0 ? 80 : 72
+                    } // 0代表第一个扇形图，如果悬停则扇形半径变大
+                    className={
+                        this.state.activeIndex === 0
+                            ? 'pie-hovered'
+                            : 'pie-normal'
+                    }
+                >
+                    {status_data.map((entry, index) => (
+                        <Cell
+                            key={`cell-${index}`}
+                            fill={entry.color}
+                        />
+                    ))}
+                </Pie>
+                {/* <Tooltip content={<CustomTooltip />} /> */}
+            </PieChart>
+        </ResponsiveContainer>

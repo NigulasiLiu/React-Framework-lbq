@@ -10,7 +10,6 @@ import { checkLogin } from './utils';
 import { fetchMenu } from './service';
 import classNames from 'classnames';
 import { SmileOutlined } from '@ant-design/icons';
-import { FileIntegrityProvider} from './components/ContextAPI/FileIntegrityContext';
 
 const { Content, Footer } = Layout;
 
@@ -92,7 +91,7 @@ function fetchSmenu(handler: any) {
     });
 }
 
-const App = (props: AppProps) => {
+function App(props: AppProps){
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [auth, responsive, setAlita] = useAlita(
         { auth: { permissions: null } },
@@ -114,25 +113,23 @@ const App = (props: AppProps) => {
         setCollapsed(!collapsed);
     }
     return (
-        <FileIntegrityProvider>
-            <Layout>
-                {!responsive.isMobile && checkLogin(auth.permissions) && (
-                    <SiderCustom collapsed={collapsed} />
-                )}
-                <ThemePicker />
-                <Layout
-                    className={classNames('app_layout', { 'app_layout-mobile': responsive.isMobile })}
-                >
-                    <HeaderCustom toggle={toggle} collapsed={collapsed} user={auth || {}} />
-                    <Content className="app_layout_content">
-                        <Routes auth={auth} />
-                    </Content>
-                    <Footer className="app_layout_foot">
-                        <Copyright />
-                    </Footer>
-                </Layout>
+        <Layout>
+            {!responsive.isMobile && checkLogin(auth.permissions) && (
+                <SiderCustom collapsed={collapsed} />
+            )}
+            <ThemePicker />
+            <Layout
+                className={classNames('app_layout', { 'app_layout-mobile': responsive.isMobile })}
+            >
+                <HeaderCustom toggle={toggle} collapsed={collapsed} user={auth || {}} />
+                <Content className="app_layout_content">
+                    <Routes auth={auth} />
+                </Content>
+                <Footer className="app_layout_foot">
+                    <Copyright />
+                </Footer>
             </Layout>
-        </FileIntegrityProvider>
+        </Layout>
     );
 };
 

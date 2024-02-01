@@ -1,11 +1,12 @@
 // FetchAPIDataTable.tsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { fetchDataFromAPI, processData } from './DataService';
 import CustomDataTable from './CustomDataTable';
-
+import axios from 'axios';
 interface FetchAPIDataTableProps {
     apiEndpoint: string;
-
+    location?: any;
     columns: any[];
     timeColumnIndex: string[];
     currentPanel:string;
@@ -17,6 +18,22 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
   const [searchField, setSearchField] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [rangeQuery, setRangeQuery] = useState<string>('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const handleDeleteSelected = async () => {//通過搜索特定IP，然後選中所有搜搜結果，點擊刪除
+    /*現在，我想將await axios.delete(`${apiEndpoint}/delete`, { data: { ids: selectedRowKeys } });修改，然後封裝成一個强化版的函數，因爲在後端我們需要通過讀取?後的參數名稱和值來刪除某個條目，那麽這個强化版的函數可以通過輸入columns中的某個字段比如columns[0].dataIndex來確定要構建的路由參數， */
+    if (selectedRowKeys.length > 0) {
+        try {
+            // 发送 DELETE 请求
+            await axios.delete(`${apiEndpoint}/delete`, { data: { ids: selectedRowKeys } });
+            // 重新获取数据
+            fetchLatestData('all', '', '');
+        } catch (error) {
+            console.error('Error deleting data:', error);
+            // 处理删除失败的情况
+        }
+    }
+  };
 
   const handleUpdateSearchField = (field: string) => {
     setSearchField(field);
@@ -35,21 +52,16 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
     fetchLatestData(field, query, rangeQueryParams);
   };
 
-  // const fetchLatestData = async () => {
-  //   try {
-  //       const rawData = await fetchDataFromAPI({ apiEndpoint, sqlTableName, fields });
-  //       const processedData = processData(rawData, timeColumnIndex);
-  //       setData(processedData);
-  //   } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //   }
-  // };
+
   // 用于构建查询参数
   
   const buildQueryParams = (searchField:string, searchQuery:string) => {
     let queryParams = '';
-    if (searchField && searchQuery) {
-        queryParams = `?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
+    if(searchField === 'all'&&searchQuery === ''){
+        queryParams = '/all';
+    }
+    else if (searchField !== 'all' && searchField && searchQuery) {
+        queryParams = `/query?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
         //queryParams = `?${searchField}=${searchQuery}`;
     }
     return queryParams;
@@ -93,6 +105,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
     // useEffect(() => {
     //     fetchLatestData('', '');
     // }, [fetchLatestData]); // fetchLatestData 现在是稳定的
+    
     return (
       <CustomDataTable 
           externalDataSource={data} 
@@ -104,6 +117,8 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
           onUpdateSearchField={handleUpdateSearchField}
           onUpdateSearchQuery={handleUpdateSearchQuery}
           onUpdateRangeField={onUpdateRangeField}
+          onDeleteSelected={handleDeleteSelected}
+          onSelectedRowKeysChange={setSelectedRowKeys}
           //handleApplicationTypeSelect={/* 对应的函数 */}
           //renderSearchFieldDropdown={/* 对应的函数 */}
           //handleSearch={/* 对应的函数 */}

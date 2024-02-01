@@ -95,12 +95,12 @@ const menus: {
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/ARP/rqjc/ARPAlertList',
+                            key: '/app/ARP/ARPAlertList',
                             title: '告警列表',
                             component: 'ARPAlertList',
                         },
                         {
-                            key: '/app/ARP/rqjc/ARPWhiteList',
+                            key: '/app/ARP/ARPWhiteList',
                             title: '白名单',
                             component: 'ARPWhiteList',
                         },

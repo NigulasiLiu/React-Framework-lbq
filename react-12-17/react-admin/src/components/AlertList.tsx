@@ -1,22 +1,14 @@
-/**
- * Created by hao.cheng on 2017/5/8.
- */
 import React from 'react';
-import { Statistic,Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
+import { Statistic,Row, Col, Card, Button, } from 'antd';
+import FetchAPIDataTable from './AssetsCenter/FetchAPIDataTable';
 
-import moment, { Moment } from 'moment';
-import DataDisplayTable from './AssetsCenter/DataDisplayTable'
 
-const { RangePicker } = DatePicker;
-type RangeValue<T> = [T | null, T | null] | null;
-const { Search } = Input;
-
-type HostInventoryProps = {
+type AlertListProps = {
     apiEndpoint:string;
     columns:any[];
     currentPanel:string;
 };
-type HostInventoryState = {
+type AlertListState = {
     dataSource: any[];
     count: number;
     deleteIndex: number | null;
@@ -26,32 +18,6 @@ type HostInventoryState = {
     activeIndex: any;
     areRowsSelected: boolean;
 };
-interface DataType {
-    key: React.Key;
-    hostname: string;
-    label: string;
-    group: string;
-    OStype: string;
-    risks: {
-        warning1: number;
-        warning2: number;
-        warning3: number;
-    };
-    status: string;
-    clientUsage: string;
-    updateTime: string;
-}
-// Define an interface for the individual status item
-
-interface AlertColumDataType {
-    key: React.Key;
-    alarmName: string;        // 告警名称
-    affectedAsset: string;    // 影响资产
-    alarmType: string;        // 告警类型
-    level: string;            // 级别
-    status: string;           // 状态
-    occurrenceTime: string;   // 发生时间
-}
 
 interface StatusItem {
     color: string;
@@ -105,137 +71,12 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) =>
       </div>
     );
   };
-const hostalertColumns = [
-    {
-        title: '告警名称',
-        dataIndex: 'alertName',
-        key: 'alertName',
-        render: (text: string, record: AlertColumDataType) => (
-            <a
-                href={'/login'}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#1964F5' }}// 添加颜色样式
-            >
-                {text}
-            </a>
-        ),
-    },
-    {
-        title: '影响资产',
-        dataIndex: 'affectedAssets',
-        key: 'affectedAssets',
-    },
-    {
-        title: '告警类型',
-        dataIndex: 'alertClass',
-        key: 'alertClass',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '级别',
-        dataIndex: 'level',
-        key: 'level',
-    },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '发生时间',
-        dataIndex: 'occurTimestamp',
-        key: 'occurTimestamp',
-    },
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        key: 'operation',
-    },
-];
 
-class AlertList extends React.Component<HostInventoryProps, HostInventoryState> {
+
+class AlertList extends React.Component<AlertListProps, AlertListState> {
     constructor(props: any) {
         super(props);
-        this.columns = [
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>告警名称</span>,
-                dataIndex: 'alarmName',
-                //width: '13%',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>影响资产</span>,
-                dataIndex: 'affectedAsset',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>告警类型</span>,
-                dataIndex: 'alarmType',
-                filters: [
-                    { text: '暴力破解', value: '暴力破解' },
-                    { text: '静态检查', value: '静态检查' },
-                    { text: '资产探测', value: '资产探测' },
-                    { text: '恶意破坏', value: '恶意破坏' },
-                ],
-                onFilter: (value: string | number | boolean, record: AlertColumDataType) => record.alarmType.includes(value as string),
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
-                dataIndex: 'level',
-                filters: [
-                    { text: '紧急', value: '紧急' },
-                    { text: '高风险', value: '高风险' },
-                    { text: '低风险', value: '低风险' },
-                    { text: '中风险', value: '中风险' },
-                ],
-                onFilter: (value: string | number | boolean, record: AlertColumDataType) => record.level.includes(value as string),
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-                dataIndex: 'status',
-                filters: [
-                    { text: '已处理', value: '已处理' },
-                    { text: '未处理', value: '未处理' },
-                    { text: '误报', value: '误报' },
-                ],
-                onFilter: (value: string | number | boolean, record: AlertColumDataType) => record.status.includes(value as string),
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>发生时间</span>,
-                dataIndex: 'occurrenceTime',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-                dataIndex: 'operation',
-                render: (text: string, record: AlertColumDataType) => (
-                    <a
-                        href={'/login'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    //style={{ color: 'blue' }} // 添加颜色样式
-                    >
-                        查看详情
-                    </a>
-                ),
-            },
-
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-                dataIndex: 'operation',
-                render: (text: any, record: any, index: number) => {
-                    return this.state.dataSource.length > 0 ? (
-                        <Popconfirm
-                            title="Sure to delete?"
-                            onConfirm={() => this.onDelete(record, index)}
-                        >
-                            <span>Delete</span>
-                        </Popconfirm>
-                    ) : null;
-                },
-            },
-        ];
+        this.columns = [];
         this.state = {
             dataSource: [
             ],
@@ -254,19 +95,7 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
             areRowsSelected: selectedRowKeys.length > 0,
         });
     };
-    // Define the rowSelection object inside the render method
 
-
-    onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
-        if (dates) {
-            // 用户选择了日期范围
-            const [start, end] = dateStrings; // 使用 dateStrings，它是日期的字符串表示
-            this.setState({ selectedDateRange: [start, end] });
-        } else {
-            // 用户清除了日期选择
-            this.setState({ selectedDateRange: [null, null] });
-        }
-    };
 
     renderRowSelection = () => {
         return {
@@ -302,64 +131,9 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
             count: count + 1,
         });
     };
-    handleExport = () => {
-        const { dataSource, selectedRowKeys } = this.state;
-
-        // 过滤出已选中的行数据
-        const selectedData = dataSource.filter((row: AlertColumDataType) => selectedRowKeys.includes(row.key));
-
-        // 检查是否有选中的行
-        if (selectedData.length === 0) {
-            alert('没有选中的行');
-            return;
-        }
-
-        // 转换数据为CSV格式
-        const csvData = this.convertToCSV(selectedData);
-
-        // 触发下载
-        this.triggerDownload(csvData, 'export.csv');
-    };
-
-    convertToCSV = (data: AlertColumDataType[]) => {
-        // 假设您希望导出的CSV中包括所有字段
-        const headers = Object.keys(data[0]).join(',');
-        const rows = data.map((row: AlertColumDataType) => {
-            return `${row.key},${row.alarmName},${row.affectedAsset},${row.alarmType},${row.level},${row.status},${row.occurrenceTime}`;
-        });
-        return [headers, ...rows].join('\n');
-    };
-
-    triggerDownload = (data: string, filename: string) => {
-        const element = document.createElement('a');
-        element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-        element.download = filename;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
 
 
     render() {
-        const { dataSource, selectedRowKeys, selectedDateRange } = this.state;
-        // Conditional button style
-        const { apiEndpoint, columns } = this.props;
-        const filteredDataSource = dataSource.filter(item => {
-            // 解析 occurrenceTime 字符串为 moment 对象
-            const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
-    
-            // 将 selectedDateRange 中的字符串转换为 moment 对象，如果为 null 则保持为 null
-            const [startDateStr, endDateStr] = selectedDateRange;
-            const startDate = startDateStr ? moment(startDateStr, 'YYYY-MM-DD') : null;
-            const endDate = endDateStr ? moment(endDateStr, 'YYYY-MM-DD') : null;
-    
-            // 检查 itemDate 是否在选定的日期范围内
-            return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) && 
-                   (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
-        });
-
-
         const statusData: StatusItem[] = [
         { color: '#EA635F', label: '紧急 ', value: 7 },
         { color: '#FEC746', label: '中风险 ', value: 2 },
@@ -369,6 +143,7 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>
                 <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                     <Col className="gutter-row" md={24}>
                     <Card /*title="主机状态分布" 产生分界线*/
@@ -383,7 +158,7 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
                                     style={{
                                         height: '100px',
                                         width: '520px',
-                                        minWidth: '200px',
+                                        minWidth: '150px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -409,7 +184,7 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
                                 style={{
                                     height: '100px',
                                     width: '360px',
-                                    minWidth: '200px', // 最小宽度300px，而非100px
+                                    minWidth: '150px', // 最小宽度300px，而非100px
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -430,7 +205,7 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
                                 style={{
                                     height: '100px',
                                     width: '370px',
-                                    minWidth: '200px', // 最小宽度300px，而非100px
+                                    minWidth: '150px', // 最小宽度300px，而非100px
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -458,18 +233,17 @@ class AlertList extends React.Component<HostInventoryProps, HostInventoryState> 
                                 <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>告警内容</h2>
                             <Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>
                             </div>
-                            <DataDisplayTable
+                            <FetchAPIDataTable
                                 apiEndpoint={this.props.apiEndpoint}
-                                //externalDataSource={dataSource}
+                                timeColumnIndex={[]}
                                 columns={this.props.columns}
                                 currentPanel={this.props.currentPanel}
-                                selectedRowKeys={this.state.selectedRowKeys}
-                                onSelectChange={(keys: any) => this.onSelectChange(keys)}
-                            />
+                                />
                             </Card>
                         </div>
                     </Col>
                 </Row>
+            </Col>
             </div>
         );
     }

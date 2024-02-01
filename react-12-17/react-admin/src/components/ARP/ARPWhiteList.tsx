@@ -1,7 +1,7 @@
 // HostAlertList.tsx
 import React from 'react';
-import WhiteList from '../../WhiteList'; // 确保路径正确
-import { whiteColumns } from '../../../utils/tableUtils'; // 假设列配置从某个文件导入
+import WhiteList from '../WhiteList'; // 确保路径正确
+import { whitelistColumns } from '../../utils/tableUtils'; // 假设列配置从某个文件导入
 
 class ARPWhiteList extends React.Component {
     render() {
@@ -12,7 +12,7 @@ class ARPWhiteList extends React.Component {
             <div>
                 <WhiteList 
                     apiEndpoint={apiEndpoint} 
-                    columns={whiteColumns}
+                    columns={whitelistColumns}
                     currentPanel='arpwhitelist'
                 />
             </div>

@@ -485,7 +485,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                       onSelectChange={(keys: any) => this.onSelectChange(keys)}
                   /> */}
                   <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/baseline_check/linux/query_ip"
+                    apiEndpoint="http://localhost:5000/api/baseline_check/linux/query"
                     timeColumnIndex={['last_checked']}
                     columns={baselineDetectColumns}
                     currentPanel="baseline_check_linux"

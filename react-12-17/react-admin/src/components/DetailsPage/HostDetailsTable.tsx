@@ -4,6 +4,7 @@ import React from 'react';
 import axios from 'axios';
 import { Card, Col, Row } from 'antd';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 
 interface HostDetailsTableState {
     selectedRowKeys: React.Key[];
@@ -35,7 +36,7 @@ class HostDetailsTable extends React.Component<HostDetailsTableProps,HostDetails
     render() {
         return (
         <div style={{ width: '100%' }}>
-            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1425,border:'false'}}>
+            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>
                 <Row gutter={[8, 16]} style={{ marginTop: '-21px',marginLeft: '-8px' }}>
                     <Col md={24}>
                         <div className="gutter-box">
@@ -43,12 +44,11 @@ class HostDetailsTable extends React.Component<HostDetailsTableProps,HostDetails
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                                     <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{this.props.titleName}</h2>
                                 </div>
-                                <DataDisplayTable
-                                    apiEndpoint={this.props.route}
-                                    columns={this.props.columns}
-                                    currentPanel={this.props.currentPanel}
-                                    selectedRowKeys={this.state.selectedRowKeys}
-                                    onSelectChange={(keys: any) => this.props.onSelectChange(keys)}
+                                <FetchAPIDataTable
+                                apiEndpoint={this.props.route}
+                                timeColumnIndex={[]}
+                                columns={this.props.columns}
+                                currentPanel={this.props.currentPanel}
                                 />
                             </Card>
                         </div>
