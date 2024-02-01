@@ -951,123 +951,220 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     };
 
     // 渲染当前激活的子面板
+    // renderCurrentPanel() {
+    //     const { currentPanel } = this.state;
+    //     switch (currentPanel) {
+    //         case 'HostOverview':
+    //             return (
+    //                 <HostOverview
+    //                 changePanel={this.changePanel}
+    //                 />
+    //             );
+    //         case 'hostalertlist':
+    //             return (
+    //                 <div style={{marginTop:'-20px'}}>
+    //                 <AlertList 
+    //                 apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/1"} 
+    //                 columns={hostalertColumns}
+    //                 currentPanel='hostalertlist'
+    //             />
+    //                 </div>
+    //             );    
+    //         case 'vulnerabilityalertlist':
+    //             return (
+    //                 <HostDetailsTable
+    //                 route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
+    //                 columns={vulnerabilityColumns}
+    //                 currentPanel={currentPanel}
+    //                 titleName="漏洞概览"
+    //                 selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
+    //                 onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
+
+    //                 />
+    //             );   
+    //         case 'baselineDetectalertlist':
+    //             return (
+    //                 <HostDetailsTable
+    //                 route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
+    //                 columns={baselineDetectColumns}
+    //                 currentPanel={currentPanel}
+    //                 titleName="基线概览"
+    //                 selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
+    //                 onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
+
+    //                 />
+    //             );  
+    //             case 'runningalertlist':
+    //                 return (
+    //                     <div style={{marginTop:'-20px'}}>
+    //                     <AlertList 
+    //                     apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"} 
+    //                     columns={hostalertColumns}
+    //                     currentPanel='runningalertlist'
+    //                 />
+    //                     </div>
+    //                 );                  
+    //             case 'virusscanning':
+    //                 return (
+    //                     <div style={{ marginTop:'-20px'}}>
+    //                     <VirusScanning
+    //                     hostID=""
+    //                     pageWidth={1320}
+    //                     /></div>
+    //                 );    
+    //             case 'performancemonitor':
+    //                 return (
+    //                     <div style={{ marginTop:'-20px'}}>
+    //                     <PerformanceMonitor
+    //                     /></div>
+    //                 );          
+    //             case 'assetfingerprint':
+    //                 return (
+    //                     <HostDetailsTable
+    //                     route="http://localhost:5000/api/files/logs/assetfingerprint"
+    //                     columns={fimColumns}
+    //                     currentPanel={currentPanel}
+    //                     titleName="资产指纹"
+    //                     selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
+    //                     onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
+    
+    //                     />
+    //                 );     
+    //             default:
+    //             return (
+    //                 <HostOverview
+    //                 changePanel={this.changePanel}
+    //                 />
+    //             );
+    //     }
+    // }
     renderCurrentPanel() {
         const { currentPanel } = this.state;
+        const commonContainerStyle = { marginLeft: '10px', marginRight: '10px' }; // 调整左右边缘距离
+    
         switch (currentPanel) {
             case 'HostOverview':
                 return (
                     <HostOverview
-                    changePanel={this.changePanel}
+                        changePanel={this.changePanel}
                     />
                 );
             case 'hostalertlist':
                 return (
-                    <div style={{marginTop:'-20px'}}>
-                    <AlertList 
-                    apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/1"} 
-                    columns={hostalertColumns}
-                    currentPanel='hostalertlist'
-                />
+                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                        <AlertList
+                            apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/1"}
+                            columns={hostalertColumns}
+                            currentPanel='hostalertlist'
+                        />
                     </div>
-                );    
+                );
             case 'vulnerabilityalertlist':
                 return (
-                    <HostDetailsTable
-                    route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
-                    columns={vulnerabilityColumns}
-                    currentPanel={currentPanel}
-                    titleName="漏洞概览"
-                    selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
-                    onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
-
-                    />
-                );   
+                    <div style={commonContainerStyle}>
+                        <HostDetailsTable
+                            route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
+                            columns={vulnerabilityColumns}
+                            currentPanel={currentPanel}
+                            titleName="漏洞概览"
+                            selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
+                            onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
+                        />
+                    </div>
+                );
             case 'baselineDetectalertlist':
                 return (
-                    <HostDetailsTable
-                    route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
-                    columns={baselineDetectColumns}
-                    currentPanel={currentPanel}
-                    titleName="基线概览"
-                    selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
-                    onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
-
-                    />
-                );  
-                case 'runningalertlist':
-                    return (
-                        <div style={{marginTop:'-20px'}}>
-                        <AlertList 
-                        apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"} 
-                        columns={hostalertColumns}
-                        currentPanel='runningalertlist'
-                    />
-                        </div>
-                    );                  
-                case 'virusscanning':
-                    return (
-                        <div style={{ marginTop:'-20px'}}>
-                        <VirusScanning
-                        hostID=""
-                        pageWidth={1320}
-                        /></div>
-                    );    
-                case 'performancemonitor':
-                    return (
-                        <div style={{ marginTop:'-20px'}}>
-                        <PerformanceMonitor
-                        /></div>
-                    );          
-                case 'assetfingerprint':
-                    return (
+                    <div style={commonContainerStyle}>
                         <HostDetailsTable
-                        route="http://localhost:5000/api/files/logs/assetfingerprint"
-                        columns={fimColumns}
-                        currentPanel={currentPanel}
-                        titleName="资产指纹"
-                        selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
-                        onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
-    
+                            route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
+                            columns={baselineDetectColumns}
+                            currentPanel={currentPanel}
+                            titleName="基线概览"
+                            selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
+                            onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
                         />
-                    );     
-                default:
+                    </div>
+                );
+            case 'runningalertlist':
                 return (
-                    <HostOverview
-                    changePanel={this.changePanel}
-                    />
+                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                        <AlertList
+                            apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"}
+                            columns={hostalertColumns}
+                            currentPanel='runningalertlist'
+                        />
+                    </div>
+                );
+            case 'virusscanning':
+                return (
+                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                        <VirusScanning
+                            hostID=""
+                            pageWidth={1320}
+                        />
+                    </div>
+                );
+            case 'performancemonitor':
+                return (
+                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                        <PerformanceMonitor />
+                    </div>
+                );
+            case 'assetfingerprint':
+                return (
+                    <div style={commonContainerStyle}>
+                        <HostDetailsTable
+                            route="http://localhost:5000/api/files/logs/assetfingerprint"
+                            columns={fimColumns}
+                            currentPanel={currentPanel}
+                            titleName="资产指纹"
+                            selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
+                            onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
+                        />
+                    </div>
+                );
+            default:
+                return (
+                    <div style={commonContainerStyle}>
+                        <HostOverview
+                            changePanel={this.changePanel}
+                        />
+                    </div>
                 );
         }
     }
+    
     render() {
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <div>
-                    {/* 资产指纹面板的导航菜单 */}
-                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                    <Menu
-                        onClick={this.handleMenuClick}
-                        selectedKeys={[this.state.currentPanel]}
-                        mode="horizontal"
-                        style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
-                    >
-                        <Menu.Item key="hostoverview">主机概览</Menu.Item>
-                        <Menu.Item key="hostalertlist">安全告警</Menu.Item>
-                        <Menu.Item key="vulnerabilityalertlist">漏洞风险</Menu.Item>
-                        <Menu.Item key="baselineDetectalertlist">基线风险</Menu.Item>
-                        <Menu.Item key="runningalertlist">运行时安全告警</Menu.Item>
-                        <Menu.Item key="virusscanning">病毒查杀</Menu.Item>
-                        <Menu.Item key="performancemonitor">性能监控</Menu.Item>
-                        <Menu.Item key="assetfingerprint">资产指纹</Menu.Item>
-                        {/* 可以根据需要添加更多的Menu.Item */}
-                        {/* 使用透明div作为flex占位符 */}
-                        <div style={{ flexGrow: 1 }}></div>
-                        
-                    </Menu>
-                    {/* 渲染当前激活的子面板 */}
-                    <Card style={{backgroundColor: '#F6F7FB' }}
-                    >{this.renderCurrentPanel()}
-                    </Card>
-                </Row>
+                    <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                        <Col md={24}>
+                            <Menu
+                                onClick={this.handleMenuClick}
+                                selectedKeys={[this.state.currentPanel]}
+                                mode="horizontal"
+                                style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
+                            >
+                                <Menu.Item key="hostoverview">主机概览</Menu.Item>
+                                <Menu.Item key="hostalertlist">安全告警</Menu.Item>
+                                <Menu.Item key="vulnerabilityalertlist">漏洞风险</Menu.Item>
+                                <Menu.Item key="baselineDetectalertlist">基线风险</Menu.Item>
+                                <Menu.Item key="runningalertlist">运行时安全告警</Menu.Item>
+                                <Menu.Item key="virusscanning">病毒查杀</Menu.Item>
+                                <Menu.Item key="performancemonitor">性能监控</Menu.Item>
+                                <Menu.Item key="assetfingerprint">资产指纹</Menu.Item>
+                                {/* 可以根据需要添加更多的Menu.Item */}
+                                {/* 使用透明div作为flex占位符 */}
+                                <div style={{ flexGrow: 1 }}></div>
+                                
+                            </Menu>
+                            {/* 渲染当前激活的子面板 */}
+                            <Card bordered={false} style={{backgroundColor: '#F6F7FB' }}
+                            >{this.renderCurrentPanel()}
+                            </Card>
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );

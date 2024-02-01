@@ -146,7 +146,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
             <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>
                 <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                     <Col className="gutter-row" md={24}>
-                    <Card /*title="主机状态分布" 产生分界线*/
+                    <Card bordered={false} 
                         style={{fontWeight: 'bolder', width: '100%', height:200}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                             <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>告警概览</h2>

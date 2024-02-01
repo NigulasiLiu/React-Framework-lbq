@@ -174,7 +174,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}> 
                     <Col span={8} >
-                        <Card /*title="主机状态分布" 产生分界线*/style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                        <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                             <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机状态分布</h2>
                         </div>
@@ -199,7 +199,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                         </Card>
                     </Col>
                     <Col span={16} style={{margin: '2 2' }}>
-                        <Card style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                        <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
                             </div>

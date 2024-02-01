@@ -70,8 +70,6 @@ export const convertUnixTime = (timestamp: number): string => {
 
 
 
-// export const autoPopulateFilters = (columns:any[], dataSource:GenericDataItem[]) => {
-
 //     const newColumns = columns.map(column => {
 //       if (column.onFilter && dataSource) {
 //         const fieldVarieties = new Set(dataSource.map(item => item[column.dataIndex]));

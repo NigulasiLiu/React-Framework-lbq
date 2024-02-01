@@ -432,7 +432,7 @@ export default DataTable;
                     <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
                     <button onClick={this.toggleSidebar}>立即检查</button>
                     </Row>
-                    <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
+                    <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar}></div>
                     <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
                       <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
                       <p>侧边栏内容</p>

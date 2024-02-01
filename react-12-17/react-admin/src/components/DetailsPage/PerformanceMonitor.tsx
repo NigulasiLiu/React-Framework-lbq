@@ -10,7 +10,9 @@ import { hostperformanceColumns, StatusItem } from '../../utils/tableUtils';
 
 //const { Search } = Input;
 
-type PerformanceMonitorProps = {};
+type PerformanceMonitorProps = {
+    specifyWidth?:number;
+};
 type PerformanceMonitorState = {
     statusData:StatusItem[];
     riskData:StatusItem[];
@@ -56,7 +58,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}> 
                     <Col span={12} style={{width:660}}>
-                        <Card /*title="主机状态分布" 产生分界线*/style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                        <Card bordered={false} /*title="主机状态分布" 产生分界线*/style={{fontWeight: 'bolder', width: '100%', height:300}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                             <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>平均使用率 趨勢</h2>
                         </div>
@@ -80,7 +82,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                         </Card>
                     </Col>
                     <Col span={12} style={{width:660}}>
-                        <Card style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                        <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>負載最高的主機 使用率趨勢</h2>
                             </div>
@@ -105,7 +107,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                     </Col>
                 </Row>
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
-                    <Col md={24} style={{width:1320}}>
+                    <Col md={24} style={{width:1320 }}>
                         <div className="gutter-box">
                         <Card bordered={false}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>

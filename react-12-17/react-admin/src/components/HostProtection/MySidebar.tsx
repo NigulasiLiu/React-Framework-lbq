@@ -1,11 +1,6 @@
 import React from 'react';
 import { Row, Col,Card} from 'antd';
-
-interface StatusItem {
-    color: string;
-    label: string;
-    value: number;
-  }
+import { StatusItem } from '../../utils/tableUtils';
 interface MySidebarState {
 isSidebarOpen: boolean;
 statusData:StatusItem[]
@@ -15,7 +10,7 @@ interface MySidebarProps {
     riskItemCount: number; // 添加风险项数量的prop类型声明
     isSidebarOpen: boolean;
     toggleSidebar: () => void;
-    statusData: StatusItem[]; // 确保你已经定义了 StatusItem 类型
+    statusData: StatusItem[]; 
   }
 class MySidebar extends React.Component<MySidebarProps,MySidebarState> {
   constructor(props:any) {
@@ -35,6 +30,7 @@ class MySidebar extends React.Component<MySidebarProps,MySidebarState> {
   toggleSidebar = () => {
     this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
   };
+  
   renderStatusList = () => {
     return this.props.statusData.map((item, index) => (
         <div key={index} style={{ display: 'flex', alignItems: 'center', marginTop: '18px',marginLeft: '6px'}}>
@@ -74,7 +70,7 @@ class MySidebar extends React.Component<MySidebarProps,MySidebarState> {
     return (
         <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
             <Col md={24} style={{borderTop: '5px solid #4086FF'}}>
-            <Card /*title="主机状态分布" 产生分界线*/
+            <Card 
             style={{fontWeight: 'bolder', width: '100%', height:800}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞检查</h2>

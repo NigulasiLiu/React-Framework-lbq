@@ -710,7 +710,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             // pagination={false}
                             // rowKey="id"
                         />
-                        <Card className="noTopBorderCard" style={{ height: 238 }}>
+                        <Card bordered={false} className="noTopBorderCard" style={{ height: 238 }}>
                             <Row gutter={0}>
                                 <Col span={12}>
                                     <CustomPieChart

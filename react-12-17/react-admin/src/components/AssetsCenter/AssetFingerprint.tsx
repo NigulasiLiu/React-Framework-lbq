@@ -308,7 +308,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     
                                 </Menu>
                                 {/* 渲染当前激活的子面板 */}
-                                <Card>{this.renderCurrentPanel()}</Card>
+                                <Card bordered={false}>{this.renderCurrentPanel()}</Card>
                                 </Card>
                                 </div>
                             </Col>

@@ -75,31 +75,33 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         //渲染筛选器等等
     }
     componentDidUpdate(prevProps: any, prevState:any) {
-
         if (prevProps.externalDataSource !== this.props.externalDataSource) {
             // 处理新数据：例如重置分页或更新最后更新时间
             this.setState({
                 currentPage: 1,
                 lastUpdated: new Date().toLocaleString(),
                 total: this.props.externalDataSource.length,
+                // 重置各种筛选条件
+                searchQuery: '',
+                selectedSearchField: 'all', 
+                selectrangequeryParams: '',
+                selectedDateRange: [null, null],//日期筛选器重置
+                selectedRowKeys: [],
             });
         // 检查面板是否发生变化
         if (this.props.currentPanel !== prevProps.currentPanel) {
             // 如果面板发生变化，重置selectedRowKeys和lastUpdated
             this.setState(
                 {
-                    selectedRowKeys: [],
-                    lastUpdated: null, // 重置lastUpdated
-                    
+                    lastUpdated: null,
                     // 重置各种筛选条件
                     searchQuery: '',
                     selectedSearchField: 'all', 
                     selectrangequeryParams: '',
+                    selectedDateRange: [null, null],//日期筛选器重置
+                    selectedRowKeys: [],
                     
                     selectedApplicationType: null,//只用于‘应用’这个子页面
-                    selectedDateRange: [null, null],//日期筛选器重置
-
-
                 },
                 () => {
                     // 异步调用fetchLatestData来确保setState完成后执行
@@ -122,7 +124,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         this.setState({ 
             currentPage: page, 
             pageSize: pageSize?pageSize:10,
-            selectedRowKeys: [] // 重置行选择
+            selectedRowKeys: [],
         });
     };
     autoPopulateFilters = () => {
@@ -288,10 +290,10 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
         const isButtonDisabled = this.props.externalDataSource.length === 0 || this.state.selectedRowKeys.length === 0;
         return (//Table的宽度被设置为1330px
-        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1330px', maxWidth: '100%' }}>
+        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1320px', maxWidth: '100%' }}>
             <Row gutter={[12, 6]} style={{ marginTop: '10px'}}>
                 {/* Conditionally render the sidebar for applications */}
-                {this.props.currentPanel === 'applications' && (
+                {this.props.currentPanel === 'applications1' && (
                     <Col md={4} style={{ paddingRight: '12px', borderRight: '1px solid #ccc' }}>
                         {/* Render Sidebar here */}
                         {this.renderSidebar()}
@@ -300,9 +302,9 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
                 {/* Main content area */}
                 <Col
-                    md={this.props.currentPanel === 'applications' ? 20 : 24}
+                    md={this.props.currentPanel === 'applications1' ? 20 : 24}
                     style={{
-                        paddingLeft: this.props.currentPanel === 'applications' ? '12px' : '0px',
+                        paddingLeft: this.props.currentPanel === 'applications1' ? '12px' : '0px',
                     }}
                 >
                     <Card bordered={false} bodyStyle={{ padding: '4px' }}>
@@ -363,7 +365,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                             //pagination={false}
                             dataSource={this.props.externalDataSource}
                             columns={newColumns}
-                            rowKey={this.props.columns[0].dataIndex}//使用第一个字段区分各个row，最好是PK
+                            rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
                             //locale={{ emptyText: 'No Data' }} // 可以指定无数据时展示的文本
                         />
                         {/* <Pagination // 分页组件

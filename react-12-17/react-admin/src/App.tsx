@@ -79,17 +79,17 @@ function openFNotification() {
  * 获取服务端异步菜单
  * @param handler 执行回调
  */
-function fetchSmenu(handler: any) {
-    const setAlitaMenu = (menus: any) => {
-        handler(menus);
-        // this.props.setAlitaState({ stateName: 'smenus', data: menus });
-    };
-    setAlitaMenu(umbrella.getLocalStorage('smenus') || []);
-    fetchMenu().then((smenus) => {
-        setAlitaMenu(smenus);
-        umbrella.setLocalStorage('smenus', smenus);
-    });
-}
+// function fetchSmenu(handler: any) {
+//     const setAlitaMenu = (menus: any) => {
+//         handler(menus);
+//         // this.props.setAlitaState({ stateName: 'smenus', data: menus });
+//     };
+//     setAlitaMenu(umbrella.getLocalStorage('smenus') || []);
+//     fetchMenu().then((smenus) => {
+//         setAlitaMenu(smenus);
+//         umbrella.setLocalStorage('smenus', smenus);
+//     });
+// }
 
 function App(props: AppProps){
     const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -106,7 +106,7 @@ function App(props: AppProps){
 
         handleResize((isMobile: boolean) => setAlita('responsive', { isMobile }));
         openFNotification();
-        fetchSmenu((smenus: any[]) => setAlita('smenus', smenus));
+        //fetchSmenu((smenus: any[]) => setAlita('smenus', smenus));去除异步菜单
     }, [setAlita]);
 
     function toggle() {

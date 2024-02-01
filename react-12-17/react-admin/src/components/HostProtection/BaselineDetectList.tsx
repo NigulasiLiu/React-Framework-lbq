@@ -198,6 +198,9 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
     this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
     this.setCurrentTime();
   };
+  closeSidebar = () => {
+    this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
+  };
 
   setCurrentTime = () => {
     const now = new Date();
@@ -371,7 +374,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                 {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
                 <Col className="gutter-row" md={24}>
-                <Card /*title="主机状态分布" 产生分界线*/
+                <Card bordered={false} /*title="主机状态分布" 产生分界线*/
                   style={{fontWeight: 'bolder', width: '100%', height:220}}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                       <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基线概览</h2>
@@ -387,9 +390,9 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                       <Row gutter={24}>
                       <h2 style={{ fontSize: '16px' }}>最近扫描时间（每隔一日自动扫描）</h2>
                       <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
-                      <button onClick={this.toggleSidebar}>立即检查</button>
+                      <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleSidebar}>立即扫描</Button>
                       </Row>
-                      <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.toggleSidebar}></div>
+                      <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar} />
                       <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
                       <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
                           <MySidebar

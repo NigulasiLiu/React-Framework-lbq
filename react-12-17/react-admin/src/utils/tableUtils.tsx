@@ -1,6 +1,6 @@
 import React from 'react';
-import { Tooltip } from 'antd';
-import { Select } from 'antd';
+import { Tooltip, Button, Select } from 'antd';
+import { Link } from 'react-router-dom';
 
 const { Option } = Select;
 export interface DetailItem {
@@ -77,13 +77,19 @@ export interface FimDataType {
 export const fimColumns = [
     {
         title: "文件名",
-        dataIndex: 'filename',
+        dataIndex: 'fimfilename',
         key: 'filename',
         onHeaderCell: () => ({
             style: {
               maxWidth: 200, // 最大宽度200px
             },
           }),
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/detailspage" target="_blank">
+            <Button type="link" style={{color:'black'}}>{text}</Button>
+        </Link>
+        ),
     },
     {
         title: "告警时间",

@@ -3110,10 +3110,11 @@ html {
   background: transparent;
 }
 .ant-btn-link {
-  color: @primary-color;
+  color: #000;//@primary-color;
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
+  font-weight: bold;
 }
 .ant-btn-link > a:only-child {
   color: currentColor;
@@ -3123,7 +3124,7 @@ html {
 }
 .ant-btn-link:hover,
 .ant-btn-link:focus {
-  color: color(~`colorPalette("@{primary-color}", 5)`);
+  color: #4086FF;//color(~`colorPalette("@{primary-color}", 5)`);
   background-color: transparent;
   border-color: color(~`colorPalette("@{primary-color}", 5)`);
 }

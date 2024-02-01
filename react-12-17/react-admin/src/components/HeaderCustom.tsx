@@ -87,7 +87,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                         borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
                         // 其他已有样式
                     }}>
-            {/* {responsive?.isMobile ? (
+            {responsive?.isMobile ? (
                 <Popover
                     content={<SiderCustom popoverHide={turn.turnOff} />}
                     trigger="click"
@@ -107,7 +107,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                     className=" header-row"
                     onClick={props.toggle}
                 />
-            )} */}
+            )}
             <Menu
                 mode="horizontal"
                 style={{ lineHeight: '64px', float: 'right' }}
