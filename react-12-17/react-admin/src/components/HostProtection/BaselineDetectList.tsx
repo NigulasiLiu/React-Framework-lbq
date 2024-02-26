@@ -1,13 +1,13 @@
 import zhCN from 'antd/es/locale/zh_CN';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
+import DataDisplayTable from '../ContextAPI/DataDisplayTable'
 import { Tooltip } from 'antd';
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, ConfigProvider,Statistic } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
-import MySidebar from './MySidebar';
+import BaseLineDetectScanSidebar from './ScanProcessSidebar';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
-import { baselineDetectColumns } from '../../utils/tableUtils';
+import { baselineDetectColumns, BaseLineDataType, StatusItem } from '../AssetsCenter/tableUtils';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -15,7 +15,6 @@ const { Search } = Input;
 
 type HostInventoryProps = {};
 type HostInventoryState = {
-  dataSource: any[];
   count: number;
   deleteIndex: number | null;
   currentTime: string;
@@ -28,23 +27,6 @@ type HostInventoryState = {
 };
 
 
-interface DataType1 {
-  key: React.Key;
-  ip: string;                // IP
-  check_name: string;        // 基线名称
-  details: string;           // 检查详情
-  adjustment_requirement: string;  // 调整建议
-  status: string;            // 状态
-  last_checked: string;      // 最新扫描时间
-  instruction: string;       // 指令
-}
-
-
-interface StatusItem {
-  color: string;
-  label: string;
-  value: number;
-}
 
 // Define an interface for the props expected by the StatusPanel component
 interface StatusPanelProps {
@@ -65,122 +47,12 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
 
   );
 };
-// const baselineDetectColumns = [
-//   {
-//     title: () => <span style={{ fontWeight: 'bold' }}>IP</span>,
-//     dataIndex: 'ip',
-//     //width: '13%',
-//   },
-//   {
-//     title: () => <span style={{ fontWeight: 'bold' }}>基线名称</span>,
-//     dataIndex: 'check_name',
-//   },
-//   {
-//     title: () => <span style={{ fontWeight: 'bold' }}>检查详情</span>,
-//     dataIndex: 'details',
-//   },
-//   {
-//     title: () => <span style={{ fontWeight: 'bold' }}>调整建议</span>,
-//     dataIndex: 'adjustment_requirement',
-//     render: (text: string, record: DataType1) => (
-//       <Tooltip title={record.instruction}>
-//         {text}
-//       </Tooltip>
-//     ),
-//   },
-//   {
-//     title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-//     dataIndex: 'status',
-//     filters: [
-//     ],
-//     onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
-//   },
-//   {
-//     title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
-//     dataIndex: 'last_checked',
-//     sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
-//     sortDirections: ['ascend', 'descend'],
-//   },
-//   // {
-//   //   title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-//   //   dataIndex: 'operation',
-//   // },
-// ];
 
 class BaselineDetectList extends React.Component<HostInventoryProps, HostInventoryState> {
   constructor(props: any) {
     super(props);
-    this.columns = [
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>基线名称</span>,
-        dataIndex: 'alarmName',
-        //width: '13%',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>影响主机数</span>,
-        dataIndex: 'affectedAsset',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>检查项</span>,
-        dataIndex: 'jcx',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>风险项</span>,
-        dataIndex: 'fxx',
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>风险状态</span>,
-        dataIndex: 'status',
-        filters: [
-          { text: '有风险', value: '有风险' },
-          { text: '无风险', value: '无风险' },
-        ],
-        onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
-      },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
-        dataIndex: 'occurrenceTime',
-        sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
-        sortDirections: ['ascend', 'descend'],
-      },
-      // {
-      //   title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-      //   dataIndex: 'operation',
-      //   render: (text: string, record: DataType1) => (
-      //     <a
-      //       href={'/login'}
-      //       target="_blank"
-      //       rel="noopener noreferrer"
-      //     //style={{ color: 'blue' }} // 添加颜色样式
-      //     >
-      //       查看详情
-      //     </a>
-      //   ),
-      // },
-      {
-        title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-        dataIndex: 'operation',
-        render: (text: any, record: any, index: number) => {
-          return this.state.dataSource.length > 0 ? (
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => this.onDelete(record, index)}
-            >
-              <span>Delete</span>
-            </Popconfirm>
-          ) : null;
-        },
-      },
-    ];
+    this.columns = [];
     this.state = {
-      dataSource: [
-
-        { "key": "1", "alarmName": "基线名称1", "affectedAsset": "58", "jcx": "12", "fxx": "11", "status": "有风险", "occurrenceTime": "2023-08-27 12:08:56" },
-        { "key": "2", "alarmName": "基线名称2", "affectedAsset": "26", "jcx": "22", "fxx": "0", "status": "无风险", "occurrenceTime": "2023-04-30 16:15:27" },
-        { "key": "3", "alarmName": "基线名称3", "affectedAsset": "68", "jcx": "13", "fxx": "13", "status": "有风险", "occurrenceTime": "2023-07-07 20:58:14" },
-        { "key": "4", "alarmName": "基线名称4", "affectedAsset": "76", "jcx": "4", "fxx": "0", "status": "无风险", "occurrenceTime": "2023-02-14 14:19:23" },
-        { "key": "5", "alarmName": "基线名称5", "affectedAsset": "10", "jcx": "25", "fxx": "12", "status": "有风险", "occurrenceTime": "2023-01-24 07:53:40" },
-      ],
       count: 2,
       deleteIndex: -1,
       activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
@@ -223,16 +95,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
   // Define the rowSelection object inside the render method
 
 
-  onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
-    if (dates) {
-      // 用户选择了日期范围
-      const [start, end] = dateStrings; // 使用 dateStrings，它是日期的字符串表示
-      this.setState({ selectedDateRange: [start, end] });
-    } else {
-      // 用户清除了日期选择
-      this.setState({ selectedDateRange: [null, null] });
-    }
-  };
 
   renderRowSelection = () => {
     return {
@@ -242,30 +104,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
       },
       // Add other rowSelection properties and methods as needed
     };
-  };
-  onDelete = (record: any, index: number) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource.splice(index, 1);
-    this.setState({ deleteIndex: record.key });
-    setTimeout(() => {
-      this.setState({ dataSource });
-    }, 500);
-  };
-  handleAdd = () => {
-    const { count, dataSource } = this.state;
-    const newData = {
-      key: '1',
-      alarmName: '网络连接失败',
-      affectedAsset: '路由器X',
-      level: '高风险',
-      status: '未处理',
-      occurrenceTime: '2023-12-28 08:00:00',
-      action: '查看详情'
-    };
-    this.setState({
-      dataSource: [newData, ...dataSource],
-      count: count + 1,
-    });
   };
 
   handleMouseEnter = (_: any, index: number) => {
@@ -281,83 +119,13 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
       activeIndex: this.state.activeIndex.map(() => -1),
     });
   };
-  handleExport = () => {
-    const { dataSource, selectedRowKeys } = this.state;
-
-    // 过滤出已选中的行数据
-    const selectedData = dataSource.filter((row: DataType1) => selectedRowKeys.includes(row.key));
-
-    // 检查是否有选中的行
-    if (selectedData.length === 0) {
-      alert('没有选中的行');
-      return;
-    }
-
-    // 转换数据为CSV格式
-    const csvData = this.convertToCSV(selectedData);
-
-    // 触发下载
-    this.triggerDownload(csvData, 'export.csv');
-  };
-
-  convertToCSV = (data: DataType1[]) => {
-    // 假设您希望导出的CSV中包括所有字段
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map((row: DataType1) => {
-      return `${row.key},${row.ip},${row.check_name},${row.details},${row.adjustment_requirement},${row.status},${row.last_checked},${row.instruction}`;
-    });
-    return [headers, ...rows].join('\n');
-};
 
 
-  triggerDownload = (data: string, filename: string) => {
-    const element = document.createElement('a');
-    element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-    element.download = filename;
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
 
 
   render() {
-    const { isSidebarOpen, dataSource, selectedRowKeys, selectedDateRange, currentTime } = this.state;
+    const { isSidebarOpen, selectedDateRange, currentTime } = this.state;
     // Conditional button style
-
-    const filteredDataSource = dataSource.filter(item => {
-      // 解析 occurrenceTime 字符串为 moment 对象
-      const itemDate = moment(item.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
-
-      // 将 selectedDateRange 中的字符串转换为 moment 对象，如果为 null 则保持为 null
-      const [startDateStr, endDateStr] = selectedDateRange;
-      const startDate = startDateStr ? moment(startDateStr, 'YYYY-MM-DD') : null;
-      const endDate = endDateStr ? moment(endDateStr, 'YYYY-MM-DD') : null;
-
-      // 检查 itemDate 是否在选定的日期范围内
-      return (!startDate || itemDate.isSameOrAfter(startDate, 'day')) &&
-        (!endDate || itemDate.isSameOrBefore(endDate, 'day'));
-    });
-
-    const buttonStyle = this.state.areRowsSelected
-      ? { fontWeight: 'bold' as 'bold', color: 'red' }
-      : { fontWeight: 'normal' as 'normal', color: 'grey' };
-
-    const StatusPanel: React.FC<{ statusData: StatusItem[] }> = ({ statusData }) => (
-      <Row gutter={[16, 16]}>
-        {statusData.map((item, index) => (
-          <Col span={12} key={index}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ backgroundColor: item.color, width: 20, height: 20, borderRadius: '50%', marginRight: 10 }}></div>
-              <div>
-                <span>{item.label}</span>
-                <span style={{ marginLeft: 10 }}>{item.value}</span>
-              </div>
-            </div>
-          </Col>
-        ))}
-      </Row>
-    );
 
     const scanResult: StatusItem[] = [
       { color: 'green', label: '通过项', value: 7 },
@@ -377,7 +145,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                 <Card bordered={false} /*title="主机状态分布" 产生分界线*/
                   style={{fontWeight: 'bolder', width: '100%', height:220}}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基线概览</h2>
+                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基线概览</h2>
                   </div>
                   <Row gutter={[6, 6]}>
                     <Col className="gutter-row" md={6} style={{ marginLeft: '15px',marginTop: '10px'  }}>
@@ -395,7 +163,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                       <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar} />
                       <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
                       <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
-                          <MySidebar
+                          <BaseLineDetectScanSidebar
                             statusData={scanResult}
                             isSidebarOpen={this.state.isSidebarOpen}
                             toggleSidebar={this.toggleSidebar}
@@ -477,18 +245,18 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
               <div className="gutter-box">
               <Card bordered={false}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>基线内容</h2>
+                      <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>基线内容</h2>
                   </div>
                   {/* <DataDisplayTable
                       apiEndpoint="http://localhost:5000/api/files/log"
                       sqlTableName='windows_security_checks'
                       columns={baselineDetectColumns}
-                      currentPanel={"vulnerabilityDetect"}
+                      currentPanel={"BaseLineDetectDetect"}
                       selectedRowKeys={this.state.selectedRowKeys}
                       onSelectChange={(keys: any) => this.onSelectChange(keys)}
                   /> */}
                   <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/baseline_check/linux/query"
+                    apiEndpoint="http://localhost:5000/api/baseline_check/linux"
                     timeColumnIndex={['last_checked']}
                     columns={baselineDetectColumns}
                     currentPanel="baseline_check_linux"

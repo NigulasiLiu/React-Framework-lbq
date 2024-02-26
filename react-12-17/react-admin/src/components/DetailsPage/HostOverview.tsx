@@ -7,7 +7,7 @@ import { RightOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { PieChart, Pie, Cell,Label, ResponsiveContainer} from 'recharts';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { StatusItem } from '../../utils/tableUtils';
+import { StatusItem } from '../AssetsCenter/tableUtils';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 const { Text } = Typography;
@@ -255,7 +255,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                     <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,paddingBottom:0,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基础信息</h2>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基础信息</h2>
                         </div>
                         <Row gutter={[6, 6]}>
                             <Col className="gutter-row" md={24}>
@@ -279,7 +279,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                             <Row>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>安全告警</h2>
+                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>安全告警</h2>
                                 </div>
                                 <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                             </Row>
@@ -326,7 +326,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                             <Row>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
+                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
                                 </div>
                                 <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                             </Row>
@@ -373,7 +373,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                             <Row>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>基线风险</h2>
+                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基线风险</h2>
                                 </div>
                                 <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                             </Row>
@@ -421,7 +421,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', minHeight:80, backgroundColor: '#ffffff' }}>
                         <Row>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产指纹</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
                             </div>
                         </Row>
                         <Row justify="space-between" align="middle">
@@ -691,7 +691,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
                         <Row>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>磁盘信息</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>磁盘信息</h2>
                             </div>
                         </Row>
                         <Row>
@@ -709,7 +709,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
                         <Row>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>网卡信息</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>网卡信息</h2>
                             </div>
                         </Row>
                         <Row>
@@ -727,7 +727,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
                         <Row>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>插件列表</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>插件列表</h2>
                             </div>
                         </Row>
                         <Row>
@@ -744,10 +744,10 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                     <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', minHeight:100, backgroundColor: '#ffffff' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,paddingBottom:0,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>版本信息</h2>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>版本信息</h2>
                         </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,paddingBottom:0,fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '6px' }}>Agent版本 {agentversion}</h2>
+                                <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '0px' }}>Agent版本 {agentversion}</h2>
                             </div>
 
                     </Card>

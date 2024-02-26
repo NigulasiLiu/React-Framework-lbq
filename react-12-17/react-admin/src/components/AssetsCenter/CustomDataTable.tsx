@@ -17,7 +17,7 @@ interface CustomDataTableProps {
     columns: any[]; // 根据实际列数据结构定义更明确的类型
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
     // 可以根据需要添加其他 props，比如分页大小等
-    currentPanel?: string;
+    currentPanel: string;
     //selectedRowKeys: React.Key[]; // 可选属性，代表被选中行的keys，用于控制独立的key
     
     //handleApplicationTypeSelect: (applicationType: string) => void; // 添加方法的类型声明
@@ -47,6 +47,10 @@ interface CustomDataTableState {
     currentPanelName:string;
 
     selectrangequeryParams:string;
+
+    // 排序或者过滤处理后的data
+    sortedData: GenericDataItem[],
+    sortConfig: null,
 }
 
 class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTableState> {
@@ -66,6 +70,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
             selectedApplicationType: null,
             currentPanelName: '',
+
+            
+            // 排序或者过滤处理后的data
+            sortedData: [],
+            sortConfig: null,
 
         };
     }
@@ -148,6 +157,27 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
         return newColumns;
     };
+    // 处理表格排序变化的函数
+    handleTableChange = (sorter:any) => {
+        const { externalDataSource } = this.props;
+
+        let sortedData = [...externalDataSource];
+        if (sorter.field && sorter.order) {
+            sortedData.sort((a, b) => {
+                const isAsc = sorter.order === 'ascend';
+                if (a[sorter.field] < b[sorter.field]) return isAsc ? -1 : 1;
+                if (a[sorter.field] > b[sorter.field]) return isAsc ? 1 : -1;
+                return 0;
+            });
+        }
+
+        this.setState({
+            sortedData: sortedData.slice(0, 5), // 提取前五个条目
+            sortConfig: sorter,
+        });
+
+        // 可以在这里将 sortedData 传递给另一个组件
+    };
     // 渲染侧边栏组件
     renderSidebar = () => {
         const applicationTypes = ['全部应用', '数据库', 'Web服务器', 'DevOps工具', '缓存服务']; // 示例应用类型，后续最好读取后再构造菜单
@@ -160,7 +190,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
     handleExport = () => {
         const { externalDataSource, columns } = this.props;
-    
+
         // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
         if (this.state.selectedRowKeys.length === 0 || externalDataSource.length === 0) {
             alert('没有可导出的数据');
@@ -217,7 +247,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
     renderSearchFieldDropdown = (columns: any[]) => {
         return (
             <Select
-                style={{ width: '200px', marginRight: '8px' }}
+                style={{ width: this.props.currentPanel.includes('sidebar')?'120px':'200px', marginRight: '8px' }}
                 placeholder="选择搜索字段"
                 onChange={this.handleSearchFieldChange}
             >
@@ -278,20 +308,45 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
       };
 
 
-    render() {
-        // const { externalDataSource, columns } = this.props;
-        // const { currentPage, pageSize, total } = this.state;
-        
+    render() {        
         const rowSelection = {//checkbox勾选状态独立
             selectedRowKeys:this.state.selectedRowKeys,
             onChange: this.onSelectChange,
         };
         const newColumns = this.autoPopulateFilters();
+        const isSidebar=this.props.currentPanel.includes("sidebar")
+        const isButtonDisabled = this.props.externalDataSource.length === 0 
+                    || this.state.selectedRowKeys.length === 0
+                    || isSidebar;
 
-        const isButtonDisabled = this.props.externalDataSource.length === 0 || this.state.selectedRowKeys.length === 0;
+        const tableWidth=this.props.currentPanel.includes('large')?'1000px':(this.props.currentPanel?.includes('sidebar')?'490px':'1320px');
+    
+
+        const compStyle_small={
+            textAlign: 'center',
+            maxwidth: '90px',
+            height: '30px',
+            // 由于按钮高度较小，可能需要调整字体大小或内边距来改善显示
+            fontSize: '12px', // 根据需要调整字体大小
+            //borderRadius: '4px', // 如果您想要圆角边框
+            
+        }
+
+        const compStyle_normal={
+            //opacity: isButtonDisabled ? 0.5 : 1,
+        }
+
+        const selectedcompStyle = isSidebar
+        ? compStyle_small
+        : compStyle_normal;
+
+        const selectedTableStyle = isSidebar
+        ? 'customTable':'customTable';
+
+        const fontSizeSmall=this.props.currentPanel?.includes('sidebar')?'12px':'14px';
         return (//Table的宽度被设置为1330px
-        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '1320px', maxWidth: '100%' }}>
-            <Row gutter={[12, 6]} style={{ marginTop: '10px'}}>
+        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: tableWidth, maxWidth: '100%' }}>
+            <Row gutter={[12, 6]} style={{ marginTop: '-10px'}}>
                 {/* Conditionally render the sidebar for applications */}
                 {this.props.currentPanel === 'applications1' && (
                     <Col md={4} style={{ paddingRight: '12px', borderRight: '1px solid #ccc' }}>
@@ -309,10 +364,10 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                 >
                     <Card bordered={false} bodyStyle={{ padding: '4px' }}>
                         <div style={{ marginBottom: '16px' }}>
-                            <Row gutter={16} style={{ display: 'flex', alignItems: 'center' }}>
+                            <Row gutter={16} >
                                 <Col flex="none">
                                     <Button
-                                        style={{ 
+                                        style={{...selectedcompStyle,
                                             opacity: isButtonDisabled ? 0.5 : 1 }}
                                         onClick={this.handleExport}
                                         disabled={isButtonDisabled}
@@ -320,20 +375,24 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                         批量导出
                                     </Button>
                                     <Button
-                                        style={{ 
+                                        style={{...selectedcompStyle,
                                             opacity: isButtonDisabled ? 0.5 : 1 }}
                                         onClick={this.handleDeleteSelected}
                                         disabled={isButtonDisabled}
                                     >
-                                    刪除選中行
+                                    待定按键
                                     </Button>
-                                    <Button onClick={() =>this.props.fetchLatestData('all', '', '')}>采集最新数据</Button>
-                                    {/* <Button onClick={fetchData}>采集最新数据</Button> */}
+                                    <Button 
+                                        style={{...selectedcompStyle,}}
+                                        onClick={() =>this.props.fetchLatestData('all', '', '')}>
+                                    采集最新数据
+                                    </Button>
                                 </Col>
-                                <Col flex="auto" style={{ textAlign: 'left', marginLeft: 10 }}>
+                                <Col flex="auto" style={{ textAlign: 'left', marginLeft: isSidebar?2:10,marginTop:'5px', 
+                                fontSize: isSidebar?'12px':''}}>
                                     <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
                                 </Col>
-                                {this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
+                                {!isSidebar && this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
                                 <Col flex="none" style={{ marginLeft: 'auto' }}>
                                     <RangePicker style={{ width: 250 }} onChange={this.onDateRangeChange}/>
                                 </Col>
@@ -349,7 +408,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 <Input.Search
                                     placeholder="搜索已选字段"
                                     onSearch={this.handleSearch}
-                                    style={{ width: this.props.currentPanel === 'applications' ? '67%' : '83%' }}
+                                    style={{ width: isSidebar?300:1000 }}
                                 />
                                 {/* <Button
                                     icon={<SyncOutlined />}
@@ -358,14 +417,14 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 /> */}
                             </Row>
                         </div>
-                        {/* <span>{this.state.selectedSearchField}</span> */}
                         <Table
-                            className="customTable"
+                            className={selectedTableStyle}
                             rowSelection={rowSelection}
-                            //pagination={false}
                             dataSource={this.props.externalDataSource}
                             columns={newColumns}
                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
+                            onChange={this.handleTableChange}
+                            //pagination={false}
                             //locale={{ emptyText: 'No Data' }} // 可以指定无数据时展示的文本
                         />
                         {/* <Pagination // 分页组件

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Row, Col, Card} from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from 'recharts';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
-import { hostperformanceColumns, StatusItem } from '../../utils/tableUtils';
+import { hostperformanceColumns, StatusItem } from '../AssetsCenter/tableUtils';
 
 //const { Search } = Input;
 
@@ -60,7 +60,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                     <Col span={12} style={{width:660}}>
                         <Card bordered={false} /*title="主机状态分布" 产生分界线*/style={{fontWeight: 'bolder', width: '100%', height:300}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>平均使用率 趨勢</h2>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>平均使用率 趨勢</h2>
                         </div>
                         <Row gutter={0}>                
                             <ResponsiveContainer width="98%" height={220}>
@@ -84,7 +84,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                     <Col span={12} style={{width:660}}>
                         <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>負載最高的主機 使用率趨勢</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>負載最高的主機 使用率趨勢</h2>
                             </div>
                         <Row gutter={0}>                
                             <ResponsiveContainer width="98%" height={220}>
@@ -111,7 +111,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                         <div className="gutter-box">
                         <Card bordered={false}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>主機監控記錄</h2>
+                                <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主機監控記錄</h2>
                             </div>
                             <FetchAPIDataTable
                             apiEndpoint=""

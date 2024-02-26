@@ -21,6 +21,8 @@ import {
 } from '@ant-design/icons';
 import { Row, Col } from 'antd';
 
+
+
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -70,6 +72,8 @@ const HeaderCustom = (props: HeaderCustomProps) => {
     // 用于处理SubMenu标题点击的函数
     const handleSubMenuClick = (e:any) => {
     // 可以在这里添加自定义逻辑，或者什么都不做以保持默认行为
+  console.log("用户点击了头像");
+        return true;
     };
     const logout = () => {
         umbrella.removeLocalStorage('user');

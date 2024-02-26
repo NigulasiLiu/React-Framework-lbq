@@ -1,11 +1,11 @@
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Button, Menu,} from 'antd';
 import OverviewPanel from '../AssetsCenter/OverviewPanel';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import DataDisplayTable from '../ContextAPI/DataDisplayTable';
 import { RouteComponentProps, withRouter  } from 'react-router-dom';
 import HostOverview from './HostOverview';
 import HostDetailsTable from './HostDetailsTable';
-import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../../utils/tableUtils';
+import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../AssetsCenter/tableUtils';
 import AlertList from '../AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
 import PerformanceMonitor from './PerformanceMonitor';
@@ -72,6 +72,7 @@ interface Risk {
     warning3: number;
     // Add other properties here if needed
 }
+
 interface DataType {
     key: React.Key;
     hostname: string;
@@ -87,6 +88,7 @@ interface DataType {
     clientUsage: string;
     updateTime: string;
 }
+
 const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
     return (
         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>

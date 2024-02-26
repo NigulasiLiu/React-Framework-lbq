@@ -13,7 +13,6 @@
   margin-right: 8px;
 }
 
-/* 假设你有一个具有table类名的表格 */
 .customTable .ant-table-thead > tr:first-child th {
   background-color: #F6F7FB; /* 设置第一行表头单元格背景颜色 */
 }
@@ -34,12 +33,42 @@
   border-bottom: 1px solid #f0f0f0; /* 为表头单元格添加底部边框 */
   font-weight: bold; /* 使表头单元格字体加粗 */
 }
-.customTable2 .ant-table {
-  border-bottom: none; /* 移除Table底部边框 */
-}
 /* 设置从第一行开始的数据字体大小为10px */
 .customTable .ant-table-tbody > tr .ant-table-cell {
   font-size: 14px;
+}
+
+
+.customTableSmall .ant-table-thead > tr:first-child th {
+  background-color: #F6F7FB; /* 设置第一行表头单元格背景颜色 */
+}
+
+.customTableSmall .ant-table {
+  border: 1px solid #f0f0f0; /* 设置外缘边框颜色 */
+}
+
+.customTableSmall .ant-table-cell {
+  border-bottom: none; /* 去除单元格之间的底部边框 */
+  height: 38px; /* 设置每行单元格的高度 */
+  line-height: 38px; /* 设置行高与单元格高度一致 */
+}
+
+.customTableSmall .ant-table-tbody > tr:last-child .ant-table-cell {
+  border-bottom: 1px solid #f0f0f0; /* 为最后一行单元格添加底部边框 */
+}
+
+.customTableSmall .ant-table-thead > tr > th {
+  border-bottom: 1px solid #f0f0f0; /* 为表头单元格添加底部边框 */
+  font-weight: bold; /* 使表头单元格字体加粗 */
+}
+
+/* 设置从第一行开始的数据字体大小为10px */
+.customTableSmall .ant-table-tbody > tr .ant-table-cell {
+  font-size: 12px;
+}
+
+.customTable2 .ant-table {
+  border-bottom: none; /* 移除Table底部边框 */
 }
 
 

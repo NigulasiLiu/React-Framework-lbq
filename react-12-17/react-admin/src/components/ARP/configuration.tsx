@@ -5,8 +5,8 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
-import { ConfigurationColums } from '../../utils/tableUtils';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import { ConfigurationColums } from '../AssetsCenter/tableUtils';
+import DataDisplayTable from '../ContextAPI/DataDisplayTable';
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -124,41 +124,7 @@ class Configuration extends React.Component<HostInventoryProps, HostInventorySta
             // },
         ];
         this.state = {
-            dataSource: [
-                // {
-                //     key: '0',
-                //     hostname: 'CPU使用率过高',
-                //     label: '-',
-                //     group: 'default',
-                //     OStype: 'Windows',
-                //     risks: {
-                //         warning1: 0,
-                //         warning2: 1,
-                //         warning3: 2
-                //     },
-                //     status: '离线',
-                //     clientUsage: '32',
-                //     updateTime: '18:00, 2023 12 16',
-                // },  
-                {
-                    key: '1',
-                    whitelistName: '加白名称1',
-                    whitelistDescription: '加白描述1',
-                    whitelistScope: '加白范围1',
-                    matchAlarmName: '告警名1',
-                    matchMethod: '匹配方式1',
-                    occurrenceTime: '2023-12-28 08:00:00'
-                  },
-                  {
-                    key: '2',
-                    whitelistName: '加白名称2',
-                    whitelistDescription: '加白描述2',
-                    whitelistScope: '加白范围2',
-                    matchAlarmName: '告警名2',
-                    matchMethod: '匹配方式2',
-                    occurrenceTime: '2023-12-29 09:30:00'
-                  },
-            ],
+            dataSource: [],
             count: 2,
             deleteIndex: -1,
             selectedRowKeys: [], // 这里用来存储勾选的行的 key 值
@@ -228,7 +194,7 @@ class Configuration extends React.Component<HostInventoryProps, HostInventorySta
                         <div className="gutter-box">
                              <Card bordered={false}>
                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>配置管理</h2>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>配置管理</h2>
                              </div>
                                 <DataDisplayTable
                                     apiEndpoint="http://localhost:5000/api/files/configuration"

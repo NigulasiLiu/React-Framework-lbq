@@ -1,0 +1,23 @@
+/* 进度条容器样式 */
+.progress-container {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  /* 进度条动画样式 */
+  .progress-bar {
+    height: 100%;
+    background-color: #007bff;
+    animation: progress-animation 2s linear infinite;
+  }
+  
+  /* 进度条动画关键帧 */
+  @keyframes progress-animation {
+    0% { width: 0; }
+    50% { width: 50%; }
+    100% { width: 100%; }
+  }
+  

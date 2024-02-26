@@ -1,0 +1,53 @@
+/* 顶侧栏样式 */
+.header-row {
+    position: relative; /* 或者 fixed, 根据需要 */
+    z-index: 10; /* 较高的z-index值 */
+  }
+  .header-border {
+    //border-right: 15px solid #E5E6EB;
+  }
+  
+
+/* 左侧侧边栏样式 */
+.sider-custom {
+position: relative; /* 确保定位不是absolute或fixed，以免与顶侧栏冲突 */
+z-index: 1; /* 较低的z-index值 */
+}
+@logo-path: 'src/style/imgs/owl.png'; // 替换为您的实际路径
+
+.sider-menu {
+  display: flex;
+  flex-direction: column;
+
+  //width: 200px; /* 调整侧边栏的宽度 */
+  .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      background-color: #ffffff; // Adjust the background color as needed
+
+      .logo {
+          max-width: 100%;
+          height: auto; // Adjust the size as needed
+      }
+
+      .title {
+          font-weight: 400;
+          font-size: 16px; // Adjust the font size as needed
+          color: black;
+          margin: 10px 0; // Add margin for spacing
+      }
+      
+  }
+      // 为子元素添加类名来调整字体大小
+      .small-font {
+        font-size: 10px; // 将字体大小调整为10px
+      }
+
+}
+/* 在合适的地方添加该样式，确保生效 */
+.sider-menu.hidden {
+  display: none;
+}
+

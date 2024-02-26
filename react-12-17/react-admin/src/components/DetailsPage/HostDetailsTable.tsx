@@ -3,7 +3,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Card, Col, Row } from 'antd';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
+import DataDisplayTable from '../ContextAPI/DataDisplayTable';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 
 interface HostDetailsTableState {

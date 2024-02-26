@@ -1,19 +1,29 @@
 // FetchAPIDataTable.tsx
-import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { fetchDataFromAPI, processData } from './DataService';
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { fetchDataFromAPI, processData} from './DataService';
 import CustomDataTable from './CustomDataTable';
+
 import axios from 'axios';
+
+
+// 创建一个上下文来管理数据状态
+export const DataTableContext = createContext<any>(null);
+
+// 自定义钩子以从任何组件中访问 data 和 setData
+export const useDataTable = () => {
+  return useContext(DataTableContext);
+};
 interface FetchAPIDataTableProps {
+    table_type?:string;
+
     apiEndpoint: string;
-    location?: any;
     columns: any[];
     timeColumnIndex: string[];
     currentPanel:string;
     // ... 其他需要的 props
 }
 
-export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoint, columns, timeColumnIndex,currentPanel, ...otherProps }) => {
+export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type, apiEndpoint, columns, timeColumnIndex,currentPanel, ...otherProps }) => {
   const [data, setData] = useState<any[]>([]);
   const [searchField, setSearchField] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -57,7 +67,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
   
   const buildQueryParams = (searchField:string, searchQuery:string) => {
     let queryParams = '';
-    if(searchField === 'all'&&searchQuery === ''){
+    if(searchField === 'all' || searchQuery === ''){
         queryParams = '/all';
     }
     else if (searchField !== 'all' && searchField && searchQuery) {
@@ -69,6 +79,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
 
   const fetchLatestData = useCallback(async (searchField:string, searchQuery:string, rangeQuery:string) => {
     try {
+      //setData([]);
         // 构建查询参数，范围查询(rangePicker)时，searchField为空,searchQuery是已经构造好的语句
         const finalEndpoint = rangeQuery.length?
           `${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
@@ -105,24 +116,28 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ apiEndpoin
     // useEffect(() => {
     //     fetchLatestData('', '');
     // }, [fetchLatestData]); // fetchLatestData 现在是稳定的
-    
+      // 通过上下文将数据和 setData 提供给子组件
+    const contextValue = { data, setData };
+
+    const final_table_type = table_type?"noraml":"simplified";
     return (
-      <CustomDataTable 
-          externalDataSource={data} 
-          columns={columns} 
-          timeColumnIndex={timeColumnIndex.length>0?timeColumnIndex:[]}//第一个值用于rangePicker，所有值都会从unix时间转为年月日时分秒
-          //sqlTableName="file_integrity_info"
-          currentPanel={currentPanel}
-          fetchLatestData={handleFetchLatestData}
-          onUpdateSearchField={handleUpdateSearchField}
-          onUpdateSearchQuery={handleUpdateSearchQuery}
-          onUpdateRangeField={onUpdateRangeField}
-          onDeleteSelected={handleDeleteSelected}
-          onSelectedRowKeysChange={setSelectedRowKeys}
-          //handleApplicationTypeSelect={/* 对应的函数 */}
-          //renderSearchFieldDropdown={/* 对应的函数 */}
-          //handleSearch={/* 对应的函数 */}
-      />
+      <DataTableContext.Provider value={contextValue}>
+        <CustomDataTable 
+            externalDataSource={data} 
+            columns={columns} 
+            timeColumnIndex={timeColumnIndex.length>0?timeColumnIndex:[]}//第一个值用于rangePicker，所有值都会从unix时间转为年月日时分秒
+            currentPanel={currentPanel}
+            fetchLatestData={handleFetchLatestData}
+            onUpdateSearchField={handleUpdateSearchField}
+            onUpdateSearchQuery={handleUpdateSearchQuery}
+            onUpdateRangeField={onUpdateRangeField}
+            onDeleteSelected={handleDeleteSelected}
+            onSelectedRowKeysChange={setSelectedRowKeys}
+            //handleApplicationTypeSelect={/* 对应的函数 */}
+            //renderSearchFieldDropdown={/* 对应的函数 */}
+            //handleSearch={/* 对应的函数 */}
+        />
+      </DataTableContext.Provider>
     );
 };
 

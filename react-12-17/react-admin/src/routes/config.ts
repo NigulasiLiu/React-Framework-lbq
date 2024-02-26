@@ -46,20 +46,20 @@ const menus: {
         },
         {
             key: '/app/HostProtection', //影响菜单下拉
-            title: '主机和容器防护',
+            title: '主机防护',
             icon: 'copy',
             subs: [
                 {
-                    key: '/app/HostProtection/rqjc',
+                    key: '/app/HostProtection/InvasionDetect',
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/HostProtection/rqjc/HCPAlertList',
+                            key: '/app/HostProtection/InvasionDetect/HCPAlertList',
                             title: '告警列表',
                             component: 'HCPAlertList',
                         },
                         {
-                            key: '/app/HostProtection/rqjc/HCPWhiteList',
+                            key: '/app/HostProtection/InvasionDetect/HCPWhiteList',
                             title: '白名单',
                             component: 'HCPWhiteList',
                         },
@@ -91,16 +91,16 @@ const menus: {
                 { key: '/app/ARP/status', title: '运行状态', component: 'status' },
                 { key: '/app/ARP/configuration', title: '配置管理', component: 'configuration' },
                 {
-                    key: '/app/ARP/rqjc',
+                    key: '/app/ARP/InvasionDetect',
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/ARP/ARPAlertList',
+                            key: '/app/ARP/InvasionDetect/ARPAlertList',
                             title: '告警列表',
                             component: 'ARPAlertList',
                         },
                         {
-                            key: '/app/ARP/ARPWhiteList',
+                            key: '/app/ARP/InvasionDetect/ARPWhiteList',
                             title: '白名单',
                             component: 'ARPWhiteList',
                         },
@@ -115,16 +115,16 @@ const menus: {
             icon: 'switcher',
             subs: [
                 {
-                    key: '/app/CCP/rqjc',
+                    key: '/app/CCP/InvasionDetect',
                     title: '入侵检测',
                     subs: [
                         {
-                            key: '/app/CCP/rqjc/CCPAlertList',
+                            key: '/app/CCP/InvasionDetect/CCPAlertList',
                             title: '告警列表',
                             component: 'CCPAlertList',
                         },
                         {
-                            key: '/app/CCP/rqjc/CCPWhiteList',
+                            key: '/app/CCP/InvasionDetect/CCPWhiteList',
                             title: '白名单',
                             component: 'CCPWhiteList',
                         },

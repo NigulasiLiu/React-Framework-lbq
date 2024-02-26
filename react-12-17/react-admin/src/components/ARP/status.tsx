@@ -2,9 +2,9 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
+import DataDisplayTable from '../ContextAPI/DataDisplayTable'
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
-import { RASPProcessColums } from '../../utils/tableUtils';
+import { RASPProcessColums } from '../AssetsCenter/tableUtils';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -357,7 +357,7 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
                 <Card /*title="主机状态分布" 产生分界线*/
                   style={{fontWeight: 'bolder', width: '100%', height:220}}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>RASP概览</h2>
+                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>RASP概览</h2>
                   </div>
                   <Row gutter={[6, 6]}>
                     <Col className="gutter-row" span={12}>
@@ -472,7 +472,7 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
               <div className="gutter-box">
               <Card bordered={false}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>RASP进程列表</h2>
+                      <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>RASP进程列表</h2>
                   </div>
                   <DataDisplayTable
                       apiEndpoint="http://localhost:5000/api/files/RASPProcess"

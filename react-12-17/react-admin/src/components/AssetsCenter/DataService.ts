@@ -1,6 +1,6 @@
 // dataService.ts
 import axios from 'axios';
-import {GenericDataItem} from '../../utils/tableUtils'
+import {GenericDataItem} from './tableUtils'
 
 interface FetchDataParams {
     apiEndpoint: string;
@@ -52,6 +52,46 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
         return item;
     });
 };
+// 从 apiEndpoint 提取倒数第一个 / 和倒数第二个 / 之间的字符串
+// export const extractTbnameFromApiEndpoint = (apiEndpoint: string): string | undefined => {
+//     const lastSlashIndex = apiEndpoint.lastIndexOf('/');
+//     const secondLastSlashIndex = apiEndpoint.lastIndexOf('/', lastSlashIndex - 1);
+
+//     if (lastSlashIndex !== -1 && secondLastSlashIndex !== -1) {
+//         return apiEndpoint.substring(secondLastSlashIndex + 1, lastSlashIndex);
+//     }
+
+//     return undefined;
+// };
+
+// export const processData = (data: GenericDataItem[], timeColumnIndex?: string[], tbname?: string): GenericDataItem[] => {
+//     return data.map(item => {
+//         // 时间转换
+//         if (timeColumnIndex) {
+//             timeColumnIndex.forEach(column => {
+//                 if (item[column]) {
+//                     item[column] = convertUnixTime(parseFloat(item[column]));
+//                 }
+//             });
+//         }
+
+//         // 动态修改 dataIndex
+//         if (tbname) {
+//             Object.keys(item).forEach(key => {
+//                 const newKey = `${tbname}_${key}`;
+//                 item[newKey] = item[key];
+//                 delete item[key];
+//             });
+//         }
+
+//         // 如果有其他数据处理逻辑，如排序，可以在此添加
+//         // ...
+
+//         return item;
+//     });
+// };
+
+
 
 // 辅助函数：将 UNIX 时间戳转换为可读的日期格式
 // 辅助函数：将 UNIX 时间戳转换为指定格式的日期字符串

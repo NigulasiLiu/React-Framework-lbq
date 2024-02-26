@@ -1,7 +1,7 @@
 // HostAlertList.tsx
 import React from 'react';
 import AlertList from '../AlertList'; // 确保路径正确
-import { hostalertColumns } from '../../utils/tableUtils'; // 假设列配置从某个文件导入
+import { hostalertColumns } from '../AssetsCenter/tableUtils'; // 假设列配置从某个文件导入
 
 class HostAlertList extends React.Component {
     render() {
@@ -9,13 +9,11 @@ class HostAlertList extends React.Component {
         const apiEndpoint = "http://localhost:5000/api/files/hostalertlist";
 
         return (
-            <div>
-                <AlertList 
-                    apiEndpoint={apiEndpoint} 
-                    columns={hostalertColumns}
-                    currentPanel='hostalertlist'
-                />
-            </div>
+            <AlertList 
+                apiEndpoint={apiEndpoint} 
+                columns={hostalertColumns}
+                currentPanel='hostalertlist'
+            />
         );
     }
 }

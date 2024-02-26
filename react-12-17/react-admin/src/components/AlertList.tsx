@@ -149,7 +149,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                     <Card bordered={false} 
                         style={{fontWeight: 'bolder', width: '100%', height:200}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>告警概览</h2>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>告警概览</h2>
                         </div>
                         <Row gutter={[6, 6]}>
                             <Col className="gutter-row" md={10}>
@@ -172,7 +172,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                                         <Col span={4} style={{  }}>
 
                                         </Col>
-                                        <Col span={6} style={{ height:'90px',marginLeft: '250px',marginRight: '150px',marginBottom: '125px' }}>
+                                        <Col span={6} style={{ height:'90px',marginLeft: '250px',marginRight: '150px',marginBottom: '130px' }}>
                                             <StatusPanel statusData={statusData} orientation="vertical" />
                                         </Col>
                                     </Row>
@@ -230,7 +230,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                         <div className="gutter-box">
                         <Card bordered={false}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>告警内容</h2>
+                                <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>告警内容</h2>
                             <Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>
                             </div>
                             <FetchAPIDataTable

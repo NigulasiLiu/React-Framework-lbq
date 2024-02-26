@@ -2,10 +2,10 @@
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic } from 'antd';
 import moment, { Moment } from 'moment';
-import DataDisplayTable from '../AssetsCenter/DataDisplayTable'
-import MySidebar from '../HostProtection/MySidebar';
-import CustomPieChart from '../charts/CustomPieChart';
-import { StatusItem, virusscanningColumns } from '../../utils/tableUtils';
+import VirusScanningTaskSidebar from './VirusScanTableSidebar';
+import VirusScanProcessSidebar from '../HostProtection/ScanProcessSidebar';
+import CustomPieChart from '../AssetsCenter/CustomPieChart';
+import { StatusItem, virusscanningColumns } from '../AssetsCenter/tableUtils';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 
 interface VirusScanningProps {
@@ -19,7 +19,12 @@ interface VirusScanningState{
   activeIndex: any;
 
   isSidebarOpen: boolean;
+  isScanningProcessSidebarOpen:boolean;
   riskItemCount: number;
+
+  
+  // isLoading: boolean; // 添加 isLoading 状态
+  // scanProgress: number; // 添加 scanProgress 状态
 };
 
 
@@ -81,17 +86,32 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
       deleteIndex: -1,
       activeIndex:[-1,-1,-1,-1],
       isSidebarOpen: false,
+      isScanningProcessSidebarOpen:false,
       currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
       riskItemCount: 5, // 初始化风险项的数量
+
+      
+      // isLoading: false, // 初始化 isLoading 为 false
+      // scanProgress: 0, // 初始化 scanProgress 为 0
     };
   }
   columns: any;
+  // 点击立即扫描按钮的处理函数
 
-  toggleSidebar = () => {
+
+  toggleProcessSidebar = () => {
+    this.setState((prevState) => ({ isScanningProcessSidebarOpen: !prevState.isScanningProcessSidebarOpen }));
+    this.setCurrentTime();
+  };
+  closeProcessSidebar = () => {
+    this.setState((prevState) => ({ isScanningProcessSidebarOpen: !prevState.isScanningProcessSidebarOpen }));
+  };
+  
+  toggleTaskSidebar = () => {
     this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
     this.setCurrentTime();
   };
-  closeSidebar = () => {
+  closeTaskSidebar = () => {
     this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
   };
   setCurrentTime = () => {
@@ -122,7 +142,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
 
 
   render() {
-    const { isSidebarOpen, currentTime } = this.state;
+    const { isSidebarOpen, isScanningProcessSidebarOpen, currentTime } = this.state;
     // Conditional button style
 
     const virusstatusData: StatusItem[] = [
@@ -131,6 +151,8 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
         { color: '#846CCE', label: '高风险 ', value: 5 },
         { color: '#468DFF', label: '低风险 ', value: 1 },
         ];
+
+
     return (
       <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: this.props.pageWidth ? this.props.pageWidth : '1320', }}>
         <Row gutter={[12, 6]}/*(列间距，行间距)*/>
@@ -141,7 +163,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                 <Card bordered={false} /*title="主机状态分布" 产生分界线*/
                   style={{fontWeight: 'bolder', width: '100%', height:220}}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>病毒扫描</h2>
+                      <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>病毒扫描</h2>
                   </div>
                   <Row gutter={[6, 6]}>
                     <Col className="gutter-row" span={4} style={{ marginLeft: '15px',marginTop: '10px' }}>
@@ -149,17 +171,26 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                         <Row gutter={24}>
                           <h2 style={{ fontSize: '16px' }}>最近扫描时间:</h2>
                           <span className="currentTime" style={{ marginRight: '10px',marginBottom:'8px' }}>{currentTime}</span>
-                          <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleSidebar}>立即扫描</Button>
-                          <Button style={{backgroundColor:'white',color:'black'}}onClick={this.toggleSidebar}>全部扫描任务</Button>
+                          <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleProcessSidebar}>立即扫描</Button>
+                          <Button style={{backgroundColor:'white',color:'black'}}onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
                         </Row>
-                        <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar}></div>
-                        <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
-                          <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
-                          <MySidebar
+                        <div className={isScanningProcessSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeProcessSidebar}></div>
+                        <div className={isScanningProcessSidebarOpen ? "sidebar open" : "sidebar"}>
+                          <button onClick={this.toggleProcessSidebar} className="close-btn">&times;</button>
+                          <VirusScanProcessSidebar
                             statusData={virusstatusData}
-                            isSidebarOpen={this.state.isSidebarOpen}
-                            toggleSidebar={this.toggleSidebar}
+                            isSidebarOpen={this.state.isScanningProcessSidebarOpen}
+                            toggleSidebar={this.toggleProcessSidebar}
                             riskItemCount={this.state.riskItemCount} // 传递风险项的数量
+                          />
+                        </div>
+                        <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeTaskSidebar}></div>
+                        <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+                          <button onClick={this.toggleTaskSidebar} className="close-btn">&times;</button>
+                          <VirusScanningTaskSidebar
+                            isSidebarOpen={this.state.isSidebarOpen}
+                            toggleSidebar={this.toggleTaskSidebar}
+                            sidebarWidth={1000}
                           />
                         </div>
                       </div>
@@ -214,7 +245,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                         }}
                         >
                         <Row>
-                            <Col pull={2} span={24} style={{ marginRight: '50px'}}>
+                            <Col span={24} style={{ marginRight: '120px'}}>
                                 <Statistic title={<span>累计处理告警</span>} value={0} />
                             </Col>
                             
@@ -235,7 +266,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                         }}
                         >
                         <Row>
-                            <Col pull={2} span={24} style={{ marginRight: '50px'}}>
+                            <Col span={24} style={{ marginRight: '100px'}}>
                                 <Statistic title={<span>白名单规则数</span>} value={0} />
                             </Col>
                             
@@ -252,7 +283,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
               <div className="gutter-box">
               <Card bordered={false}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                      <h2 style={{ fontWeight: 'bold', marginLeft: '6px' }}>扫描结果</h2>
+                      <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>扫描结果</h2>
                   </div>
                   <FetchAPIDataTable
                       apiEndpoint="http://localhost:5000/api/files/vulnerability"

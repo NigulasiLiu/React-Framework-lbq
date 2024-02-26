@@ -1,10 +1,11 @@
 import React from 'react';
 import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd';
+import axios from 'axios';
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../../utils/tableUtils';
+import { StatusItem, GenericDataItem, BaseItem, DataItem } from './tableUtils';
 import { StatusPanel } from './HostInventory';
-import CustomPieChart from '../charts/CustomPieChart';
+import CustomPieChart from './CustomPieChart';
 interface OverviewPanelProps extends RouteComponentProps {
     statusData: StatusItem[];
     //currentPanel: string;
@@ -25,6 +26,7 @@ interface OverviewPanelProps extends RouteComponentProps {
 
 type OverviewPanelState = {
     activeIndex: any;
+    tempdata:GenericDataItem[];
 };
 const baseDataItems: BaseItem[] = [
     { key: '1', color: '#F24040' },
@@ -178,10 +180,9 @@ const generateColumns = (tableName: string, tableName_s: string, tableName_list:
             onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
             key: 'id',
             render: (text: any, record: DataItem, index: number) => {
-                const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色
+                const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色 style={{ cursor: 'pointer' }} onClick={() => goToPanel(record.id)}
                 return (
-                    <div style={{ cursor: 'pointer' }} 
-                    onClick={() => goToPanel(record.id)}>
+                    <div >
                         <span
                             style={{
                                 lineHeight: '15px',
@@ -255,8 +256,27 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
         super(props);
         this.state = {
             activeIndex: [-1], //一个扇形图
+            tempdata:[],
         };
     }
+
+    // fetchLatestData = async (api:string) => {
+    //     try {
+    //         const rawData = await axios.get(api);
+    //         if (rawData.data){
+    //             const processedData = processData(rawData, timeColumnIndex);
+    //             this.setState({tempdata:processedData})
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    //   };
+
+
+
+
+
+
     // 修改后的函数，使其能够导航到对应的子面板
     goToPanel = (panelName: string) => {
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
@@ -291,6 +311,17 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
         });
     };
 
+
+
+
+
+
+
+
+
+
+
+    
     render() {
         // 将GenericDataItem[]转换为DataItem[]，根据rankLabel字段进行排序和转换
         function convertToDataItems(

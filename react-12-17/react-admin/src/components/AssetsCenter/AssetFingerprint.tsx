@@ -3,18 +3,14 @@ import { Row, Col, Card, Table, Popconfirm, Input, Button, Menu, Layout } from '
 import { Link, Route, Switch, useLocation, withRouter } from 'react-router-dom';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import OverviewPanel from './OverviewPanel';
-import DataDisplayTable from './DataDisplayTable';
+import DataDisplayTable from '../ContextAPI/DataDisplayTable';
 import { fimColumns,kernelModulesColumns,
     containerColumns,openPortsColumns,
     runningProcessesColumns,systemServicesColumns,
     systemSoftwareColumns,applicationsColumns,
     systemUsersColumns,scheduledTasksColumns,
-    GenericDataItem, StatusItem } from '../../utils/tableUtils';
+    GenericDataItem, StatusItem } from './tableUtils';
 
-// Define an interface for the props expected by the StatusPanel component
-interface StatusPanelProps {
-    statusData: StatusItem[];
-}
 
 type AssetFingerprintProps = {};
 type AssetFingerprintState = {
@@ -39,38 +35,11 @@ type AssetFingerprintState = {
 
     statusData: StatusItem[]; // 初始状态
     currentPanel: string;
+
+    
+    sortedData: GenericDataItem[];
 };
-// const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
-//     return (
-//         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>
-//         <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
-//             {statusData.map((status, index) => (
-//                 <div
-//                     key={index}
-//                     style={{
-//                         marginBottom: '8px',
-//                         display: 'flex',
-//                         justifyContent: 'space-between',
-//                         alignItems: 'center',
-//                     }}
-//                 >
-//                     <span
-//                         style={{
-//                             height: '10px',
-//                             width: '10px',
-//                             backgroundColor: status.color,
-//                             borderRadius: '50%',
-//                             display: 'inline-block',
-//                             marginRight: '16px',
-//                         }}
-//                     ></span>
-//                     <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-//                     <span>{status.value}</span>
-//                 </div>
-//             ))}
-//         </div> //</div>
-//     );
-// };
+
 
 class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFingerprintState> {
     constructor(props: any) {
@@ -96,9 +65,13 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
 
             currentPanel: 'overview', // 默认选中的面板
+            
+            sortedData: [],
         };
     }
-
+    setSortedData = (data:GenericDataItem[]) => {
+        this.setState({ sortedData: data });
+    };
 
     changePanel = (panelName: string) => {
         this.setState({ currentPanel: panelName });
@@ -283,7 +256,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                 <div className="gutter-box">
                                 <Card bordered={false}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
-                                        <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '6px' }}>资产指纹</h2>
+                                        <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
                                     </div>
                                 <Menu
                                     onClick={this.handleMenuClick}

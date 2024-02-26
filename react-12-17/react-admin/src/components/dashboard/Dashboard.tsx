@@ -5,7 +5,7 @@ import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { PieChart, Pie, Cell,Label, LineChart, TooltipProps, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
 import DataCard from '../DataCard';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { StatusItem } from '../../utils/tableUtils';
+import { StatusItem } from '../AssetsCenter/tableUtils';
 import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
@@ -29,6 +29,20 @@ interface ProgressPanelProps {
   max?: number;
 }
 interface DashboardProps extends RouteComponentProps {
+  host_number:number;
+  host_in_alert:number;
+  host_with_vul:number;
+  host_with_baselineRisk:number;
+
+  agent_number:number;
+  agent_online_number:number;
+
+  open_port_number:number;
+  service_number:number;
+  RASP_number:number;
+  alert_undone:number[];//长度为1+x，总的待处理的告警数量+各个等级的待处理告警数量
+  vulnerability_number:number[];
+  baseliineDetect_number:number[];
 }
   
 export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, colors, max }) => {
@@ -64,15 +78,35 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
 class Dashboard extends React.Component<DashboardProps> {
     
     render() {
-      const alertData = [
-        { day: '12-01', value: 30 },
-        { day: '12-02', value: 10 },
-        { day: '12-03', value: 50 },
-        { day: '12-04', value: 20 },
-        { day: '12-05', value: 40 },
-        // ...更多数据点
-      ];
-
+      function getPastSevenDays() {
+        const currentDate = new Date();
+        const pastSevenDays = [];
+      
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(currentDate);
+          date.setDate(date.getDate() - i);
+      
+          // 如果日期小于 1，则回滚到上个月的最后一天
+          if (date.getDate() < 1) {
+            date.setDate(0); // 将日期设置为上个月的最后一天
+          }
+      
+          pastSevenDays.push(date);
+        }
+      
+        return pastSevenDays;
+      }
+      
+      const pastSevenDays = getPastSevenDays();
+      const alertData = pastSevenDays.map(date => {
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return { day: `${month}-${day}`, value: day };
+      });
+      
+      const alert_undone=1;
+      
+      
       // 第二类告警的数据集
       const alertDataTwo = [
         { name: '待处理告警', value: 75, color: '#FFBB28' },
@@ -117,7 +151,7 @@ class Dashboard extends React.Component<DashboardProps> {
           <Card bordered={false}  
             style={{fontWeight: 'bolder', width: '100%', height:200}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>资产概览</h2>
+                <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>资产概览</h2>
             </div>
             <Row gutter={[6, 6]}>
             <Col className="gutter-row" md={6}>
@@ -134,7 +168,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 }}
                 >
                 <Row>
-                    <Col pull={2} span={24}>
+                    <Col span={24}>
                         <Statistic title={<span>主机</span>} value={1} />
                     </Col>
                     
@@ -155,8 +189,8 @@ class Dashboard extends React.Component<DashboardProps> {
                 }}
                 >
                 <Row>
-                    <Col pull={2} span={24}>
-                        <Statistic title={<span>集群</span>} value={0} />
+                    <Col span={24}>
+                        <Statistic title={<span>开放端口数</span>} value={0} />
                     </Col>
                     
                 </Row>
@@ -175,8 +209,8 @@ class Dashboard extends React.Component<DashboardProps> {
                 }}
                 >
                 <Row>
-                    <Col pull={2} span={24}>
-                        <Statistic title={<span>容器</span>} value={0} />
+                    <Col  span={24}>
+                        <Statistic title={<span>服务数量</span>} value={0} />
                     </Col>
                     
                 </Row>
@@ -194,7 +228,7 @@ class Dashboard extends React.Component<DashboardProps> {
                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                 }}
                 >
-                    <Col pull={2} span={24}>
+                    <Col  span={24}>
                         <Statistic title={'RASP注入进程'} value={0} />
                     </Col>
                     
@@ -210,7 +244,7 @@ class Dashboard extends React.Component<DashboardProps> {
             <Card bordered={false}  
               style={{fontWeight: 'bolder', width: '100%', height:350}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>入侵告警</h2>
+                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>入侵告警</h2>
               </div>
               <Row gutter={[6, 6]}>
                 <Col span={18}>
@@ -221,11 +255,11 @@ class Dashboard extends React.Component<DashboardProps> {
                     borderRight: '3px solid #E5E6EB'}}>
                 <ResponsiveContainer width="98%" height={250}>
                   <LineChart data={alertData}>
-                    <XAxis dataKey="day" />
-                    <YAxis hide /> {/* 隐藏 Y 轴 */}
-                    <CartesianGrid strokeDasharray="3 3" vertical /> {/* 只显示竖线网格 */}
+                    <XAxis dataKey="day" tick={{ fontSize: 12 }}/>
+                    <YAxis dataKey="value" tickCount={24} tick={{ fontSize: 13 }}/> 
+                    <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
                     <Tooltip />
-                    <Line type="linear" dataKey="value" stroke="#8884d8" strokeWidth={5} />
+                    <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
 
@@ -233,7 +267,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 </Col>
                 <Col span={6}>
                 <DataCard
-                        title="主机和容器安全告警"
+                        title="主机安全告警"
                         value={5}
                         valueItem={[
                           { value: '1', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
@@ -252,7 +286,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         showRightBorder={false}
                         //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
                     />
-                <DataCard
+                {/* <DataCard
                         title="应用运行时安全告警"
                         value={3}
                         valueItem={[
@@ -291,7 +325,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         showLeftBorder={false}
                         showRightBorder={false}
                         //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
-                    />
+                    /> */}
                 </Col>
               </Row>
 
@@ -305,7 +339,7 @@ class Dashboard extends React.Component<DashboardProps> {
           <Card bordered={false}  
               style={{fontWeight: 'bolder', width: '100%', height:350}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>漏洞风险</h2>
+                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
               </div>
               <Row gutter={[6, 6]}>
                 <Col span={18}>
@@ -316,11 +350,11 @@ class Dashboard extends React.Component<DashboardProps> {
                     borderRight: '3px solid #E5E6EB'}}>
                 <ResponsiveContainer width="98%" height={250}>
                   <LineChart data={alertData}>
-                    <XAxis dataKey="day" />
-                    <YAxis hide /> {/* 隐藏 Y 轴 */}
-                    <CartesianGrid strokeDasharray="3 3" vertical /> {/* 只显示竖线网格 */}
+                    <XAxis dataKey="day" tick={{ fontSize: 12 }}/>
+                    <YAxis dataKey="value" tickCount={12} tick={{ fontSize: 13 }}/> 
+                    <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
                     <Tooltip />
-                    <Line type="linear" dataKey="value" stroke="#8884d8" strokeWidth={5} />
+                    <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
 
@@ -358,7 +392,7 @@ class Dashboard extends React.Component<DashboardProps> {
             <Card bordered={false}  
               style={{fontWeight: 'bolder', width: '100%', height:330}}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>基线风险 Top3</h2>
+                  <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>基线风险 Top3</h2>
               <StatusPanel statusData={riskData} orientation="horizontal" />
               </div>
               <Row gutter={[6, 6]}>
@@ -378,15 +412,15 @@ class Dashboard extends React.Component<DashboardProps> {
         <Card bordered={false} /*title="OWL 介绍*/
           style={{fontWeight: 'bolder', width: '100%', height:350,backgroundColor:'#ffffff'}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>OWL Security</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>OWL Security</h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '6px' }}>
+              <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '0px' }}>
                 OWL Security是一个云原生的基于主机的安全(入侵检测与风险识别)解决方案
               </h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '6px' }}>
+              <h2 style={{ fontSize:'15px',fontWeight: 'bold', marginLeft: '0px' }}>
                 Owl Security is a support cloud-native and base linux host security(Intrusion detection and risk identification)solution
               </h2>
           </div>
@@ -417,7 +451,7 @@ class Dashboard extends React.Component<DashboardProps> {
         <Card bordered={false} /*title="主机风险扇形图" */
           style={{fontWeight: 'bolder', width: '100%', height:220}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>主机风险分布</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>主机风险分布</h2>
               <Col pull={0} span={2} style={{ position: 'relative', top: '-6px',right:'210px' }}>
                 <Button
                   type="link"
@@ -514,7 +548,7 @@ class Dashboard extends React.Component<DashboardProps> {
         <Card bordered={false} /*title="Agent 概览*/
           style={{fontWeight: 'bolder', width: '100%', height:330}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>Agent概览</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>Agent概览</h2>
           </div>
           <Row gutter={[6, 6]}>
             <Col className="gutter-row" span={12}>
@@ -586,7 +620,7 @@ class Dashboard extends React.Component<DashboardProps> {
         <Card bordered={false} /*title="后端服务状态*/
           style={{fontWeight: 'bolder', width: '100%', height:330}}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '6px' }}>后端服务状态</h2>
+              <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>后端服务状态</h2>
           </div>
           <Row gutter={[6, 6]}>
             <Col className="gutter-row" span={12}>
