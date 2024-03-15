@@ -7,7 +7,7 @@ import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import BaseLineDetectScanSidebar from './ScanProcessSidebar';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
-import { baselineDetectColumns, BaseLineDataType, StatusItem } from '../AssetsCenter/tableUtils';
+import { baselineDetectColumns, BaseLineDataType, StatusItem } from '../tableUtils';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -164,6 +164,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                       <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
                       <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
                           <BaseLineDetectScanSidebar
+                            scanInfo={['基线检查','基线扫描中，请稍后',"返回基线列表，查看详情"]}
                             statusData={scanResult}
                             isSidebarOpen={this.state.isSidebarOpen}
                             toggleSidebar={this.toggleSidebar}

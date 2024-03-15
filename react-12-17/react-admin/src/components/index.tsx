@@ -40,6 +40,9 @@ import Sub1 from './smenu/Sub1';
 import Sub2 from './smenu/Sub2';
 import Env from './env';
 import DetailsPage from './DetailsPage/DetailsPage';
+import CreateAgentTaskPage from './pages/CreateTaskPage';
+import CreateVirusScanTaskPage from './VirusScanning/CreateVirusScanTask';
+import UserManagement from './extension/UserManagement';
 
 const WysiwygBundle = Loadable({
     // 按需加载富文本配置
@@ -48,6 +51,7 @@ const WysiwygBundle = Loadable({
 });
 
 export default {
+    UserManagement,
     Echarts,
     Recharts,
     Icons,
@@ -84,5 +88,7 @@ export default {
     status,
     VulnerabilityList,
     BaselineDetectList,
-    DetailsPage
+    DetailsPage,
+    CreateAgentTaskPage,
+    CreateVirusScanTaskPage
 } as any;

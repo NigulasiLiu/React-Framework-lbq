@@ -1,14 +1,14 @@
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Button, Menu,} from 'antd';
-import OverviewPanel from '../AssetsCenter/OverviewPanel';
-import DataDisplayTable from '../ContextAPI/DataDisplayTable';
+import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { RouteComponentProps, withRouter  } from 'react-router-dom';
 import HostOverview from './HostOverview';
 import HostDetailsTable from './HostDetailsTable';
-import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../AssetsCenter/tableUtils';
+import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../tableUtils';
 import AlertList from '../AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
 import PerformanceMonitor from './PerformanceMonitor';
+import { DataType } from './DetailsTableColumns'
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -23,7 +23,7 @@ interface StatusPanelProps {
 }
 
 interface DetailsPageProps extends RouteComponentProps<{ id: string }> {
-    // ...其他props定义
+    hostname:string;
   }
 interface GenericDataItem {
     [key: string]: any;
@@ -61,33 +61,7 @@ type DetailsPageState = {
         [panelName: string]: React.Key[];
     };
 };
-interface Risk {
-    key: React.Key;
-    name: string;
-    age: string;
 
-    address: string;
-    warning1: number;
-    warning2: number;
-    warning3: number;
-    // Add other properties here if needed
-}
-
-interface DataType {
-    key: React.Key;
-    hostname: string;
-    label: string;
-    group: string;
-    OStype: string;
-    risks: {
-        warning1: number;
-        warning2: number;
-        warning3: number;
-    };
-    status: string;
-    clientUsage: string;
-    updateTime: string;
-}
 
 const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
     return (
@@ -193,597 +167,17 @@ const fimColumns = [
     },
 ];
 
-const containerColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '容器ID',
-        dataIndex: 'containerId',
-        key: 'containerId',
-    },
-    {
-        title: '容器名',
-        dataIndex: 'containerName',
-        key: 'containerName',
-    },
-    {
-        title: '运行状态',
-        dataIndex: 'runStatus',
-        key: 'runStatus',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '镜像ID',
-        dataIndex: 'imageId',
-        key: 'imageId',
-    },
-    {
-        title: '镜像名',
-        dataIndex: 'imageName',
-        key: 'imageName',
-    },
-    {
-        title: '创建时间',
-        dataIndex: 'creationTime',
-        key: 'creationTime',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-
-const openPortsColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '端口号',
-        dataIndex: 'portNumber',
-        key: 'portNumber',
-    },
-    {
-        title: '标记',
-        dataIndex: 'tag',
-        key: 'tag',
-    },
-    {
-        title: '监听IP',
-        dataIndex: 'listenIP',
-        key: 'listenIP',
-    },
-    {
-        title: '端口类别',
-        dataIndex: 'portCategory',
-        key: 'portCategory',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '进程ID',
-        dataIndex: 'processId',
-        key: 'processId',
-    },
-    {
-        title: '进程名',
-        dataIndex: 'processName',
-        key: 'processName',
-    },
-    {
-        title: '进程命令行',
-        dataIndex: 'processCmd',
-        key: 'processCmd',
-    },
-    {
-        title: '用户ID',
-        dataIndex: 'userId',
-        key: 'userId',
-    },
-    {
-        title: '用户名',
-        dataIndex: 'userName',
-        key: 'userName',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'latestScanningTime',
-        key: 'latestScanningTime',
-    },
-    // ... 其他字段定义
-];
-
-// 运行进程表的列定义
-const runningProcessesColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '进程ID',
-        dataIndex: 'processId',
-        key: 'processId',
-    },
-    {
-        title: '标记',
-        dataIndex: 'tag',
-        key: 'tag',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '进程名',
-        dataIndex: 'processName',
-        key: 'processName',
-    },
-    {
-        title: '进程状态',
-        dataIndex: 'processStatus',
-        key: 'processStatus',
-    },
-    {
-        title: '进程命令行',
-        dataIndex: 'commandLine',
-        key: 'commandLine',
-    },
-    {
-        title: '进程路径',
-        dataIndex: 'processPath',
-        key: 'processPath',
-    },
-    {
-        title: '用户ID',
-        dataIndex: 'userId',
-        key: 'userId',
-    },
-    {
-        title: '用户名',
-        dataIndex: 'username',
-        key: 'username',
-    },
-    {
-        title: '父进程ID',
-        dataIndex: 'parentProcessId',
-        key: 'parentProcessId',
-    },
-    {
-        title: '文件哈希',
-        dataIndex: 'fileHash',
-        key: 'fileHash',
-    },
-    {
-        title: '启动时间',
-        dataIndex: 'startTime',
-        key: 'startTime',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-
-// 系统用户表的列定义
-const systemUsersColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '用户ID',
-        dataIndex: 'userId',
-        key: 'userId',
-    },
-    {
-        title: '用户名',
-        dataIndex: 'username',
-        key: 'username',
-    },
-    {
-        title: '用户组ID',
-        dataIndex: 'groupId',
-        key: 'groupId',
-    },
-    {
-        title: '用户组名',
-        dataIndex: 'groupName',
-        key: 'groupName',
-    },
-    {
-        title: '上次登录时间',
-        dataIndex: 'lastLoginTime',
-        key: 'lastLoginTime',
-    },
-    {
-        title: '上次登录来源',
-        dataIndex: 'lastLoginSource',
-        key: 'lastLoginSource',
-    },
-    {
-        title: '家目录路径',
-        dataIndex: 'homeDirectory',
-        key: 'homeDirectory',
-    },
-    {
-        title: '命令/Shell',
-        dataIndex: 'shell',
-        key: 'shell',
-    },
-    {
-        title: 'Sudoers',
-        dataIndex: 'sudoers',
-        key: 'sudoers',
-    },
-    {
-        title: '备注',
-        dataIndex: 'notes',
-        key: 'notes',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-const scheduledTasksColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '任务命令',
-        dataIndex: 'taskCommand',
-        key: 'taskCommand',
-    },
-    {
-        title: '文件路径',
-        dataIndex: 'filePath',
-        key: 'filePath',
-    },
-    {
-        title: '文件哈希',
-        dataIndex: 'fileHash',
-        key: 'fileHash',
-    },
-    {
-        title: '执行周期',
-        dataIndex: 'executionCycle',
-        key: 'executionCycle',
-    },
-    {
-        title: '用户名',
-        dataIndex: 'username',
-        key: 'username',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-
-const systemServicesColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '服务名称',
-        dataIndex: 'serviceName',
-        key: 'serviceName',
-    },
-    {
-        title: '类型',
-        dataIndex: 'type',
-        key: 'type',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '执行命令',
-        dataIndex: 'executionCommand',
-        key: 'executionCommand',
-    },
-    {
-        title: '工作目录',
-        dataIndex: 'workingDirectory',
-        key: 'workingDirectory',
-    },
-    {
-        title: '文件哈希',
-        dataIndex: 'fileHash',
-        key: 'fileHash',
-    },
-    {
-        title: '是否自动重启',
-        dataIndex: 'autoRestart',
-        key: 'autoRestart',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-        // 这里假设 autoRestart 是布尔值，可以根据需要进行调整
-        //render: (text, record) => (record.autoRestart ? '是' : '否'),
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-
-const systemSoftwareColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '软件名称',
-        dataIndex: 'softwareName',
-        key: 'softwareName',
-    },
-    {
-        title: '类型',
-        dataIndex: 'type',
-        key: 'type',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '版本',
-        dataIndex: 'version',
-        key: 'version',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-
-// 内核模块表的列定义
-const kernelModulesColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '模块名称',
-        dataIndex: 'moduleName',
-        key: 'moduleName',
-    },
-    {
-        title: '大小',
-        dataIndex: 'size',
-        key: 'size',
-    },
-    {
-        title: '引用计数',
-        dataIndex: 'refCount',
-        key: 'refCount',
-    },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '内存地址',
-        dataIndex: 'memoryAddress',
-        key: 'memoryAddress',
-    },
-    {
-        title: '提供依赖',
-        dataIndex: 'dependencies',
-        key: 'dependencies',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
-
-// 应用表的列定义
-const applicationsColumns = [
-    {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
-    },
-    {
-        title: '应用名称',
-        dataIndex: 'applicationName',
-        key: 'applicationName',
-    },
-    {
-        title: '应用类型',
-        dataIndex: 'applicationType',
-        key: 'applicationType',
-    },
-    {
-        title: '应用版本',
-        dataIndex: 'applicationVersion',
-        key: 'applicationVersion',
-    },
-    {
-        title: '应用配置',
-        dataIndex: 'applicationConfig',
-        key: 'applicationConfig',
-    },
-    {
-        title: '标记',
-        dataIndex: 'tag',
-        key: 'tag',
-    },
-    {
-        title: '进程ID',
-        dataIndex: 'processId',
-        key: 'processId',
-    },
-    {
-        title: '进程路径',
-        dataIndex: 'processPath',
-        key: 'processPath',
-    },
-    {
-        title: '应用启动时间',
-        dataIndex: 'applicationStartTime',
-        key: 'applicationStartTime',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
-];
 
 class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     constructor(props: any) {
         super(props);
-        this.columns = [
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>主机名称</span>,
-                dataIndex: 'hostname',
-                //width: '13%',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>标签</span>,
-                dataIndex: 'label',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>地域</span>,
-                dataIndex: 'group',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作系统</span>,
-                dataIndex: 'OStype',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>风险</span>,
-                dataIndex: 'risks',
-                render: (risks: Risk, record: any) => {
-                    return (
-                        <div>
-                            <div>告警 {risks.warning1}</div>
-                            <div>风险 {risks.warning2}</div>
-                            <div>基线 {risks.warning3}</div>
-                        </div>
-                    );
-                },
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-                dataIndex: 'status',
-                filters: [
-                    { text: '未安装', value: '未安装' },
-                    { text: '运行中', value: '运行中' },
-                    { text: '运行异常', value: '运行异常' },
-                    { text: '离线', value: '离线' },
-                ],
-                onFilter: (value: string | number | boolean, record: DataType) =>
-                    record.status.includes(value as string),
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>客户端资源使用</span>,
-                dataIndex: 'clientUsage',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>更新时刻</span>,
-                dataIndex: 'updateTime',
-            },
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-                dataIndex: 'operation',
-                render: (text: string, record: DataType) => (
-                    <a
-                        href={'/login'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        //style={{ color: 'blue' }} // 添加颜色样式
-                    >
-                        查看详情
-                    </a>
-                ),
-            },
-
-            {
-                title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-                dataIndex: 'operation',
-                render: (text: any, record: any, index: number) => {
-                    return this.state.dataSource.length > 0 ? (
-                        <Popconfirm
-                            title="Sure to delete?"
-                            onConfirm={() => this.onDelete(record, index)}
-                        >
-                            <span>Delete</span>
-                        </Popconfirm>
-                    ) : null;
-                },
-            },
-        ];
+        this.columns = [];
         this.state = {
             selectedHostName: '-1',
             statusData: [], // 初始状态
             animated: false,
             animatedOne: -1,
-            dataSource: [
-                {
-                    key: '0',
-                    hostname: 'liubq34412',
-                    label: '-',
-                    group: 'default',
-                    OStype: 'Windows',
-                    risks: {
-                        warning1: 0,
-                        warning2: 1,
-                        warning3: 2,
-                    },
-                    status: '离线',
-                    clientUsage: '32',
-                    updateTime: '18:00, 2023 12 16',
-                },
-                // {
-                //     key: '1',
-                //     hostname: 'liubq34413',
-                //     label: '-',
-                //     group: 'default',
-                //     OStype: 'Windows',
-                //     risks: {
-                //         warning1: 0,
-                //         warning2: 1,
-                //         warning3: 0},
-                //     status: '离线',
-                //     clientUsage: '32',
-                //     updateTime: '18:01, 2023 12 16',
-                // },
-                // {
-                //     key: '2',
-                //     hostname: 'liubq34414',
-                //     label: '-',
-                //     group: 'default',
-                //     OStype: 'Windows',
-                //     risks: {
-                //         warning1: 2,
-                //         warning2: 0,
-                //         warning3: 0},
-                //     status: '离线',
-                //     clientUsage: '32',
-                //     updateTime: '18:02, 2023 12 16',
-                // },
-            ],
+            dataSource: [],
             topData: {
                 fim: [],
                 container: [],
@@ -1042,7 +436,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     // }
     renderCurrentPanel() {
         const { currentPanel } = this.state;
-        const commonContainerStyle = { marginLeft: '10px', marginRight: '10px' }; // 调整左右边缘距离
     
         switch (currentPanel) {
             case 'HostOverview':
@@ -1053,17 +446,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 );
             case 'hostalertlist':
                 return (
-                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
-                        <AlertList
-                            apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/1"}
-                            columns={hostalertColumns}
-                            currentPanel='hostalertlist'
-                        />
+                    <div style={{marginTop:'-20px'}}>
+                    <AlertList
+                        apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/host_1"}
+                        columns={hostalertColumns}
+                        currentPanel='hostalertlist'
+                    />
                     </div>
                 );
             case 'vulnerabilityalertlist':
                 return (
-                    <div style={commonContainerStyle}>
                         <HostDetailsTable
                             route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
                             columns={vulnerabilityColumns}
@@ -1072,11 +464,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
                             onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
                         />
-                    </div>
                 );
             case 'baselineDetectalertlist':
                 return (
-                    <div style={commonContainerStyle}>
                         <HostDetailsTable
                             route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
                             columns={baselineDetectColumns}
@@ -1085,11 +475,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
                             onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
                         />
-                    </div>
                 );
             case 'runningalertlist':
                 return (
-                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                    <div style={{marginTop:'-20px'}}>
                         <AlertList
                             apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"}
                             columns={hostalertColumns}
@@ -1099,7 +488,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 );
             case 'virusscanning':
                 return (
-                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                    <div style={{marginTop:'-20px'}}>
                         <VirusScanning
                             hostID=""
                             pageWidth={1320}
@@ -1108,13 +497,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 );
             case 'performancemonitor':
                 return (
-                    <div style={{...commonContainerStyle, marginTop:'-20px'}}>
+                    <div style={{marginTop:'-20px'}}>
                         <PerformanceMonitor />
                     </div>
                 );
             case 'assetfingerprint':
                 return (
-                    <div style={commonContainerStyle}>
                         <HostDetailsTable
                             route="http://localhost:5000/api/files/logs/assetfingerprint"
                             columns={fimColumns}
@@ -1123,15 +511,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
                             onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
                         />
-                    </div>
                 );
             default:
                 return (
-                    <div style={commonContainerStyle}>
                         <HostOverview
                             changePanel={this.changePanel}
                         />
-                    </div>
                 );
         }
     }
@@ -1139,8 +524,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     render() {
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                <BreadcrumbCustom breads={['主机列表', '详情页']} />
+                <span>
+                    {this.props.hostname}
+                </span>
                 <div>
-                    <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                    <Row gutter={[12, 6]} style={{ marginTop: '10px',width: '100%', margin: '0 auto' }}>
                         <Col md={24}>
                             <Menu
                                 onClick={this.handleMenuClick}
@@ -1149,11 +538,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                             >
                                 <Menu.Item key="hostoverview">主机概览</Menu.Item>
-                                <Menu.Item key="hostalertlist">安全告警</Menu.Item>
-                                <Menu.Item key="vulnerabilityalertlist">漏洞风险</Menu.Item>
-                                <Menu.Item key="baselineDetectalertlist">基线风险</Menu.Item>
-                                <Menu.Item key="runningalertlist">运行时安全告警</Menu.Item>
-                                <Menu.Item key="virusscanning">病毒查杀</Menu.Item>
+                                <Menu.Item key="hostalertlist">安全告警（AlarmTotal）</Menu.Item>
+                                <Menu.Item key="vulnerabilityalertlist">漏洞风险（VulnTotal）</Menu.Item>
+                                <Menu.Item key="baselineDetectalertlist">基线风险（BaselineTotal）</Menu.Item>
+                                <Menu.Item key="runningalertlist">运行时安全告警（RaspAlarmTotal）</Menu.Item>
+                                <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
                                 <Menu.Item key="performancemonitor">性能监控</Menu.Item>
                                 <Menu.Item key="assetfingerprint">资产指纹</Menu.Item>
                                 {/* 可以根据需要添加更多的Menu.Item */}
@@ -1162,8 +551,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 
                             </Menu>
                             {/* 渲染当前激活的子面板 */}
-                            <Card bordered={false} style={{backgroundColor: '#F6F7FB' }}
-                            >{this.renderCurrentPanel()}
+                            <Card bordered={false} style={{backgroundColor: '#F6F7FB', margin:'0 auto',width:'90%' }}>
+                                {this.renderCurrentPanel()}
                             </Card>
                         </Col>
                     </Row>

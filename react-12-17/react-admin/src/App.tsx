@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, notification } from 'antd';
+import { GenericDataItem } from './components/tableUtils';
 import umbrella from 'umbrella-storage';
 import { useAlita } from 'redux-alita';
 import Routes from './routes';
-import SiderCustom from './components/SiderCustom';
+import SiderCustom from './components/SideMenu/SiderCustom';
 import HeaderCustom from './components/HeaderCustom';
 import { ThemePicker, Copyright } from './components/widget';
 import { checkLogin } from './utils';
 import { fetchMenu } from './service';
 import classNames from 'classnames';
-import { SmileOutlined } from '@ant-design/icons';
 
 const { Content, Footer } = Layout;
 
@@ -92,6 +92,7 @@ function openFNotification() {
 // }
 
 function App(props: AppProps){
+    const [topFiveData, setTopFiveData] = useState<GenericDataItem[]>([]);
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [auth, responsive, setAlita] = useAlita(
         { auth: { permissions: null } },

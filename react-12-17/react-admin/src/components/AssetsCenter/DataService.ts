@@ -1,6 +1,6 @@
 // dataService.ts
 import axios from 'axios';
-import {GenericDataItem} from './tableUtils'
+import {GenericDataItem} from '../tableUtils'
 
 interface FetchDataParams {
     apiEndpoint: string;

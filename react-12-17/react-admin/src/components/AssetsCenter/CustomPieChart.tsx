@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Label, Tooltip } from 'recharts';
-import { StatusItem } from './tableUtils';
-import CustomTooltip from './CustomTooltip';
+import { StatusItem } from '../tableUtils';
+import TooltipForPieChart from './TooltipForPieChart';
 
 interface CustomPieChartProps {
   title?: string;
@@ -61,7 +61,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
       style={{ width: cardWidth, height: cardHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
-          <Tooltip content={<CustomTooltip />} /> {/* 添加tooltip组件 */}
+          <Tooltip content={<TooltipForPieChart />} /> {/* 添加tooltip组件 */}
           <Pie
             data={data}
             cx="50%"

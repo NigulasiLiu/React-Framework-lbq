@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { fetchDataFromAPI, processData} from './DataService';
 import CustomDataTable from './CustomDataTable';
-
 import axios from 'axios';
 
 
@@ -13,6 +12,7 @@ export const DataTableContext = createContext<any>(null);
 export const useDataTable = () => {
   return useContext(DataTableContext);
 };
+
 interface FetchAPIDataTableProps {
     table_type?:string;
 
@@ -96,7 +96,6 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
     fetchLatestData(searchField, searchQuery, rangeQuery);
 }, [apiEndpoint, searchField, searchQuery, rangeQuery, fetchLatestData]);
 
-    //const timeColumnIndexChecked = this.props.timeColumnIndex?.length > 0 ? this.props.timeColumnIndex : [];
     // 假设 columns 是根据数据动态生成的，或者可以从 props 传入
     //const columns:any = []; // 根据需要定义列
     // 使用 useCallback 包装 fetchLatestData
@@ -120,12 +119,15 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
     const contextValue = { data, setData };
 
     const final_table_type = table_type?"noraml":"simplified";
+    const with_only_search = table_type?(table_type==='with_only_search'):false;
+
     return (
       <DataTableContext.Provider value={contextValue}>
+        <div style={{margin:'0px auto'}}>
         <CustomDataTable 
             externalDataSource={data} 
             columns={columns} 
-            timeColumnIndex={timeColumnIndex.length>0?timeColumnIndex:[]}//第一个值用于rangePicker，所有值都会从unix时间转为年月日时分秒
+            timeColumnIndex={timeColumnIndex.length>0?timeColumnIndex:[]}//可能有多个时间戳，但是默认第一个时间戳值用于rangePicker，所有值都会从unix时间转为年月日时分秒
             currentPanel={currentPanel}
             fetchLatestData={handleFetchLatestData}
             onUpdateSearchField={handleUpdateSearchField}
@@ -137,6 +139,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
             //renderSearchFieldDropdown={/* 对应的函数 */}
             //handleSearch={/* 对应的函数 */}
         />
+        </div>
       </DataTableContext.Provider>
     );
 };

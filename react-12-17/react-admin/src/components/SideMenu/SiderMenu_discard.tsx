@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { IFMenu } from '../routes/config';
+import { IFMenu } from '../../routes/config';
 import { MenuProps } from 'antd/lib/menu';
 
 const renderMenuItem = (

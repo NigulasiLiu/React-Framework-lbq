@@ -4,7 +4,7 @@ import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import DataDisplayTable from '../ContextAPI/DataDisplayTable'
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
-import { RASPProcessColums } from '../AssetsCenter/tableUtils';
+import { RASPProcessColums } from '../tableUtils';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;

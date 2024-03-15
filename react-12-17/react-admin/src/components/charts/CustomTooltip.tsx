@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip as RechartsTooltip } from 'recharts';
-import { StatusItem } from '../AssetsCenter/tableUtils';
+import { StatusItem } from '../tableUtils';
 
 interface CustomTooltipProps {
   active?: boolean;

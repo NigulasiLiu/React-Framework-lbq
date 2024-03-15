@@ -28,19 +28,27 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Spin, Progress } from 'antd';
+import { Spin, Progress, Col, Row } from 'antd';
 
 const CustomLoader = ({ isLoading, scanProgress }: { isLoading: boolean; scanProgress: number }) => {
-    const renderLoader = () => <Spin size="large" tip="Loading..." style={{ color: '#69c0ff',}}/>;
+    const renderLoader = () => <Spin size="large" tip="Loading..." style={{ color: 'blue',}}/>;
     const renderProgress = () => <Progress 
                  strokeColor="#4086FF"
                  strokeWidth={5}
                  format={() => `${scanProgress}%`} 
-                 percent={scanProgress} showInfo={false} />;
+                 percent={scanProgress} showInfo={false}/>;
 
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }} aria-live="polite">
-            {isLoading ? renderProgress() : renderProgress()}
+        <div style={{ padding: '0px' }} aria-live="polite">
+            <Row>
+            {/* {isLoading ? renderProgress() : renderProgress()} */}
+            {/* <Col span={4}>
+                {renderLoader()}
+            </Col> */}
+            <Col span={24}>
+                {renderProgress()}
+            </Col>
+            </Row>
         </div>
     );
 };

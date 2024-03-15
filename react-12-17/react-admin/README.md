@@ -246,3 +246,280 @@ MIT
 -   4 群：150131600 (已满)
 
 如果对你有帮助，给个 star 哟~~❤️❤️❤️❤️
+
+```
+react-admin
+├─ .commitlintrc.js
+├─ .env
+├─ .env.ra.dev
+├─ .env.ra.production
+├─ .env.ra.starandsea
+├─ .eslintrc
+├─ .gitattributes
+├─ .gitignore
+├─ .prettierignore
+├─ .prettierrc
+├─ .travis.yml
+├─ CHANGELOG.md
+├─ config
+│  ├─ env.js
+│  ├─ jest
+│  │  ├─ cssTransform.js
+│  │  └─ fileTransform.js
+│  ├─ modules.js
+│  ├─ paths.js
+│  ├─ pnpTs.js
+│  ├─ webpack.config.js
+│  └─ webpackDevServer.config.js
+├─ LICENSE
+├─ package.json
+├─ public
+│  ├─ assets
+│  │  └─ less.min.js
+│  ├─ favicon.ico
+│  ├─ images
+│  │  └─ icons
+│  │     ├─ icon-128x128.png
+│  │     ├─ icon-144x144.png
+│  │     ├─ icon-152x152.png
+│  │     ├─ icon-192x192.png
+│  │     ├─ icon-384x384.png
+│  │     ├─ icon-512x512.png
+│  │     ├─ icon-72x72.png
+│  │     └─ icon-96x96.png
+│  ├─ index.html
+│  ├─ logo.png
+│  ├─ manifest.json
+│  ├─ robots.txt
+│  └─ theme.less
+├─ README.md
+├─ screenshots
+│  ├─ logo.png
+│  ├─ menu_draggable.gif
+│  ├─ pwa.png
+│  └─ themepicker.png
+├─ scripts
+│  ├─ start.js
+│  └─ test.js
+├─ src
+│  ├─ App.test.tsx
+│  ├─ App.tsx
+│  ├─ components
+│  │  ├─ AlertList.tsx
+│  │  ├─ ARP
+│  │  │  ├─ ARPAlertList.tsx
+│  │  │  ├─ ARPWhiteList.tsx
+│  │  │  ├─ configuration.tsx
+│  │  │  └─ status.tsx
+│  │  ├─ AssetsCenter
+│  │  │  ├─ AssetFingerprint.tsx
+│  │  │  ├─ ContainerCluster.tsx
+│  │  │  ├─ CustomDataTable.tsx
+│  │  │  ├─ CustomPieChart.tsx
+│  │  │  ├─ DataContext.tsx
+│  │  │  ├─ DataDisplayTable.html
+│  │  │  ├─ DataService.ts
+│  │  │  ├─ FetchAPIDataTable.tsx
+│  │  │  ├─ HostInventory.tsx
+│  │  │  ├─ MetaDataUtilize.tsx
+│  │  │  ├─ OverviewPanel.tsx
+│  │  │  ├─ tableUtils.tsx
+│  │  │  └─ TooltipForPieChart.tsx
+│  │  ├─ auth
+│  │  │  ├─ Basic.tsx
+│  │  │  └─ RouterEnter.tsx
+│  │  ├─ CCP
+│  │  │  ├─ CCPAlertList.tsx
+│  │  │  └─ CCPWhiteList.tsx
+│  │  ├─ charts
+│  │  │  ├─ CustomEchartsPie.tsx
+│  │  │  ├─ CustomTooltip.tsx
+│  │  │  ├─ Echarts.tsx
+│  │  │  ├─ EchartsArea.tsx
+│  │  │  ├─ EchartsEffectScatter.tsx
+│  │  │  ├─ EchartsForce.tsx
+│  │  │  ├─ EchartsGraphnpm.tsx
+│  │  │  ├─ EchartsPie.tsx
+│  │  │  ├─ EchartsScatter.tsx
+│  │  │  ├─ Recharts.tsx
+│  │  │  ├─ RechartsBarChart.tsx
+│  │  │  ├─ RechartsRadarChart.tsx
+│  │  │  ├─ RechartsRadialBarChart.tsx
+│  │  │  ├─ RechartsSimpleLineChart.tsx
+│  │  │  └─ redundancy.html
+│  │  ├─ ContextAPI
+│  │  │  ├─ data.json
+│  │  │  ├─ DataDisplayTable.tsx
+│  │  │  ├─ FileIntegrityContext.tsx
+│  │  │  └─ VirusScanning.tsx
+│  │  ├─ dashboard
+│  │  │  ├─ card.less
+│  │  │  ├─ Dashboard.tsx
+│  │  │  ├─ EchartsProjects.tsx
+│  │  │  ├─ EchartsViews.tsx
+│  │  │  ├─ link.less
+│  │  │  └─ preversion
+│  │  ├─ DataCard.tsx
+│  │  ├─ DetailsPage
+│  │  │  ├─ DetailsPage.tsx
+│  │  │  ├─ DetailsTableColumns.tsx
+│  │  │  ├─ HostDetailsTable.tsx
+│  │  │  ├─ HostOverview.tsx
+│  │  │  └─ PerformanceMonitor.tsx
+│  │  ├─ env
+│  │  │  └─ index.tsx
+│  │  ├─ extension
+│  │  │  ├─ MultipleMenu.tsx
+│  │  │  ├─ QueryParams.tsx
+│  │  │  └─ Visitor.tsx
+│  │  ├─ HeaderandSideMenuStyle.less
+│  │  ├─ HeaderCustom.tsx
+│  │  ├─ HostProtection
+│  │  │  ├─ BaselineDetectList.tsx
+│  │  │  ├─ CustomLoader.tsx
+│  │  │  ├─ HeartBeat.less
+│  │  │  ├─ HostAlertList.tsx
+│  │  │  ├─ HostWhiteList.tsx
+│  │  │  ├─ LoaderBar.less
+│  │  │  ├─ LoaderBar.tsx
+│  │  │  ├─ progress.less
+│  │  │  ├─ ScanProcessSidebar.tsx
+│  │  │  ├─ VulnerabilityDetailsSidebar.tsx
+│  │  │  └─ VulnerabilityList.tsx
+│  │  ├─ index.tsx
+│  │  ├─ Page.tsx
+│  │  ├─ pages
+│  │  │  ├─ Login.tsx
+│  │  │  └─ NotFound.tsx
+│  │  ├─ SidebarStyle.css
+│  │  ├─ SiderCustom.tsx
+│  │  ├─ SiderMenu.tsx
+│  │  ├─ SiderMenu_discard.tsx
+│  │  ├─ smenu
+│  │  │  ├─ Sub1.tsx
+│  │  │  └─ Sub2.tsx
+│  │  ├─ statistic.less
+│  │  ├─ SubComponents
+│  │  │  ├─ FilterComponent.tsx
+│  │  │  ├─ SearchComponent.tsx
+│  │  │  └─ SidebarComponent.tsx
+│  │  ├─ tables
+│  │  │  ├─ AdvancedTables.tsx
+│  │  │  ├─ AsynchronousTable.tsx
+│  │  │  ├─ BasicTable.tsx
+│  │  │  ├─ BasicTables.tsx
+│  │  │  ├─ ExpandedTable.tsx
+│  │  │  ├─ FixedTable.tsx
+│  │  │  ├─ SearchTable.tsx
+│  │  │  ├─ SelectTable.tsx
+│  │  │  └─ SortTable.tsx
+│  │  ├─ ui
+│  │  │  ├─ banners
+│  │  │  │  ├─ AutoPlay.tsx
+│  │  │  │  ├─ Basic.tsx
+│  │  │  │  ├─ Custom.tsx
+│  │  │  │  └─ index.tsx
+│  │  │  ├─ Buttons.tsx
+│  │  │  ├─ Draggable.tsx
+│  │  │  ├─ emoji
+│  │  │  │  ├─ iconfont.ts
+│  │  │  │  └─ index.tsx
+│  │  │  ├─ Icons.tsx
+│  │  │  ├─ map
+│  │  │  │  ├─ index.tsx
+│  │  │  │  └─ Tencent.tsx
+│  │  │  ├─ Modals.tsx
+│  │  │  ├─ Notifications.tsx
+│  │  │  ├─ Spins.tsx
+│  │  │  ├─ Tabs.tsx
+│  │  │  └─ Wysiwyg.tsx
+│  │  ├─ VirusScanning
+│  │  │  ├─ VirusScanning.tsx
+│  │  │  ├─ VirusScanningWhiteList.tsx
+│  │  │  └─ VirusScanTableSidebar.tsx
+│  │  ├─ WhiteList.tsx
+│  │  └─ widget
+│  │     ├─ AuthWidget.tsx
+│  │     ├─ BreadcrumbCustom.tsx
+│  │     ├─ Copyright.tsx
+│  │     ├─ index.tsx
+│  │     ├─ Loading.tsx
+│  │     ├─ PwaInstaller.tsx
+│  │     └─ ThemePicker.tsx
+│  ├─ index.tsx
+│  ├─ logo.svg
+│  ├─ Page.tsx
+│  ├─ react-app-env.d.ts
+│  ├─ routes
+│  │  ├─ config.ts
+│  │  ├─ index.tsx
+│  │  └─ RouteWrapper.tsx
+│  ├─ service
+│  │  ├─ config.ts
+│  │  ├─ index.ts
+│  │  └─ tools.ts
+│  ├─ serviceWorker.ts
+│  ├─ style
+│  │  ├─ antd
+│  │  │  ├─ header.less
+│  │  │  ├─ index.less
+│  │  │  ├─ layout.less
+│  │  │  ├─ menu.less
+│  │  │  ├─ reset.less
+│  │  │  ├─ utils.less
+│  │  │  └─ variables.less
+│  │  ├─ app.less
+│  │  ├─ banner.less
+│  │  ├─ button.less
+│  │  ├─ card.less
+│  │  ├─ font
+│  │  │  ├─ y6oxFxU60dYw9khW6q8jGw.woff2
+│  │  │  └─ youyuan.TTF
+│  │  ├─ global.less
+│  │  ├─ icons.less
+│  │  ├─ img.less
+│  │  ├─ imgs
+│  │  │  ├─ 404.png
+│  │  │  ├─ 5.png
+│  │  │  ├─ b1.jpg
+│  │  │  ├─ beauty.jpg
+│  │  │  ├─ emptybox-grey.png
+│  │  │  ├─ funnel.png
+│  │  │  ├─ installer.png
+│  │  │  ├─ logo.png
+│  │  │  ├─ mobile.gif
+│  │  │  ├─ owl.png
+│  │  │  ├─ owl1.png
+│  │  │  ├─ scanguard.png
+│  │  │  ├─ spot_location.png
+│  │  │  ├─ user.png
+│  │  │  └─ user1.png
+│  │  ├─ index.less
+│  │  ├─ lib
+│  │  │  └─ animate.css
+│  │  ├─ login.less
+│  │  ├─ menu.less
+│  │  ├─ modal.less
+│  │  ├─ progress.less
+│  │  ├─ scroll.less
+│  │  ├─ table.less
+│  │  ├─ theme
+│  │  │  ├─ index.js
+│  │  │  ├─ theme-danger.json
+│  │  │  ├─ theme-grey.json
+│  │  │  ├─ theme-info.json
+│  │  │  └─ theme-warn.json
+│  │  ├─ utils-border.less
+│  │  ├─ utils-color.less
+│  │  ├─ utils-size.less
+│  │  ├─ utils-spacing.less
+│  │  ├─ utils-text.less
+│  │  └─ variables.less
+│  └─ utils
+│     ├─ hooks.ts
+│     └─ index.ts
+├─ theme.js
+├─ tsconfig.json
+└─ yarn.lock
+
+```

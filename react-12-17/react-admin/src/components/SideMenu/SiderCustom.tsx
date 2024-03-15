@@ -2,7 +2,7 @@
 // import { Layout } from 'antd';
 // import { withRouter, RouteComponentProps } from 'react-router-dom';
 // import routes from '../routes/config';
-// import SiderMenu from './SiderMenu';
+// import SiderMenu from './SideMenu/SiderCustom';
 // import { useAlita } from 'redux-alita';
 // import { useSwitch } from '../utils/hooks';
 // import { usePrevious } from 'ahooks';
@@ -127,12 +127,12 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import routes from '../routes/config';
+import routes from '../../routes/config';
 import SiderMenu from './SiderMenu';
 import { useAlita } from 'redux-alita';
-import { useSwitch } from '../utils/hooks';
+import { useSwitch } from '../../utils/hooks';
 import { usePrevious } from 'ahooks';
-import logo from '../style/imgs/owl.png';
+import logo from '../../style/imgs/owl.png';
 const { Sider } = Layout;
 
 type SiderCustomProps = RouteComponentProps<any> & {
@@ -202,15 +202,12 @@ const SiderCustom = (props: SiderCustomProps) => {
         overflowX: 'hidden', // 隐藏溢出内容
         transition: 'width 0.3s ease', // 添加过渡效果
     };
-    // 检查是否在新页面
-    const isNewPage = props.location.pathname === '/app/detailspage';
-
     return (
         <Sider
             trigger={null}
             breakpoint="lg"
             collapsed={collapsed}
-            collapsedWidth={50}
+            collapsedWidth={0}
             width={165}
             style={{
                 ...sidebarStyle, // 使用新样式
@@ -218,7 +215,6 @@ const SiderCustom = (props: SiderCustomProps) => {
                 borderRight: '2px solid #E5E6EB',
                 zIndex: 1,
             }}
-            className={isNewPage ? 'hide-sider' : ''} // 添加类名来控制隐藏
         >
             <div className="logo-title-container" style={{ padding: '1px,1px', margin: '0px,0px',display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
                 <img src={logo} alt="Logo" style={{ width: '60px', height: '60px', marginRight: '10px' }} />
@@ -226,7 +222,7 @@ const SiderCustom = (props: SiderCustomProps) => {
                 fontWeight: 'bold',padding: '22px,6px', margin: '10px,0px', color: 'rgba(0, 0, 0, 0.85)', 
                 display: 'flex', alignItems: 'center',fontSize:'16px' }}>Security Platform</h2>
             </div>
-            {isNewPage ? null : (
+            {(
                 <SiderMenu
                     menus={[...routes.menus, ...smenus]}
                     onClick={menuClick}

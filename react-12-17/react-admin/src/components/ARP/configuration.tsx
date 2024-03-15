@@ -5,7 +5,7 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
-import { ConfigurationColums } from '../AssetsCenter/tableUtils';
+import { ConfigurationColums } from '../tableUtils';
 import DataDisplayTable from '../ContextAPI/DataDisplayTable';
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;

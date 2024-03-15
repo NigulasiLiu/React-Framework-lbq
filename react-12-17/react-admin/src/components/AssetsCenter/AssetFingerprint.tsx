@@ -1,15 +1,16 @@
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, Menu, Layout } from 'antd';
+import { Row, Col, Card, Menu, } from 'antd';
 import { Link, Route, Switch, useLocation, withRouter } from 'react-router-dom';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import OverviewPanel from './OverviewPanel';
 import DataDisplayTable from '../ContextAPI/DataDisplayTable';
+import DataManager from '../ContextAPI/DataManager';
 import { fimColumns,kernelModulesColumns,
     containerColumns,openPortsColumns,
     runningProcessesColumns,systemServicesColumns,
     systemSoftwareColumns,applicationsColumns,
     systemUsersColumns,scheduledTasksColumns,
-    GenericDataItem, StatusItem } from './tableUtils';
+    GenericDataItem, StatusItem } from '../tableUtils';
 
 
 type AssetFingerprintProps = {};
@@ -249,6 +250,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     render() {
 
         return (
+        <DataManager>
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <div>
                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
@@ -288,6 +290,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     </Row>
                 </div>
             </div>
+        </DataManager>
         );
     }
 }

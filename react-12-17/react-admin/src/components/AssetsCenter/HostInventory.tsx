@@ -4,7 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card} from 'antd';
-import { hostinventoryColumns, StatusItem } from './tableUtils';
+import { hostinventoryColumns, StatusItem } from '../tableUtils';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import CustomPieChart from './CustomPieChart';
 
@@ -39,33 +39,7 @@ interface StatusPanelProps {
 statusData: StatusItem[];
 orientation: 'vertical' | 'horizontal'; // 添加方向属性
 }
-  
-//   export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) => {
-//     const containerStyle: React.CSSProperties = {
-//         display: 'flex',
-//         flexDirection: orientation === 'vertical' ? 'column' : 'row',
-//         alignItems: 'center',
-//       };
-    
-//     return (
-//       <div style={containerStyle}>
-//         {statusData.map((status, index) => (
-//           <div key={index} style={{ display: 'flex', alignItems: 'center', margin: orientation === 'vertical' ? '8px 0' : '0 8px' }}>
-//             <span style={{ 
-//               height: '10px',
-//               width: '10px',
-//               backgroundColor: status.color,
-//               borderRadius: '50%',
-//               display: 'inline-block',
-//               marginRight: '8px'
-//             }}></span>
-//             <span style={{ flexGrow: 1 }}>{status.label}</span>
-//             <span>{status.value}</span>
-//           </div>
-//         ))}
-//       </div>
-//     );
-//   };
+
 export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) => {
     const containerStyle: React.CSSProperties = {
       display: 'flex',
@@ -109,9 +83,6 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientatio
 };
   
   
-  
-
-
 class HostInventory extends React.Component<HostInventoryProps, HostInventoryState> {
     constructor(props: any) {
         super(props);

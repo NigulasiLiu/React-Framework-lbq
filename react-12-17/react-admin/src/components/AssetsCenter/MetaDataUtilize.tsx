@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Progress,} from 'antd';
-import { StatusItem, GenericDataItem, BaseItem, DataItem } from './tableUtils';
+import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
 
 
 

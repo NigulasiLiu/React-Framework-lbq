@@ -14,14 +14,13 @@ export interface BaseLineDataType {
     ip: string;                // IP
     check_name: string;        // 基线名称
     details: string;           // 检查详情
-    adjustment_requirement: string;  // 调整建议
+    adjustment_requirement: string;   // 调整建议
     status: string;            // 状态
     last_checked: string;      // 最新扫描时间
     instruction: string;       // 指令
   }
 
-
-
+export const simplifiedTablePanel=['createnewtask','UserManagementlist'];
 export interface BaseLineDataType {
     key: React.Key;
     ip: string;                // IP
@@ -71,6 +70,145 @@ export interface FimDataType {
     hostIP: string;          
     alert_type: string;        
 } 
+export interface CreateTaskDataType {
+    key: React.Key;
+    hostname: string;   
+    label: string;   
+    group: string;     
+    os: string; 
+    status: string;      
+    updatetime: string;        
+} 
+export const createNewTaskColumns = [
+    {
+        title: "主机名称",
+        dataIndex: 'hostname',
+        key: 'hostname',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/detailspage" target="_blank">
+            <Button type="link" className='custom-link-button'>{text}</Button>
+        </Link>
+        ),
+    },
+    {
+        title: "标签",
+        dataIndex: 'label',
+        key: 'label',
+        //sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
+    },
+    {
+        title: '地域',
+        dataIndex: 'group',
+        key: 'group',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.group.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+        //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
+    },
+    {
+        title: '操作系统',
+        dataIndex: 'os',
+        key: 'hostnaosme',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.os.includes(value as string),
+        
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',                
+        filters: [],
+        onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.status.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '更新时间',
+        dataIndex: 'updatetime',
+        key: 'updatetime',
+        sorter: (a: any, b: any) => new Date(a.updatetime).getTime() - new Date(b.updatetime).getTime(),
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+];
+
+export const hostinventoryColumns = [
+    {
+        title: "ID",
+        dataIndex: 'id',
+        key: 'id',
+        //width: '13%',
+    },
+    {
+        title: "主机IP",
+        dataIndex: 'ip',
+        key: 'ip',
+    },
+    {
+        title: "协议",
+        dataIndex: 'protocol',
+        key: 'protocol',
+    },
+    {
+        title: "开放端口",
+        dataIndex: 'port',
+        key: 'port',
+    },
+    {
+        title: "服务",
+        dataIndex: 'service',
+        key: 'service',
+    },
+    {
+        title: "服务版本",
+        dataIndex: 'version',
+        key: 'version',
+    },
+    {
+        title: "操作系统",
+        dataIndex: 'ostype',
+        key: 'ostype',
+        filters: [
+        ],
+        onFilter: (value: string | number | boolean, record: DataType) => record.ostype.includes(value as string),
+    },
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/create_agent_task" target="_blank">
+            <Button type="link" style={{color:'#4086f4'}}>下发任务</Button>
+        </Link>
+        )
+    },
+];
 export const fimColumns = [
     {
         title: "文件名",
@@ -84,7 +222,7 @@ export const fimColumns = [
         render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
         <Link to="/app/detailspage" target="_blank">
-            <Button type="link" className='custom-link-button'>{text}</Button>
+            <Button type="link" className="custom-link-button">{text}</Button>
         </Link>
         ),
     },
@@ -668,47 +806,6 @@ export interface DataType {
     clientUsage: string;
     updateTime: string;
 }
-export const hostinventoryColumns = [
-    {
-        title: "主机ID",
-        dataIndex: 'id',
-        key: 'id',
-        //width: '13%',
-    },
-    {
-        title: "主机IP",
-        dataIndex: 'ip',
-        key: 'ip',
-    },
-    {
-        title: "协议",
-        dataIndex: 'protocol',
-        key: 'protocol',
-    },
-    {
-        title: "开放端口",
-        dataIndex: 'port',
-        key: 'port',
-    },
-    {
-        title: "服务",
-        dataIndex: 'service',
-        key: 'service',
-    },
-    {
-        title: "服务版本",
-        dataIndex: 'version',
-        key: 'version',
-    },
-    {
-        title: "操作系统",
-        dataIndex: 'ostype',
-        key: 'ostype',
-        filters: [
-        ],
-        onFilter: (value: string | number | boolean, record: DataType) => record.ostype.includes(value as string),
-    },
-];
 export const virusscanningColumns = [
     {
       title: () => <span style={{ fontWeight: 'bold' }}>告警名称</span>,
@@ -754,6 +851,7 @@ export interface WhiteListColumDataType {
     matchMethod: string;       // 匹配方式
     occurrenceTime: string;   // 发生时间
 }
+
 export const whitelistColumns = [
     {
         title: "加白名称",

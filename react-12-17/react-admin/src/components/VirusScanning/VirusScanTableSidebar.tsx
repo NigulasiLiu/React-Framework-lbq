@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col,Card,Typography ,} from 'antd';
-import { StatusItem,virusscannigAllTasksColumns } from '../AssetsCenter/tableUtils';
+import { StatusItem,virusscannigAllTasksColumns } from '../tableUtils';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 const { Text } = Typography;
 

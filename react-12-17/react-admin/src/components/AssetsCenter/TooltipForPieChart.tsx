@@ -1,11 +1,11 @@
 import React from 'react';
 
-interface CustomTooltipProps {
+interface TooltipForPieChartProps {
   payload?: any[];
   active?: boolean;
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+const TooltipForPieChart: React.FC<TooltipForPieChartProps> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload; // 获取饼图对应的数据对象
     return (
@@ -23,4 +23,4 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
   return null;
 };
 
-export default CustomTooltip;
+export default TooltipForPieChart;

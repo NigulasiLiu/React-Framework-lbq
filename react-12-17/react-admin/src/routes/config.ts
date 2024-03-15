@@ -175,6 +175,11 @@ const menus: {
             icon: 'bars',
             subs: [
                 {
+                    key: '/app/extension/UserManagement',
+                    title: '用户管理',
+                    component: 'UserManagement',
+                },
+                {
                     key: '/app/extension/queryParams',
                     title: '问号形式参数',
                     component: 'QueryParams',
@@ -236,6 +241,18 @@ const menus: {
             key: '/app/detailspage', // 假设使用动态路径参数
             title: '详情页面',
             component: 'DetailsPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/create_agent_task', // 假设使用动态路径参数
+            title: '新建任务',
+            component: 'CreateAgentTaskPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/create_virusscan_task', // 假设使用动态路径参数
+            title: '新建病毒扫描任务',
+            component: 'CreateVirusScanTaskPage', // 组件名称
             // 额外的配置项，如果有的话...
         },
     ], // 非菜单相关路由

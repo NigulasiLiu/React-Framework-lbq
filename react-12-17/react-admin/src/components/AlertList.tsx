@@ -2,7 +2,6 @@ import React from 'react';
 import { Statistic,Row, Col, Card, Button, } from 'antd';
 import FetchAPIDataTable from './AssetsCenter/FetchAPIDataTable';
 
-
 type AlertListProps = {
     apiEndpoint:string;
     columns:any[];
@@ -143,107 +142,107 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>
-                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                    <Col className="gutter-row" md={24}>
-                    <Card bordered={false} 
-                        style={{fontWeight: 'bolder', width: '100%', height:200}}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>告警概览</h2>
-                        </div>
-                        <Row gutter={[6, 6]}>
-                            <Col className="gutter-row" md={10}>
+                <Col className="gutter-row" md={24} style={{ maxWidth:2640}}>
+                    <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
+                        <Col className="gutter-row" md={24}>
+                        <Card bordered={false} 
+                            style={{fontWeight: 'bolder',marginTop: '10px', height:200}}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginTop: '0px' }}>告警概览</h2>
+                            </div>
+                            <Row gutter={[6, 6]}>
+                                <Col className="gutter-row" md={10}>
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            height: '100px',
+                                            width: '520px',
+                                            minWidth: '150px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#F6F7FB',
+                                        }}
+                                    >
+                                        <Row style={{ width: '100%',marginBottom: '-130px' }}>
+                                            <Col span={6} style={{ height:'100px',marginRight: '40px',marginBottom: '-170px',paddingTop:'10px' }}>
+                                                <Statistic title={<span>待处理告警</span>} value={1} />
+                                            </Col>
+                                            <Col span={4} style={{  }}>
+
+                                            </Col>
+                                            <Col span={6} style={{ height:'90px',marginLeft: '250px',marginRight: '150px',marginBottom: '130px' }}>
+                                                <StatusPanel statusData={statusData} orientation="vertical" />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col className="gutter-row" md={7}>
                                 <Card
                                     bordered={false}
                                     style={{
                                         height: '100px',
-                                        width: '520px',
-                                        minWidth: '150px',
+                                        width: '360px',
+                                        minWidth: '150px', // 最小宽度300px，而非100px
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        backgroundColor: '#F6F7FB',
+                                        backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                     }}
-                                >
-                                    <Row style={{ width: '100%',marginBottom: '-130px' }}>
-                                        <Col span={6} style={{ height:'100px',marginRight: '40px',marginBottom: '-170px',paddingTop:'10px' }}>
-                                            <Statistic title={<span>待处理告警</span>} value={1} />
+                                    >
+                                    <Row>
+                                        <Col style={{ marginRight: '250px' }} span={24}>
+                                            <Statistic title={<span>累计处理的告警</span>} value={0} />
                                         </Col>
-                                        <Col span={4} style={{  }}>
-
-                                        </Col>
-                                        <Col span={6} style={{ height:'90px',marginLeft: '250px',marginRight: '150px',marginBottom: '130px' }}>
-                                            <StatusPanel statusData={statusData} orientation="vertical" />
-                                        </Col>
+                                        
                                     </Row>
                                 </Card>
-                            </Col>
-                            <Col className="gutter-row" md={7}>
-                            <Card
-                                bordered={false}
-                                style={{
-                                    height: '100px',
-                                    width: '360px',
-                                    minWidth: '150px', // 最小宽度300px，而非100px
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                }}
-                                >
-                                <Row>
-                                    <Col style={{ marginRight: '250px' }} span={24}>
-                                        <Statistic title={<span>累计处理的告警</span>} value={0} />
-                                    </Col>
-                                    
-                                </Row>
-                            </Card>
-                            </Col>            
-                            <Col className="gutter-row" md={7}>
-                            <Card
-                                bordered={false}
-                                style={{
-                                    height: '100px',
-                                    width: '370px',
-                                    minWidth: '150px', // 最小宽度300px，而非100px
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                }}
-                                >
-                                <Row>
-                                    <Col style={{ marginRight: '250px' }} span={24}>
-                                        <Statistic title={<span>白名单规则数</span>} value={0} />
-                                    </Col>
-                                    
-                                </Row>
-                            </Card>
-                            </Col>              
-                        </Row>
+                                </Col>            
+                                <Col className="gutter-row" md={7}>
+                                <Card
+                                    bordered={false}
+                                    style={{
+                                        height: '100px',
+                                        width: '370px',
+                                        minWidth: '150px', // 最小宽度300px，而非100px
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                    }}
+                                    >
+                                    <Row>
+                                        <Col style={{ marginRight: '250px' }} span={24}>
+                                            <Statistic title={<span>白名单规则数</span>} value={0} />
+                                        </Col>
+                                        
+                                    </Row>
+                                </Card>
+                                </Col>              
+                            </Row>
 
-                    </Card>
-                    </Col>
-                </Row>
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
-                    <Col md={24}>
-                        <div className="gutter-box">
-                        <Card bordered={false}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>告警内容</h2>
-                            <Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>
+                        </Card>
+                        </Col>
+                    </Row>
+                    <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
+                        <Col md={24}>
+                            <div className="gutter-box">
+                            <Card bordered={false}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                    <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>告警内容</h2>
+                                <Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>
+                                </div>
+                                <FetchAPIDataTable
+                                    apiEndpoint={this.props.apiEndpoint}
+                                    timeColumnIndex={[]}
+                                    columns={this.props.columns}
+                                    currentPanel={this.props.currentPanel}
+                                    />
+                                </Card>
                             </div>
-                            <FetchAPIDataTable
-                                apiEndpoint={this.props.apiEndpoint}
-                                timeColumnIndex={[]}
-                                columns={this.props.columns}
-                                currentPanel={this.props.currentPanel}
-                                />
-                            </Card>
-                        </div>
-                    </Col>
-                </Row>
-            </Col>
+                        </Col>
+                    </Row>
+                </Col>
             </div>
         );
     }

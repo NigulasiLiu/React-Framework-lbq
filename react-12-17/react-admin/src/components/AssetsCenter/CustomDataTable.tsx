@@ -1,8 +1,9 @@
-import React from 'react';
-import { Table, Button, Input, Card, Col, DatePicker, Row, Menu,Pagination, Select } from 'antd';
+import React, {useState} from 'react';
+import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal } from 'antd';
 import SidebarComponent from '../SubComponents/SidebarComponent'
 import moment, { Moment } from 'moment';
 import { buildRangeQueryParams} from './DataService';
+import { simplifiedTablePanel } from '../tableUtils';
 
 const { Option } = Select;
 
@@ -18,6 +19,7 @@ interface CustomDataTableProps {
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
     // 可以根据需要添加其他 props，比如分页大小等
     currentPanel: string;
+
     //selectedRowKeys: React.Key[]; // 可选属性，代表被选中行的keys，用于控制独立的key
     
     //handleApplicationTypeSelect: (applicationType: string) => void; // 添加方法的类型声明
@@ -30,6 +32,7 @@ interface CustomDataTableProps {
     onUpdateRangeField:(queryParams:string) => void;
     onDeleteSelected:(selectedRowKeys: React.Key[]) => void;
     onSelectedRowKeysChange:(selectedRowKeys: React.Key[]) => void;
+
 }
 
 interface CustomDataTableState {
@@ -51,12 +54,24 @@ interface CustomDataTableState {
     // 排序或者过滤处理后的data
     sortedData: GenericDataItem[],
     sortConfig: null,
+    topFiveSortedData: GenericDataItem[];
+
+    showModal: boolean;
+    user_character: string;
 }
+const { TextArea } = Input;
+
 
 class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTableState> {
     constructor(props: CustomDataTableProps) {
         super(props);
         this.state = {
+            showModal: false,
+            user_character: 'admin',
+
+
+            topFiveSortedData: [],
+
             selectedRowKeys: [],
             currentPage: 1,
             pageSize: 10, // 默认每页显示10条数据，可根据需要调整
@@ -81,10 +96,12 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
     componentDidMount() {
         this.props.fetchLatestData('all','','')
         //const newColumns = autoPopulateFilters();
-        //渲染筛选器等等
+        //渲染筛选器等等Pp
+        //this.sortAndExtractTopFive(this.props.externalDataSource);
     }
     componentDidUpdate(prevProps: any, prevState:any) {
         if (prevProps.externalDataSource !== this.props.externalDataSource) {
+            //this.sortAndExtractTopFive(this.props.externalDataSource);
             // 处理新数据：例如重置分页或更新最后更新时间
             this.setState({
                 currentPage: 1,
@@ -96,7 +113,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                 selectrangequeryParams: '',
                 selectedDateRange: [null, null],//日期筛选器重置
                 selectedRowKeys: [],
-            });
+        });
         // 检查面板是否发生变化
         if (this.props.currentPanel !== prevProps.currentPanel) {
             // 如果面板发生变化，重置selectedRowKeys和lastUpdated
@@ -158,26 +175,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         return newColumns;
     };
     // 处理表格排序变化的函数
-    handleTableChange = (sorter:any) => {
-        const { externalDataSource } = this.props;
 
-        let sortedData = [...externalDataSource];
-        if (sorter.field && sorter.order) {
-            sortedData.sort((a, b) => {
-                const isAsc = sorter.order === 'ascend';
-                if (a[sorter.field] < b[sorter.field]) return isAsc ? -1 : 1;
-                if (a[sorter.field] > b[sorter.field]) return isAsc ? 1 : -1;
-                return 0;
-            });
-        }
-
-        this.setState({
-            sortedData: sortedData.slice(0, 5), // 提取前五个条目
-            sortConfig: sorter,
-        });
-
-        // 可以在这里将 sortedData 传递给另一个组件
-    };
     // 渲染侧边栏组件
     renderSidebar = () => {
         const applicationTypes = ['全部应用', '数据库', 'Web服务器', 'DevOps工具', '缓存服务']; // 示例应用类型，后续最好读取后再构造菜单
@@ -246,17 +244,19 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
     renderSearchFieldDropdown = (columns: any[]) => {
         return (
-            <Select
-                style={{ width: this.props.currentPanel.includes('sidebar')?'120px':'200px', marginRight: '8px' }}
-                placeholder="选择搜索字段"
-                onChange={this.handleSearchFieldChange}
-            >
-                {columns.map((column, index) => (
-                    <Option key={index} value={column.dataIndex}>
-                        {column.title}
-                    </Option>
-                ))}
-            </Select>
+            <Row style={{width:'15%', marginLeft: '0px', marginRight: 'auto'}}>
+                <Select
+                    style={{ width: this.props.currentPanel.includes('sidebar')?'120px':'200px', marginRight: '8px' }}
+                    placeholder="选择搜索字段"
+                    onChange={this.handleSearchFieldChange}
+                >
+                    {columns.map((column, index) => (
+                        <Option key={index} value={column.dataIndex}>
+                            {column.title}
+                        </Option>
+                    ))}
+                </Select>
+            </Row>
         );
     };
 
@@ -307,6 +307,150 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         this.props.fetchLatestData(this.state.selectedSearchField, query, '');
       };
 
+      showModal = () => {
+          this.setState({
+            showModal: true,
+          });
+      };
+      toggleModal = () => {
+        this.setState(prevState => ({
+            showModal: !prevState.showModal,
+        }));
+    };
+
+      handleFormCharaterFieldChange = (value:string) => {
+        this.setState({
+            user_character: value,
+          });
+      };
+        handleOk = () => {
+          this.setState({
+            showModal: false,
+          });
+          // 这里处理确认操作
+        };
+      
+        handleCancel = () => {
+          this.setState({
+            showModal: false,
+          });
+        };
+        formItemLayout = {
+            labelCol: {
+              xs: { span: 24 },
+              sm: { span: 6 },
+            },
+            wrapperCol: {
+              xs: { span: 24 },
+              sm: { span: 14 },
+            },
+          };
+
+
+        renderModal = () => {
+          return (
+            <>
+            {/* <Button type="primary" onClick={this.showModal}>
+              新建 SHA256 任务
+            </Button> */}
+            <Modal
+            style={{fontWeight:'bolder'}}
+              title="新增用户"
+              visible={this.state.showModal}
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+              footer={[
+                <Button style={{backgroundColor:'white',color:'black'}} key="back" onClick={this.handleCancel}>
+                  取消
+                </Button>,
+                <Button style={{backgroundColor:'#1664FF',color:'white'}} key="submit" type="primary" onClick={this.handleOk}>
+                  提交任务
+                </Button>,
+              ]}
+            >
+                <Form {...this.formItemLayout}
+                    name="new_user_info"
+                >
+                    <Form.Item
+                    label="用户名"
+                    name="username"
+                    rules={[{ required: true, message: '用户名支持中英文和数字，不少于四个字符' }]}
+                    >
+                    <Input placeholder="用户名支持中英文和数字，不少于四个字符" />
+                    </Form.Item>
+                    <Form.Item
+                    label="密码"
+                    name="password"
+                    rules={[{ required: true, message: '密码长度不少于4个字符' }]}
+                    >
+                    <Input placeholder="密码长度不少于4个字符" />
+                    </Form.Item>
+                    <Form.Item
+                    label="确认密码"
+                    name="password"
+                    rules={[{ required: true, message: '请再次输入密码' }]}
+                    >
+                    <Input placeholder="请再次输入密码" />
+                    </Form.Item>
+                    <Form.Item
+                    label="用户角色"
+                    name="cycle"
+                    rules={[{ required: true, message: '请选择用户角色' }]}
+                    >
+                    <Select placeholder="用户角色" onChange={this.handleFormCharaterFieldChange}>
+                        <Option value="admin">管理员</Option>
+                        <Option value="user">普通用户</Option>
+                        {/* 更多选项... */}
+                    </Select>
+                    </Form.Item>
+                    
+                    {this.state.user_character === 'admin' && (
+                    <>
+                    <Form.Item label="说明"
+                    name="description">
+                        <p style={{margin: '0px auto' ,
+                            display: 'flex',
+                            //justifyContent: 'center', // 水平居中
+                            alignItems: 'center', // 垂直居中
+                        }}> 拥有全部功能的读写权限
+                        </p>
+                    </Form.Item>
+                    <Form.Item label="用户权限"
+                    name="auth">
+                        <p style={{margin: '0px auto' ,
+                            display: 'flex',
+                            //justifyContent: 'center', // 水平居中
+                            alignItems: 'center', // 垂直居中
+                        }}> 读写
+                        </p>
+                    </Form.Item>
+                    </>)}
+                    {this.state.user_character === 'user' && (
+                    <>
+                    <Form.Item label="说明"
+                    name="description">
+                        <p style={{margin: '0px auto' ,
+                            display: 'flex',
+                            //justifyContent: 'center', // 水平居中
+                            alignItems: 'center', // 垂直居中
+                        }}> 拥有全部功能的只读权限
+                        </p>
+                    </Form.Item>
+                    <Form.Item label="用户权限"
+                    name="auth">
+                        <p style={{margin: '0px auto' ,
+                            display: 'flex',
+                            //justifyContent: 'center', // 水平居中
+                            alignItems: 'center', // 垂直居中
+                        }}> 只读
+                        </p>
+                    </Form.Item>
+                    </>)}
+                </Form>
+            </Modal>
+          </>
+          );
+        };
 
     render() {        
         const rowSelection = {//checkbox勾选状态独立
@@ -344,6 +488,15 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         ? 'customTable':'customTable';
 
         const fontSizeSmall=this.props.currentPanel?.includes('sidebar')?'12px':'14px';
+
+        // 传递 toggleModal 方法给 FetchAPIDataTable 组件
+        const dataTableProps = {
+            toggleModal: this.toggleModal,
+            // ...这里添加更多需要传递的props
+        };
+
+
+
         return (//Table的宽度被设置为1330px
         <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: tableWidth, maxWidth: '100%' }}>
             <Row gutter={[12, 6]} style={{ marginTop: '-10px'}}>
@@ -363,6 +516,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                     }}
                 >
                     <Card bordered={false} bodyStyle={{ padding: '4px' }}>
+                        {!simplifiedTablePanel.includes(this.props.currentPanel) && (
                         <div style={{ marginBottom: '16px' }}>
                             <Row gutter={16} >
                                 <Col flex="none">
@@ -401,43 +555,57 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                     <RangePicker style={{ width: 200 }} />
                                 </Col> */}
                             </Row>
-                        </div>
+                        </div>)}
+                        {this.props.currentPanel==='UserManagementlist' && (
+                        <div style={{ marginBottom: '16px' }}>
+                            <Row gutter={16} >
+                                <Col flex="none">
+                                    <Button 
+                                        onClick={this.showModal}
+                                        style={{backgroundColor:'#1664FF',color:'white'}}>新增用户</Button>
+                                        
+                                    <Button
+                                        style={{...selectedcompStyle,
+                                            opacity: isButtonDisabled ? 0.5 : 1 }}
+                                        onClick={this.handleExport}
+                                        disabled={isButtonDisabled}
+                                    >
+                                        批量导出
+                                    </Button>
+                                    {/* <Button 
+                                    style={{backgroundColor:'white',color:'black'}} 
+                                    onClick={this.handleExport}
+                                    disabled={isButtonDisabled}>批量删除</Button> */}
+                                </Col>
+                            </Row>
+                        </div>)}
                         <div style={{ marginBottom: 16 }}>
                             <Row>
                                 {this.renderSearchFieldDropdown(this.props.columns)}  
+                                <Row >
                                 <Input.Search
                                     placeholder="搜索已选字段"
                                     onSearch={this.handleSearch}
-                                    style={{ width: isSidebar?300:1000 }}
+                                    //style={{ width: isSidebar?300:1000 }}
+                                    style={{width: isSidebar?300:1000, marginLeft: 'auto', marginRight: '0px'}}
                                 />
-                                {/* <Button
-                                    icon={<SyncOutlined />}
-                                    onClick={() =>this.props.fetchLatestData('', '', '')} // 直接调用函数引用//this.state.selectedSearchField
-                                    style={{ marginLeft: this.props.currentPanel === 'applications' ? '12px' : '27px' }}
-                                /> */}
+                                </Row>
                             </Row>
                         </div>
                         <Table
                             className={selectedTableStyle}
                             rowSelection={rowSelection}
-                            dataSource={this.props.externalDataSource}
-                            columns={newColumns}
                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
-                            onChange={this.handleTableChange}
+                            dataSource={this.props.externalDataSource}
+                            //dataSource={this.state.topFiveSortedData}
+                            columns={newColumns}
                             //pagination={false}
                             //locale={{ emptyText: 'No Data' }} // 可以指定无数据时展示的文本
                         />
-                        {/* <Pagination // 分页组件
-                            current={this.state.currentPage}
-                            pageSize={this.state.pageSize}
-                            total={this.props.externalDataSource.length} // 总行数
-                            onChange={this.handlePageChange} // 处理分页切换
-                            showSizeChanger={false} // 不显示每页行数切换
-                            style={{ marginTop: '16px', textAlign: 'center' }}
-                    /> */}
                     </Card>
                 </Col>
             </Row>
+            {this.renderModal()}
         </div>
         );
     }

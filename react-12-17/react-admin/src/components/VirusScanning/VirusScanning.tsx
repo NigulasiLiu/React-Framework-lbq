@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic } from 'antd';
-import moment, { Moment } from 'moment';
+import { Row, Col, Card, Button, Statistic } from 'antd';
+import { Link } from 'react-router-dom';
 import VirusScanningTaskSidebar from './VirusScanTableSidebar';
 import VirusScanProcessSidebar from '../HostProtection/ScanProcessSidebar';
 import CustomPieChart from '../AssetsCenter/CustomPieChart';
-import { StatusItem, virusscanningColumns } from '../AssetsCenter/tableUtils';
+import { StatusItem, virusscanningColumns } from '../tableUtils';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 
 interface VirusScanningProps {
@@ -152,9 +152,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
         { color: '#468DFF', label: '低风险 ', value: 1 },
         ];
 
-
+        // this.props.pageWidth ? this.props.pageWidth : '1320'
     return (
-      <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: this.props.pageWidth ? this.props.pageWidth : '1320', }}>
+      <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '100%', }}>
         <Row gutter={[12, 6]}/*(列间距，行间距)*/>
           <Col className="gutter-row" span={24}>    
             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
@@ -171,13 +171,17 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                         <Row gutter={24}>
                           <h2 style={{ fontSize: '16px' }}>最近扫描时间:</h2>
                           <span className="currentTime" style={{ marginRight: '10px',marginBottom:'8px' }}>{currentTime}</span>
-                          <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleProcessSidebar}>立即扫描</Button>
-                          <Button style={{backgroundColor:'white',color:'black'}}onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
+                          <Link to="/app/create_virusscan_task" target="_blank">
+                              <Button type="link" style={{backgroundColor:'#1664FF',color:'white'}}>立即扫描</Button>
+                          </Link>
+                          {/* <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleProcessSidebar}>立即扫描</Button> */}
+                          <Button style={{marginLeft:'10px',backgroundColor:'white',color:'black'}}onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
                         </Row>
                         <div className={isScanningProcessSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeProcessSidebar}></div>
                         <div className={isScanningProcessSidebarOpen ? "sidebar open" : "sidebar"}>
                           <button onClick={this.toggleProcessSidebar} className="close-btn">&times;</button>
                           <VirusScanProcessSidebar
+                            scanInfo={['病毒扫描','病毒扫描中，请稍后',"查看详情"]}
                             statusData={virusstatusData}
                             isSidebarOpen={this.state.isScanningProcessSidebarOpen}
                             toggleSidebar={this.toggleProcessSidebar}

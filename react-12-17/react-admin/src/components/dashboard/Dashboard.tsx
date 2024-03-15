@@ -5,7 +5,7 @@ import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { PieChart, Pie, Cell,Label, LineChart, TooltipProps, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
 import DataCard from '../DataCard';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { StatusItem } from '../AssetsCenter/tableUtils';
+import { StatusItem } from '../tableUtils';
 import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 

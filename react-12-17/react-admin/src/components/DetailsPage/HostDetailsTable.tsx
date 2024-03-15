@@ -36,7 +36,7 @@ class HostDetailsTable extends React.Component<HostDetailsTableProps,HostDetails
     render() {
         return (
         <div style={{ width: '100%' }}>
-            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>
+            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:2640,border:'false'}}>
                 <Row gutter={[8, 16]} style={{ marginTop: '-21px',marginLeft: '-8px' }}>
                     <Col md={24}>
                         <div className="gutter-box">

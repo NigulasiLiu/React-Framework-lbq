@@ -7,7 +7,7 @@ import { RightOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { PieChart, Pie, Cell,Label, ResponsiveContainer} from 'recharts';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { StatusItem } from '../AssetsCenter/tableUtils';
+import { StatusItem } from '../tableUtils';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 const { Text } = Typography;
@@ -109,7 +109,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'diskname',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 100, // 最小宽度100px
                       maxWidth: 200, // 最大宽度200px
                     },
                   }),
@@ -125,7 +124,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'filesystem',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -136,7 +134,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'totalspace',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -147,7 +144,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'spentspace',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -160,7 +156,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'netname',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 120, // 最小宽度100px
                     },
                   }),
             },
@@ -170,7 +165,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'ipaddress',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 120, // 最小宽度100px
                     },
                   }),
             },
@@ -180,7 +174,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'macaddress',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 150, // 最小宽度100px
                     },
                   }),
             }
@@ -192,7 +185,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'pluginname',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 100, // 最小宽度100px
                       maxWidth: 200, // 最大宽度200px
                     },
                   }),
@@ -208,7 +200,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'status',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -219,7 +210,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'resourcespent',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -230,7 +220,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'starttime',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -241,7 +230,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 key: 'activetime',
                 onHeaderCell: () => ({
                     style: {
-                      minWidth: 170, // 最小宽度100px
                       maxWidth: 170, // 最大宽度200px
                     },
                   }),
@@ -249,8 +237,9 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         ];
         const agentversion='1.7.0.24';
   return (
-        <div style={{ width: '100%' }}>
-            <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:1320,border:'false'}}>{/*maxWidth:1260*/}
+        <div>
+            <Row style={{ width: '95%', margin: '0 auto' }}>
+            <Col className="gutter-row" md={24} style={{ border:'false'}}>{/*maxWidth:1260*/}
                 <Row gutter={[8,16]}>
                     <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
@@ -274,7 +263,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                     </Card>
                 </Row>
                 <Row gutter={[8,16]}>
-                    <Col md={8}>
+                    <Col md={8} style={{width:'33%', marginLeft: '0', marginRight: 'auto'}}>
                     <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                             <Row>
@@ -368,7 +357,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                             </Row>
                     </Card>
                     </Col>
-                    <Col md={8}>
+                    <Col md={8} style={{width:'33%', marginLeft: 'auto', marginRight: '0'}}>
                     <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                             <Row>
@@ -694,14 +683,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>磁盘信息</h2>
                             </div>
                         </Row>
-                        <Row>
                         <FetchAPIDataTable
                             apiEndpoint="http://localhost:5000/api/files/diskinfo"
                             timeColumnIndex={[]}
                             columns={diskColumns}
                             currentPanel="hostOverviewdiskinfolist"
                         />
-                        </Row>
                     </Card>
                 </Row>
                 <Row gutter={[8,16]}>
@@ -712,14 +699,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>网卡信息</h2>
                             </div>
                         </Row>
-                        <Row>
                         <FetchAPIDataTable
                             apiEndpoint="http://localhost:5000/api/files/netinfo"
                             timeColumnIndex={[]}
                             columns={netColumns}
                             currentPanel="hostOverviewnetinfolist"
                         />
-                        </Row>
                     </Card>
                 </Row>
                 <Row gutter={[8,16]}>
@@ -730,14 +715,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>插件列表</h2>
                             </div>
                         </Row>
-                        <Row>
                         <FetchAPIDataTable
                             apiEndpoint="http://localhost:5000/api/files/plugininfo"
                             timeColumnIndex={[]}
                             columns={pluginColumns}
                             currentPanel="hostOverviewplugininfolist"
                         />
-                        </Row>
                     </Card>
                 </Row>
                 <Row gutter={[8,16]}>
@@ -753,6 +736,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                     </Card>
                 </Row>
             </Col>
+            </Row>
         </div>
         );
     }

@@ -6,8 +6,8 @@ import moment, { Moment } from 'moment';
 import SidebarComponent from '../SubComponents/SidebarComponent'
 import SearchComponent from '../SubComponents/SearchComponent'
 import FilterComponent from '../SubComponents/FilterComponent'
-import { DetailItem } from '../AssetsCenter/tableUtils';
-import { GenericDataItem } from '../AssetsCenter/tableUtils';
+import { DetailItem } from '../tableUtils';
+import { GenericDataItem } from '../tableUtils';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 

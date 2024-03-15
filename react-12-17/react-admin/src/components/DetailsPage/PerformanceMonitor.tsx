@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Row, Col, Card} from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from 'recharts';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
-import { hostperformanceColumns, StatusItem } from '../AssetsCenter/tableUtils';
+import { hostperformanceColumns, StatusItem } from '../tableUtils';
 
 //const { Search } = Input;
 
