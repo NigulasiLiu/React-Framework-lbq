@@ -1,8 +1,9 @@
 import zhCN from 'antd/es/locale/zh_CN';
 import DataDisplayTable from '../ContextAPI/DataDisplayTable'
 import { Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, ConfigProvider,Statistic } from 'antd';
+import { Row, Col, Card, Input, Button, DatePicker, Statistic } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import BaseLineDetectScanSidebar from './ScanProcessSidebar';
@@ -265,7 +266,9 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                   </Card>
               </div>
           </Col>
-
+          <Link to="/app/baseline_detail" target="_blank">
+            <Button type="link" className='custom-link-button'>基线检查详情</Button>
+        </Link>
         </Row>
       </div>
     );

@@ -220,6 +220,36 @@ const menus: {
             title: '系统监控',
             icon: 'safety',
             subs: [
+                {
+                    key: '/app/detailspage', 
+                    title: '详情页面',
+                    component: 'DetailsPage', // 组件名称
+                    // 额外的配置项，如果有的话...
+                },
+                {
+                    key: '/app/create_agent_task', 
+                    title: '新建任务',
+                    component: 'CreateAgentTaskPage', // 组件名称
+                    // 额外的配置项，如果有的话...
+                },
+                {
+                    key: '/app/create_virusscan_task', 
+                    title: '新建病毒扫描任务',
+                    component: 'CreateVirusScanTaskPage', // 组件名称
+                    // 额外的配置项，如果有的话...
+                },
+                {
+                    key: '/app/baseline_detail', 
+                    title: '基线检查详情页面',
+                    component: 'BaseLineDetectDetailsPage', // 组件名称
+                    // 额外的配置项，如果有的话...
+                },
+                {
+                    key: '/app/virusscan_detail', 
+                    title: '病毒扫描详情页面',
+                    component: 'VirusScanDetailsPage', // 组件名称
+                    // 额外的配置项，如果有的话...
+                },
                 { key: '/app/auth/basic', title: '基础演示', component: 'AuthBasic' },
                 {
                     key: '/app/auth/routerEnter',
@@ -230,7 +260,7 @@ const menus: {
             ],
         },
         // {
-        //     key: '/app/detailspage', // 假设使用动态路径参数
+        //     key: '/app/detailspage', 
         //     title: '详情页面',
         //     component: 'DetailsPage', // 组件名称
         //     // 额外的配置项，如果有的话...
@@ -238,21 +268,33 @@ const menus: {
     ],
     others: [
         {
-            key: '/app/detailspage', // 假设使用动态路径参数
+            key: '/app/detailspage', 
             title: '详情页面',
             component: 'DetailsPage', // 组件名称
             // 额外的配置项，如果有的话...
         },
         {
-            key: '/app/create_agent_task', // 假设使用动态路径参数
+            key: '/app/create_agent_task', 
             title: '新建任务',
             component: 'CreateAgentTaskPage', // 组件名称
             // 额外的配置项，如果有的话...
         },
         {
-            key: '/app/create_virusscan_task', // 假设使用动态路径参数
+            key: '/app/create_virusscan_task', 
             title: '新建病毒扫描任务',
             component: 'CreateVirusScanTaskPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/baseline_detail', 
+            title: '基线检查详情页面',
+            component: 'baseline_detail_age', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/virusscan_detail', 
+            title: '病毒扫描详情页面',
+            component: 'virus_detail_age', // 组件名称
             // 额外的配置项，如果有的话...
         },
     ], // 非菜单相关路由

@@ -1,10 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Menu, } from 'antd';
-import { Link, Route, Switch, useLocation, withRouter } from 'react-router-dom';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import OverviewPanel from './OverviewPanel';
-import DataDisplayTable from '../ContextAPI/DataDisplayTable';
-import DataManager from '../ContextAPI/DataManager';
 import { fimColumns,kernelModulesColumns,
     containerColumns,openPortsColumns,
     runningProcessesColumns,systemServicesColumns,
@@ -250,7 +247,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     render() {
 
         return (
-        <DataManager>
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <div>
                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
@@ -290,7 +286,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     </Row>
                 </div>
             </div>
-        </DataManager>
         );
     }
 }

@@ -7,10 +7,12 @@ import { Row, Col, Card} from 'antd';
 import { hostinventoryColumns, StatusItem } from '../tableUtils';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import CustomPieChart from './CustomPieChart';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager';
+import MetaDataDisplay from './MetaDataDisplay';
 
 //const { Search } = Input;
 
-interface HostInventoryProps {
+interface HostInventoryProps{
     
   host_number:number;
   host_in_alert:number;
@@ -151,104 +153,213 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
             { color: '#FEC746', label: '中风险 ', value: 1 },
             { color: '#468DFF', label: '低风险 ', value: 2 },
             ];
-
+            // return(
+            //   <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
+            //       <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}> 
+            //           <Col span={8} >
+            //               <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
+            //               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+            //                   <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>主机状态分布</h2>
+            //               </div>
+            //               <Row gutter={0}>
+            //                   <Col span={12}>
+            //                   <CustomPieChart
+            //                   data={statusData}
+            //                   innerRadius={54}
+            //                   deltaRadius={8}
+            //                   outerRadius={80}
+            //                   cardWidth={200}
+            //                   cardHeight={200}
+            //                   hasDynamicEffect={true}
+            //                   />
+            //                   </Col>
+            //                   <Col span={2}> 
+            //                   </Col>
+            //                   <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+            //                   <StatusPanel statusData={statusData} orientation="vertical"/>
+            //                   </div>
+            //                   </Row>
+            //               </Card>
+            //           </Col>
+            //           <Col span={16} style={{margin: '2 2' }}>
+            //               <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
+            //                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+            //                       <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>主机风险分布</h2>
+            //                   </div>
+            //                   <Row gutter={0}>
+            //                   <Col span={5}>
+            //                   <CustomPieChart
+            //                   data={alertDataTwo}
+            //                   innerRadius={54}
+            //                   deltaRadius={8}
+            //                   outerRadius={80}
+            //                   cardWidth={200}
+            //                   cardHeight={200}
+            //                   hasDynamicEffect={true}
+            //                   />
+            //                   </Col>
+            //                   <Col span={5}>
+            //                   <CustomPieChart
+            //                   data={alertDataThree}
+            //                   innerRadius={54}
+            //                   deltaRadius={8}
+            //                   outerRadius={80}
+            //                   cardWidth={200}
+            //                   cardHeight={200}
+            //                   hasDynamicEffect={true}
+            //                   />
+            //                   </Col>
+            //                   <Col span={5}>
+            //                   <CustomPieChart
+            //                   data={alertDataFour}
+            //                   innerRadius={54}
+            //                   deltaRadius={8}
+            //                   outerRadius={80}
+            //                   cardWidth={200}
+            //                   cardHeight={200}
+            //                   hasDynamicEffect={true}
+            //                   />
+            //                   </Col>
+            //                   <Col span={2} > </Col>
+            //                   <Col span={6} >
+            //                   <div style={{ transform: 'translateY(40px)' }}>
+            //                       <StatusPanel statusData={riskDta} orientation="vertical"/>
+            //                   </div>
+            //                   </Col>
+            //                   </Row>
+            //               </Card>
+            //           </Col>
+            //       </Row>
+            //       <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
+            //           <Col md={24}>
+            //               <div className="gutter-box">
+            //               <Card bordered={false}>
+            //                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+            //                       <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
+            //                   </div>
+            //                   <FetchAPIDataTable
+            //                       apiEndpoint="http://localhost:5000/api/asset_mapping"//后续更换为agent表
+            //                       timeColumnIndex={[]}
+            //                       columns={hostinventoryColumns}//hostinventoryColumns
+            //                       currentPanel="hostinventory"
+            //                   />
+            //                   </Card>
+            //               </div>
+            //           </Col>
+            //       </Row>
+            //   </div>
+            // );
         return (
-            <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-               
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}> 
-                    <Col span={8} >
-                        <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>主机状态分布</h2>
-                        </div>
-                        <Row gutter={0}>
-                            <Col span={12}>
-                            <CustomPieChart
-                            data={statusData}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardWidth={200}
-                            cardHeight={200}
-                            hasDynamicEffect={true}
-                            />
-                            </Col>
-                            <Col span={2}> 
-                            </Col>
-                            <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                            <StatusPanel statusData={statusData} orientation="vertical"/>
-                            </div>
-                            </Row>
-                        </Card>
-                    </Col>
-                    <Col span={16} style={{margin: '2 2' }}>
-                        <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>主机风险分布</h2>
-                            </div>
-                            <Row gutter={0}>
-                            <Col span={5}>
-                            <CustomPieChart
-                            data={alertDataTwo}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardWidth={200}
-                            cardHeight={200}
-                            hasDynamicEffect={true}
-                            />
-                            </Col>
-                            <Col span={5}>
-                            <CustomPieChart
-                            data={alertDataThree}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardWidth={200}
-                            cardHeight={200}
-                            hasDynamicEffect={true}
-                            />
-                            </Col>
-                            <Col span={5}>
-                            <CustomPieChart
-                            data={alertDataFour}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardWidth={200}
-                            cardHeight={200}
-                            hasDynamicEffect={true}
-                            />
-                            </Col>
-                            <Col span={2} > </Col>
-                            <Col span={6} >
-                            <div style={{ transform: 'translateY(40px)' }}>
-                                <StatusPanel statusData={riskDta} orientation="vertical"/>
-                            </div>
-                            </Col>
-                            </Row>
-                        </Card>
-                    </Col>
-                </Row>
-                <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
-                    <Col md={24}>
-                        <div className="gutter-box">
-                        <Card bordered={false}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
-                            </div>
-                            <FetchAPIDataTable
-                                apiEndpoint="http://localhost:5000/api/asset_mapping"
-                                timeColumnIndex={[]}
-                                columns={hostinventoryColumns}
-                                currentPanel="hostinventory"
-                            />
-                            </Card>
-                        </div>
-                    </Col>
-                </Row>
-            </div>
-        );
+          <DataContext.Consumer>
+            {(context: DataContextType | undefined) => {
+              if (!context) {
+                return <div>Loading...n?</div>; // 或者其他的加载状态显示
+            }
+            // 从 context 中解构出 topFiveFimData 和 n
+            const {n,metaData} = context;
+
+            return(
+              <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
+                  <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}> 
+                      <Col span={8} >
+                          <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                              <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>主机状态分布</h2>
+                          </div>
+                          <Row gutter={0}>
+                              <Col span={12}>
+                              <CustomPieChart
+                              data={statusData}
+                              innerRadius={54}
+                              deltaRadius={8}
+                              outerRadius={80}
+                              cardWidth={200}
+                              cardHeight={200}
+                              hasDynamicEffect={true}
+                              />
+                              </Col>
+                              <Col span={2}> 
+                              </Col>
+                              <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+                              <StatusPanel statusData={statusData} orientation="vertical"/>
+                              </div>
+                              </Row>
+                          </Card>
+                      </Col>
+                      <Col span={16} style={{margin: '2 2' }}>
+                          <Card bordered={false} style={{fontWeight: 'bolder', width: '100%', height:300}}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                  <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>主机风险分布</h2>
+                              </div>
+                              <Row gutter={0}>
+                              <Col span={5}>
+                              <CustomPieChart
+                              data={alertDataTwo}
+                              innerRadius={54}
+                              deltaRadius={8}
+                              outerRadius={80}
+                              cardWidth={200}
+                              cardHeight={200}
+                              hasDynamicEffect={true}
+                              />
+                              </Col>
+                              <Col span={5}>
+                              <CustomPieChart
+                              data={alertDataThree}
+                              innerRadius={54}
+                              deltaRadius={8}
+                              outerRadius={80}
+                              cardWidth={200}
+                              cardHeight={200}
+                              hasDynamicEffect={true}
+                              />
+                              </Col>
+                              <Col span={5}>
+                              <CustomPieChart
+                              data={alertDataFour}
+                              innerRadius={54}
+                              deltaRadius={8}
+                              outerRadius={80}
+                              cardWidth={200}
+                              cardHeight={200}
+                              hasDynamicEffect={true}
+                              />
+                              </Col>
+                              <Col span={2} > </Col>
+                              <Col span={6} >
+                              <div style={{ transform: 'translateY(40px)' }}>
+                                  <StatusPanel statusData={riskDta} orientation="vertical"/>
+                              </div>
+                              </Col>
+                              </Row>
+                          </Card>
+                      </Col>
+                  </Row>
+                  <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
+                      <Col md={24}>
+                          <div className="gutter-box">
+                          <Card bordered={false}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                  <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
+                              </div>
+                              <FetchAPIDataTable
+                                  apiEndpoint="http://localhost:5000/api/asset_mapping"//后续更换为agent表
+                                  timeColumnIndex={[]}
+                                  columns={hostinventoryColumns}//hostinventoryColumns
+                                  currentPanel="hostinventory"
+                              />
+                              </Card>
+                          </div>
+                      </Col>
+                  </Row>
+                  <MetaDataDisplay
+                  metadata={metaData}
+                  />
+              </div>
+            );
+            }}
+          </DataContext.Consumer>
+        )
     }
 }
 

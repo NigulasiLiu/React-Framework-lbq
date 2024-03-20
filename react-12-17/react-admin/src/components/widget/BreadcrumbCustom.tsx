@@ -15,6 +15,9 @@ const BreadcrumbCustom = (props: BreadcrumbCustomProps) => {
             <Breadcrumb.Item>
                 <Link to={'/app/dashboard/index'}>安全概览</Link>
             </Breadcrumb.Item>
+            <Breadcrumb.Item>
+                <Link to={'/app/HostProtection/fxff/BaselineDetectList'}>基线检查</Link>
+            </Breadcrumb.Item>
             {breads?.map((bread, i) => (
                 <Breadcrumb.Item key={i}>{bread}</Breadcrumb.Item>
             ))}

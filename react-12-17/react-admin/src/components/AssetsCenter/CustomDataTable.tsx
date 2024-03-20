@@ -397,7 +397,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                     name="cycle"
                     rules={[{ required: true, message: '请选择用户角色' }]}
                     >
-                    <Select placeholder="用户角色" onChange={this.handleFormCharaterFieldChange}>
+                    <Select placeholder="用户角色" defaultValue="admin" onChange={this.handleFormCharaterFieldChange}>
                         <Option value="admin">管理员</Option>
                         <Option value="user">普通用户</Option>
                         {/* 更多选项... */}
@@ -463,7 +463,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                     || this.state.selectedRowKeys.length === 0
                     || isSidebar;
 
-        const tableWidth=this.props.currentPanel.includes('large')?'1000px':(this.props.currentPanel?.includes('sidebar')?'490px':'1320px');
+        const tableWidth=this.props.currentPanel.includes('large')?'1000px':(this.props.currentPanel?.includes('sidebar')?'100%':'100%');
     
 
         const compStyle_small={
@@ -498,7 +498,8 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
 
         return (//Table的宽度被设置为1330px
-        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: tableWidth, maxWidth: '100%' }}>
+        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', 
+        width: this.props.currentPanel?.includes('baseLineDetectScanResult1')?'64%':tableWidth }}>
             <Row gutter={[12, 6]} style={{ marginTop: '-10px'}}>
                 {/* Conditionally render the sidebar for applications */}
                 {this.props.currentPanel === 'applications1' && (
@@ -562,8 +563,8 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 <Col flex="none">
                                     <Button 
                                         onClick={this.showModal}
-                                        style={{backgroundColor:'#1664FF',color:'white'}}>新增用户</Button>
-                                        
+                                        style={{backgroundColor:'#1664FF',color:'white'}}>新增用户
+                                    </Button>
                                     <Button
                                         style={{...selectedcompStyle,
                                             opacity: isButtonDisabled ? 0.5 : 1 }}
@@ -582,7 +583,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                         <div style={{ marginBottom: 16 }}>
                             <Row>
                                 {this.renderSearchFieldDropdown(this.props.columns)}  
-                                <Row >
+                                <Row style={{width: isSidebar?'50%':'70%',}}>
                                 <Input.Search
                                     placeholder="搜索已选字段"
                                     onSearch={this.handleSearch}

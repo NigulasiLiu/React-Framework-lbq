@@ -31,6 +31,12 @@ export interface BaseLineDataType {
     last_checked: string;      // 最新扫描时间
     instruction: string;       // 指令
   }
+export interface checkedItemDataType {
+ level:string;
+ passRate:number;
+ scanResult:string;
+}
+
 export interface GenericDataItem {
     [key: string]: any;
 }
@@ -79,6 +85,151 @@ export interface CreateTaskDataType {
     status: string;      
     updatetime: string;        
 } 
+export const baseLineDetectScanResult1Columns = [
+    { title: '影响主机', dataIndex: 'influencehost', key: 'influencehost' },
+    { title: '标签', dataIndex: 'label', key: 'label',
+    //sorter: (a: any, b: any) => Date.parse(b.foundtime) - Date.parse(a.foundtime), 
+    },
+    { title: '检查结果', dataIndex: 'status', key: 'status',
+    filters: [
+    ],
+    onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
+    { title: '操作', dataIndex: 'operation', key: 'operation',
+    render: (text: string, record: any) => (
+    // 在 render 方法中返回包含按钮的元素
+    <Link to="/app/create_agent_task" target="_blank">
+        <Button type="link" style={{color:'#4086f4'}}>加白名单</Button>
+    </Link>
+    ) }
+];
+export const baseLineDetectCheckedItemColumns = [
+    {
+        title: "检查项",
+        dataIndex: 'checkName',
+        key: 'hostname',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: "级别",
+        dataIndex: 'level',
+        key: 'level',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
+    },
+    {
+        title: '通过率',
+        dataIndex: 'passRate',
+        key: 'passRate',
+        sorter: (a: any, b: any) => Date.parse(b.passRate) - Date.parse(a.passRate),
+    },
+
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/create_agent_task" target="_blank">
+            <Button type="link" style={{color:'#4086f4'}}>重新检查</Button>
+        </Link>
+        )
+    },
+];
+export const baseLineDetectHostItemColumns = [
+    {
+        title: "影响主机",
+        dataIndex: 'influencedHost',
+        key: 'influencedHost',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '风险项',
+        dataIndex: 'riskItem',
+        key: 'riskItem',
+        sorter: (a: any, b: any) => Date.parse(b.riskItem) - Date.parse(a.riskItem),
+    },
+    {
+        title: "通过项",
+        dataIndex: 'passItem',
+        key: 'passItem',
+        // filters: [],
+        // onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
+    },
+
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/create_agent_task" target="_blank">
+            <Button type="link" style={{color:'#4086f4'}}>重新检查</Button>
+        </Link>
+        )
+    },
+];
+export const baseLineDetectScanResult2Columns = [
+    {
+        title: "影响主机",
+        dataIndex: 'influencedHost',
+        key: 'influencedHost',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '标签',
+        dataIndex: 'label',
+        key: 'label',
+    },
+    {
+        title: "扫描结果",
+        dataIndex: 'scanResult',
+        key: 'scanResult',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.scanResult.includes(value as string),
+    },
+
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/create_agent_task" target="_blank">
+            <Button type="link" style={{color:'#4086f4'}}>加白名单</Button>
+        </Link>
+        )
+    },
+];
+export const virusscandetailscolumns=[
+    { title: '主机名称', dataIndex: 'hostname', key: 'hostname' ,
+    render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/detailspage" target="_blank">
+            <Button type="link" style={{color:'#4086f4'}}>{text}</Button>
+        </Link>
+        )
+    },
+    { title: '状态', dataIndex: 'status', key: 'status',
+    filters: [
+    ],
+    onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
+    { title: '汇报时间', dataIndex: 'report_time', key: 'report_time', 
+    sorter: (a: any, b: any) => Date.parse(b.report_time) - Date.parse(a.report_time),
+}
+]
+
 export const createNewTaskColumns = [
     {
         title: "主机名称",
@@ -162,6 +313,8 @@ export const hostinventoryColumns = [
         title: "ID",
         dataIndex: 'id',
         key: 'id',
+        
+        //render: () => null,
         //width: '13%',
     },
     {
@@ -203,12 +356,69 @@ export const hostinventoryColumns = [
         key: 'operation',
         render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
+        <Link to="/app/create_agent_task" target="_blank" >
+            <Button type="link" className="link-button" style={{color:'#4086f4'}}>下发任务</Button>
+        </Link>
+        )
+    },
+];
+
+export const hostinventoryColumns_new = [
+    {
+        title: "ID",
+        dataIndex: 'id',
+        key: 'id',
+        //width: '13%',
+    },
+    {
+        title: "主机名称",
+        dataIndex: 'hostname',
+        key: 'hostname',
+    },
+    {
+        title: "主机IP",
+        dataIndex: 'ip',
+        key: 'ip',
+    },
+    {
+        title: "操作系统",
+        dataIndex: 'os_version',
+        key: 'os_version',
+        filters: [
+        ],
+        onFilter: (value: string | number | boolean, record: DataType) => record.os_version.includes(value as string),
+    },
+    {
+        title: "状态",
+        dataIndex: 'status',
+        key: 'status',
+        filters: [
+        ],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    {
+        title: "内存使用量",
+        dataIndex: 'mem_use',
+        key: 'mem_use',
+    },
+    {
+        title: "CPU使用率",
+        dataIndex: 'cpu_use',
+        key: 'cpu_use',
+    },
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        key: 'operation',
+        render: (text: string, record: any) => (
+        // 在 render 方法中返回包含按钮的元素
         <Link to="/app/create_agent_task" target="_blank">
             <Button type="link" style={{color:'#4086f4'}}>下发任务</Button>
         </Link>
         )
     },
 ];
+
 export const fimColumns = [
     {
         title: "文件名",
@@ -805,6 +1015,9 @@ export interface DataType {
     ostype: string;
     clientUsage: string;
     updateTime: string;
+
+    os_version:string;
+
 }
 export const virusscanningColumns = [
     {

@@ -85,7 +85,7 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps,V
         <div className={isSidebarOpen ? "Largersidebar open" : "Largersidebar"}>
             <Col md={24} style={{borderTop: '5px solid #4086FF'}}>
             <Row>
-                <Card style={{width: sidebartablewidth,  borderTop:'1px solid black',}}>
+                <Card style={{width: '100%',  borderTop:'1px solid black',}}>
                     <Row style={{borderTop:'1px solid #E5E8EF' ,}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 14 ,marginBottom: 10 ,fontWeight: 'bold'}}>
                             <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px'}}>全部扫描任务</h2>

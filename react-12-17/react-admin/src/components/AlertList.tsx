@@ -142,7 +142,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <Col className="gutter-row" md={24} style={{ maxWidth:2640}}>
+                <Col className="gutter-row" md={24}>
                     <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
                         <Col className="gutter-row" md={24}>
                         <Card bordered={false} 
@@ -224,7 +224,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                         </Card>
                         </Col>
                     </Row>
-                    <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}> 
+                    <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ width: '100%', margin: '0 auto' }}> 
                         <Col md={24}>
                             <div className="gutter-box">
                             <Card bordered={false}>

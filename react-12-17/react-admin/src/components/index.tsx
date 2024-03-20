@@ -42,6 +42,8 @@ import Env from './env';
 import DetailsPage from './DetailsPage/DetailsPage';
 import CreateAgentTaskPage from './pages/CreateTaskPage';
 import CreateVirusScanTaskPage from './VirusScanning/CreateVirusScanTask';
+import BaseLineDetectDetailsPage from './DetailsPage/BaseLineDetectDetailsPage';
+import VirusScanDetailsPage from './DetailsPage/VirusScanDetailsPage';
 import UserManagement from './extension/UserManagement';
 
 const WysiwygBundle = Loadable({
@@ -90,5 +92,7 @@ export default {
     BaselineDetectList,
     DetailsPage,
     CreateAgentTaskPage,
-    CreateVirusScanTaskPage
+    CreateVirusScanTaskPage,
+    BaseLineDetectDetailsPage,
+    VirusScanDetailsPage
 } as any;

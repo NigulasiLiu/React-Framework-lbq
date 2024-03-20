@@ -9,6 +9,7 @@ import HeaderCustom from './components/HeaderCustom';
 import { ThemePicker, Copyright } from './components/widget';
 import { checkLogin } from './utils';
 import { fetchMenu } from './service';
+import DataManager from './components/ContextAPI/DataManager';
 import classNames from 'classnames';
 
 const { Content, Footer } = Layout;
@@ -114,6 +115,8 @@ function App(props: AppProps){
         setCollapsed(!collapsed);
     }
     return (
+        
+        <DataManager>
         <Layout>
             {!responsive.isMobile && checkLogin(auth.permissions) && (
                 <SiderCustom collapsed={collapsed} />
@@ -130,7 +133,7 @@ function App(props: AppProps){
                     <Copyright />
                 </Footer>
             </Layout>
-        </Layout>
+        </Layout></DataManager>
     );
 };
 

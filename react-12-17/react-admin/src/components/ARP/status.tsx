@@ -88,49 +88,6 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) =>
     </div>
   );
 };
-const vulnerabilityColumns = [
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>漏洞名称</span>,
-    dataIndex: 'alarmName',
-    //width: '13%',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>影响资产数</span>,
-    dataIndex: 'affectedAsset',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>漏洞特征</span>,
-    dataIndex: 'tz',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
-    dataIndex: 'level',
-    filters: [
-      { text: '紧急', value: '紧急' },
-      { text: '高危', value: '高危' },
-      { text: '低危', value: '低危' },
-      { text: '中危', value: '中危' },
-    ],
-    onFilter: (value: string | number | boolean, record: DataType1) => record.level.includes(value as string),
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-    dataIndex: 'status',
-    filters: [
-        { text: '已处理', value: '已处理' },
-        { text: '未处理', value: '未处理' },
-    ],
-    onFilter: (value: string | number | boolean, record: DataType1) => record.status.includes(value as string),
-},
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>最新扫描时间</span>,
-    dataIndex: 'occurrenceTime',
-  },
-  {
-    title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-    dataIndex: 'operation',
-  },
-];
 
 class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState> {
   constructor(props: any) {

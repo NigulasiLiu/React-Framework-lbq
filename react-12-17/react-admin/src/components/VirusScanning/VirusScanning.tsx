@@ -298,7 +298,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                   </Card>
               </div>
           </Col>
-
+          <Link to="/app/virusscan_detail" target="_blank">
+            <Button type="link" style={{color:'#4086f4'}}>病毒扫描任务详情</Button>
+          </Link>
         </Row>
       </div>
     );

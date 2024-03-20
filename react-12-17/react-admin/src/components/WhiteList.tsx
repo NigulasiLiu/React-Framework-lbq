@@ -245,7 +245,6 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
-   
                     <Col md={24}>
                         <div className="gutter-box">
                             <Card bordered={false}>

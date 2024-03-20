@@ -106,7 +106,14 @@ const HeaderCustom = (props: HeaderCustomProps) => {
 
     //用于隐藏标题
     //const [isSiderVisible, setIsSiderVisible] = useState(true);
-    const pagesWithoutSiderMenu=['/app/detailspage','/app/create_agent_task','/app/create_virusscan_task'];
+    const pagesWithoutSiderMenu=
+    [
+    '/app/detailspage',
+    '/app/create_agent_task',
+    '/app/create_virusscan_task',
+    '/app/baseline_detail',
+    '/app/virusscan_detail'
+    ];
     const hideSiderMenu = pagesWithoutSiderMenu.includes(location.pathname);
 
     return (
