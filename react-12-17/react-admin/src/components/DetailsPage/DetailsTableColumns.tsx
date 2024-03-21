@@ -12,7 +12,7 @@ export interface Risk {
 
 export interface DataType {
     key: React.Key;
-    hostname: string;
+    host_name: string;
     label: string;
     group: string;
     OStype: string;
@@ -28,8 +28,8 @@ export interface DataType {
 export const containerColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '容器ID',
@@ -73,8 +73,8 @@ export const containerColumns = [
 export const openPortsColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '端口号',
@@ -135,8 +135,8 @@ export const openPortsColumns = [
 export const runningProcessesColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '进程ID',
@@ -206,8 +206,8 @@ export const runningProcessesColumns = [
 export const systemUsersColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '用户ID',
@@ -268,8 +268,8 @@ export const systemUsersColumns = [
 export const scheduledTasksColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '任务命令',
@@ -306,8 +306,8 @@ export const scheduledTasksColumns = [
 export const systemServicesColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '服务名称',
@@ -355,8 +355,8 @@ export const systemServicesColumns = [
 export const systemSoftwareColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '软件名称',
@@ -386,8 +386,8 @@ export const systemSoftwareColumns = [
 export const kernelModulesColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '模块名称',
@@ -432,8 +432,8 @@ export const kernelModulesColumns = [
 export const applicationsColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '应用名称',

@@ -58,6 +58,8 @@ interface CustomDataTableState {
 
     showModal: boolean;
     user_character: string;
+    dataSourceChanged:boolean;
+    panelChanged: boolean;
 }
 const { TextArea } = Input;
 
@@ -91,6 +93,9 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             sortedData: [],
             sortConfig: null,
 
+            panelChanged: false,
+            dataSourceChanged: false,
+
         };
     }
     componentDidMount() {
@@ -113,6 +118,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                 selectrangequeryParams: '',
                 selectedDateRange: [null, null],//日期筛选器重置
                 selectedRowKeys: [],
+                dataSourceChanged: true,
         });
         // 检查面板是否发生变化
         if (this.props.currentPanel !== prevProps.currentPanel) {
@@ -128,6 +134,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                     selectedRowKeys: [],
                     
                     selectedApplicationType: null,//只用于‘应用’这个子页面
+                    panelChanged: true,
                 },
                 () => {
                     // 异步调用fetchLatestData来确保setState完成后执行
@@ -452,7 +459,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
           );
         };
 
-    render() {        
+    render() {       
+          // 构建无数据时的展示配置
+            const customLocale = {
+                emptyText: '没有数据'
+            }; 
         const rowSelection = {//checkbox勾选状态独立
             selectedRowKeys:this.state.selectedRowKeys,
             onChange: this.onSelectChange,
@@ -601,7 +612,8 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                             //dataSource={this.state.topFiveSortedData}
                             columns={newColumns}
                             //pagination={false}
-                            //locale={{ emptyText: 'No Data' }} // 可以指定无数据时展示的文本
+                            locale={(this.state.panelChanged&&this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
+                                ? customLocale:undefined}
                         />
                     </Card>
                 </Col>

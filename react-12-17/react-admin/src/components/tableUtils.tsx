@@ -5,9 +5,18 @@ import axios from 'axios';
 
 const { Option } = Select;
 export interface DetailItem {
-    hostIP: string;
+    host_ip: string;
+    userName: string;
     alert_type: string;
     event_time: string;
+    port_number: string;
+    port_state: string;
+    cpuPercent: string;
+    memoryPercent: string;
+    highRisk: string;
+    exe: string;
+    cmdline:string;
+    pid: string;
 }
 export interface BaseLineDataType {
     key: React.Key;
@@ -72,13 +81,13 @@ export interface FimDataType {
     key: React.Key;
     filename: string;   
     event_time: string;   
-    hostname: string;     
-    hostIP: string;          
+    host_name: string;     
+    host_ip: string;          
     alert_type: string;        
 } 
 export interface CreateTaskDataType {
     key: React.Key;
-    hostname: string;   
+    host_name: string;   
     label: string;   
     group: string;     
     os: string; 
@@ -106,7 +115,7 @@ export const baseLineDetectCheckedItemColumns = [
     {
         title: "检查项",
         dataIndex: 'checkName',
-        key: 'hostname',
+        key: 'host_name',
         onHeaderCell: () => ({
             style: {
               maxWidth: 200, // 最大宽度200px
@@ -213,7 +222,7 @@ export const baseLineDetectScanResult2Columns = [
     },
 ];
 export const virusscandetailscolumns=[
-    { title: '主机名称', dataIndex: 'hostname', key: 'hostname' ,
+    { title: '主机名称', dataIndex: 'host_name', key: 'host_name' ,
     render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
         <Link to="/app/detailspage" target="_blank">
@@ -233,8 +242,8 @@ export const virusscandetailscolumns=[
 export const createNewTaskColumns = [
     {
         title: "主机名称",
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
         onHeaderCell: () => ({
             style: {
               maxWidth: 200, // 最大宽度200px
@@ -372,13 +381,13 @@ export const hostinventoryColumns_new = [
     },
     {
         title: "主机名称",
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: "主机IP",
-        dataIndex: 'ip',
-        key: 'ip',
+        dataIndex: 'ip_address',
+        key: 'ip_address',
     },
     {
         title: "操作系统",
@@ -458,7 +467,7 @@ export const fimColumns = [
         dataIndex: 'hostIP',
         key: 'hostIP',
         filters: [],
-        onFilter: (value: string | number | boolean, record: FimDataType) => record.hostIP.includes(value as string),
+        onFilter: (value: string | number | boolean, record: FimDataType) => record.host_ip.includes(value as string),
         onHeaderCell: () => ({
             style: {
               minWidth: 80, // 最小宽度100px
@@ -485,8 +494,8 @@ export const fimColumns = [
 export const containerColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '容器ID',
@@ -529,133 +538,197 @@ export const containerColumns = [
 
 export const openPortsColumns = [
     {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+    },
+    {
+        title: '主机IP',
+        dataIndex: 'host_ip',
+        key: 'host_ip',
+        onFilter: (value: string | number | boolean, record: FimDataType) => record.host_ip.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              //minWidth: 80, // 最小宽度100px
+            },
+          }),
     },
     {
         title: '端口号',
-        dataIndex: 'portNumber',
-        key: 'portNumber',
+        dataIndex: 'port_number',
+        key: 'port_number',
+        onFilter: (value: string | number | boolean, record: DetailItem) => record.port_number.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              //minWidth: 80, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
     },
     {
-        title: '标记',
-        dataIndex: 'tag',
-        key: 'tag',
+        title: '端口状态',
+        dataIndex: 'port_state',
+        key: 'port_state',
+        onFilter: (value: string | number | boolean, record: DetailItem) => record.port_state.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              //minWidth: 80, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
     },
     {
-        title: '监听IP',
-        dataIndex: 'listenIP',
-        key: 'listenIP',
+        title: '端口名称',
+        dataIndex: 'port_name',
+        key: 'port_name',
     },
     {
-        title: '端口类别',
-        dataIndex: 'portCategory',
-        key: 'portCategory',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        title: '应用',
+        dataIndex: 'product',
+        key: 'product',
     },
     {
-        title: '进程ID',
-        dataIndex: 'processId',
-        key: 'processId',
+        title: '额外信息',
+        dataIndex: 'extrainfo',
+        key: 'extrainfo',
     },
-    {
-        title: '进程名',
-        dataIndex: 'processName',
-        key: 'processName',
-    },
-    {
-        title: '进程命令行',
-        dataIndex: 'processCmd',
-        key: 'processCmd',
-    },
-    {
-        title: '用户ID',
-        dataIndex: 'userId',
-        key: 'userId',
-    },
-    {
-        title: '用户名',
-        dataIndex: 'userName',
-        key: 'userName',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'latestScanningTime',
-        key: 'latestScanningTime',
-    },
+
+    // {
+    //     title: '进程ID',
+    //     dataIndex: 'processId',
+    //     key: 'processId',
+    // },
+    // {
+    //     title: '进程名',
+    //     dataIndex: 'processName',
+    //     key: 'processName',
+    // },
+    // {
+    //     title: '进程命令行',
+    //     dataIndex: 'processCmd',
+    //     key: 'processCmd',
+    // },
+    // {
+    //     title: '用户ID',
+    //     dataIndex: 'userId',
+    //     key: 'userId',
+    // },
+    // {
+    //     title: '用户名',
+    //     dataIndex: 'userName',
+    //     key: 'userName',
+    // },
+    // {
+    //     title: '最新扫描时间',
+    //     dataIndex: 'latestScanningTime',
+    //     key: 'latestScanningTime',
+    // },
     // ... 其他字段定义
 ];
 
 // 运行进程表的列定义
 export const runningProcessesColumns = [
     {
-        title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+    },
+    {
+        title: '主机IP',
+        dataIndex: 'agentIP',
+        key: 'agentIP',
+        //filters: [],
+        //onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '进程ID',
-        dataIndex: 'processId',
-        key: 'processId',
+        dataIndex: 'pid',
+        key: 'pid',
+
+        sorter: (a:DetailItem, b:DetailItem) => parseFloat(a.pid) - parseFloat(b.pid),
+    
     },
     {
-        title: '标记',
-        dataIndex: 'tag',
-        key: 'tag',
+        title: '进程名称',
+        dataIndex: 'name',
+        key: 'name',
+
+        render: (text: string, record: DetailItem) => (
+            <Tooltip title={'路径:'+ record.exe}>
+                {text}
+            </Tooltip>
+        ),
+        //filters: [],
+        //onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    {
+        title: '用户',
+        dataIndex: 'userName',
+        key: 'userName',
         filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        onFilter: (value: string | number | boolean, record: DetailItem) => record.userName.includes(value as string),
     },
-    {
-        title: '进程名',
-        dataIndex: 'processName',
-        key: 'processName',
-    },
-    {
-        title: '进程状态',
-        dataIndex: 'processStatus',
-        key: 'processStatus',
-    },
+    // {
+    //     title: '进程路径',
+    //     dataIndex: 'exe',
+    //     key: 'exe',
+    //     onHeaderCell: () => ({
+    //         style: {
+    //           //minWidth: 80, // 最小宽度100px
+    //           maxWidth: 80, // 最大宽度200px
+    //         },
+    //       }),
+    // },
+    // {
+    //     title: "调整建议",
+    //     dataIndex: 'adjustment_requirement',
+    //     key: 'adjustment_requirement',
+    //     render: (text: string, record: BaseLineDataType) => (
+    //         <Tooltip title={record.instruction}>
+    //             {text}
+    //         </Tooltip>
+    //     ),
+    // },
     {
         title: '进程命令行',
-        dataIndex: 'commandLine',
-        key: 'commandLine',
+        dataIndex: 'cmdline',
+        key: 'cmdline',
+        // render: (text: string, record: DetailItem) => (
+        //     <Tooltip title={record.cmdline}>
+        //         {text}
+        //     </Tooltip>
+        // ),
+        render: (text: string, record: DetailItem) => (
+            <Tooltip title={record.cmdline}>
+              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
+                {record.cmdline}
+              </div>
+            </Tooltip>
+          ),
     },
     {
-        title: '进程路径',
-        dataIndex: 'processPath',
-        key: 'processPath',
+        title: 'CPU占用',
+        dataIndex: 'cpuPercent',
+        key: 'cpuPercent',
+        sorter: (a:DetailItem, b:DetailItem) => parseFloat(a.cpuPercent) - parseFloat(b.cpuPercent),
     },
     {
-        title: '用户ID',
-        dataIndex: 'userId',
-        key: 'userId',
+        title: '内存占用',
+        dataIndex: 'memoryPercent',
+        key: 'memoryPercent',
+        sorter: (a:DetailItem, b:DetailItem) => parseFloat(a.memoryPercent) - parseFloat(b.memoryPercent),
     },
     {
-        title: '用户名',
-        dataIndex: 'username',
-        key: 'username',
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
     },
     {
-        title: '父进程ID',
-        dataIndex: 'parentProcessId',
-        key: 'parentProcessId',
-    },
-    {
-        title: '文件哈希',
-        dataIndex: 'fileHash',
-        key: 'fileHash',
-    },
-    {
-        title: '启动时间',
-        dataIndex: 'startTime',
-        key: 'startTime',
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
+        title: '是否高危',
+        dataIndex: 'highRisk',
+        key: 'highRisk',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DetailItem) => record.highRisk.includes(value as string),
     },
 ];
 
@@ -663,8 +736,8 @@ export const runningProcessesColumns = [
 export const systemUsersColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '用户ID',
@@ -725,8 +798,8 @@ export const systemUsersColumns = [
 export const scheduledTasksColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '任务命令',
@@ -763,8 +836,8 @@ export const scheduledTasksColumns = [
 export const systemServicesColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '服务名称',
@@ -812,8 +885,8 @@ export const systemServicesColumns = [
 export const systemSoftwareColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '软件名称',
@@ -843,8 +916,8 @@ export const systemSoftwareColumns = [
 export const kernelModulesColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '模块名称',
@@ -889,8 +962,8 @@ export const kernelModulesColumns = [
 export const applicationsColumns = [
     {
         title: '主机名称',
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
     },
     {
         title: '应用名称',
@@ -1002,7 +1075,7 @@ export const hostalertColumns = [
 ];
 export interface DataType {
     key: React.Key;
-    hostname: string;
+    host_name: string;
     label: string;
     group: string;
     OStype: string;
@@ -1336,8 +1409,8 @@ export const ConfigurationColums = [
 export const hostperformanceColumns = [
     {
         title: "主机名稱",
-        dataIndex: 'hostname',
-        key: 'hostname',
+        dataIndex: 'host_name',
+        key: 'host_name',
         //width: '13%',
     },
     {
@@ -1377,7 +1450,7 @@ export const hostperformanceColumns = [
 
 export const fimcolumns_2 = [
     { title: 'Path', dataIndex: 'path', key: 'path' },
-    { title: 'Host IP', dataIndex: 'hostIP', key: 'hostIP' },
+    { title: 'Host IP', dataIndex: 'host_ip', key: 'host_ip' },
     { title: 'Alert Type', dataIndex: 'alert_type', key: 'alert_type' },
     { title: 'Event Time', dataIndex: 'event_time', key: 'event_time' }
 ];

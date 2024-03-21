@@ -3,8 +3,7 @@ import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd'
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
-import { StatusPanel } from './HostInventory';
-import CustomPieChart from './CustomPieChart';
+import MetaDataDisplay from './MetaDataDisplay';
 import { DataContext, DataContextType} from '../ContextAPI/DataManager'
 interface OverviewPanelProps extends RouteComponentProps {
     statusData: StatusItem[];
@@ -701,14 +700,15 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 return <div>Loading...</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const { topFiveFimData} = context;
+            const { topFiveFimData, topFivePortCounts,
+                portMetaData, processMetaData,portMetaData2,} = context;
 
 
             return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
             <Row gutter={[8, 16]}>
                 <Col span={3}>
-                    <Card
+                    {/* <Card
                         bordered={false}
                         style={{
                             height: '75px',
@@ -723,7 +723,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={0} span={22}>
-                                <Statistic title={<span>容器</span>} value={2} />
+                                <Statistic title={<span>容器</span>} value={-1} />
                             </Col>
                             <Col span={2} style={{ position: 'relative', top: '-3.5px' }}>
                                 <Button
@@ -734,7 +734,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 />
                             </Col>
                         </Row>
-                    </Card>
+                    </Card> */}
                 </Col>
                 <Col span={3}>
                     <Card
@@ -752,7 +752,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>开放端口</span>} value={1} />
+                                <Statistic title={<span>开放端口</span>} value={portMetaData.typeCount.get('open')} />
                             </Col>
                             <Col
                                 pull={0}
@@ -770,19 +770,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     </Card>
                 </Col>
                 <Col span={3}>
-                {/* <DataCard
-                    title="运行进程"
-                    value={13}
-                    valueItem={[
-                    { value: '13', color: '#F6F7FB' },
-                    // Add more additional statistics as needed
-                    ]}
-                    panelId="running-processes"
-                    height="75px"
-                    width="110px"
-                    backgroundColor="#F6F7FB"
-                    navigate={false}
-                /> */}
                     <Card
                         bordered={false}
                         style={{
@@ -798,7 +785,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>运行进程</span>} value={13} />
+                                <Statistic title={<span>运行进程</span>} value={processMetaData.tupleCount} />
                             </Col>
                             <Col
                                 pull={0}
@@ -831,7 +818,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>系统用户</span>} value={3} />
+                                <Statistic title={<span>系统用户</span>} value={processMetaData.typeCount.size}/>
                             </Col>
                             <Col
                                 pull={0}
@@ -914,39 +901,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Row>
                     </Card>
                 </Col>
-                {/* <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>系统软件</span>} value={0} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{ color: '#000' }}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('system-software')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col> */}
                 <Col span={3}>
                     <Card
                         bordered={false}
@@ -978,7 +932,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Row>
                     </Card>
                 </Col>
-                <Col span={3}>
+                {/* <Col span={3}>
                     <Card
                         bordered={false}
                         style={{
@@ -1010,14 +964,14 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Col>
                         </Row>
                     </Card>
-                </Col>
+                </Col> */}
                 {/* ... other statistic cards */}
             </Row>
             <Row gutter={[8, 16]}>
                 <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
-                        dataSource={sortedData[0]}
+                        dataSource={topFivePortCounts}
                         columns={columns[0]}
                         pagination={false}
                         rowKey="id"
@@ -1068,7 +1022,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         rowKey="id"
                     />
                 </Col>
-                <Col span={12}>
+                {/* <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
                         dataSource={sortedData[6]}
@@ -1076,8 +1030,8 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         pagination={false}
                         rowKey="id"
                     />
-                </Col>
-                <Col span={12}>
+                </Col> */}
+                {/* <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
                         //dataSource={sortedData[7]}
@@ -1106,8 +1060,12 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </div>
                         </Row>
                     </Card>
-                </Col>
+                </Col> */}
             </Row>
+            
+            <MetaDataDisplay
+            metadata={portMetaData2}
+            />
             </div>
             );
             }}

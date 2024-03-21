@@ -23,13 +23,13 @@ interface StatusPanelProps {
 }
 
 interface DetailsPageProps extends RouteComponentProps<{ id: string }> {
-    hostname:string;
+    host_name:string;
   }
 interface GenericDataItem {
     [key: string]: any;
 }
 type DetailsPageState = {
-    selectedHostName:string;
+    selectedhost_name:string;
     dataSource: any[];
     topData: {
         fim: GenericDataItem[];
@@ -173,7 +173,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         super(props);
         this.columns = [];
         this.state = {
-            selectedHostName: '-1',
+            selectedhost_name: '-1',
             statusData: [], // 初始状态
             animated: false,
             animatedOne: -1,
@@ -212,7 +212,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     }
     componentDidMount() {
         const { id } = this.props.match.params;
-        this.setState({ selectedHostName: id });
+        this.setState({ selectedhost_name: id });
     }
     // 父组件中
     handleDataReceived = (data: any[]) => {
@@ -332,7 +332,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         const headers = Object.keys(data[0]).join(',');
         const rows = data.map((row: DataType) => {
             const riskValues = Object.values(row.risks).join(',');
-            return `${row.key},${row.hostname},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
+            return `${row.key},${row.host_name},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
         });
         return [headers, ...rows].join('\n');
     };
@@ -526,7 +526,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <BreadcrumbCustom breads={['主机列表', '详情页']} />
                 <span>
-                    {this.props.hostname}
+                    {this.props.host_name}
                 </span>
                 <div>
                     <Row gutter={[12, 6]} style={{ marginTop: '10px',width: '100%', margin: '0 auto' }}>

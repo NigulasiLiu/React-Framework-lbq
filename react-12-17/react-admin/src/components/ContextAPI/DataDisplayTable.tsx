@@ -25,7 +25,7 @@ interface DataDisplayTableProps {
     //筛选top5数据，从父组件获取
     onTopDataChange?: (panelName: string, data: GenericDataItem[]) => void;
 
-    hostName?: string; // 新增属性，表示当前显示的主机ID
+    host_name?: string; // 新增属性，表示当前显示的主机ID
     sqlTableName?:string;
     fields?:string[];
 }

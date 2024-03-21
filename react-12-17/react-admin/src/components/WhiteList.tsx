@@ -117,7 +117,7 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
             dataSource: [
                 // {
                 //     key: '0',
-                //     hostname: 'CPU使用率过高',
+                //     host_name: 'CPU使用率过高',
                 //     label: '-',
                 //     group: 'default',
                 //     OStype: 'Windows',

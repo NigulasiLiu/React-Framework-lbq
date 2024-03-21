@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Menu, } from 'antd';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import OverviewPanel from './OverviewPanel';
+import MetaDataDisplay from './MetaDataDisplay';
 import { fimColumns,kernelModulesColumns,
     containerColumns,openPortsColumns,
     runningProcessesColumns,systemServicesColumns,
@@ -137,18 +138,20 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 );
             case 'open-ports':
                 return (
+                    <div>
                     <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/open-ports"
+                    apiEndpoint="http://localhost:5000/api/portinfo"
                     timeColumnIndex={[]}
                     columns={openPortsColumns}
                     currentPanel={currentPanel}
                     />
+                    </div>
                 );
             case 'running-processes':
                 return (
                     <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/running-processes"
-                    timeColumnIndex={[]}
+                    apiEndpoint="http://localhost:5000/api/process"
+                    timeColumnIndex={['createTime']}
                     columns={runningProcessesColumns}
                     currentPanel={currentPanel}
                     />
@@ -176,7 +179,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     <FetchAPIDataTable
                     apiEndpoint="http://localhost:5000/api/files/system-services"
                     timeColumnIndex={[]}
-                    columns={runningProcessesColumns}
+                    columns={systemServicesColumns}
                     currentPanel={currentPanel}
                     />
                 );
@@ -185,7 +188,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     <FetchAPIDataTable
                     apiEndpoint="http://localhost:5000/api/files/system-software"
                     timeColumnIndex={[]}
-                    columns={runningProcessesColumns}
+                    columns={systemSoftwareColumns}
                     currentPanel={currentPanel}
                     />
                 );
@@ -194,7 +197,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     <FetchAPIDataTable
                     apiEndpoint="http://localhost:5000/api/files/applications"
                     timeColumnIndex={[]}
-                    columns={runningProcessesColumns}
+                    columns={applicationsColumns}
                     currentPanel={currentPanel}
                     />
                 );
@@ -263,7 +266,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                                 >
                                     <Menu.Item key="overview">总览</Menu.Item>
-                                    <Menu.Item key="container">容器</Menu.Item>
+                                    {/* <Menu.Item key="container">容器</Menu.Item> */}
                                     <Menu.Item key="open-ports">开放端口</Menu.Item>
                                     <Menu.Item key="running-processes">运行进程</Menu.Item>
                                     <Menu.Item key="system-users">系统用户</Menu.Item>
@@ -272,7 +275,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
                                     <Menu.Item key="fim">文件完整性检测</Menu.Item>
                                     <Menu.Item key="applications">应用</Menu.Item>
-                                    <Menu.Item key="kernel-modules">内核模块</Menu.Item>
+                                    {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
                                     {/* 可以根据需要添加更多的Menu.Item */}
                                     {/* 使用透明div作为flex占位符 */}
                                     <div style={{ flexGrow: 1 }}></div>
