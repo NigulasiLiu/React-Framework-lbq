@@ -17,6 +17,7 @@ export interface DetailItem {
     exe: string;
     cmdline:string;
     pid: string;
+    check_name:string;
 }
 export interface BaseLineDataType {
     key: React.Key;
@@ -541,6 +542,11 @@ export const openPortsColumns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 20, // 最大宽度200px
+            },
+          }),
     },
     {
         title: '主机IP',
@@ -632,6 +638,11 @@ export const runningProcessesColumns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 20, // 最大宽度200px
+            },
+          }),
     },
     {
         title: '主机IP',
@@ -835,51 +846,71 @@ export const scheduledTasksColumns = [
 
 export const systemServicesColumns = [
     {
-        title: '主机名称',
-        dataIndex: 'host_name',
-        key: 'host_name',
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 20, // 最大宽度200px
+            },
+          }),
     },
     {
-        title: '服务名称',
-        dataIndex: 'serviceName',
-        key: 'serviceName',
+        title: '主机IP',
+        dataIndex: 'ip',
+        key: 'ip',
     },
     {
-        title: '类型',
-        dataIndex: 'type',
-        key: 'type',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        title: '服务',
+        dataIndex: 'service',
+        key: 'service',
     },
     {
-        title: '执行命令',
-        dataIndex: 'executionCommand',
-        key: 'executionCommand',
+        title: '软件',
+        dataIndex: 'product',
+        key: 'product',
     },
     {
-        title: '工作目录',
-        dataIndex: 'workingDirectory',
-        key: 'workingDirectory',
+        title: '版本',
+        dataIndex: 'version',
+        key: 'version',
     },
-    {
-        title: '文件哈希',
-        dataIndex: 'fileHash',
-        key: 'fileHash',
-    },
-    {
-        title: '是否自动重启',
-        dataIndex: 'autoRestart',
-        key: 'autoRestart',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-        // 这里假设 autoRestart 是布尔值，可以根据需要进行调整
-        //render: (text, record) => (record.autoRestart ? '是' : '否'),
-    },
-    {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
-    },
+    // {
+    //     title: '类型',
+    //     dataIndex: 'type',
+    //     key: 'type',
+    //     filters: [],
+    //     onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    // },
+    // {
+    //     title: '执行命令',
+    //     dataIndex: 'executionCommand',
+    //     key: 'executionCommand',
+    // },
+    // {
+    //     title: '工作目录',
+    //     dataIndex: 'workingDirectory',
+    //     key: 'workingDirectory',
+    // },
+    // {
+    //     title: '文件哈希',
+    //     dataIndex: 'fileHash',
+    //     key: 'fileHash',
+    // },
+    // {
+    //     title: '是否自动重启',
+    //     dataIndex: 'autoRestart',
+    //     key: 'autoRestart',
+    //     filters: [],
+    //     onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    //     // 这里假设 autoRestart 是布尔值，可以根据需要进行调整
+    //     //render: (text, record) => (record.autoRestart ? '是' : '否'),
+    // },
+    // {
+    //     title: '最新扫描时间',
+    //     dataIndex: 'lastScanTime',
+    //     key: 'lastScanTime',
+    // },
 ];
 
 export const systemSoftwareColumns = [
@@ -1244,12 +1275,12 @@ export const vulnerabilityColumns = [
 ];
 
 export const baselineDetectColumns = [
-    // {
-    //     title: "ID",
-    //     dataIndex: 'id',
-    //     key: 'id',
-    //     //width: '13%',
-    // },
+    {
+        title: "ID",
+        dataIndex: 'id',
+        key: 'id',
+        width: '20px',
+    },
     {
         title: "IP",
         dataIndex: 'ip',
@@ -1260,6 +1291,13 @@ export const baselineDetectColumns = [
         title: "基线名称",
         dataIndex: 'check_name',
         key: 'check_name',
+        render: (text: string, record: DetailItem) => (
+            <Tooltip title={record.check_name}>
+              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
+                {record.check_name}
+              </div>
+            </Tooltip>
+          ),
     },
     {
         title: "检查详情",

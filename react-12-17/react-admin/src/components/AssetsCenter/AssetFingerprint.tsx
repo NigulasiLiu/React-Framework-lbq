@@ -177,7 +177,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             case 'system-services':
                 return (
                     <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/system-services"
+                    apiEndpoint="http://localhost:5000/api/asset_mapping"
                     timeColumnIndex={[]}
                     columns={systemServicesColumns}
                     currentPanel={currentPanel}
@@ -269,11 +269,11 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     {/* <Menu.Item key="container">容器</Menu.Item> */}
                                     <Menu.Item key="open-ports">开放端口</Menu.Item>
                                     <Menu.Item key="running-processes">运行进程</Menu.Item>
+                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
+                                    <Menu.Item key="system-services">系统服务</Menu.Item>
                                     <Menu.Item key="system-users">系统用户</Menu.Item>
                                     <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
-                                    <Menu.Item key="system-services">系统服务</Menu.Item>
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
-                                    <Menu.Item key="fim">文件完整性检测</Menu.Item>
                                     <Menu.Item key="applications">应用</Menu.Item>
                                     {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
                                     {/* 可以根据需要添加更多的Menu.Item */}

@@ -190,7 +190,7 @@ const tbName:GenericDataItem={
     '容器运行状态分布':'container',}
 const tableNames = [
     '开放端口 TOP5',
-    '系统软件 TOP5',
+    '系统用户 TOP5',
     '系统服务 TOP5',
     '运行进程 TOP5',
     '文件完整性校验-最新变更二进制文件 TOP5',
@@ -701,7 +701,11 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             }
             // 从 context 中解构出 topFiveFimData 和 n
             const { topFiveFimData, topFivePortCounts,
-                portMetaData, processMetaData,portMetaData2,} = context;
+                fimMetaData,
+                portMetaData, portMetaData2,
+                processMetaData,topFiveProcessCounts,topFiveUserCounts,
+                assetMetaData, assetMetaData2,topFiveServiceCounts,topFiveProductCounts,
+                linuxBaseLineCheckMetaData,} = context;
 
 
             return (
@@ -818,6 +822,39 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
+                                <Statistic title={<span>系统服务</span>} value={assetMetaData.tupleCount} />
+                            </Col>
+                            <Col
+                                pull={0}
+                                span={2}
+                                style={{ position: 'relative', top: '-3.5px' }}
+                            >
+                                <Button
+                                    type="link"
+                                    style={{ color: '#000' }}
+                                    icon={<RightOutlined />}
+                                    onClick={() => this.goToPanel('system-services')}
+                                />
+                            </Col>
+                        </Row>
+                    </Card>
+                </Col>
+                <Col span={3}>
+                    <Card
+                        bordered={false}
+                        style={{
+                            height: '75px',
+                            width: '150px',
+                            minWidth: 80, // 最小宽度100px
+                            maxWidth: 200, // 最大宽度200px
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                        }}
+                    >
+                        <Row>
+                            <Col pull={2} span={22}>
                                 <Statistic title={<span>系统用户</span>} value={processMetaData.typeCount.size}/>
                             </Col>
                             <Col
@@ -874,8 +911,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         style={{
                             height: '75px',
                             width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -884,38 +919,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>系统服务</span>} value={0} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{ color: '#000' }}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('system-services')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>完整性校验</span>} value={0} />
+                                <Statistic title={<span>完整性检验</span>} value={fimMetaData.tupleCount} />
                             </Col>
                             <Col
                                 pull={0}
@@ -971,7 +975,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
-                        dataSource={topFivePortCounts}
+                        dataSource={topFivePortCounts}//开放端口
                         columns={columns[0]}
                         pagination={false}
                         rowKey="id"
@@ -980,7 +984,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
-                        dataSource={sortedData[1]}
+                        dataSource={topFiveUserCounts}//系统软件
                         columns={columns[1]}
                         pagination={false}
                         rowKey="id"
@@ -989,7 +993,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
-                        dataSource={sortedData[2]}
+                        dataSource={topFiveServiceCounts}//系统软件
                         columns={columns[2]}
                         pagination={false}
                         rowKey="id"
@@ -998,7 +1002,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
-                        dataSource={sortedData[3]}
+                        dataSource={topFiveProcessCounts}
                         columns={columns[3]}
                         pagination={false}
                         rowKey="id"
@@ -1016,7 +1020,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
-                        dataSource={sortedData[5]}
+                        dataSource={topFiveProductCounts}
                         columns={columns[5]}
                         pagination={false}
                         rowKey="id"
@@ -1064,7 +1068,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             </Row>
             
             <MetaDataDisplay
-            metadata={portMetaData2}
+            metadata={linuxBaseLineCheckMetaData}
             />
             </div>
             );
