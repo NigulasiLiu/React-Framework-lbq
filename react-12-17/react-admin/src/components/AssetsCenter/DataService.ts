@@ -20,7 +20,7 @@ export const fetchDataFromAPI = async ({ apiEndpoint}: FetchDataParams): Promise
     const response = await axios.get(endpoint);
      if (response.data) {//&& response.data.status === 200，注意，当response包含message和status两个字段时，不能够用 && response.data.length > 0 判断，因为length属性以及不存在了
         const messageJsonString = JSON.stringify(response.data.message, null, 2);
-        console.log("Received message:", messageJsonString);
+        //console.log("Received message:", messageJsonString);
         return response.data.message;
         // const messageJsonString = JSON.stringify(response.data, null, 2);
         // console.log("Received message:", messageJsonString);
@@ -45,13 +45,80 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
                 }
             });
         }
-
+    // 处理嵌套的JSON数据
+    if (item.vul_detection_exp_result) {
+        item.vul_detection_exp_result = item.vul_detection_exp_result.map((expItem: any) => {
+          return {
+            ...expItem,
+            bug_exp: expItem.bug_exp,
+          };
+        });
+      }
+  
+      if (item.vul_detection_finger_result) {
+        item.vul_detection_finger_result = item.vul_detection_finger_result.map((fingerItem: any) => {
+          return {
+            ...fingerItem,
+            finger: fingerItem.finger,
+          };
+        });
+      }
+  
+      if (item.vul_detection_poc_result) {
+        item.vul_detection_poc_result = item.vul_detection_poc_result.map((pocItem: any) => {
+          return {
+            ...pocItem,
+            bug_poc: pocItem.bug_poc,
+          };
+        });
+      }
         // 如果有其他数据处理逻辑，如排序，可以在此添加
         // ...
 
         return item;
     });
 };
+
+export const processData1 = (data: any[], timeColumnIndex?: string[]): any[] => {
+    return data.map(item => {
+      // 时间转换
+      if (timeColumnIndex) {
+        timeColumnIndex.forEach(column => {
+          if (item[column]) {
+            item[column] = convertUnixTime(parseFloat(item[column]));
+          }
+        });
+      }
+  
+      // 处理嵌套的JSON数据，准备 Tooltip 文本
+      const prepareTooltipText = (nestedData: any[], key: string) => {
+        return nestedData.map(nestedItem => {
+          const { id, ip, scanTime, scanType, port, url } = nestedItem;
+          // 根据具体需求调整展示的字段
+          return `ID: ${id}, IP: ${ip}, Scan Time: ${scanTime}, Scan Type: ${scanType}` +
+                 (port ? `, Port: ${port}` : '') +
+                 (url ? `, URL: ${url}` : '');
+        }).join('; ');
+      };
+  
+      // 映射每种类型的结果为一个 Tooltip 文本字符串
+      if (item.vul_detection_exp_result) {
+        item.vul_detection_exp_result_tooltip = prepareTooltipText(item.vul_detection_exp_result, 'bug_exp');
+      }
+      if (item.vul_detection_finger_result) {
+        item.vul_detection_finger_result_tooltip = prepareTooltipText(item.vul_detection_finger_result, 'finger');
+      }
+      if (item.vul_detection_poc_result) {
+        item.vul_detection_poc_result_tooltip = prepareTooltipText(item.vul_detection_poc_result, 'bug_poc');
+      }
+  
+      return item;
+    });
+};
+  
+  
+
+
 // 从 apiEndpoint 提取倒数第一个 / 和倒数第二个 / 之间的字符串
 // export const extractTbnameFromApiEndpoint = (apiEndpoint: string): string | undefined => {
 //     const lastSlashIndex = apiEndpoint.lastIndexOf('/');

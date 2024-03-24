@@ -1,7 +1,7 @@
 import React from 'react';
-import { Row, Col, Card, Table, Popconfirm, Button, Menu,} from 'antd';
+import { Row, Col, Card, Menu,} from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import { RouteComponentProps, withRouter  } from 'react-router-dom';
+import { RouteComponentProps, withRouter, useLocation} from 'react-router-dom';
 import HostOverview from './HostOverview';
 import HostDetailsTable from './HostDetailsTable';
 import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../tableUtils';
@@ -213,6 +213,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     componentDidMount() {
         const { id } = this.props.match.params;
         this.setState({ selectedhost_name: id });
+
+        const queryParams = new URLSearchParams(this.props.location.search);
+        const host = queryParams.get('Host'); // 假设你是通过 ?Host=someValue 传递的参数
+    
+        console.log("Host:", host);
+        // 你可以在这里根据 host 参数进行更多操作，比如发起 API 请求获取详细信息
+
     }
     // 父组件中
     handleDataReceived = (data: any[]) => {
@@ -346,94 +353,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         document.body.removeChild(element);
     };
 
-    // 渲染当前激活的子面板
-    // renderCurrentPanel() {
-    //     const { currentPanel } = this.state;
-    //     switch (currentPanel) {
-    //         case 'HostOverview':
-    //             return (
-    //                 <HostOverview
-    //                 changePanel={this.changePanel}
-    //                 />
-    //             );
-    //         case 'hostalertlist':
-    //             return (
-    //                 <div style={{marginTop:'-20px'}}>
-    //                 <AlertList 
-    //                 apiEndpoint={"http://localhost:5000/api/files/logs/hostalertlist/1"} 
-    //                 columns={hostalertColumns}
-    //                 currentPanel='hostalertlist'
-    //             />
-    //                 </div>
-    //             );    
-    //         case 'vulnerabilityalertlist':
-    //             return (
-    //                 <HostDetailsTable
-    //                 route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
-    //                 columns={vulnerabilityColumns}
-    //                 currentPanel={currentPanel}
-    //                 titleName="漏洞概览"
-    //                 selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
-    //                 onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
-
-    //                 />
-    //             );   
-    //         case 'baselineDetectalertlist':
-    //             return (
-    //                 <HostDetailsTable
-    //                 route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
-    //                 columns={baselineDetectColumns}
-    //                 currentPanel={currentPanel}
-    //                 titleName="基线概览"
-    //                 selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
-    //                 onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
-
-    //                 />
-    //             );  
-    //             case 'runningalertlist':
-    //                 return (
-    //                     <div style={{marginTop:'-20px'}}>
-    //                     <AlertList 
-    //                     apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"} 
-    //                     columns={hostalertColumns}
-    //                     currentPanel='runningalertlist'
-    //                 />
-    //                     </div>
-    //                 );                  
-    //             case 'virusscanning':
-    //                 return (
-    //                     <div style={{ marginTop:'-20px'}}>
-    //                     <VirusScanning
-    //                     hostID=""
-    //                     pageWidth={1320}
-    //                     /></div>
-    //                 );    
-    //             case 'performancemonitor':
-    //                 return (
-    //                     <div style={{ marginTop:'-20px'}}>
-    //                     <PerformanceMonitor
-    //                     /></div>
-    //                 );          
-    //             case 'assetfingerprint':
-    //                 return (
-    //                     <HostDetailsTable
-    //                     route="http://localhost:5000/api/files/logs/assetfingerprint"
-    //                     columns={fimColumns}
-    //                     currentPanel={currentPanel}
-    //                     titleName="资产指纹"
-    //                     selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
-    //                     onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
-    
-    //                     />
-    //                 );     
-    //             default:
-    //             return (
-    //                 <HostOverview
-    //                 changePanel={this.changePanel}
-    //                 />
-    //             );
-    //     }
-    // }
     renderCurrentPanel() {
         const { currentPanel } = this.state;
     
@@ -443,7 +362,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     <HostOverview
                         changePanel={this.changePanel}
                     />
-                );
+                );      
             case 'hostalertlist':
                 return (
                     <div style={{marginTop:'-20px'}}>

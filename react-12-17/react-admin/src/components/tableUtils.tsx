@@ -18,6 +18,7 @@ export interface DetailItem {
     cmdline:string;
     pid: string;
     check_name:string;
+    createTime:string;
 }
 export interface BaseLineDataType {
     key: React.Key;
@@ -31,16 +32,7 @@ export interface BaseLineDataType {
   }
 
 export const simplifiedTablePanel=['createnewtask','UserManagementlist'];
-export interface BaseLineDataType {
-    key: React.Key;
-    ip: string;                // IP
-    check_name: string;        // 基线名称
-    details: string;           // 检查详情
-    adjustment_requirement: string;  // 调整建议
-    status: string;            // 状态
-    last_checked: string;      // 最新扫描时间
-    instruction: string;       // 指令
-  }
+
 export interface checkedItemDataType {
  level:string;
  passRate:number;
@@ -78,14 +70,6 @@ export interface StatusItem {
     value: number;
 }
 
-export interface FimDataType {
-    key: React.Key;
-    filename: string;   
-    event_time: string;   
-    host_name: string;     
-    host_ip: string;          
-    alert_type: string;        
-} 
 export interface CreateTaskDataType {
     key: React.Key;
     host_name: string;   
@@ -97,14 +81,14 @@ export interface CreateTaskDataType {
 } 
 export const baseLineDetectScanResult1Columns = [
     { title: '影响主机', dataIndex: 'influencehost', key: 'influencehost' },
-    { title: '标签', dataIndex: 'label', key: 'label',
+    { title: '标签', dataIndex: 'label', 
     //sorter: (a: any, b: any) => Date.parse(b.foundtime) - Date.parse(a.foundtime), 
     },
-    { title: '检查结果', dataIndex: 'status', key: 'status',
+    { title: '检查结果', dataIndex: 'status', 
     filters: [
     ],
     onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
-    { title: '操作', dataIndex: 'operation', key: 'operation',
+    { title: '操作', dataIndex: 'operation', 
     render: (text: string, record: any) => (
     // 在 render 方法中返回包含按钮的元素
     <Link to="/app/create_agent_task" target="_blank">
@@ -126,21 +110,18 @@ export const baseLineDetectCheckedItemColumns = [
     {
         title: "级别",
         dataIndex: 'level',
-        key: 'level',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
     },
     {
         title: '通过率',
         dataIndex: 'passRate',
-        key: 'passRate',
         sorter: (a: any, b: any) => Date.parse(b.passRate) - Date.parse(a.passRate),
     },
 
     {
         title: "操作",
         dataIndex: 'operation',
-        key: 'operation',
         render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
         <Link to="/app/create_agent_task" target="_blank">
@@ -163,21 +144,18 @@ export const baseLineDetectHostItemColumns = [
     {
         title: '风险项',
         dataIndex: 'riskItem',
-        key: 'riskItem',
         sorter: (a: any, b: any) => Date.parse(b.riskItem) - Date.parse(a.riskItem),
     },
     {
         title: "通过项",
         dataIndex: 'passItem',
-        key: 'passItem',
-        // filters: [],
+        // 
         // onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
     },
 
     {
         title: "操作",
         dataIndex: 'operation',
-        key: 'operation',
         render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
         <Link to="/app/create_agent_task" target="_blank">
@@ -200,20 +178,17 @@ export const baseLineDetectScanResult2Columns = [
     {
         title: '标签',
         dataIndex: 'label',
-        key: 'label',
     },
     {
         title: "扫描结果",
         dataIndex: 'scanResult',
-        key: 'scanResult',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.scanResult.includes(value as string),
     },
 
     {
         title: "操作",
         dataIndex: 'operation',
-        key: 'operation',
         render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
         <Link to="/app/create_agent_task" target="_blank">
@@ -231,11 +206,11 @@ export const virusscandetailscolumns=[
         </Link>
         )
     },
-    { title: '状态', dataIndex: 'status', key: 'status',
+    { title: '状态', dataIndex: 'status', 
     filters: [
     ],
     onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
-    { title: '汇报时间', dataIndex: 'report_time', key: 'report_time', 
+    { title: '汇报时间', dataIndex: 'report_time', 
     sorter: (a: any, b: any) => Date.parse(b.report_time) - Date.parse(a.report_time),
 }
 ]
@@ -260,14 +235,12 @@ export const createNewTaskColumns = [
     {
         title: "标签",
         dataIndex: 'label',
-        key: 'label',
         //sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
     },
     {
         title: '地域',
         dataIndex: 'group',
-        key: 'group',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.group.includes(value as string),
         onHeaderCell: () => ({
             style: {
@@ -280,8 +253,7 @@ export const createNewTaskColumns = [
     {
         title: '操作系统',
         dataIndex: 'os',
-        key: 'hostnaosme',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.os.includes(value as string),
         
         onHeaderCell: () => ({
@@ -294,8 +266,7 @@ export const createNewTaskColumns = [
     {
         title: '状态',
         dataIndex: 'status',
-        key: 'status',                
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.status.includes(value as string),
         onHeaderCell: () => ({
             style: {
@@ -307,7 +278,6 @@ export const createNewTaskColumns = [
     {
         title: '更新时间',
         dataIndex: 'updatetime',
-        key: 'updatetime',
         sorter: (a: any, b: any) => new Date(a.updatetime).getTime() - new Date(b.updatetime).getTime(),
         onHeaderCell: () => ({
             style: {
@@ -318,62 +288,13 @@ export const createNewTaskColumns = [
     },
 ];
 
-export const hostinventoryColumns = [
-    {
-        title: "ID",
-        dataIndex: 'id',
-        key: 'id',
-        
-        //render: () => null,
-        //width: '13%',
-    },
-    {
-        title: "主机IP",
-        dataIndex: 'ip',
-        key: 'ip',
-    },
-    {
-        title: "协议",
-        dataIndex: 'protocol',
-        key: 'protocol',
-    },
-    {
-        title: "开放端口",
-        dataIndex: 'port',
-        key: 'port',
-    },
-    {
-        title: "服务",
-        dataIndex: 'service',
-        key: 'service',
-    },
-    {
-        title: "服务版本",
-        dataIndex: 'version',
-        key: 'version',
-    },
-    {
-        title: "操作系统",
-        dataIndex: 'ostype',
-        key: 'ostype',
-        filters: [
-        ],
-        onFilter: (value: string | number | boolean, record: DataType) => record.ostype.includes(value as string),
-    },
-    {
-        title: "操作",
-        dataIndex: 'operation',
-        key: 'operation',
-        render: (text: string, record: any) => (
-        // 在 render 方法中返回包含按钮的元素
-        <Link to="/app/create_agent_task" target="_blank" >
-            <Button type="link" className="link-button" style={{color:'#4086f4'}}>下发任务</Button>
-        </Link>
-        )
-    },
-];
 
-export const hostinventoryColumns_new = [
+export interface hostinventoryColumnsType {
+    key: React.Key;   
+    os_version: string;          
+    status: string;        
+} 
+export const hostinventoryColumns = [
     {
         title: "ID",
         dataIndex: 'id',
@@ -383,43 +304,42 @@ export const hostinventoryColumns_new = [
     {
         title: "主机名称",
         dataIndex: 'host_name',
-        key: 'host_name',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+              <Button type="link" className="custom-link-button">{text}</Button>
+            </Link>
+          ),
     },
     {
         title: "主机IP",
         dataIndex: 'ip_address',
-        key: 'ip_address',
     },
     {
         title: "操作系统",
         dataIndex: 'os_version',
-        key: 'os_version',
         filters: [
         ],
-        onFilter: (value: string | number | boolean, record: DataType) => record.os_version.includes(value as string),
+        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.os_version.includes(value as string),
     },
     {
         title: "状态",
         dataIndex: 'status',
-        key: 'status',
         filters: [
         ],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
     },
     {
         title: "内存使用量",
         dataIndex: 'mem_use',
-        key: 'mem_use',
     },
     {
         title: "CPU使用率",
         dataIndex: 'cpu_use',
-        key: 'cpu_use',
     },
     {
         title: "操作",
         dataIndex: 'operation',
-        key: 'operation',
         render: (text: string, record: any) => (
         // 在 render 方法中返回包含按钮的元素
         <Link to="/app/create_agent_task" target="_blank">
@@ -429,46 +349,59 @@ export const hostinventoryColumns_new = [
     },
 ];
 
+export interface FimDataType {
+    key: React.Key;
+    // filename: string;   
+    // event_time: string;   
+    // hostname: string;     
+    hostIP: string;          
+    alert_type: string;        
+} 
 export const fimColumns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 20, // 最大宽度200px
+            },
+          }),
+    },
     {
         title: "文件名",
         dataIndex: 'filename',
-        key: 'filename',
         onHeaderCell: () => ({
             style: {
               maxWidth: 200, // 最大宽度200px
             },
           }),
-        render: (text: string, record: any) => (
-        // 在 render 方法中返回包含按钮的元素
-        <Link to="/app/detailspage" target="_blank">
-            <Button type="link" className="custom-link-button">{text}</Button>
-        </Link>
-        ),
-    },
-    {
-        title: "告警时间",
-        dataIndex: 'event_time',
-        key: 'event_time',
-        sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
     },
     {
         title: '主机名',
         dataIndex: 'hostname',
-        key: 'hostname',
         onHeaderCell: () => ({
             style: {
               minWidth: 80, // 最小宽度100px
               //maxWidth: 170, // 最大宽度200px
             },
           }),
+        //   render: (text: string, record: any) => (
+        //   // 在 render 方法中返回包含按钮的元素
+        //   <Link to="/app/detailspage" target="_blank">
+        //       <Button type="link" className="custom-link-button">{text}</Button>
+        //   </Link>
+        //   ),
+    },
+    {
+        title: "告警时间",
+        dataIndex: 'event_time',
+        sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
     },
     {
         title: '主机IP',
         dataIndex: 'hostIP',
-        key: 'hostIP',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: FimDataType) => record.host_ip.includes(value as string),
+        onFilter: (value: string | number | boolean, record: FimDataType) => record.hostIP.includes(value as string),
         onHeaderCell: () => ({
             style: {
               minWidth: 80, // 最小宽度100px
@@ -480,8 +413,7 @@ export const fimColumns = [
     {
         title: '告警类型',
         dataIndex: 'alert_type',
-        key: 'alert_type',                
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: FimDataType) => record.alert_type.includes(value as string),
         
         onHeaderCell: () => ({
@@ -512,7 +444,7 @@ export const containerColumns = [
         title: '运行状态',
         dataIndex: 'runStatus',
         key: 'runStatus',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
@@ -536,7 +468,12 @@ export const containerColumns = [
         key: 'lastScanTime',
     },
 ];
-
+export interface openPortsColumnsType {
+    key: React.Key;   
+    host_ip: string;          
+    port_number: string;
+    port_state:string;
+} 
 export const openPortsColumns = [
     {
         title: 'ID',
@@ -551,8 +488,7 @@ export const openPortsColumns = [
     {
         title: '主机IP',
         dataIndex: 'host_ip',
-        key: 'host_ip',
-        onFilter: (value: string | number | boolean, record: FimDataType) => record.host_ip.includes(value as string),
+        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.host_ip.includes(value as string),
         onHeaderCell: () => ({
             style: {
               //minWidth: 80, // 最小宽度100px
@@ -562,8 +498,7 @@ export const openPortsColumns = [
     {
         title: '端口号',
         dataIndex: 'port_number',
-        key: 'port_number',
-        onFilter: (value: string | number | boolean, record: DetailItem) => record.port_number.includes(value as string),
+        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.port_number.includes(value as string),
         onHeaderCell: () => ({
             style: {
               //minWidth: 80, // 最小宽度100px
@@ -574,8 +509,7 @@ export const openPortsColumns = [
     {
         title: '端口状态',
         dataIndex: 'port_state',
-        key: 'port_state',
-        onFilter: (value: string | number | boolean, record: DetailItem) => record.port_state.includes(value as string),
+        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.port_state.includes(value as string),
         onHeaderCell: () => ({
             style: {
               //minWidth: 80, // 最小宽度100px
@@ -586,17 +520,14 @@ export const openPortsColumns = [
     {
         title: '端口名称',
         dataIndex: 'port_name',
-        key: 'port_name',
     },
     {
         title: '应用',
         dataIndex: 'product',
-        key: 'product',
     },
     {
         title: '额外信息',
         dataIndex: 'extrainfo',
-        key: 'extrainfo',
     },
 
     // {
@@ -631,7 +562,17 @@ export const openPortsColumns = [
     // },
     // ... 其他字段定义
 ];
-
+export interface runningProcessesColumnsType {
+    key: React.Key;   
+    pid: string;          
+    exe: string;
+    userName:string;
+    cmdline:string;
+    cpuPercent:string;
+    memoryPercent:string;
+    createTime:string;
+    highRisk:string;
+} 
 // 运行进程表的列定义
 export const runningProcessesColumns = [
     {
@@ -647,37 +588,33 @@ export const runningProcessesColumns = [
     {
         title: '主机IP',
         dataIndex: 'agentIP',
-        key: 'agentIP',
-        //filters: [],
+        //
         //onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '进程ID',
         dataIndex: 'pid',
-        key: 'pid',
 
-        sorter: (a:DetailItem, b:DetailItem) => parseFloat(a.pid) - parseFloat(b.pid),
+        sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.pid) - parseFloat(b.pid),
     
     },
     {
         title: '进程名称',
         dataIndex: 'name',
-        key: 'name',
 
-        render: (text: string, record: DetailItem) => (
+        render: (text: string, record: runningProcessesColumnsType) => (
             <Tooltip title={'路径:'+ record.exe}>
                 {text}
             </Tooltip>
         ),
-        //filters: [],
+        //
         //onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
         title: '用户',
         dataIndex: 'userName',
-        key: 'userName',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DetailItem) => record.userName.includes(value as string),
+        
+        onFilter: (value: string | number | boolean, record: runningProcessesColumnsType) => (record.userName&&record.userName.includes(value as string)),
     },
     // {
     //     title: '进程路径',
@@ -703,13 +640,12 @@ export const runningProcessesColumns = [
     {
         title: '进程命令行',
         dataIndex: 'cmdline',
-        key: 'cmdline',
         // render: (text: string, record: DetailItem) => (
         //     <Tooltip title={record.cmdline}>
         //         {text}
         //     </Tooltip>
         // ),
-        render: (text: string, record: DetailItem) => (
+        render: (text: string, record: runningProcessesColumnsType) => (
             <Tooltip title={record.cmdline}>
               <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
                 {record.cmdline}
@@ -720,26 +656,23 @@ export const runningProcessesColumns = [
     {
         title: 'CPU占用',
         dataIndex: 'cpuPercent',
-        key: 'cpuPercent',
-        sorter: (a:DetailItem, b:DetailItem) => parseFloat(a.cpuPercent) - parseFloat(b.cpuPercent),
+        sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.cpuPercent) - parseFloat(b.cpuPercent),
     },
     {
         title: '内存占用',
         dataIndex: 'memoryPercent',
-        key: 'memoryPercent',
-        sorter: (a:DetailItem, b:DetailItem) => parseFloat(a.memoryPercent) - parseFloat(b.memoryPercent),
+        sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.memoryPercent) - parseFloat(b.memoryPercent),
     },
     {
         title: '创建时间',
         dataIndex: 'createTime',
-        key: 'createTime',
+        sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.createTime) - parseFloat(b.createTime),
     },
     {
         title: '是否高危',
         dataIndex: 'highRisk',
-        key: 'highRisk',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DetailItem) => record.highRisk.includes(value as string),
+        
+        onFilter: (value: string | number | boolean, record: runningProcessesColumnsType) => record.highRisk.includes(value as string),
     },
 ];
 
@@ -858,28 +791,24 @@ export const systemServicesColumns = [
     {
         title: '主机IP',
         dataIndex: 'ip',
-        key: 'ip',
     },
     {
         title: '服务',
         dataIndex: 'service',
-        key: 'service',
     },
     {
         title: '软件',
         dataIndex: 'product',
-        key: 'product',
     },
     {
         title: '版本',
         dataIndex: 'version',
-        key: 'version',
     },
     // {
     //     title: '类型',
     //     dataIndex: 'type',
     //     key: 'type',
-    //     filters: [],
+    //     
     //     onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     // },
     // {
@@ -901,7 +830,7 @@ export const systemServicesColumns = [
     //     title: '是否自动重启',
     //     dataIndex: 'autoRestart',
     //     key: 'autoRestart',
-    //     filters: [],
+    //     
     //     onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     //     // 这里假设 autoRestart 是布尔值，可以根据需要进行调整
     //     //render: (text, record) => (record.autoRestart ? '是' : '否'),
@@ -928,7 +857,7 @@ export const systemSoftwareColumns = [
         title: '类型',
         dataIndex: 'type',
         key: 'type',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
@@ -969,7 +898,7 @@ export const kernelModulesColumns = [
         title: '状态',
         dataIndex: 'status',
         key: 'status',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
     {
@@ -1058,16 +987,16 @@ export const hostalertColumns = [
         title: '告警名称',
         dataIndex: 'alertName',
         key: 'alertName',
-        render: (text: string, record: AlertDataType) => (
-            <a
-                href={'/login'}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#1964F5' }}// 添加颜色样式
-            >
-                {text}
-            </a>
-        ),
+        // render: (text: string, record: AlertDataType) => (
+        //     <a
+        //         href={'/login'}
+        //         target="_blank"
+        //         rel="noopener noreferrer"
+        //         style={{ color: '#1964F5' }}// 添加颜色样式
+        //     >
+        //         {text}
+        //     </a>
+        // ),
     },
     {
         title: '影响资产',
@@ -1078,7 +1007,7 @@ export const hostalertColumns = [
         title: '告警类型',
         dataIndex: 'alert_type',
         key: 'alert_type',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: AlertDataType) => record.alert_type.includes(value as string),
     },
     {
@@ -1090,7 +1019,7 @@ export const hostalertColumns = [
         title: '状态',
         dataIndex: 'status',
         key: 'status',
-        filters: [],
+        
         onFilter: (value: string | number | boolean, record: AlertDataType) => record.status.includes(value as string),
     },
     {
@@ -1274,6 +1203,80 @@ export const vulnerabilityColumns = [
     },
 ];
 
+export const vulnerabilityColumns_new = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: '主机IP',
+      dataIndex: 'ip',
+    },
+    {
+      title: '端口',
+      dataIndex: 'port',
+    },
+    {
+      title: '扫描时刻',
+      dataIndex: 'scanTime',
+    },
+    {
+      title: '扫描类型',
+      dataIndex: 'scanType',
+    },
+    
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        
+        render: (text: string) => (
+            <div>
+            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+              <Button className="custom-link-button">忽略</Button>
+            </Link>
+            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+              <Button className="custom-link-button">忽略</Button>
+            </Link>
+            </div>
+          ),
+    },
+    // {
+    //     title: '漏洞挖掘结果',
+    //     dataIndex: 'vul_detection_exp_result',
+    //     // render: (text: any, record: any) => (
+    //     //   <Tooltip title={`ID: ${record.id}, IP: ${record.ip}, Scan Time: ${record.scanTime}, Scan Type: ${record.scanType}`}>
+    //     //     <span>{text.map((item: any) => item.bug_exp).join(', ')}</span>
+    //     //   </Tooltip>
+    //     // ),
+    // },
+    // {
+    // title: '漏洞指纹',
+    // dataIndex: 'vul_detection_finger_result',
+    // // render: (text: any) => (
+    // //     <Tooltip title={`ID: ${text[0].id}, IP: ${text[0].ip}, Port: ${text[0].port}, Scan Time: ${text[0].scanTime}, Scan Type: ${text[0].scanType}, URL: ${text[0].url}`}>
+    // //     <span>{text.map((item: any) => item.finger).join(', ')}</span>
+    // //     </Tooltip>
+    // // ),
+    // },
+    // {
+    // title: 'Vulnerability PoC',
+    // dataIndex: 'vul_detection_poc_result',
+    // // render: (text: any) => (
+    // //     <Tooltip title={`ID: ${text[0].id}, IP: ${text[0].ip}, Port: ${text[0].port}, Scan Time: ${text[0].scanTime}, Scan Type: ${text[0].scanType}, URL: ${text[0].url}`}>
+    // //     <span>{text.map((item: any) => item.bug_poc).join(', ')}</span>
+    // //     </Tooltip>
+    // // ),
+    // },
+];
+export interface baselineDetectColumnsType {
+    key: React.Key;
+
+    check_name:string;
+    createTime:string;
+    instruction: string;       // 指令
+    status:string;
+}
 export const baselineDetectColumns = [
     {
         title: "ID",
@@ -1284,14 +1287,12 @@ export const baselineDetectColumns = [
     {
         title: "IP",
         dataIndex: 'ip',
-        key: 'ip',
         //width: '13%',
     },
     {
         title: "基线名称",
         dataIndex: 'check_name',
-        key: 'check_name',
-        render: (text: string, record: DetailItem) => (
+        render: (text: string, record: baselineDetectColumnsType) => (
             <Tooltip title={record.check_name}>
               <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
                 {record.check_name}
@@ -1302,13 +1303,11 @@ export const baselineDetectColumns = [
     {
         title: "检查详情",
         dataIndex: 'details',
-        key: 'details',
     },
     {
         title: "调整建议",
         dataIndex: 'adjustment_requirement',
-        key: 'adjustment_requirement',
-        render: (text: string, record: BaseLineDataType) => (
+        render: (text: string, record: baselineDetectColumnsType) => (
             <Tooltip title={record.instruction}>
                 {text}
             </Tooltip>
@@ -1317,21 +1316,26 @@ export const baselineDetectColumns = [
     {
         title: "状态",
         dataIndex: 'status',
-        key: 'status',
         filters: [
         ],
-        onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+        onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
     },
     {
         title: "最新扫描时间",
         dataIndex: 'last_checked',
-        key: 'last_checked',
         sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
         sortDirections: ['ascend', 'descend'],
     },
     {
         title: "操作",
         dataIndex: 'operation',
+        
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+              <Button type="link" className="custom-link-button">{text}</Button>
+            </Link>
+          ),
     },
 ];
 
@@ -1486,22 +1490,28 @@ export const hostperformanceColumns = [
     },
 ];
 
-export const fimcolumns_2 = [
-    { title: 'Path', dataIndex: 'path', key: 'path' },
-    { title: 'Host IP', dataIndex: 'host_ip', key: 'host_ip' },
-    { title: 'Alert Type', dataIndex: 'alert_type', key: 'alert_type' },
-    { title: 'Event Time', dataIndex: 'event_time', key: 'event_time' }
-];
-export const vulnerDetailColumns = [
-    { title: '影响资产', dataIndex: 'influenceasset', key: 'influenceasset' },
-    { title: '发现时间', dataIndex: 'foundtime', key: 'foundtime',
-    sorter: (a: any, b: any) => Date.parse(b.foundtime) - Date.parse(a.foundtime), },
-    { title: '状态', dataIndex: 'status', key: 'status',
-    filters: [
-    ],
-    onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
-    { title: '操作', dataIndex: 'operation', key: 'operation' }
-];
+// export const vulnerDetailColumns = [
+//     { title: '影响主机', dataIndex: 'ip', key: 'ip' },
+//     { title: '发现时间', dataIndex: 'scanTime', 
+//     sorter: (a: any, b: any) => Date.parse(b.scanTime) - Date.parse(a.scanTime), },
+//     // { title: '状态', dataIndex: 'status', key: 'status',
+//     // filters: [
+//     // ],
+//     // onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
+    
+//     {
+//         title: "操作",
+//         dataIndex: 'operation',
+        
+//         render: (text:string, record:any) => (
+//             <div>
+//               <Button className="custom-link-button">忽略</Button>
+//               <Button className="custom-link-button">处理</Button>
+//               <Button onClick={() => this.toggleDetailSidebar(record.id)} className="custom-link-button">详情</Button>
+//             </div>
+//           ),
+//     },
+// ];
 export const virusscannigAllTasksColumns = [
     { title: '任务名称', dataIndex: 'task_name', key: 'task_name' },
     { title: '任务类型', dataIndex: 'task_type', key: 'task_type',},
@@ -1530,7 +1540,7 @@ const sendPostRequest = async (data: any) => {
       console.error('Error sending POST request:', error);
       return null;
     }
-  };
+};
   
   // 发送 DELETE 请求的函数
   const sendDeleteRequest = async (recordId: string) => {
@@ -1574,41 +1584,4 @@ export const onSelectChange = (selectedKeys: React.Key[], panel: string, panelSe
     });
 };
 
-
-// export const handleExport = (dataSource:GenericDataItem[], selectedRowKeys:React.Key[]) => {
-
-//     // 过滤出已选中的行数据
-//     const selectedData = dataSource.filter((row: AlertColumDataType) => selectedRowKeys.includes(row.key));
-
-//     // 检查是否有选中的行
-//     if (selectedData.length === 0) {
-//         alert('没有选中的行');
-//         return;
-//     }
-
-//     // 转换数据为CSV格式
-//     const csvData = convertToCSV(selectedData);
-
-//     // 触发下载
-//     triggerDownload(csvData, 'export.csv');
-// };
-
-// export const convertToCSV = (data: AlertColumDataType[]) => {
-//     // 假设您希望导出的CSV中包括所有字段
-//     const headers = Object.keys(data[0]).join(',');
-//     const rows = data.map((row: AlertColumDataType) => {
-//         return `${row.key},${row.alarmName},${row.affectedAsset},${row.alarmType},${row.level},${row.status},${row.occurrenceTime}`;
-//     });
-//     return [headers, ...rows].join('\n');
-// };
-
-// export const triggerDownload = (data: string, filename: string) => {
-//     const element = document.createElement('a');
-//     element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-//     element.download = filename;
-//     element.style.display = 'none';
-//     document.body.appendChild(element);
-//     element.click();
-//     document.body.removeChild(element);
-// };
 

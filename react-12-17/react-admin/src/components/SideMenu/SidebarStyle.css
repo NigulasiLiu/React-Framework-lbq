@@ -15,9 +15,9 @@
 }
 .sidebar {
   position: fixed;
-  right: -500px; /* 设置为负值，使侧边栏开始时在屏幕外 */
+  right: -800px; /* 设置为负值，使侧边栏开始时在屏幕外 */
   top: 0;
-  width: 500px; /* 侧边栏的宽度 */
+  width: 800px; /* 侧边栏的宽度 */
   height: 100%; /* 侧边栏的高度 */
   background: #f9f9f9; /* 侧边栏的背景颜色 */
   box-shadow: -2px 0 5px rgba(0,0,0,0.5); /* 侧边栏的阴影效果 */

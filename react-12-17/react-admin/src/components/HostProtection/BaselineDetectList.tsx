@@ -181,7 +181,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
       }
       // 从 context 中解构出 topFiveFimData 和 n
       const {linuxBaseLineCheckMetaData,linuxBaseLineCheckMetaData2,windowsBaseLineCheckMetaData} = context;
-      const hostCheckedPassedCount = linuxBaseLineCheckMetaData2.typeCount.get('自行判断');//检查通过数量
+      const hostCheckedPassedCount = linuxBaseLineCheckMetaData2.typeCount.get('TRUE');//检查通过数量
       const hostCheckedCount = linuxBaseLineCheckMetaData.tupleCount;//检查项数量
       const hostCheckedPassedRate = hostCheckedPassedCount===undefined?0:hostCheckedPassedCount/hostCheckedCount;
           return (

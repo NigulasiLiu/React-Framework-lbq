@@ -107,15 +107,15 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
 
     // 渲染当前激活的子面板
     renderCurrentPanel() {
-        const { currentPanel } = this.state;
+        const {currentPanel} = this.state;
         switch (currentPanel) {
             case 'overview':
                 return (
                     <OverviewPanel
                         changePanel={this.changePanel}
-                        topData={this.state.topData}
+                        //topData={this.state.topData}
                         statusData={this.state.statusData}
-                        //currentPanel={currentPanel}
+                        currentPanel={currentPanel}
                     />
                 );
             case 'fim':
@@ -124,15 +124,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     apiEndpoint="http://localhost:5000/api/FileIntegrityInfo"
                     timeColumnIndex={['event_time']}
                     columns={fimColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            case 'container':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/container"
-                    timeColumnIndex={[]}
-                    columns={containerColumns}
                     currentPanel={currentPanel}
                     />
                 );
@@ -156,69 +147,79 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     currentPanel={currentPanel}
                     />
                 );
-            case 'system-users':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/system-users"
-                    timeColumnIndex={[]}
-                    columns={systemUsersColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            case 'scheduled-tasks':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/scheduled-tasks"
-                    timeColumnIndex={[]}
-                    columns={scheduledTasksColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            case 'system-services':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/asset_mapping"
-                    timeColumnIndex={[]}
-                    columns={systemServicesColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            case 'system-software':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/system-software"
-                    timeColumnIndex={[]}
-                    columns={systemSoftwareColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            case 'applications':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/applications"
-                    timeColumnIndex={[]}
-                    columns={applicationsColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            case 'kernel-modules':
-                return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/files/kernel-modules"
-                    timeColumnIndex={[]}
-                    columns={kernelModulesColumns}
-                    currentPanel={currentPanel}
-                    />
-                );
-            default:
-                return (
-                    <OverviewPanel
-                        changePanel={this.changePanel}
-                        topData={this.state.topData}
-                        statusData={this.state.statusData}
-                        //currentPanel={currentPanel}
-                    />
-                );
+                case 'system-services':
+                    return (
+                        <FetchAPIDataTable
+                        apiEndpoint="http://localhost:5000/api/asset_mapping"
+                        timeColumnIndex={[]}
+                        columns={systemServicesColumns}
+                        currentPanel={currentPanel}
+                        />
+                    );
+            // case 'system-users':
+            //     return (
+            //         <FetchAPIDataTable
+            //         apiEndpoint="http://localhost:5000/api/files/system-users"
+            //         timeColumnIndex={[]}
+            //         columns={systemUsersColumns}
+            //         currentPanel={currentPanel}
+            //         />
+            //     );
+            // case 'scheduled-tasks':
+            //     return (
+            //         <FetchAPIDataTable
+            //         apiEndpoint="http://localhost:5000/api/files/scheduled-tasks"
+            //         timeColumnIndex={[]}
+            //         columns={scheduledTasksColumns}
+            //         currentPanel={currentPanel}
+            //         />
+            //     );
+            // case 'system-software':
+            //     return (
+            //         <FetchAPIDataTable
+            //         apiEndpoint="http://localhost:5000/api/files/system-software"
+            //         timeColumnIndex={[]}
+            //         columns={systemSoftwareColumns}
+            //         currentPanel={currentPanel}
+            //         />
+            //     );
+            // case 'applications':
+            //     return (
+            //         <FetchAPIDataTable
+            //         apiEndpoint="http://localhost:5000/api/files/applications"
+            //         timeColumnIndex={[]}
+            //         columns={applicationsColumns}
+            //         currentPanel={currentPanel}
+            //         />
+            //     );
+            // case 'kernel-modules':
+            //     return (
+            //         <FetchAPIDataTable
+            //         apiEndpoint="http://localhost:5000/api/files/kernel-modules"
+            //         timeColumnIndex={[]}
+            //         columns={kernelModulesColumns}
+            //         currentPanel={currentPanel}
+            //         />
+            //     );
+                // case 'container':
+                //     return (
+                //         <FetchAPIDataTable
+                //         apiEndpoint="http://localhost:5000/api/files/container"
+                //         timeColumnIndex={[]}
+                //         columns={containerColumns}
+                //         currentPanel={currentPanel}
+                //         />
+                //     );
+
+            // default:
+            //     return (
+            //         <OverviewPanel
+            //             changePanel={this.changePanel}
+            //             //topData={this.state.topData}
+            //             statusData={this.state.statusData}
+            //             currentPanel={'overview'}
+            //         />
+            //     );
         }
     }
 
@@ -266,15 +267,15 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                                 >
                                     <Menu.Item key="overview">总览</Menu.Item>
+                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
+                                    <Menu.Item key="system-services">系统服务</Menu.Item>
                                     {/* <Menu.Item key="container">容器</Menu.Item> */}
                                     <Menu.Item key="open-ports">开放端口</Menu.Item>
                                     <Menu.Item key="running-processes">运行进程</Menu.Item>
-                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
-                                    <Menu.Item key="system-services">系统服务</Menu.Item>
-                                    <Menu.Item key="system-users">系统用户</Menu.Item>
+                                    {/* <Menu.Item key="system-users">系统用户</Menu.Item>
                                     <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
-                                    <Menu.Item key="applications">应用</Menu.Item>
+                                    <Menu.Item key="applications">应用</Menu.Item> */}
                                     {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
                                     {/* 可以根据需要添加更多的Menu.Item */}
                                     {/* 使用透明div作为flex占位符 */}

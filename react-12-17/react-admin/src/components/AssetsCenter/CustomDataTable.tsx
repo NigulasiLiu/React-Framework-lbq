@@ -4,6 +4,7 @@ import SidebarComponent from '../SubComponents/SidebarComponent'
 import moment, { Moment } from 'moment';
 import { buildRangeQueryParams} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
+import { stat } from 'fs';
 
 const { Option } = Select;
 
@@ -36,9 +37,7 @@ interface CustomDataTableProps {
 }
 
 interface CustomDataTableState {
-    currentPage: number;
-    pageSize: number; // 可以根据需要设置默认值
-    total: number; // 数据总数，用于分页计算
+    newColumns:any[],
     lastUpdated: string | null;
     selectedDateRange: [string | null, string | null];
 
@@ -54,12 +53,10 @@ interface CustomDataTableState {
     // 排序或者过滤处理后的data
     sortedData: GenericDataItem[],
     sortConfig: null,
-    topFiveSortedData: GenericDataItem[];
 
     showModal: boolean;
     user_character: string;
     dataSourceChanged:boolean;
-    panelChanged: boolean;
 }
 const { TextArea } = Input;
 
@@ -68,16 +65,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
     constructor(props: CustomDataTableProps) {
         super(props);
         this.state = {
+            newColumns:[],
             showModal: false,
             user_character: 'admin',
 
-
-            topFiveSortedData: [],
-
             selectedRowKeys: [],
-            currentPage: 1,
-            pageSize: 10, // 默认每页显示10条数据，可根据需要调整
-            total: props.externalDataSource.length, // 初始总数设为数据源的长度
             lastUpdated:null,
             selectedDateRange: [null,null],
             
@@ -86,32 +78,33 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             selectrangequeryParams: '',
 
             selectedApplicationType: null,
-            currentPanelName: '',
+            currentPanelName: this.props.currentPanel,
 
             
             // 排序或者过滤处理后的data
             sortedData: [],
             sortConfig: null,
 
-            panelChanged: false,
             dataSourceChanged: false,
-
         };
     }
     componentDidMount() {
-        this.props.fetchLatestData('all','','')
-        //const newColumns = autoPopulateFilters();
-        //渲染筛选器等等Pp
-        //this.sortAndExtractTopFive(this.props.externalDataSource);
+        this.setState({
+            currentPanelName:this.props.currentPanel,
+        })
+        this.props.fetchLatestData('all', '', '');
+        console.log('currentPanelName:'+this.props.currentPanel)
     }
-    componentDidUpdate(prevProps: any, prevState:any) {
-        if (prevProps.externalDataSource !== this.props.externalDataSource) {
+    componentDidUpdate(prevProps: any) {
+        if (prevProps.externalDataSource !== this.props.externalDataSource && !this.state.dataSourceChanged) {
+            this.setState({
+                dataSourceChanged: true, // 更新状态以避免重复执行
+              });
+            console.log('currentPanelName1:'+this.props.currentPanel)
             //this.sortAndExtractTopFive(this.props.externalDataSource);
             // 处理新数据：例如重置分页或更新最后更新时间
             this.setState({
-                currentPage: 1,
                 lastUpdated: new Date().toLocaleString(),
-                total: this.props.externalDataSource.length,
                 // 重置各种筛选条件
                 searchQuery: '',
                 selectedSearchField: 'all', 
@@ -119,32 +112,43 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                 selectedDateRange: [null, null],//日期筛选器重置
                 selectedRowKeys: [],
                 dataSourceChanged: true,
-        });
+                newColumns:this.autoPopulateFilters(),
+                currentPanelName:this.props.currentPanel,
+        
+         },() => {
+                     // 异步调用fetchLatestData来确保setState完成后执行
+                     this.props.fetchLatestData(this.state.selectedSearchField, '', '');
+                 });
         // 检查面板是否发生变化
-        if (this.props.currentPanel !== prevProps.currentPanel) {
-            // 如果面板发生变化，重置selectedRowKeys和lastUpdated
-            this.setState(
-                {
-                    lastUpdated: null,
-                    // 重置各种筛选条件
-                    searchQuery: '',
-                    selectedSearchField: 'all', 
-                    selectrangequeryParams: '',
-                    selectedDateRange: [null, null],//日期筛选器重置
-                    selectedRowKeys: [],
+        // if (this.props.currentPanel !== prevProps.currentPanel) {
+        //     // 如果面板发生变化，重置selectedRowKeys和lastUpdated
+        //     this.setState(
+        //         {
+        //             lastUpdated: null,
+        //             // 重置各种筛选条件
+        //             searchQuery: '',
+        //             selectedSearchField: 'all', 
+        //             selectrangequeryParams: '',
+        //             selectedDateRange: [null, null],//日期筛选器重置
+        //             selectedRowKeys: [],
                     
-                    selectedApplicationType: null,//只用于‘应用’这个子页面
-                    panelChanged: true,
-                },
-                () => {
-                    // 异步调用fetchLatestData来确保setState完成后执行
-                    this.props.fetchLatestData(this.state.selectedSearchField, '', '');
-                }
-            );
-        }
+        //             selectedApplicationType: null,//只用于‘应用’这个子页面
+        //             panelChanged: true,
+        //             newColumns:this.autoPopulateFilters(),
+        //         },
+        //         () => {
+        //             // 异步调用fetchLatestData来确保setState完成后执行
+        //             this.props.fetchLatestData(this.state.selectedSearchField, '', '');
+        //         }
+        //     );
+        // }
         }
     }
-
+  // 当你再次需要允许更新操作时，重置状态
+  resetDataSourceChanged() {
+    this.setState({ dataSourceChanged: false });
+  }
+    
     onSelectChange = (selectedRowKeys: React.Key[]) => {
         this.setState({ selectedRowKeys });
         //傳遞給父組件以構建DELETE請求，刪除在數據庫中刪除被選中的條目
@@ -153,14 +157,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         }
     };
 
-    handlePageChange = (page: number, pageSize?: number) => {
-        this.setState({ 
-            currentPage: page, 
-            pageSize: pageSize?pageSize:10,
-            selectedRowKeys: [],
-        });
-    };
-    autoPopulateFilters = () => {
+    autoPopulateFilters = () => {//如果属性包含onFilter，那么将自动填充filter中的各个值
         const { columns, externalDataSource } = this.props;
 
         const newColumns = columns.map(column => {
@@ -248,7 +245,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             //this.props.fetchLatestData
         );
     };
-
+    //后续为这里的输入参数column添加筛选
     renderSearchFieldDropdown = (columns: any[]) => {
         return (
             <Row style={{width:'15%', marginLeft: '0px', marginRight: 'auto'}}>
@@ -288,14 +285,24 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                 const endDateTimestamp = moment(end).unix();
                 
                 const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
-                
+                            this.setState({
+                dataSourceChanged: true, // 更新状态以避免重复执行
+              });
                 this.props.onUpdateRangeField(selectedqueryParams);
+
+                this.setState({
+                    dataSourceChanged: true, // 更新状态以避免重复执行
+                  });
+
                 this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
                     // 在状态更新后立即触发数据获取
                     this.props.fetchLatestData('', '', selectedqueryParams);
                 });
             }
         } else {
+            this.setState({
+                dataSourceChanged: true, // 更新状态以避免重复执行
+              });
             this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
                 // 当日期范围被清空时，重置数据
                 this.props.fetchLatestData('all', '', '');
@@ -468,7 +475,9 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             selectedRowKeys:this.state.selectedRowKeys,
             onChange: this.onSelectChange,
         };
-        const newColumns = this.autoPopulateFilters();
+        const {externalDataSource} = this.props;
+        
+        //const newColumns = this.autoPopulateFilters();
         const isSidebar=this.props.currentPanel.includes("sidebar")
         const isButtonDisabled = this.props.externalDataSource.length === 0 
                     || this.state.selectedRowKeys.length === 0
@@ -591,7 +600,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 </Col>
                             </Row>
                         </div>)}
-                        <div style={{ marginBottom: 16 }}>
+                        {/* <div style={{ marginBottom: 16 }}>
                             <Row>
                                 {this.renderSearchFieldDropdown(this.props.columns)}  
                                 <Row style={{width: isSidebar?'50%':'70%',}}>
@@ -603,16 +612,16 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 />
                                 </Row>
                             </Row>
-                        </div>
+                        </div> */}
                         <Table
                             className={selectedTableStyle}
                             rowSelection={rowSelection}
                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
-                            dataSource={this.props.externalDataSource}
+                            dataSource={externalDataSource}
                             //dataSource={this.state.topFiveSortedData}
-                            columns={newColumns}
+                            columns={this.state.newColumns}
                             //pagination={false}
-                            locale={(this.state.panelChanged&&this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
+                            locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
                                 ? customLocale:undefined}
                         />
                     </Card>

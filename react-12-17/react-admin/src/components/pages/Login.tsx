@@ -44,7 +44,7 @@ class Login extends React.Component<LoginProps> {
                 });
                 localStorage.setItem("user", JSON.stringify(response.data));
                 //this.props.history.push("/");
-                this.props.history.push('/app/dashboard/index');
+                this.props.history.push('/app/dashboard');
             } else {
                 // 处理意外的响应或显示错误消息
             }

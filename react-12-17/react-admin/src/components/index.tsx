@@ -45,6 +45,11 @@ import CreateVirusScanTaskPage from './VirusScanning/CreateVirusScanTask';
 import BaseLineDetectDetailsPage from './DetailsPage/BaseLineDetectDetailsPage';
 import VirusScanDetailsPage from './DetailsPage/VirusScanDetailsPage';
 import UserManagement from './extension/UserManagement';
+import HoneypotDefense from './HostProtection/HoneypotDefense';
+import MemoryHorseDetection from './HostProtection/MemoryHorseDetection';
+import ThreatHunting from './HostProtection/ThreatHunting';
+import MicroIsolation from './HostProtection/MicroIsolation';
+
 
 const WysiwygBundle = Loadable({
     // 按需加载富文本配置
@@ -94,5 +99,9 @@ export default {
     CreateAgentTaskPage,
     CreateVirusScanTaskPage,
     BaseLineDetectDetailsPage,
-    VirusScanDetailsPage
+    VirusScanDetailsPage,
+    HoneypotDefense,
+    MemoryHorseDetection,
+    ThreatHunting,
+    MicroIsolation,
 } as any;

@@ -13,7 +13,7 @@ const BreadcrumbCustom = (props: BreadcrumbCustomProps) => {
     return (
         <Breadcrumb style={{ margin: '12px 0' }}>
             <Breadcrumb.Item>
-                <Link to={'/app/dashboard/index'}>安全概览</Link>
+                <Link to={'/app/dashboard'}>安全概览</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
                 <Link to={'/app/HostProtection/fxff/BaselineDetectList'}>基线检查</Link>

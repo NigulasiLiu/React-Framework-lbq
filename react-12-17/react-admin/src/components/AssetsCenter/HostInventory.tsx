@@ -4,7 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card} from 'antd';
-import { hostinventoryColumns_new, StatusItem } from '../tableUtils';
+import { hostinventoryColumns, StatusItem } from '../tableUtils';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import CustomPieChart from './CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
@@ -255,7 +255,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                               <FetchAPIDataTable
                                   apiEndpoint="http://localhost:5000/api/agent"//后续更换为agent表
                                   timeColumnIndex={[]}
-                                  columns={hostinventoryColumns_new}//hostinventoryColumns
+                                  columns={hostinventoryColumns}//hostinventoryColumns
                                   currentPanel="hostinventory"
                               />
                               </Card>

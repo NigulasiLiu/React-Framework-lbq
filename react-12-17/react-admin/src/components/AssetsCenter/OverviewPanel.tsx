@@ -6,21 +6,10 @@ import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
 import MetaDataDisplay from './MetaDataDisplay';
 import { DataContext, DataContextType} from '../ContextAPI/DataManager'
 interface OverviewPanelProps extends RouteComponentProps {
+    currentPanel:string;
     statusData: StatusItem[];
     //currentPanel: string;
     changePanel: (panelName: string) => void; //切换子panel
-    topData: {
-        fim: GenericDataItem[];
-        container: GenericDataItem[];
-        openPorts: GenericDataItem[];
-        runningProcesses: GenericDataItem[];
-        systemUsers: GenericDataItem[];
-        scheduledTasks: GenericDataItem[];
-        systemServices: GenericDataItem[];
-        systemSoftware: GenericDataItem[];
-        applications: GenericDataItem[];
-        kernelModules: GenericDataItem[];
-    };
 }
 
 type OverviewPanelState = {
@@ -111,15 +100,7 @@ const colorOrder = baseDataItems.map((item) => item.color); // Keep original col
 const sortDataItems = (dataItems: DataItem[]) => {
     return [...dataItems].sort((a, b) => b.value - a.value);
 };
-const sortedData = [
-    sortDataItems(port_data),
-    sortDataItems(softerware_data),
-    sortDataItems(service_data),
-    sortDataItems(progress_data),
-    sortDataItems(fim_data),
-    sortDataItems(app_data),
-    sortDataItems(core_data),
-];
+
 
 
 //显示从接口得到stime数据时，去除进度条
@@ -212,31 +193,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
         };
     }
 
-
-    // fetchLatestData = async (api:string) => {
-    //     try {
-    //         const rawData = await axios.get(api);
-    //         if (rawData.data){
-    //             const processedData = processData(rawData, timeColumnIndex);
-    //             this.setState({tempdata:processedData})
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //     }
-    //   };
-
-
-
-
-
-
-    // 修改后的函数，使其能够导航到对应的子面板
     goToPanel = (panelName: string) => {
-        // 更新父组件的状态，changePanel 的函数负责这个逻辑
-        this.props.changePanel(panelName);
-
-    };
-    goToPanelAndSearch = (panelName: string, param: string) => {
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
 
@@ -285,414 +242,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             { filename: 'nginx uploader', event_time: 1 },
             { filename: 'prometheus', event_time: 1 },
           ];
-        //const topFiveData = this.context;
-        //const topFiveFim_data = convertToDataItems(topFiveData, 'filename', 'event_time');
-        // return (
-        //     <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-        //     <Row gutter={[8, 16]}>
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={0} span={22}>
-        //                         <Statistic title={<span>容器</span>} value={2} />
-        //                     </Col>
-        //                     <Col span={2} style={{ position: 'relative', top: '-3.5px' }}>
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('container')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>开放端口</span>} value={1} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('open-ports')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         <Col span={3}>
-        //         {/* <DataCard
-        //             title="运行进程"
-        //             value={13}
-        //             valueItem={[
-        //             { value: '13', color: '#F6F7FB' },
-        //             // Add more additional statistics as needed
-        //             ]}
-        //             panelId="running-processes"
-        //             height="75px"
-        //             width="110px"
-        //             backgroundColor="#F6F7FB"
-        //             navigate={false}
-        //         /> */}
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>运行进程</span>} value={13} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('running-processes')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>系统用户</span>} value={3} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('system-users')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>定时任务</span>} value={0} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('scheduled-tasks')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>系统服务</span>} value={0} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('system-services')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         {/* <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>系统软件</span>} value={0} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('system-software')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col> */}
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>完整性校验</span>} value={0} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('fim')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         <Col span={3}>
-        //             <Card
-        //                 bordered={false}
-        //                 style={{
-        //                     height: '75px',
-        //                     width: '150px',
-        //                     minWidth: 80, // 最小宽度100px
-        //                     maxWidth: 200, // 最大宽度200px
-        //                     display: 'flex',
-        //                     alignItems: 'center',
-        //                     justifyContent: 'center',
-        //                     backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-        //                 }}
-        //             >
-        //                 <Row>
-        //                     <Col pull={2} span={22}>
-        //                         <Statistic title={<span>内核模块</span>} value={0} />
-        //                     </Col>
-        //                     <Col
-        //                         pull={0}
-        //                         span={2}
-        //                         style={{ position: 'relative', top: '-3.5px' }}
-        //                     >
-        //                         <Button
-        //                             type="link"
-        //                             style={{ color: '#000' }}
-        //                             icon={<RightOutlined />}
-        //                             onClick={() => this.goToPanel('kernel-modules')}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //         {/* ... other statistic cards */}
-        //     </Row>
-        //     <Row gutter={[8, 16]}>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 dataSource={sortedData[0]}
-        //                 columns={columns[0]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 dataSource={sortedData[1]}
-        //                 columns={columns[1]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 dataSource={sortedData[2]}
-        //                 columns={columns[2]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 dataSource={sortedData[3]}
-        //                 columns={columns[3]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 //dataSource={topFiveFimData}
-        //                 columns={columns[4]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 dataSource={sortedData[5]}
-        //                 columns={columns[5]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 dataSource={sortedData[6]}
-        //                 columns={columns[6]}
-        //                 pagination={false}
-        //                 rowKey="id"
-        //             />
-        //         </Col>
-        //         <Col span={12}>
-        //             <Table<DataItem>
-        //                 className="customTable"
-        //                 //dataSource={sortedData[7]}
-        //                 columns={columns[7]}
-        //                 locale={{ emptyText: ' ' }} // 将空文本设置为一个空的React.Fragment
-        //                 // pagination={false}
-        //                 // rowKey="id"
-        //             />
-        //             <Card bordered={false} className="noTopBorderCard" style={{ height: 238 }}>
-        //                 <Row gutter={0}>
-        //                     <Col span={12}>
-        //                         <CustomPieChart
-        //                         data={status_data}
-        //                         innerRadius={54}
-        //                         deltaRadius={8}
-        //                         outerRadius={80}
-        //                         cardWidth={200}
-        //                         cardHeight={200}
-        //                         hasDynamicEffect={true}
-        //                         >
-        //                         </CustomPieChart>
-        //                     </Col>
-        //                     <Col span={2}> </Col>
-        //                     <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-        //                         <StatusPanel statusData={status_data} orientation="vertical"/>
-        //                     </div>
-        //                 </Row>
-        //             </Card>
-        //         </Col>
-        //     </Row>
-        //     </div>
-        //     );
+
         return(
             <DataContext.Consumer>
             {(context: DataContextType | undefined) => {
@@ -700,11 +250,11 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 return <div>Loading...</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const { topFiveFimData, topFivePortCounts,
+            const { topFiveFimData, topFivePortCounts, agentSearchResults,
                 fimMetaData,
                 portMetaData, portMetaData2,
                 processMetaData,topFiveProcessCounts,topFiveUserCounts,
-                assetMetaData, assetMetaData2,topFiveServiceCounts,topFiveProductCounts,
+                assetMetaData, assetMetaData_host_os,topFiveServiceCounts,topFiveProductCounts,
                 linuxBaseLineCheckMetaData,} = context;
 
 
@@ -712,33 +262,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
             <Row gutter={[8, 16]}>
                 <Col span={3}>
-                    {/* <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={0} span={22}>
-                                <Statistic title={<span>容器</span>} value={-1} />
-                            </Col>
-                            <Col span={2} style={{ position: 'relative', top: '-3.5px' }}>
-                                <Button
-                                    type="link"
-                                    style={{ color: '#000' }}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('container')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card> */}
+
                 </Col>
                 <Col span={3}>
                     <Card
@@ -936,39 +460,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Row>
                     </Card>
                 </Col>
-                {/* <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>内核模块</span>} value={0} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{ color: '#000' }}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('kernel-modules')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col> */}
+
                 {/* ... other statistic cards */}
             </Row>
             <Row gutter={[8, 16]}>
@@ -1066,10 +558,9 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     </Card>
                 </Col> */}
             </Row>
-            
-            <MetaDataDisplay
-            metadata={linuxBaseLineCheckMetaData}
-            />
+            {/* <MetaDataDisplay
+            metadata={assetMetaData}
+            /> */}
             </div>
             );
             }}

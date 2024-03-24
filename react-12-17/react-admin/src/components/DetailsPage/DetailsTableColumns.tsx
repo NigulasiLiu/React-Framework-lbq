@@ -25,6 +25,141 @@ export interface DataType {
     clientUsage: string;
     updateTime: string;
 }
+
+export const diskColumns = [
+    {
+        title: '名称',
+        dataIndex: 'diskname',
+        key: 'diskname',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '挂载点',
+        dataIndex: 'mountat',
+        key: 'mountat',
+    },
+    {
+        title: '文件系统',
+        dataIndex: 'filesystem',
+        key: 'filesystem',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '总空间',
+        dataIndex: 'totalspace',
+        key: 'totalspace',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '已用空间',
+        dataIndex: 'spentspace',
+        key: 'spentspace',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    }
+];
+export const netColumns = [
+    {
+        title: '名称',
+        dataIndex: 'netname',
+        key: 'netname',
+        onHeaderCell: () => ({
+            style: {
+            },
+          }),
+    },
+    {
+        title: 'IP地址',
+        dataIndex: 'ipaddress',
+        key: 'ipaddress',
+        onHeaderCell: () => ({
+            style: {
+            },
+          }),
+    },
+    {
+        title: '硬件地址',
+        dataIndex: 'macaddress',
+        key: 'macaddress',
+        onHeaderCell: () => ({
+            style: {
+            },
+          }),
+    }
+];
+export const pluginColumns = [
+    {
+        title: '插件名称',
+        dataIndex: 'pluginname',
+        key: 'pluginname',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '版本',
+        dataIndex: 'version',
+        key: 'version',
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '客户端资源使用',
+        dataIndex: 'resourcespent',
+        key: 'resourcespent',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '启动时间',
+        dataIndex: 'starttime',
+        key: 'starttime',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    },
+    {
+        title: '活跃时间',
+        dataIndex: 'activetime',
+        key: 'activetime',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+    }
+];
+
 export const containerColumns = [
     {
         title: '主机名称',
