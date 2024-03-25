@@ -179,14 +179,14 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                           <Row gutter={0}>
                               <Col span={12}>
                               <CustomPieChart
-                              data={runningStatusData}
-                              innerRadius={54}
-                              deltaRadius={8}
-                              outerRadius={80}
-                              cardWidth={200}
-                              cardHeight={200}
-                              hasDynamicEffect={true}
-                              />
+                                data={runningStatusData}
+                                innerRadius={54}
+                                deltaRadius={8}
+                                outerRadius={80}
+                                cardWidth={200}
+                                cardHeight={200}
+                                hasDynamicEffect={true}
+                                />
                               </Col>
                               <Col span={2}> 
                               </Col>

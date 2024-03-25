@@ -126,7 +126,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
     switch (currentPanel) {
         case 'windowsBaseLineCheck':
             return (
-              <Row style={{ width: '100%', margin: '0 auto' }}>                  
+              <Row style={{ width: '100%', borderBottom:'1px solid black', }}>                  
                <FetchAPIDataTable
               apiEndpoint="http://localhost:5000/api/baseline_check/windows"
               timeColumnIndex={['last_checked']}
@@ -137,7 +137,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
             );
         case 'linuxBaseLineCheck':
             return (
-                <Row style={{ width: '100%', margin: '0 auto' }}>                  
+                <Row style={{ width: '100%', }}>                  
                  <FetchAPIDataTable
                   apiEndpoint="http://localhost:5000/api/baseline_check/linux"
                   timeColumnIndex={['last_checked']}

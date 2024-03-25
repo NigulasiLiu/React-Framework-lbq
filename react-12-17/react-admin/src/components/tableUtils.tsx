@@ -1203,7 +1203,7 @@ export const vulnerabilityColumns = [
     },
 ];
 
-export const vulnerabilityColumns_new = [
+export const vulnerabilityColumns_new = [//discard
     {
       title: 'ID',
       dataIndex: 'id',
@@ -1220,6 +1220,7 @@ export const vulnerabilityColumns_new = [
     {
       title: '扫描时刻',
       dataIndex: 'scanTime',
+      sorter: (a: any, b: any) => Date.parse(b.scanTime) - Date.parse(a.scanTime), 
     },
     {
       title: '扫描类型',
@@ -1236,7 +1237,7 @@ export const vulnerabilityColumns_new = [
               <Button className="custom-link-button">忽略</Button>
             </Link>
             <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
-              <Button className="custom-link-button">忽略</Button>
+              <Button className="custom-link-button">详情</Button>
             </Link>
             </div>
           ),
@@ -1333,7 +1334,7 @@ export const baselineDetectColumns = [
         render: (text: string) => (
             // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
             <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
-              <Button type="link" className="custom-link-button">{text}</Button>
+              <Button className="custom-link-button">111</Button>
             </Link>
           ),
     },

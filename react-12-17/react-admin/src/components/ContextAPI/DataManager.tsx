@@ -44,7 +44,7 @@ export interface DataContextType {
   windowsBaseLineCheckMetaData: MetaDataResult;
 
   vulnMetaData: MetaDataResult;
-  vulnFilteredData: Map<string, FilteredDataResult_new[]>;
+  //vulnFilteredData: Map<string, FilteredDataResult_new[]>;
   transformedData: FilteredDataResult_new[],
 };
 export const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -168,8 +168,8 @@ const DataManager: React.FC = ({ children }) => {
   const windowsBaseLineCheckMetaData = useExtractOrigin('ip',windowsBaseLineCheckOriginData);
 
   const vulnMetaData = useExtractOrigin('ip',vulnOriginData);
-  const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
-const transformedData = useTransformedData(vulnOriginData);
+  //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
+  const transformedData = useTransformedData(vulnOriginData);
   //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
 
@@ -225,7 +225,7 @@ const transformedData = useTransformedData(vulnOriginData);
 
       vulnOriginData,
       //vulnOriginDataReconstruct,
-      vulnMetaData,vulnFilteredData,
+      vulnMetaData,//vulnFilteredData,
       transformedData,
 
     }}>

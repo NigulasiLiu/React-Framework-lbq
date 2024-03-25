@@ -75,9 +75,9 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
       //setData([]);
         // 构建查询参数，范围查询(rangePicker)时，searchField为空,searchQuery是已经构造好的语句
 
-        // const finalEndpoint = apiEndpoint.includes('impossibleSearchIncludes')?apiEndpoint:
-        // rangeQuery.length?`${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
-        const finalEndpoint = rangeQuery.length?`${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
+        const finalEndpoint = apiEndpoint.includes('=')?apiEndpoint:
+        rangeQuery.length?`${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
+        //const finalEndpoint = rangeQuery.length?`${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
         const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint});
         
         // 检查 message 字段是否是数组，如果不是，则将其转换为包含该对象的数组
@@ -98,7 +98,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
 
 
     return (
-      <div style={{margin:'0px auto'}}>
+      <div style={{width:'100%',margin:'0px auto'}}>
       <CustomDataTable 
           externalDataSource={data} 
           columns={columns} 
