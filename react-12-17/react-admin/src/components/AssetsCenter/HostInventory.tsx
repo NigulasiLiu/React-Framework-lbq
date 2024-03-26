@@ -135,10 +135,10 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                 return <div>Loading...n?</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const {n,agentMetaData, agentCPUuseMetaData,agentAVGCPUUse,linuxBaseLineCheckMetaData} = context;
-            const hostCount = agentMetaData.tupleCount;
-            const hostOnlineCount = agentMetaData.typeCount.get("Online") || 'Not available';
-            const hostOfflineCount = agentMetaData.typeCount.get("Offline") || 'Not available';
+            const {agentMetaData_status, vulnMetaData_scanTime,agentAVGCPUUse,linuxBaseLineCheckMetaData__ip} = context;
+            const hostCount = agentMetaData_status.tupleCount;
+            const hostOnlineCount = agentMetaData_status.typeCount.get("Online") || 'Not available';
+            const hostOfflineCount = agentMetaData_status.typeCount.get("Offline") || 'Not available';
 
               //StatusLabel数据
               const runningStatusData: StatusItem[] = [
@@ -262,10 +262,11 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                           </div>
                       </Col>
                   </Row>
-                  {}
+                  {vulnMetaData_scanTime.typeCount.get('1711164872')}
                   <MetaDataDisplay
-                  metadata={linuxBaseLineCheckMetaData}
+                  metadata={vulnMetaData_scanTime}
                   />
+                  
               </div>
             );
             }}

@@ -26,7 +26,7 @@ import status from './ARP/status';
 import VulnerabilityList from './HostProtection/VulnerabilityList';
 import BaselineDetectList from './HostProtection/BaselineDetectList';
 import HostInventory from './AssetsCenter/HostInventory';
-import ContainerCluster from './AssetsCenter/ContainerCluster'
+//import ContainerCluster from './AssetsCenter/ContainerCluster'
 import AssetFingerprint from './AssetsCenter/AssetFingerprint';
 import AuthBasic from './auth/Basic';
 import RouterEnter from './auth/RouterEnter';
@@ -35,7 +35,7 @@ import VirusScanningWhiteList from './VirusScanning/VirusScanningWhiteList';
 import MapUi from './ui/map';
 import QueryParams from './extension/QueryParams';
 import Visitor from './extension/Visitor';
-import MultipleMenu from './extension/MultipleMenu';
+//import MultipleMenu from './extension/MultipleMenu';
 import Sub1 from './smenu/Sub1';
 import Sub2 from './smenu/Sub2';
 import Env from './env';
@@ -72,7 +72,7 @@ export default {
     Dashboard,
     AssetFingerprint,
     HostInventory,
-    ContainerCluster,
+    //ContainerCluster,
     AuthBasic,
     RouterEnter,
     WysiwygBundle,
@@ -81,7 +81,7 @@ export default {
     MapUi,
     QueryParams,
     Visitor,
-    MultipleMenu,
+    //MultipleMenu,
     Sub1,
     Sub2,
     Env,

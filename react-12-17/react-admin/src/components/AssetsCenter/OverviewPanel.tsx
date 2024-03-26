@@ -251,11 +251,11 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             }
             // 从 context 中解构出 topFiveFimData 和 n
             const { topFiveFimData, topFivePortCounts, agentSearchResults,
-                fimMetaData,
-                portMetaData, portMetaData2,
-                processMetaData,topFiveProcessCounts,topFiveUserCounts,
-                assetMetaData, assetMetaData_host_os,topFiveServiceCounts,topFiveProductCounts,
-                linuxBaseLineCheckMetaData,} = context;
+                fimMetaData_hostname,
+                portMetaData_port_state, portMetaData_port_number,
+                processMetaData_userName,topFiveProcessCounts,topFiveUserCounts,
+                assetMetaData_service, assetMetaData_os_version,topFiveServiceCounts,topFiveProductCounts,
+                linuxBaseLineCheckMetaData__ip,} = context;
 
 
             return (
@@ -280,7 +280,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>开放端口</span>} value={portMetaData.typeCount.get('open')} />
+                                <Statistic title={<span>开放端口</span>} value={portMetaData_port_state.typeCount.get('open')} />
                             </Col>
                             <Col
                                 pull={0}
@@ -313,7 +313,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>运行进程</span>} value={processMetaData.tupleCount} />
+                                <Statistic title={<span>运行进程</span>} value={processMetaData_userName.tupleCount} />
                             </Col>
                             <Col
                                 pull={0}
@@ -346,7 +346,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>系统服务</span>} value={assetMetaData.tupleCount} />
+                                <Statistic title={<span>系统服务</span>} value={assetMetaData_service.tupleCount} />
                             </Col>
                             <Col
                                 pull={0}
@@ -379,7 +379,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>系统用户</span>} value={processMetaData.typeCount.size}/>
+                                <Statistic title={<span>系统用户</span>} value={processMetaData_userName.typeCount.size}/>
                             </Col>
                             <Col
                                 pull={0}
@@ -443,7 +443,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     >
                         <Row>
                             <Col pull={2} span={22}>
-                                <Statistic title={<span>完整性检验</span>} value={fimMetaData.tupleCount} />
+                                <Statistic title={<span>完整性检验</span>} value={fimMetaData_hostname.tupleCount} />
                             </Col>
                             <Col
                                 pull={0}
@@ -559,7 +559,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                 </Col> */}
             </Row>
             {/* <MetaDataDisplay
-            metadata={assetMetaData}
+            metadata={assetMetaData_service}
             /> */}
             </div>
             );

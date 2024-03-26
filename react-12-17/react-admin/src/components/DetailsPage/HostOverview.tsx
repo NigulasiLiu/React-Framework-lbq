@@ -98,11 +98,11 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             // 从 context 中解构出 topFiveFimData 和 n
             const { topFiveFimData, topFivePortCounts,
                 agentOriginData,
-                fimMetaData,
-                portMetaData, portMetaData2,
-                processMetaData,topFiveProcessCounts,topFiveUserCounts,
-                assetMetaData, assetMetaData2,topFiveServiceCounts,topFiveProductCounts,
-                linuxBaseLineCheckMetaData,} = context;
+                fimMetaData_hostname,
+                portMetaData_port_state, portMetaData_port_number,
+                processMetaData_userName,topFiveProcessCounts,topFiveUserCounts,
+                assetMetaData_service, assetMetaData_product,topFiveServiceCounts,topFiveProductCounts,
+                linuxBaseLineCheckMetaData__ip,} = context;
                 // useSearchOriginData(agentOriginData, ['host_name'], [this.state.host], ['os_version', 'status'])
                 // const { searchResults, searchOriginData } = useSearchOriginData();
                 //     // 组件挂载时进行搜索

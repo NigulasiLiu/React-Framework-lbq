@@ -60,7 +60,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
           <div key={index} style={{ marginBottom: '40px' }}> {/* 增加行与行之间的距离 */}
             {/* Label with sequence number and YouYuan font */}
             <div style={{ fontFamily: 'YouYuan', marginBottom: '10px' }}>
-              {`${index + 1}. ${label}`} {/* 添加序号 */}
+              {`${label}`} {/* 添加序号 {`${index + 1}. ${label}`}*/}
             </div>
             {/* Progress bar in a separate row */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
@@ -79,32 +79,52 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
 class Dashboard extends React.Component<DashboardProps> {
     
     render() {
-      function getPastSevenDays() {
-        const currentDate = new Date();
-        const pastSevenDays = [];
+      // function getPastSevenDays() {
+      //   const currentDate = new Date();
+      //   const pastSevenDays = [];
       
-        for (let i = 6; i >= 0; i--) {
-          const date = new Date(currentDate);
-          date.setDate(date.getDate() - i);
+      //   for (let i = 6; i >= 0; i--) {
+      //     const date = new Date(currentDate);
+      //     date.setDate(date.getDate() - i);
       
-          // 如果日期小于 1，则回滚到上个月的最后一天
-          if (date.getDate() < 1) {
-            date.setDate(0); // 将日期设置为上个月的最后一天
-          }
+      //     // 如果日期小于 1，则回滚到上个月的最后一天
+      //     if (date.getDate() < 1) {
+      //       date.setDate(0); // 将日期设置为上个月的最后一天
+      //     }
       
-          pastSevenDays.push(date);
+      //     pastSevenDays.push(date);
+      //   }
+      
+      //   return pastSevenDays;
+      // }
+      
+      // const pastSevenDays = getPastSevenDays();
+      // const alertData = pastSevenDays.map(date => {
+      //   const month = String(date.getMonth() + 1).padStart(2, '0');
+      //   const day = String(date.getDate()).padStart(2, '0');
+      //   return { day: `${month}-${day}`, value: day };
+      // });
+      const generateAlertData = (alertsCount: number[]): { day: string; value: string }[] => {
+        const alertData: { day: string; value: string }[] = [];
+        // const formatDay = (date: Date): string => {
+        //   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        // };
+      
+        for (let i = 0; i < alertsCount.length; i++) {
+          // 生成过去第i天的日期
+          const date = new Date();
+          date.setDate(date.getDate() - (alertsCount.length - i));
+      
+          // 格式化日期并创建所需的数据对象
+          alertData.push({
+            day: `${date.getMonth() + 1}-${date.getDate()+1}`,//formatDay(date),
+            value: alertsCount[i].toString(),
+          });
         }
       
-        return pastSevenDays;
-      }
+        return alertData;
+      };
       
-      const pastSevenDays = getPastSevenDays();
-      const alertData = pastSevenDays.map(date => {
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return { day: `${month}-${day}`, value: day };
-      });
-
       return(
         <DataContext.Consumer>
         {(context: DataContextType | undefined) => {
@@ -113,17 +133,20 @@ class Dashboard extends React.Component<DashboardProps> {
         }
         // 从 context 中解构出 topFiveFimData 和 n
         const { 
-            agentMetaData,
+            agentMetaData_status,
             agentOnlineCount,
-            portMetaData, 
-            assetMetaData,      
+            portMetaData_port_state, 
+            assetMetaData_service,      
             hostCount,
-            vulnHostCount,
+            vulnHostCount,last7VulValue,
           
             blLinuxHostCount,
             blWindowsHostCount,
+            blLinuxHostItemCount,
+            blWindowsHostItemCount,
+            blLinuxHostItemCount_pass,blWindowsHostItemCount_pass,
             agentCPUuseMetaData,
-            agentAVGCPUUse,
+            agentAVGCPUUse,agentAVGMEMUse,
           } = context;
           // let totalWeightedPercent = 0;
           // let totalCount
@@ -132,7 +155,8 @@ class Dashboard extends React.Component<DashboardProps> {
           //   totalWeightedPercent += percentValue * count;
           //   totalCount += count;
           // });
-      
+          console.log('111111:'+last7VulValue);
+          const alertData = generateAlertData(last7VulValue);
             // 第二类告警的数据集
             const alertDataTwo = [
               { name: '待处理告警', value: 75, color: '#FFBB28' },
@@ -148,13 +172,13 @@ class Dashboard extends React.Component<DashboardProps> {
               { name: '存在高危基线', value: blLinuxHostCount+blWindowsHostCount, color: '#4086FF' }//BLUE
             ];
             const riskData: StatusItem[] = [
-              { color: '#E53F3F', label: '高风险 ', value: 1 },
-              { color: '#FEC746', label: '中风险 ', value: 1 },
-              { color: '#468DFF', label: '低风险 ', value: 2 },
+              { color: '#faad14', label: '建议调整 ', value: 1 },//蓝色E53F3F
+              { color: '#52c41a', label: '自行判断 ', value: 1 },
+              // { color: '#468DFF', label: '低风险 ', value: 2 },
             ];
-      const labels = ['Windows主机基线检查', 'Linux主机基线检查', ];
-      const values = [blWindowsHostCount, blLinuxHostCount];
-      const colors = ['#ff4d4f', '#faad14', ]; // 指定每个进度条的颜色,弃用的绿色'#52c41a'
+      const labels = ['Windows主机基线检查建议调整项', 'Linux主机基线检查建议调整项','基线检查通过项' ];
+      const values = [blWindowsHostItemCount||0, blLinuxHostItemCount||0,blLinuxHostItemCount_pass+blWindowsHostItemCount_pass];
+      const colors = ['#faad14', '#faad14', '#52c41a']; // 指定每个进度条的颜色,弃用的绿色'#52c41a'，红ff4d4f
             return (
            
               <div >
@@ -204,7 +228,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           >
                           <Row>
                               <Col span={24}>
-                                  <Statistic title={<span style={{fontSize:'18px'}}>开放端口</span>} value={portMetaData.typeCount.get('open')} />
+                                  <Statistic title={<span style={{fontSize:'18px'}}>开放端口</span>} value={portMetaData_port_state.typeCount.get('open')} />
                               </Col>
                               
                           </Row>
@@ -225,7 +249,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           >
                           <Row>
                               <Col  span={24}>
-                                  <Statistic title={<span style={{fontSize:'18px'}}>服务数量</span>} value={assetMetaData.tupleCount} />
+                                  <Statistic title={<span style={{fontSize:'18px'}}>服务数量</span>} value={assetMetaData_service.tupleCount} />
                               </Col>
                               
                           </Row>
@@ -365,10 +389,10 @@ class Dashboard extends React.Component<DashboardProps> {
                 </Row>      
                 <Row gutter={[12, 6]} style={{ marginTop: '10px' }}> 
                       <Col className="gutter-row" md={24}>
-                      <Card bordered={false}  
+                      <Card bordered={false}
                         style={{fontWeight: 'bolder', width: '100%', height:330}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>基线风险 Top3</h2>
+                            <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>基线风险</h2>
                         <StatusPanel statusData={riskData} orientation="horizontal" />
                         </div>
                         <Row gutter={[6, 6]}>
@@ -519,7 +543,8 @@ class Dashboard extends React.Component<DashboardProps> {
                     </Row>
                   </Card>
                   </Col>
-                </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                </Row>      
+                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                   <Col className="gutter-row" md={24}>
                   <Card bordered={false} /*title="Agent 概览*/
                     style={{fontWeight: 'bolder', width: '100%', height:330}}>
@@ -575,7 +600,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                 </div>
                         <DataCard
                                 title="Mem AVG"
-                                value={"0B"}
+                                value={agentAVGMEMUse}
                                 valueItem={[]}
                                 panelId=""
                                 height="100px"
@@ -591,7 +616,8 @@ class Dashboard extends React.Component<DashboardProps> {
                     </Row>
                   </Card>
                   </Col>
-                </Row>      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                </Row>      
+                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                   <Col className="gutter-row" md={24}>
                   <Card bordered={false} /*title="后端服务状态*/
                     style={{fontWeight: 'bolder', width: '100%', height:330}}>

@@ -180,9 +180,9 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
           return <div>Loading...</div>; // 或者其他的加载状态显示
       }
       // 从 context 中解构出 topFiveFimData 和 n
-      const {linuxBaseLineCheckMetaData,linuxBaseLineCheckMetaData2,windowsBaseLineCheckMetaData} = context;
-      const hostCheckedPassedCount = linuxBaseLineCheckMetaData2.typeCount.get('TRUE');//检查通过数量
-      const hostCheckedCount = linuxBaseLineCheckMetaData.tupleCount;//检查项数量
+      const {linuxBaseLineCheckMetaData__ip,linuxBaseLineCheckMetaData_status,windowsBaseLineCheckMetaData_ip} = context;
+      const hostCheckedPassedCount = linuxBaseLineCheckMetaData_status.typeCount.get('TRUE');//检查通过数量
+      const hostCheckedCount = linuxBaseLineCheckMetaData__ip.tupleCount;//检查项数量
       const hostCheckedPassedRate = hostCheckedPassedCount===undefined?0:hostCheckedPassedCount/hostCheckedCount;
           return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
@@ -261,7 +261,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                               <Row>
                                   <Col pull={2} span={24}>
                                       <Statistic title={<span>检查主机数</span>} 
-                                      value={Array.from(linuxBaseLineCheckMetaData.typeCount).length} />
+                                      value={Array.from(linuxBaseLineCheckMetaData__ip.typeCount).length} />
                                   </Col>
                                   
                               </Row>

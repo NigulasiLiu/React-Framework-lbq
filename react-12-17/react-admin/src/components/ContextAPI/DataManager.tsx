@@ -3,19 +3,19 @@ import React, { createContext, useState, useEffect } from 'react';
 import { templateData } from './SeperateData';
 import useSortedData from './TopFiveDataProvider';
 import { DataItem } from '../tableUtils';
-import useExtractMetaData from './ExtractMetaData';
 import useFilterOriginData, {FilteredDataResult,VulnDataItem,ReconstructedDataItem} from './useFilterOriginData';
-import useExtractOrigin, {MetaDataResult} from './ExtractOriginData';
+import useExtractOrigin, {MetaDataResult, getTopFiveTypeCounts, getCountPastSevenDays,getPastSevenDaysAlerts} from './ExtractOriginData';
 import { fetchDataFromAPI } from '../AssetsCenter/DataService';
 import useFilterOriginData_new,{FilteredDataResult_new} from './useFilterOriginData_new';
 import useTransformedData from '../HostProtection/useTransformedData';
+import useCalculateAverage from './useCalculateAverage';
 
 
 
 export interface DataContextType {
   topFiveFimData: DataItem[];
   topFivePortCounts: DataItem[];
-  n: number;
+  
   agentOriginData:any[];
   agentSearchResults?:any[];
 
@@ -23,27 +23,29 @@ export interface DataContextType {
   //vulnOriginDataReconstruct:ReconstructedDataItem;
 
 
-  agentMetaData: MetaDataResult;
-  fimMetaData: MetaDataResult;
-  portMetaData: MetaDataResult;
-  portMetaData2: MetaDataResult;
+  agentMetaData_status: MetaDataResult;
+  fimMetaData_hostname: MetaDataResult;
+  portMetaData_port_state: MetaDataResult;
+  portMetaData_port_number: MetaDataResult;
 
-  processMetaData: MetaDataResult;
+  processMetaData_userName: MetaDataResult;
   topFiveProcessCounts: DataItem[];
   topFiveUserCounts: DataItem[];
   
-  assetMetaData: MetaDataResult;
-  assetMetaData2: MetaDataResult;
-  assetMetaData_host_os: MetaDataResult;
+  assetMetaData_service: MetaDataResult;
+  assetMetaData_product: MetaDataResult;
+  assetMetaData_os_version: MetaDataResult;
   
   topFiveServiceCounts: DataItem[];
   topFiveProductCounts: DataItem[];
 
-  linuxBaseLineCheckMetaData: MetaDataResult;
-  linuxBaseLineCheckMetaData2: MetaDataResult;
-  windowsBaseLineCheckMetaData: MetaDataResult;
+  linuxBaseLineCheckMetaData__ip: MetaDataResult;
+  linuxBaseLineCheckMetaData_status: MetaDataResult;
+  windowsBaseLineCheckMetaData_ip: MetaDataResult;
 
-  vulnMetaData: MetaDataResult;
+  vulnMetaData_ip: MetaDataResult;
+  vulnMetaData_scanTime: MetaDataResult;
+  last7VulValue:number[];
   //vulnFilteredData: Map<string, FilteredDataResult_new[]>;
   transformedData: FilteredDataResult_new[],
 
@@ -55,24 +57,22 @@ export interface DataContextType {
   vulnHostCount:number;
   blLinuxHostCount:number;
   blWindowsHostCount:number;
+
+  blLinuxHostItemCount:number|undefined;
+  blWindowsHostItemCount:number|undefined;
+  blLinuxHostItemCount_pass:number;
+  blWindowsHostItemCount_pass:number;
+
   agentOnlineCount:number;
   agentCPUuseMetaData:MetaDataResult;
   agentAVGCPUUse:string;
+  agentMEMuseMetaData:MetaDataResult;
+  agentAVGMEMUse:string;
 
 
 
 };
 export const DataContext = createContext<DataContextType | undefined>(undefined);
-
-// 获取最大的五个typeCount的值和对应的valueName
-const getTopFiveTypeCounts = (result: MetaDataResult): [string, number][] => {
-  // 将 typeCount Map 转换为数组，然后排序
-  const sortedTypeCounts = Array.from(result.typeCount)
-    .sort((a, b) => b[1] - a[1]) // 根据计数降序排序
-    .slice(0, 5); // 获取前五个
-
-  return sortedTypeCounts;
-};
 
 
 
@@ -150,36 +150,44 @@ const DataManager: React.FC = ({ children }) => {
 
 
   const topFiveFimData = useSortedData('filename','event_time','http://localhost:5000/api/FileIntegrityInfo/all'); // 这将返回DataItem[]类型的数据
-  const n = useExtractMetaData('ip','60.218.244.31','http://localhost:5000/api/asset_mapping/all');
 
-  const agentMetaData=useExtractOrigin('status',agentOriginData);//各类status主机的数量
-  const agentOnlineCount = agentMetaData.typeCount.get("Online") || -1;
+  const agentMetaData_status=useExtractOrigin('status',agentOriginData);//各类status主机的数量
+  const agentOnlineCount = agentMetaData_status.typeCount.get("Online") || -1;
+
   const agentCPUuseMetaData=useExtractOrigin('cpu_use',agentOriginData);//各类status主机的数量
+  const agentMEMuseMetaData=useExtractOrigin('mem_use',agentOriginData);//各类status主机的数量
+  const agentAVGCPUUse = (((useCalculateAverage('cpu_use',agentOriginData).average)||0)*100).toString()+'%';
+  const agentAVGMEMUse = (((useCalculateAverage('mem_use',agentOriginData).average)||0)*100).toString()+'GB';
 
-  const fimMetaData=useExtractOrigin('hostname',fimOriginData);
+  const fimMetaData_hostname=useExtractOrigin('hostname',fimOriginData);
 
-  const portMetaData = useExtractOrigin('port_state',portOriginData);
-  const portMetaData2 = useExtractOrigin('port_number',portOriginData);
-  const topFivePortCountsArray = getTopFiveTypeCounts(portMetaData2);
+  const portMetaData_port_state = useExtractOrigin('port_state',portOriginData);
+  const portMetaData_port_number = useExtractOrigin('port_number',portOriginData);
+  const topFivePortCountsArray = getTopFiveTypeCounts(portMetaData_port_number);
 
-  const processMetaData = useExtractOrigin('userName',processOriginData);
-  const topFiveUserCountsArray = getTopFiveTypeCounts(processMetaData);
-  const processMetaData2 = useExtractOrigin('name',processOriginData);
-  const topFiveProcessCountsArray = getTopFiveTypeCounts(processMetaData2);
+  const processMetaData_userName = useExtractOrigin('userName',processOriginData);
+  const topFiveUserCountsArray = getTopFiveTypeCounts(processMetaData_userName);
+  const processMetaData_name = useExtractOrigin('name',processOriginData);
+  const topFiveProcessCountsArray = getTopFiveTypeCounts(processMetaData_name);
 
-  const assetMetaData = useExtractOrigin('service',assetOriginData);
-  const assetMetaData2 = useExtractOrigin('product',assetOriginData);
-  const assetMetaData_host_os = useExtractOrigin('os_version',assetOriginData);
+  const assetMetaData_service = useExtractOrigin('service',assetOriginData);
+  const assetMetaData_product = useExtractOrigin('product',assetOriginData);
+  const assetMetaData_os_version = useExtractOrigin('os_version',assetOriginData);
   
-  const topFiveServiceCountsArray = getTopFiveTypeCounts(assetMetaData);
-  const topFiveProductCountsArray = getTopFiveTypeCounts(assetMetaData2);
+  const topFiveServiceCountsArray = getTopFiveTypeCounts(assetMetaData_service);
+  const topFiveProductCountsArray = getTopFiveTypeCounts(assetMetaData_product);
   
   
-  const linuxBaseLineCheckMetaData = useExtractOrigin('ip',linuxBaseLineCheckOriginData);
-  const linuxBaseLineCheckMetaData2 = useExtractOrigin('status',linuxBaseLineCheckOriginData);
-  const windowsBaseLineCheckMetaData = useExtractOrigin('ip',windowsBaseLineCheckOriginData);
+  const linuxBaseLineCheckMetaData__ip = useExtractOrigin('ip',linuxBaseLineCheckOriginData);
+  const linuxBaseLineCheckMetaData_status = useExtractOrigin('status',linuxBaseLineCheckOriginData);
+  const linuxBaseLineCheckMetaData_adjustment_requirement = useExtractOrigin('adjustment_requirement',linuxBaseLineCheckOriginData);
 
-  const vulnMetaData = useExtractOrigin('ip',vulnOriginData);
+  const windowsBaseLineCheckMetaData_ip = useExtractOrigin('ip',windowsBaseLineCheckOriginData);
+  const windowsBaseLineCheckMetaData_adjustment_requirement = useExtractOrigin('adjustment_requirement',windowsBaseLineCheckOriginData);
+
+  const vulnMetaData_ip = useExtractOrigin('ip',vulnOriginData);
+  const vulnMetaData_scanTime = useExtractOrigin('scanTime',vulnOriginData);
+  const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime)
   //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
   const transformedData = useTransformedData(vulnOriginData);
   //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
@@ -187,19 +195,16 @@ const DataManager: React.FC = ({ children }) => {
 
 
 
-  const hostCount = agentMetaData.tupleCount;
-  const vulnHostCount = vulnMetaData.tupleCount;
-  const blLinuxHostCount = linuxBaseLineCheckMetaData.typeCount.size;
-  const blWindowsHostCount = windowsBaseLineCheckMetaData.typeCount.size;
+  const hostCount = agentMetaData_status.tupleCount;
+  const vulnHostCount = vulnMetaData_ip.tupleCount;
+  const blLinuxHostCount = linuxBaseLineCheckMetaData__ip.typeCount.size;
+  const blWindowsHostCount = windowsBaseLineCheckMetaData_ip.typeCount.size;
+  const blLinuxHostItemCount = linuxBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整");
+  const blWindowsHostItemCount = windowsBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整");
+  const blLinuxHostItemCount_pass = linuxBaseLineCheckMetaData_adjustment_requirement.tupleCount;
+  const blWindowsHostItemCount_pass = windowsBaseLineCheckMetaData_adjustment_requirement.tupleCount;
 
-  let totalWeightedPercent = 0;
-  let totalCount = 0;
-  Object.entries(agentCPUuseMetaData.typeCount).forEach(([typeName, count]) => {
-    const percentValue = parseFloat(typeName.replace('%', ''));
-    totalWeightedPercent += percentValue * count;
-    totalCount += count;
-  });
-  const agentAVGCPUUse = totalCount > 0 ? (totalWeightedPercent / totalCount).toFixed(2) + '%' : '0%';
+
 
 
 
@@ -241,30 +246,38 @@ const DataManager: React.FC = ({ children }) => {
   
   return (
     <DataContext.Provider value={{
-      topFiveFimData,n,
+      topFiveFimData,
       //agentSearchResults,
       agentCPUuseMetaData,
       agentAVGCPUUse,
+      agentMEMuseMetaData,
+      agentAVGMEMUse,
 
       agentOriginData,
 
-      agentMetaData,
+      agentMetaData_status,
       agentOnlineCount,
-      fimMetaData,
-      portMetaData,portMetaData2,topFivePortCounts,
-      processMetaData,topFiveProcessCounts,topFiveUserCounts,
-      assetMetaData,assetMetaData2, assetMetaData_host_os, topFiveServiceCounts,topFiveProductCounts,
-      linuxBaseLineCheckMetaData,linuxBaseLineCheckMetaData2,windowsBaseLineCheckMetaData,
+      fimMetaData_hostname,
+      portMetaData_port_state,portMetaData_port_number,topFivePortCounts,
+      processMetaData_userName,topFiveProcessCounts,topFiveUserCounts,
+      assetMetaData_service,assetMetaData_product, assetMetaData_os_version, topFiveServiceCounts,topFiveProductCounts,
+      linuxBaseLineCheckMetaData__ip,linuxBaseLineCheckMetaData_status,windowsBaseLineCheckMetaData_ip,
 
       vulnOriginData,
       //vulnOriginDataReconstruct,
-      vulnMetaData,//vulnFilteredData,
+      vulnMetaData_ip,//vulnFilteredData,
+      vulnMetaData_scanTime,
+      last7VulValue,
       transformedData,
 
       hostCount,
       vulnHostCount,
       blLinuxHostCount,
       blWindowsHostCount,
+      blLinuxHostItemCount,
+      blWindowsHostItemCount,
+      blLinuxHostItemCount_pass,
+      blWindowsHostItemCount_pass,
     }}>
       {children}
     </DataContext.Provider>
