@@ -183,7 +183,7 @@ export const baseLineDetectScanResult2Columns = [
         title: "扫描结果",
         dataIndex: 'scanResult',
         
-        onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.scanResult.includes(value as string),
+        //onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.scanResult.includes(value as string),
     },
 
     {
@@ -254,7 +254,7 @@ export const createNewTaskColumns = [
         title: '操作系统',
         dataIndex: 'os',
         
-        onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.os.includes(value as string),
+        //onFilter: (value: string | number | boolean, record: CreateTaskDataType) => record.os.includes(value as string),
         
         onHeaderCell: () => ({
             style: {
@@ -320,7 +320,7 @@ export const hostinventoryColumns = [
         dataIndex: 'os_version',
         filters: [
         ],
-        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.os_version.includes(value as string),
+        //onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.os_version.includes(value as string),
     },
     {
         title: "状态",
@@ -401,7 +401,7 @@ export const fimColumns = [
     {
         title: '主机IP',
         dataIndex: 'hostIP',
-        onFilter: (value: string | number | boolean, record: FimDataType) => record.hostIP.includes(value as string),
+        onFilter: (value: string | number | boolean, record: FimDataType) => record.hostIP === value,
         onHeaderCell: () => ({
             style: {
               minWidth: 80, // 最小宽度100px
@@ -488,7 +488,7 @@ export const openPortsColumns = [
     {
         title: '主机IP',
         dataIndex: 'host_ip',
-        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.host_ip.includes(value as string),
+        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.host_ip === value,
         onHeaderCell: () => ({
             style: {
               //minWidth: 80, // 最小宽度100px
@@ -498,7 +498,7 @@ export const openPortsColumns = [
     {
         title: '端口号',
         dataIndex: 'port_number',
-        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.port_number.includes(value as string),
+        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.port_number===value,
         onHeaderCell: () => ({
             style: {
               //minWidth: 80, // 最小宽度100px
@@ -1363,7 +1363,7 @@ export const RASPProcessColums = [
         key: 'running_type',
         filters: [
         ],
-        onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+        //onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
         render: (text: string, record: BaseLineDataType) => (
             <Tooltip title={record.instruction}>
                 {text}
@@ -1418,7 +1418,7 @@ export const ConfigurationColums = [
         key: 'running_type',
         filters: [
         ],
-        onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
+        //onFilter: (value: string | number | boolean, record: BaseLineDataType) => record.status.includes(value as string),
         render: (text: string, record: BaseLineDataType) => (
             <Tooltip title={record.instruction}>
                 {text}
@@ -1485,9 +1485,9 @@ export const hostperformanceColumns = [
         title: "操作系统",
         dataIndex: 'ostype',
         key: 'ostype',
-        filters: [
-        ],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        //filters: [
+        //],
+        //onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
     },
 ];
 

@@ -115,7 +115,6 @@ function App(props: AppProps){
         setCollapsed(!collapsed);
     }
     return (
-        
         <DataManager>
         <Layout>
             {!responsive.isMobile && checkLogin(auth.permissions) && (

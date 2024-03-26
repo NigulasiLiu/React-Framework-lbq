@@ -104,42 +104,6 @@ class Dashboard extends React.Component<DashboardProps> {
         const day = String(date.getDate()).padStart(2, '0');
         return { day: `${month}-${day}`, value: day };
       });
-      
-      const alert_undone=1;
-      
-      
-      // 第二类告警的数据集
-      const alertDataTwo = [
-        { name: '待处理告警', value: 75, color: '#FFBB28' },
-        { name: '已处理告警', value: 25, color: '#E5E8EF' },
-      ];
-
-      const alertDataThree = [
-        { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
-        { name: '存在高可利用漏洞', value: 1, color: '#EA635F' }//RED
-      ];
-      const alertDataFour = [
-        { name: '无风险主机', value: 13, color: '#E5E8EF' },//GREY
-        { name: '存在高危基线', value: 2, color: '#4086FF' }//BLUE
-      ];
-      const riskData: StatusItem[] = [
-        { color: '#E53F3F', label: '高风险 ', value: 1 },
-        { color: '#FEC746', label: '中风险 ', value: 1 },
-        { color: '#468DFF', label: '低风险 ', value: 2 },
-      ];
-      // const renderCustomLabel = () => {
-      //   console.log('okkkkk')
-      //   const percent = (alertDataTwo[0].value / (alertDataTwo[0].value + alertDataTwo[1].value) * 100).toFixed(0);
-      //   return (
-      //     <text fill="black" textAnchor="middle" dominantBaseline="central">
-      //       <tspan x="50%" dy="-1em">待处理告警</tspan>
-      //       <tspan x="50%" dy="1.2em">{`${percent}%`}</tspan>
-      //     </text>
-      //   );
-      // };
-      const labels = ['OWL最佳实现-centos基线检查', '等保三级-centos基线检查', '等保二级-centos基线检查'];
-      const values = [16, 19, 15];
-      const colors = ['#ff4d4f', '#faad14', '#52c41a']; // 指定每个进度条的颜色
 
       return(
         <DataContext.Consumer>
@@ -148,15 +112,49 @@ class Dashboard extends React.Component<DashboardProps> {
             return <div>Loading...</div>; // 或者其他的加载状态显示
         }
         // 从 context 中解构出 topFiveFimData 和 n
-        const { topFiveFimData, topFivePortCounts,
+        const { 
             agentMetaData,
-            fimMetaData,
-            portMetaData, portMetaData2,
-            processMetaData,topFiveProcessCounts,topFiveUserCounts,
-            assetMetaData, assetMetaData2,topFiveServiceCounts,topFiveProductCounts,
-            linuxBaseLineCheckMetaData,} = context;
-
-
+            agentOnlineCount,
+            portMetaData, 
+            assetMetaData,      
+            hostCount,
+            vulnHostCount,
+          
+            blLinuxHostCount,
+            blWindowsHostCount,
+            agentCPUuseMetaData,
+            agentAVGCPUUse,
+          } = context;
+          // let totalWeightedPercent = 0;
+          // let totalCount
+          // Object.entries(agentCPUuseMetaData.typeCount).forEach(([typeName, count]) => {
+          //   const percentValue = parseFloat(typeName.replace('%', ''));
+          //   totalWeightedPercent += percentValue * count;
+          //   totalCount += count;
+          // });
+      
+            // 第二类告警的数据集
+            const alertDataTwo = [
+              { name: '待处理告警', value: 75, color: '#FFBB28' },
+              { name: '已处理告警', value: 25, color: '#E5E8EF' },
+            ];
+      
+            const alertDataThree = [
+              { name: '无风险主机', value: hostCount-vulnHostCount, color: '#E5E8EF' },//GREY
+              { name: '存在高可利用漏洞', value: vulnHostCount, color: '#EA635F' }//RED
+            ];
+            const alertDataFour = [
+              { name: '无风险主机', value: hostCount-(blLinuxHostCount+blWindowsHostCount), color: '#E5E8EF' },//GREY
+              { name: '存在高危基线', value: blLinuxHostCount+blWindowsHostCount, color: '#4086FF' }//BLUE
+            ];
+            const riskData: StatusItem[] = [
+              { color: '#E53F3F', label: '高风险 ', value: 1 },
+              { color: '#FEC746', label: '中风险 ', value: 1 },
+              { color: '#468DFF', label: '低风险 ', value: 2 },
+            ];
+      const labels = ['Windows主机基线检查', 'Linux主机基线检查', ];
+      const values = [blWindowsHostCount, blLinuxHostCount];
+      const colors = ['#ff4d4f', '#faad14', ]; // 指定每个进度条的颜色,弃用的绿色'#52c41a'
             return (
            
               <div >
@@ -185,7 +183,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           >
                           <Row>
                               <Col span={24}>
-                                  <Statistic title={<span style={{fontSize:'18px'}}>主机</span>} value={agentMetaData.tupleCount} />
+                                  <Statistic title={<span style={{fontSize:'18px'}}>主机</span>} value={hostCount} />
                               </Col>
                               
                           </Row>
@@ -304,46 +302,6 @@ class Dashboard extends React.Component<DashboardProps> {
                                   showRightBorder={false}
                                   //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
                               />
-                          {/* <DataCard
-                                  title="应用运行时安全告警"
-                                  value={3}
-                                  valueItem={[
-                                    { value: '1', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                                    { value: '1', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                                    { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-                                    { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
-                                  ]}
-                                  panelId="/app/ARP/ARPAlertList"
-                                  height="75px"
-                                  width="210px"
-                                  backgroundColor="#ffffff"
-                                  navigate={true}
-                                  showTopBorder={false}
-                                  showBottomBorder={false}
-                                  showLeftBorder={false}
-                                  showRightBorder={false}
-                                  //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
-                              />
-                          <DataCard
-                              title="容器集群安全告警"
-                                  value={2}
-                                  valueItem={[
-                                    { value: '0', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                                    { value: '0', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                                    { value: '0', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-                                    { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
-                                  ]}
-                                  panelId="/app/CCP/CCPAlertList"
-                                  height="75px"
-                                  width="210px"
-                                  backgroundColor="#ffffff"
-                                  navigate={true}
-                                  showTopBorder={false}
-                                  showBottomBorder={false}
-                                  showLeftBorder={false}
-                                  showRightBorder={false}
-                                  //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
-                              /> */}
                           </Col>
                         </Row>
           
@@ -381,7 +339,7 @@ class Dashboard extends React.Component<DashboardProps> {
                           <Col span={6}>
                           <DataCard
                                   title="待处理高可利用漏洞"
-                                  value={5}
+                                  value={vulnHostCount}
                                   valueItem={[
                                     { value: '1', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
                                     { value: '1', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
@@ -475,7 +433,7 @@ class Dashboard extends React.Component<DashboardProps> {
                             type="link"
                             style={{ color: '#000' }}
                             icon={<RightOutlined />}
-                            onClick={() => this.props.history.push('/app/dashboard/HostInventory')}
+                            onClick={() => this.props.history.push('/app/AssetsCenter/HostInventory')}
                           />
                         </Col>
                     </div>
@@ -573,7 +531,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       <div style={{ marginBottom: '20px' }}>
                         <DataCard
                                 title="在线 Agent"
-                                value={0}
+                                value={agentOnlineCount}
                                 valueItem={[]}
                                 panelId=""
                                 height="100px"
@@ -587,7 +545,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                 </div>
                         <DataCard
                                 title="离线 Agent"
-                                value={0}
+                                value={hostCount-agentOnlineCount}
                                 valueItem={[]}
                                 panelId=""
                                 height="100px"
@@ -603,7 +561,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       <div style={{ marginBottom: '20px' }}>
                         <DataCard
                                 title="CPU AVG"
-                                value={"0%"}
+                                value={agentAVGCPUUse}
                                 valueItem={[]}
                                 panelId=""
                                 height="100px"

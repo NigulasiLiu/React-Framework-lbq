@@ -46,6 +46,21 @@ export interface DataContextType {
   vulnMetaData: MetaDataResult;
   //vulnFilteredData: Map<string, FilteredDataResult_new[]>;
   transformedData: FilteredDataResult_new[],
+
+
+
+
+
+  hostCount:number;
+  vulnHostCount:number;
+  blLinuxHostCount:number;
+  blWindowsHostCount:number;
+  agentOnlineCount:number;
+  agentCPUuseMetaData:MetaDataResult;
+  agentAVGCPUUse:string;
+
+
+
 };
 export const DataContext = createContext<DataContextType | undefined>(undefined);
 
@@ -58,6 +73,9 @@ const getTopFiveTypeCounts = (result: MetaDataResult): [string, number][] => {
 
   return sortedTypeCounts;
 };
+
+
+
 // const searchOriginData = (
 //   originData:any[],      // The actual array of data objects
 //   filterKeys:string[],      // Keys to filter by
@@ -93,14 +111,6 @@ const DataManager: React.FC = ({ children }) => {
   const [windowsBaseLineCheckOriginData, setwindowsBLCheckOriginData] = useState<any>({});
 
   const [vulnOriginData, setVulnOriginData] = useState<any>([]);
-  //const [vulnOriginDataReconstruct, setVulnOriginDataReconstruct] = useState<ReconstructedDataItem[]>([]);
-
-  
-  //const [agentSearchResults, setAgentSearchResults] = useState<any[]>([]);
-
-
-
-  //const [searchResults, setSearchResults] = useState<any[]>([]);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -143,6 +153,8 @@ const DataManager: React.FC = ({ children }) => {
   const n = useExtractMetaData('ip','60.218.244.31','http://localhost:5000/api/asset_mapping/all');
 
   const agentMetaData=useExtractOrigin('status',agentOriginData);//各类status主机的数量
+  const agentOnlineCount = agentMetaData.typeCount.get("Online") || -1;
+  const agentCPUuseMetaData=useExtractOrigin('cpu_use',agentOriginData);//各类status主机的数量
 
   const fimMetaData=useExtractOrigin('hostname',fimOriginData);
 
@@ -173,13 +185,31 @@ const DataManager: React.FC = ({ children }) => {
   //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
 
-  
-
-  
 
 
+  const hostCount = agentMetaData.tupleCount;
+  const vulnHostCount = vulnMetaData.tupleCount;
+  const blLinuxHostCount = linuxBaseLineCheckMetaData.typeCount.size;
+  const blWindowsHostCount = windowsBaseLineCheckMetaData.typeCount.size;
+
+  let totalWeightedPercent = 0;
+  let totalCount = 0;
+  Object.entries(agentCPUuseMetaData.typeCount).forEach(([typeName, count]) => {
+    const percentValue = parseFloat(typeName.replace('%', ''));
+    totalWeightedPercent += percentValue * count;
+    totalCount += count;
+  });
+  const agentAVGCPUUse = totalCount > 0 ? (totalWeightedPercent / totalCount).toFixed(2) + '%' : '0%';
 
 
+
+
+
+
+
+
+
+ 
 
 // 转换sortedTypeCounts到DataItem类型,OverViewPanel的TopFive数据展示
   const topFivePortCounts: DataItem[] = topFivePortCountsArray.map(([valueName, value], index) => ({
@@ -213,10 +243,13 @@ const DataManager: React.FC = ({ children }) => {
     <DataContext.Provider value={{
       topFiveFimData,n,
       //agentSearchResults,
+      agentCPUuseMetaData,
+      agentAVGCPUUse,
 
       agentOriginData,
 
       agentMetaData,
+      agentOnlineCount,
       fimMetaData,
       portMetaData,portMetaData2,topFivePortCounts,
       processMetaData,topFiveProcessCounts,topFiveUserCounts,
@@ -228,6 +261,10 @@ const DataManager: React.FC = ({ children }) => {
       vulnMetaData,//vulnFilteredData,
       transformedData,
 
+      hostCount,
+      vulnHostCount,
+      blLinuxHostCount,
+      blWindowsHostCount,
     }}>
       {children}
     </DataContext.Provider>

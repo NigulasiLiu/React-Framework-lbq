@@ -78,7 +78,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
         const finalEndpoint = apiEndpoint.includes('=')?apiEndpoint:
         rangeQuery.length?`${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
         //const finalEndpoint = rangeQuery.length?`${apiEndpoint}${rangeQuery}`:`${apiEndpoint}${buildQueryParams(searchField, searchQuery)}`;
-        const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint});
+        const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint});//http://localhost:5000/+finalEndpoint
         
         // 检查 message 字段是否是数组，如果不是，则将其转换为包含该对象的数组
         const messageData = Array.isArray(rawData) ? rawData : [rawData];

@@ -135,7 +135,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                 return <div>Loading...n?</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const {n,agentMetaData, processMetaData} = context;
+            const {n,agentMetaData, agentCPUuseMetaData,agentAVGCPUUse,linuxBaseLineCheckMetaData} = context;
             const hostCount = agentMetaData.tupleCount;
             const hostOnlineCount = agentMetaData.typeCount.get("Online") || 'Not available';
             const hostOfflineCount = agentMetaData.typeCount.get("Offline") || 'Not available';
@@ -262,8 +262,9 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                           </div>
                       </Col>
                   </Row>
+                  {}
                   <MetaDataDisplay
-                  metadata={processMetaData}
+                  metadata={linuxBaseLineCheckMetaData}
                   />
               </div>
             );
