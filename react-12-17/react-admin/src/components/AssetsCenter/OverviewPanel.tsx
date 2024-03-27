@@ -396,7 +396,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Row>
                     </Card>
                 </Col>
-                <Col span={3}>
+                {/* <Col span={3}>
                     <Card
                         bordered={false}
                         style={{
@@ -428,7 +428,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                             </Col>
                         </Row>
                     </Card>
-                </Col>
+                </Col> */}
                 <Col span={3}>
                     <Card
                         bordered={false}

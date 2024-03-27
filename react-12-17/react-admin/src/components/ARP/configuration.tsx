@@ -6,7 +6,6 @@ import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'an
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
 import { ConfigurationColums } from '../tableUtils';
-import DataDisplayTable from '../ContextAPI/DataDisplayTable';
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -196,13 +195,13 @@ class Configuration extends React.Component<HostInventoryProps, HostInventorySta
                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>配置管理</h2>
                              </div>
-                                <DataDisplayTable
+                                {/* <DataDisplayTable
                                     apiEndpoint="http://localhost:5000/api/files/configuration"
                                     columns={ConfigurationColums}
                                     currentPanel={"configuration"}
                                     selectedRowKeys={this.state.selectedRowKeys}
                                     onSelectChange={(keys: any) => this.onSelectChange(keys)}
-                                />
+                                /> */}
                             </Card>
                         </div>
                     </Col>

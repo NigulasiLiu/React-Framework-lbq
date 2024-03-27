@@ -153,7 +153,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                 timeColumnIndex={[]}
                                 apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
                                 columns={baseLineDetectCheckedItemColumns}
-                                currentPanel='baselinedetectdetailsCheckedItem'
+                                currentPanel='baseLineDetectDetailsCheckedItem'
                                 />
                             </Card>
                             </div>
@@ -208,11 +208,11 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                             <Card bordered={false}>
   
                             <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
-                    timeColumnIndex={[]}
-                    columns={baseLineDetectHostItemColumns}
-                    currentPanel='baselinedetectdetailsHostItem'
-                    />
+                            apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
+                                timeColumnIndex={[]}
+                                columns={baseLineDetectHostItemColumns}
+                                currentPanel='baseLinedetectdetailsHostItem'
+                                />
                                 </Card>
                             </div>
                         </Col>
@@ -243,7 +243,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                 timeColumnIndex={[]}
                                 apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
                                 columns={baseLineDetectCheckedItemColumns}
-                                currentPanel='baselinedetectdetailsCheckedItem'
+                                currentPanel='baseLinedetectdetailsCheckedItem'
                                 />
                             </Card>
                             </div>

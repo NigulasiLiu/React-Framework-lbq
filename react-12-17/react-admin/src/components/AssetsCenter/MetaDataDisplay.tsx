@@ -1,7 +1,7 @@
 // MetaDataDisplay.tsx
 import React, { Component } from 'react';
 import { Row, Col, Typography, Card } from 'antd';
-import { MetaDataResult } from '../ContextAPI/ExtractMeta';
+import { MetaDataResult } from '../ContextAPI/ExtractOriginData';
 
 const { Title, Text } = Typography;
 

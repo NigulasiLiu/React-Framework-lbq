@@ -9,10 +9,16 @@ import { fetchDataFromAPI } from '../AssetsCenter/DataService';
 import useFilterOriginData_new,{FilteredDataResult_new} from './useFilterOriginData_new';
 import useTransformedData from '../HostProtection/useTransformedData';
 import useCalculateAverage from './useCalculateAverage';
+import { processData, processVulnData } from '../AssetsCenter/DataService';
 
 
 
 export interface DataContextType {
+
+  fetchLatestData: (apiEndpoint: string, 
+    searchField?: string, searchQuery?: string, rangeQuery?: string, 
+    timeColumnIndex?: string[]) => Promise<any>;
+
   topFiveFimData: DataItem[];
   topFivePortCounts: DataItem[];
   
@@ -148,6 +154,38 @@ const DataManager: React.FC = ({ children }) => {
   }, []);
   // 定义数据重构函数
 
+  const fetchLatestData = async (apiEndpoint: string, searchField = '', searchQuery = '', rangeQuery = '', timeColumnIndex: string[] = []) => {
+    try {
+        // 修改queryParams的构造逻辑
+        let finalEndpoint = `${apiEndpoint}`;
+        if (searchField === 'all') {
+            finalEndpoint += '/all';
+        } else if (searchField && searchQuery) {
+            const queryParams = `?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
+            finalEndpoint += queryParams;
+        }
+        
+        // 如果有rangeQuery，追加到finalEndpoint
+        if (rangeQuery) {
+            // 确保rangeQuery以'?'或'&'开头，以正确追加到finalEndpoint
+            if (!rangeQuery.startsWith('?') && !rangeQuery.startsWith('&')) {
+                rangeQuery = '&' + rangeQuery; // 假设rangeQuery需要以'&'开头追加
+            }
+            finalEndpoint += rangeQuery;
+        }
+
+        const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint });
+        // 检查message字段是否是数组，如果不是，则将其转换为包含该对象的数组
+        const messageData = Array.isArray(rawData) ? rawData : [rawData];
+        const processedData = processData(messageData, timeColumnIndex);
+        if(apiEndpoint.includes("vulndetetion")) console.log("is vuln list!!!!!!!!")
+        const result = apiEndpoint.includes("vulndetetion")?processVulnData(processedData):processedData;
+        return result;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return []; // 在出错时返回空数组或适当的错误处理
+    }
+};
 
   const topFiveFimData = useSortedData('filename','event_time','http://localhost:5000/api/FileIntegrityInfo/all'); // 这将返回DataItem[]类型的数据
 
@@ -212,6 +250,7 @@ const DataManager: React.FC = ({ children }) => {
 
 
 
+  
 
 
  
@@ -245,7 +284,7 @@ const DataManager: React.FC = ({ children }) => {
 
   
   return (
-    <DataContext.Provider value={{
+    <DataContext.Provider value={{fetchLatestData,
       topFiveFimData,
       //agentSearchResults,
       agentCPUuseMetaData,

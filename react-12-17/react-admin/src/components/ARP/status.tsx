@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker, Statistic } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import moment, { Moment } from 'moment';
-import DataDisplayTable from '../ContextAPI/DataDisplayTable'
 import { PieChart, Pie, Cell, Label, Tooltip, ResponsiveContainer } from 'recharts';
 import { RASPProcessColums } from '../tableUtils';
 
@@ -431,13 +430,13 @@ class RASPStatus extends React.Component<HostInventoryProps, HostInventoryState>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                       <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>RASP进程列表</h2>
                   </div>
-                  <DataDisplayTable
+                  {/* <DataDisplayTable
                       apiEndpoint="http://localhost:5000/api/files/RASPProcess"
                       columns={RASPProcessColums}
                       currentPanel={"RASPProcess"}
                       selectedRowKeys={this.state.selectedRowKeys}
                       onSelectChange={(keys: any) => this.onSelectChange(keys)}
-                  />
+                  /> */}
                   </Card>
               </div>
           </Col>

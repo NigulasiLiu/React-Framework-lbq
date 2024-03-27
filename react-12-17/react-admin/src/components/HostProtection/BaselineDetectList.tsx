@@ -131,7 +131,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
               apiEndpoint="http://localhost:5000/api/baseline_check/windows"
               timeColumnIndex={['last_checked']}
               columns={baselineDetectColumns}
-              currentPanel="baseline_check_windows"
+              currentPanel="baseLine_check_windows"
               />
               </Row>
             );
@@ -142,7 +142,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                   apiEndpoint="http://localhost:5000/api/baseline_check/linux"
                   timeColumnIndex={['last_checked']}
                   columns={baselineDetectColumns}
-                  currentPanel="baseline_check_linux"
+                  currentPanel="baseLine_check_linux"
                 />
                 </Row>
             );

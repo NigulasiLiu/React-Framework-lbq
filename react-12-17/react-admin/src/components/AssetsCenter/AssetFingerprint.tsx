@@ -108,6 +108,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     // 渲染当前激活的子面板
     renderCurrentPanel() {
         const {currentPanel} = this.state;
+        console.log('this.state.currentPanel:'+currentPanel)
         switch (currentPanel) {
             case 'overview':
                 return (
@@ -129,14 +130,12 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 );
             case 'open-ports':
                 return (
-                    <div>
                     <FetchAPIDataTable
                     apiEndpoint="http://localhost:5000/api/portinfo"
                     timeColumnIndex={[]}
                     columns={openPortsColumns}
                     currentPanel={currentPanel}
                     />
-                    </div>
                 );
             case 'running-processes':
                 return (
@@ -272,8 +271,8 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     {/* <Menu.Item key="container">容器</Menu.Item> */}
                                     <Menu.Item key="open-ports">开放端口</Menu.Item>
                                     <Menu.Item key="running-processes">运行进程</Menu.Item>
-                                    {/* <Menu.Item key="system-users">系统用户</Menu.Item>
-                                    <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
+                                    <Menu.Item key="system-users">系统用户</Menu.Item>
+                                    {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
                                     <Menu.Item key="applications">应用</Menu.Item> */}
                                     {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}

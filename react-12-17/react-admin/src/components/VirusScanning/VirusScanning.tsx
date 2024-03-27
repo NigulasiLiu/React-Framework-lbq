@@ -293,7 +293,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                       apiEndpoint="http://localhost:5000/api/files/vulnerability"
                       timeColumnIndex={[]}
                       columns={virusscanningColumns}
-                      currentPanel="vulnerabilityDetect"
+                      currentPanel="virusScanList"
                   />
                   </Card>
               </div>

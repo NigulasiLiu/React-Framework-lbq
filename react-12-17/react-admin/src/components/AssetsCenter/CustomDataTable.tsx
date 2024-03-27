@@ -4,6 +4,7 @@ import SidebarComponent from '../SubComponents/SidebarComponent'
 import moment, { Moment } from 'moment';
 import { buildRangeQueryParams} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
+import { tableWithoutDirectFetch } from '../PanelWithoutDirectFetch';
 import { stat } from 'fs';
 
 const { Option } = Select;
@@ -15,19 +16,23 @@ interface GenericDataItem {
 }
 
 interface CustomDataTableProps {
+    apiEndpoint:string;
     externalDataSource: GenericDataItem[];
     columns: any[]; // 根据实际列数据结构定义更明确的类型
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
     // 可以根据需要添加其他 props，比如分页大小等
     currentPanel: string;
+    //prePanel:string;
 
     //selectedRowKeys: React.Key[]; // 可选属性，代表被选中行的keys，用于控制独立的key
     
     //handleApplicationTypeSelect: (applicationType: string) => void; // 添加方法的类型声明
-    fetchLatestData: (field: string, query: string, rangeQueryParams:string) => void; 
     //renderSearchFieldDropdown:()=>void;
     //handleSearch:()=>void;
     
+    fetchLatestData: (apiEndpoint: string, 
+        searchField?: string | undefined, searchQuery?: string | undefined, rangeQuery?: string | undefined, 
+        timeColumnIndex?: string[] | undefined) => void; 
     onUpdateSearchField: (field: string) => void;
     onUpdateSearchQuery: (query: string) => void;
     onUpdateRangeField:(queryParams:string) => void;
@@ -89,62 +94,110 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         };
     }
     componentDidMount() {
-        this.setState({
-            currentPanelName:this.props.currentPanel,
-        })
-        this.props.fetchLatestData('all', '', '');
-        console.log('currentPanelName:'+this.props.currentPanel)
+        // this.setState({
+        //     newColumns:this.autoPopulateFilters(),
+        // })
+        console.log('amounted! currentPanelName:'+this.props.currentPanel)
+        this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
     }
     componentDidUpdate(prevProps: any) {
-        if (prevProps.externalDataSource !== this.props.externalDataSource && !this.state.dataSourceChanged) {
-            this.setState({
-                dataSourceChanged: true, // 更新状态以避免重复执行
-              });
-            console.log('currentPanelName1:'+this.props.currentPanel)
-            //this.sortAndExtractTopFive(this.props.externalDataSource);
-            // 处理新数据：例如重置分页或更新最后更新时间
+        console.log('PrevProps.currentPanelName1:'+prevProps.currentPanel)
+        console.log('currentPanelName:'+this.props.currentPanel);
+    
+        if (prevProps.currentPanel !== this.props.currentPanel) { // 修改条件检查逻辑
+            console.log('Panel changed from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
             this.setState({
                 lastUpdated: new Date().toLocaleString(),
-                // 重置各种筛选条件
+                selectedSearchField: 'all',
                 searchQuery: '',
-                selectedSearchField: 'all', 
                 selectrangequeryParams: '',
-                selectedDateRange: [null, null],//日期筛选器重置
+                selectedDateRange: [null, null], // 日期筛选器重置
                 selectedRowKeys: [],
-                dataSourceChanged: true,
-                newColumns:this.autoPopulateFilters(),
-                currentPanelName:this.props.currentPanel,
-        
-         },() => {
-                     // 异步调用fetchLatestData来确保setState完成后执行
-                     this.props.fetchLatestData(this.state.selectedSearchField, '', '');
-                 });
-        // 检查面板是否发生变化
-        // if (this.props.currentPanel !== prevProps.currentPanel) {
-        //     // 如果面板发生变化，重置selectedRowKeys和lastUpdated
-        //     this.setState(
-        //         {
-        //             lastUpdated: null,
-        //             // 重置各种筛选条件
-        //             searchQuery: '',
-        //             selectedSearchField: 'all', 
-        //             selectrangequeryParams: '',
-        //             selectedDateRange: [null, null],//日期筛选器重置
-        //             selectedRowKeys: [],
-                    
-        //             selectedApplicationType: null,//只用于‘应用’这个子页面
-        //             panelChanged: true,
-        //             newColumns:this.autoPopulateFilters(),
-        //         },
-        //         () => {
-        //             // 异步调用fetchLatestData来确保setState完成后执行
-        //             this.props.fetchLatestData(this.state.selectedSearchField, '', '');
-        //         }
-        //     );
-        // }
+                dataSourceChanged: true, // 此状态字段可能需要进一步审查其必要性
+                newColumns: this.autoPopulateFilters(),
+                currentPanelName: this.props.currentPanel,
+            }, () => {
+                // 如果有需要，可以在状态更新后获取数据
+                // this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
+            });
+        }
+        else{
+            console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
+           
         }
     }
+    
+    // componentDidUpdate(prevProps: any) {
+    //     console.log('PrevProps.currentPanelName1:'+prevProps.currentPanel)
+    //     // if(prevProps.currentPanel!==this.props.currentPanel && prevProps.columns!==this.props.columns)///prevProps.externalDataSource !== this.props.externalDataSource && 
+    //     if (prevProps.currentPanel !== this.props.currentPanel &&!this.state.dataSourceChanged) {
+    //         this.setState({
+    //             dataSourceChanged: true, // 更新状态以避免重复执行
+    //           });
+    //         //this.sortAndExtractTopFive(this.props.externalDataSource);
+    //         // 处理新数据：例如重置分页或更新最后更新时间
+    //         this.setState({
+    //             lastUpdated: new Date().toLocaleString(),
+                
+    //             // 重置各种筛选条件
+    //             selectedSearchField: 'all', 
+    //             searchQuery: '',
+    //             selectrangequeryParams: '',
+    //             selectedDateRange: [null, null],//日期筛选器重置
+    //             selectedRowKeys: [],
+    //             dataSourceChanged: true,
+    //             newColumns:autoPopulateFilters(this.props.columns,this.props.externalDataSource),
+    //             currentPanelName:this.props.currentPanel,
+        
+    //      });
+    //      //this.props.fetchLatestData('all', '', '');
+    //      console.log('PrevProps.currentPanelName2:'+prevProps.currentPanel)
+    //     // 检查面板是否发生变化
+    //     // if (this.props.currentPanel !== prevProps.currentPanel) {
+    //     //     // 如果面板发生变化，重置selectedRowKeys和lastUpdated
+    //     //     this.setState(
+    //     //         {
+    //     //             lastUpdated: null,
+    //     //             // 重置各种筛选条件
+    //     //             searchQuery: '',
+    //     //             selectedSearchField: 'all', 
+    //     //             selectrangequeryParams: '',
+    //     //             selectedDateRange: [null, null],//日期筛选器重置
+    //     //             selectedRowKeys: [],
+                    
+    //     //             selectedApplicationType: null,//只用于‘应用’这个子页面
+    //     //             panelChanged: true,
+    //     //             newColumns:this.autoPopulateFilters(),
+    //     //         },
+    //     //         () => {
+    //     //             // 异步调用fetchLatestData来确保setState完成后执行
+    //     //             this.props.fetchLatestData(this.props.apiEndpoint,this.state.selectedSearchField, '', '');
+    //     //         }
+    //     //     );
+    //     // }
+    //     }
+    // }
   // 当你再次需要允许更新操作时，重置状态
+  autoPopulateFilters = ( ) => {//如果属性包含onFilter，那么将自动填充filter中的各个值
+    const {columns,externalDataSource} = this.props;
+    const newColumns = columns.map(column => {
+      if (column.onFilter && externalDataSource) {
+        const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
+        const filters = Array.from(fieldVarieties).map(variety => ({
+          text: (
+            <span style={{ color: '#000'}}>
+              {variety ? variety.toString() : ''}
+            </span>
+          ),
+          value: variety,
+        }));
+        return { ...column, filters };
+      }
+      return column;
+    });
+
+    return newColumns;
+};
   resetDataSourceChanged() {
     this.setState({ dataSourceChanged: false });
   }
@@ -157,27 +210,27 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         }
     };
 
-    autoPopulateFilters = () => {//如果属性包含onFilter，那么将自动填充filter中的各个值
-        const { columns, externalDataSource } = this.props;
+    // autoPopulateFilters = () => {//如果属性包含onFilter，那么将自动填充filter中的各个值
+    //     const { columns, externalDataSource } = this.props;
 
-        const newColumns = columns.map(column => {
-          if (column.onFilter && externalDataSource) {
-            const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
-            const filters = Array.from(fieldVarieties).map(variety => ({
-              text: (
-                <span style={{ color: '#000'}}>
-                  {variety ? variety.toString() : ''}
-                </span>
-              ),
-              value: variety,
-            }));
-            return { ...column, filters };
-          }
-          return column;
-        });
+    //     const newColumns = columns.map(column => {
+    //       if (column.onFilter && externalDataSource) {
+    //         const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
+    //         const filters = Array.from(fieldVarieties).map(variety => ({
+    //           text: (
+    //             <span style={{ color: '#000'}}>
+    //               {variety ? variety.toString() : ''}
+    //             </span>
+    //           ),
+    //           value: variety,
+    //         }));
+    //         return { ...column, filters };
+    //       }
+    //       return column;
+    //     });
 
-        return newColumns;
-    };
+    //     return newColumns;
+    // };
     // 处理表格排序变化的函数
 
     // 渲染侧边栏组件
@@ -246,23 +299,23 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         );
     };
     //后续为这里的输入参数column添加筛选
-    renderSearchFieldDropdown = (columns: any[]) => {
-        return (
-            <Row style={{width:'15%', marginLeft: '0px', marginRight: 'auto'}}>
-                <Select
-                    style={{ width: this.props.currentPanel.includes('sidebar')?'120px':'200px', marginRight: '8px' }}
-                    placeholder="选择搜索字段"
-                    onChange={this.handleSearchFieldChange}
-                >
-                    {columns.map((column, index) => (
-                        <Option key={index} value={column.dataIndex}>
-                            {column.title}
-                        </Option>
-                    ))}
-                </Select>
-            </Row>
-        );
-    };
+    // renderSearchFieldDropdown = (columns: any[]) => {
+    //     return (
+    //         <Row style={{width:'15%', marginLeft: '0px', marginRight: 'auto'}}>
+    //             <Select
+    //                 style={{ width: this.props.currentPanel.includes('sidebar')?'120px':'200px', marginRight: '8px' }}
+    //                 placeholder="选择搜索字段"
+    //                 onChange={this.handleSearchFieldChange}
+    //             >
+    //                 {columns.map((column, index) => (
+    //                     <Option key={index} value={column.dataIndex}>
+    //                         {column.title}
+    //                     </Option>
+    //                 ))}
+    //             </Select>
+    //         </Row>
+    //     );
+    // };
 
     handleDeleteSelected = () => {
         // 调用父组件的删除方法
@@ -296,7 +349,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
                 this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
                     // 在状态更新后立即触发数据获取
-                    this.props.fetchLatestData('', '', selectedqueryParams);
+                    this.props.fetchLatestData(this.props.apiEndpoint,'', '', selectedqueryParams);
                 });
             }
         } else {
@@ -305,7 +358,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
               });
             this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
                 // 当日期范围被清空时，重置数据
-                this.props.fetchLatestData('all', '', '');
+                this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
             });
         }
     };
@@ -549,32 +602,34 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                     >
                                         批量导出
                                     </Button>
-                                    <Button
-                                        style={{...selectedcompStyle,
-                                            opacity: isButtonDisabled ? 0.5 : 1 }}
-                                        onClick={this.handleDeleteSelected}
-                                        disabled={isButtonDisabled}
-                                    >
-                                    待定按键
-                                    </Button>
-                                    <Button 
-                                        style={{...selectedcompStyle,}}
-                                        onClick={() =>this.props.fetchLatestData('all', '', '')}>
-                                    采集最新数据
-                                    </Button>
+                                    {!tableWithoutDirectFetch.includes(this.props.currentPanel) && (
+                                        <div>
+                                        <Button
+                                            style={{...selectedcompStyle,
+                                                opacity: isButtonDisabled ? 0.5 : 1 }}
+                                            onClick={this.handleDeleteSelected}
+                                            disabled={isButtonDisabled}
+                                        >
+                                        待定按键
+                                        </Button>
+                                        <Button 
+                                            style={{...selectedcompStyle,}}
+                                            onClick={() =>this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '')}>
+                                        采集最新数据
+                                        </Button>
+                                        </div>
+                                    )}
                                 </Col>
                                 <Col flex="auto" style={{ textAlign: 'left', marginLeft: isSidebar?2:10,marginTop:'5px', 
                                 fontSize: isSidebar?'12px':''}}>
                                     <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
                                 </Col>
-                                {!isSidebar && this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
+                                {/* {!isSidebar && this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
                                 <Col flex="none" style={{ marginLeft: 'auto' }}>
                                     <RangePicker style={{ width: 250 }} onChange={this.onDateRangeChange}/>
                                 </Col>
-                                )}
-                                {/* <Col flex="none" style={{ marginLeft: 'auto' }}>
-                                    <RangePicker style={{ width: 200 }} />
-                                </Col> */}
+                                )} */}
+                                
                             </Row>
                         </div>)}
                         {this.props.currentPanel==='UserManagementlist' && (
@@ -619,7 +674,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
                             dataSource={externalDataSource}
                             //dataSource={this.state.topFiveSortedData}
-                            columns={this.state.newColumns}
+                            columns={this.props.columns}
                             //pagination={false}
                             locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
                                 ? customLocale:undefined}

@@ -20,7 +20,7 @@ export const fetchDataFromAPI = async ({ apiEndpoint}: FetchDataParams): Promise
     const response = await axios.get(endpoint);
      if (response.data) {//&& response.data.status === 200，注意，当response包含message和status两个字段时，不能够用 && response.data.length > 0 判断，因为length属性以及不存在了
         const messageJsonString = JSON.stringify(response.data.message, null, 2);
-        //console.log("Received message:", messageJsonString);
+        console.log("Received message"+endpoint+":", messageJsonString);
         return response.data.message;
         // const messageJsonString = JSON.stringify(response.data, null, 2);
         // console.log("Received message:", messageJsonString);
@@ -72,12 +72,60 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
           };
         });
       }
-        // 如果有其他数据处理逻辑，如排序，可以在此添加
-        // ...
-
         return item;
     });
 };
+
+export const processVulnData = (data: GenericDataItem[]): GenericDataItem[] => {
+  return data.map(item => {
+    // 处理嵌套的JSON数据
+      if (item.vul_detection_exp_result) {
+        item.vul_detection_exp_result = item.vul_detection_exp_result.map((expItem: any) => {
+          return {
+            ...expItem,
+            bug_exp: expItem.bug_exp,
+          };
+        });
+      }
+  
+      if (item.vul_detection_finger_result) {
+        item.vul_detection_finger_result = item.vul_detection_finger_result.map((fingerItem: any) => {
+          return {
+            ...fingerItem,
+            finger: fingerItem.finger,
+          };
+        });
+      }
+  
+      if (item.vul_detection_poc_result) {
+        item.vul_detection_poc_result = item.vul_detection_poc_result.map((pocItem: any) => {
+          return {
+            ...pocItem,
+            bug_poc: pocItem.bug_poc,
+          };
+        });
+      }
+      return item;
+    });
+};
+
+export const filterDataByTimeRange = (
+  processedData: GenericDataItem[],
+  timeColumnIndex: string,
+  start_time: number,
+  end_time: number
+): GenericDataItem[] => {
+  return processedData.filter(item => {
+    const itemTime = parseFloat(item[timeColumnIndex]);
+    return itemTime >= start_time && itemTime <= end_time;
+  });
+};
+
+
+
+
+
+
 
 export const processData1 = (data: any[], timeColumnIndex?: string[]): any[] => {
     return data.map(item => {
@@ -174,174 +222,3 @@ export const convertUnixTime = (timestamp: number): string => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-
-
-
-//     const newColumns = columns.map(column => {
-//       if (column.onFilter && dataSource) {
-//         const fieldVarieties = new Set(dataSource.map(item => item[column.dataIndex]));
-//         const filters = Array.from(fieldVarieties).map(variety => ({
-//           text: (
-//             <span style={{ color: '#000', background: '#fff' }}>
-//               {variety ? variety.toString() : ''}
-//             </span>
-//           ),
-//           value: variety,
-//         }));
-//         return { ...column, filters };
-//       }
-//       return column;
-//     });
-
-//     return newColumns;
-// };
-
-// const fetchLatestData = async () => {
-//     try {
-//         const data = await fetchDataFromAPI();
-//         const sortedData = sortData(data);
-//         this.processData(sortedData);
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-//         this.handleFetchError();
-//     }
-// };
-
-// const fetchDataFromAPI = async () => {
-//     const { apiEndpoint, sqlTableName, fields } = this.props;
-//     let fieldsQuery = fields && fields.length > 0 ? fields.join(',') : '*';
-//     let endpoint = `${apiEndpoint}?table=${sqlTableName}&fields=${fieldsQuery}`;
-
-//     const response = await axios.get(endpoint, {
-//         headers: {
-//             Authorization: `aa.bb.cc` // 将 JWT 令牌包含在请求头中
-//         }
-//     });
-//     if (response.data && response.data.length > 0) {
-//         return response.data;
-//     }
-//     throw new Error('No data received');
-// };
-
-// sortData = (data:GenericDataItem[]) => {
-//     const rankLabel = this.props.rankLabel ?? 'defaultRankField';
-//     return data.sort((a:any, b:any) => (b[rankLabel] ?? 0) - (a[rankLabel] ?? 0));
-// };
-
-// processData = (data:GenericDataItem[]) => {
-//     const topFiveData = data.slice(0, 5);
-//     this.setState({
-//         dataSource: this.convertUnixTimeColumns(data),
-//         lastUpdated: new Date().toLocaleString(),
-//     });
-
-//     if (this.props.onTopDataChange && this.props.currentPanel) {
-//         this.props.onTopDataChange(this.props.currentPanel, topFiveData);
-//     }
-// };
-
-// handleFetchError = () => {
-//     const { externalDataSource } = this.props;
-//     if (externalDataSource && externalDataSource.length > 0) {
-//         this.setState({
-//             dataSource: externalDataSource,
-//             lastUpdated: new Date().toLocaleString(),
-//         });
-//     } else {
-//         this.setState({ dataSource: [], lastUpdated: null });
-//     }
-// };
-// extractFieldVarieties = <T extends keyof GenericDataItem>(fieldName: T): Array<{text: string, value: string}> => {
-//     const { dataSource } = this.state;
-//     const fieldVarieties = new Set<GenericDataItem[T]>();
-
-//     dataSource.forEach((item) => {
-//         const fieldValue = item[fieldName];
-//         if (fieldValue !== undefined && fieldValue !== null) {
-//             fieldVarieties.add(fieldValue);
-//         }
-//     });
-
-//     return Array.from(fieldVarieties).map(variety => ({
-//         text: variety.toString(),
-//         value: variety.toString(),
-//     }));
-// };
-// // 自动填充filters的方法,也就是自动填充沙漏里的选项
-// autoPopulateFilters = () => {
-//     const { columns } = this.props;
-//     const { dataSource } = this.state;
-
-//     const newColumns = columns.map(column => {
-//       if (column.onFilter && dataSource) {
-//         const fieldVarieties = new Set(dataSource.map(item => item[column.dataIndex]));
-//         const filters = Array.from(fieldVarieties).map(variety => ({
-//           text: (
-//             <span style={{ color: '#000', background: '#fff' }}>
-//               {variety ? variety.toString() : ''}
-//             </span>
-//           ),
-//           value: variety,
-//         }));
-//         return { ...column, filters };
-//       }
-//       return column;
-//     });
-
-//     return newColumns;
-// };
-// updateDataSource = (filteredData:any[]) => {
-// this.setState({ dataSource: filteredData });
-// };
-// // 在 autoPopulateFilters 方法中，只更新筛选项，不更新 dataSource
-// autoPopulateFiltersAndUpdateDataSource = () => {
-// const { columns } = this.props;
-// const { dataSource, selectedApplicationType, selectedDateRange, searchQuery } = this.state;
-
-// let filteredData = [...dataSource];
-// // Apply filters
-// columns.forEach(column => {
-//     if (column.onFilter) {
-//     filteredData = filteredData.filter(record =>
-//         record[column.dataIndex].toString().includes(column.filteredValue)
-//     );
-//     }
-// });
-
-// // Apply other filters (application type, date range, search query)
-// if (selectedApplicationType) {
-//     filteredData = filteredData.filter(record => record.applicationType === selectedApplicationType);
-// }
-
-// if (selectedDateRange[0] && selectedDateRange[1]) {
-//     filteredData = filteredData.filter(record => {
-//     const itemDate = moment(record.occurrenceTime, 'YYYY-MM-DD HH:mm:ss');
-//     return (
-//         itemDate.isSameOrAfter(selectedDateRange[0], 'day') &&
-//         itemDate.isSameOrBefore(selectedDateRange[1], 'day')
-//     );
-//     });
-// }
-
-// if (searchQuery) {
-//     filteredData = filteredData.filter(record =>
-//     Object.keys(record).some(key =>
-//         record[key].toString().toLowerCase().includes(searchQuery.toLowerCase())
-//     )
-//     );
-// }
-
-// // Update the state with the filtered data
-// this.updateDataSource(filteredData);
-
-// // Return the updated columns
-// return this.autoPopulateFilters();
-// };
-// //资产指纹--应用--小型侧边栏
-// filterDataByApplicationType = (data: GenericDataItem[]) => {
-//     return data.filter((item) =>
-//         this.state.selectedApplicationType
-//             ? item.applicationType === this.state.selectedApplicationType
-//             : true
-//     );
-// };

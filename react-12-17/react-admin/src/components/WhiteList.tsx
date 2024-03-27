@@ -4,7 +4,7 @@
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
-import DataDisplayTable from './ContextAPI/DataDisplayTable';
+//import DataDisplayTable from './ContextAPI/DataDisplayTable';
 import FetchAPIDataTable from './AssetsCenter/FetchAPIDataTable';
 
 const { RangePicker } = DatePicker;

@@ -9,6 +9,7 @@ import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { StatusItem } from '../tableUtils';
 import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import CustomLineChart from './CustomLineChart';
 
 
 // const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
@@ -189,7 +190,7 @@ class Dashboard extends React.Component<DashboardProps> {
                     <Card bordered={false}  
                       style={{fontWeight: 'bolder', width: '100%', height:200}}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                          <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>资产概览</h2>
+                          <h2 style={{ fontSize:'19px',fontWeight: 'bold', marginLeft: '0px' }}>资产概览</h2>
                       </div>
                       <Row gutter={[6, 6]}>
                       <Col className="gutter-row" md={8}>
@@ -284,7 +285,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       <Card bordered={false}  
                         style={{fontWeight: 'bolder', width: '100%', height:350}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>入侵告警</h2>
+                            <h2 style={{ fontSize:'19px',fontWeight: 'bold', marginLeft: '0px' }}>入侵告警</h2>
                         </div>
                         <Row gutter={[6, 6]}>
                           <Col span={18}>
@@ -295,8 +296,8 @@ class Dashboard extends React.Component<DashboardProps> {
                               borderRight: '3px solid #E5E6EB'}}>
                           <ResponsiveContainer width="98%" height={250}>
                             <LineChart data={alertData}>
-                              <XAxis dataKey="day" tick={{ fontSize: 12 }}/>
-                              <YAxis dataKey="value" tickCount={24} tick={{ fontSize: 13 }}/> 
+                              <XAxis dataKey="day" tick={{ fontSize: 16 }}/>
+                              {/* <YAxis dataKey="value" tickCount={1} tick={{ fontSize: 13 }}/>  */}
                               <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
                               <Tooltip />
                               <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
@@ -339,7 +340,7 @@ class Dashboard extends React.Component<DashboardProps> {
                     <Card bordered={false}  
                         style={{fontWeight: 'bolder', width: '100%', height:350}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
+                            <h2 style={{ fontSize:'19px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
                         </div>
                         <Row gutter={[6, 6]}>
                           <Col span={18}>
@@ -350,8 +351,8 @@ class Dashboard extends React.Component<DashboardProps> {
                               borderRight: '3px solid #E5E6EB'}}>
                           <ResponsiveContainer width="98%" height={250}>
                             <LineChart data={alertData}>
-                              <XAxis dataKey="day" tick={{ fontSize: 12 }}/>
-                              <YAxis dataKey="value" tickCount={12} tick={{ fontSize: 13 }}/> 
+                              <XAxis dataKey="day" tick={{ fontSize: 16 }}/>
+                              {/* <YAxis dataKey="value" tickCount={1} tick={{ fontSize: 13 }}/>  */}
                               <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
                               <Tooltip />
                               <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
