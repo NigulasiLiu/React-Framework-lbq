@@ -135,8 +135,10 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                 return <div>Loading...n?</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const {agentMetaData_status, vulnMetaData_scanTime,agentAVGCPUUse,linuxBaseLineCheckMetaData__ip} = context;
-            const hostCount = agentMetaData_status.tupleCount;
+            const {agentMetaData_status, vulnMetaData_scanTime,agentOriginData,hostInfo,
+              agentAVGCPUUse,linuxBaseLineCheckMetaData__ip, host3Info} = context;
+            //const host3CPUuse = host3Info.map(item => item['cpu_use']);
+            //const host3CPUuse = host3Info[0]['cpu_use'];
             const hostOnlineCount = agentMetaData_status.typeCount.get("Online") || 'Not available';
             const hostOfflineCount = agentMetaData_status.typeCount.get("Offline") || 'Not available';
 
@@ -253,7 +255,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                                   <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
                               </div>
                               <FetchAPIDataTable
-                                  apiEndpoint="http://localhost:5000/api/agent"//后续更换为agent表
+                                  apiEndpoint="http://localhost:5000/api/agent/all"//后续更换为agent表
                                   timeColumnIndex={[]}
                                   columns={hostinventoryColumns}//hostinventoryColumns
                                   currentPanel="hostinventory"
@@ -262,11 +264,11 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                           </div>
                       </Col>
                   </Row>
-                  {vulnMetaData_scanTime.typeCount.get('1711164872')}
+                  
                   <MetaDataDisplay
                   metadata={vulnMetaData_scanTime}
                   />
-                  
+                  {}
               </div>
             );
             }}

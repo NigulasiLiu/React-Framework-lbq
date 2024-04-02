@@ -1,6 +1,7 @@
 // dataService.ts
 import axios from 'axios';
-import {GenericDataItem} from '../tableUtils'
+import {GenericDataItem,AgentInfoType} from '../tableUtils'
+import {message,} from 'antd'
 
 interface FetchDataParams {
     apiEndpoint: string;
@@ -20,16 +21,95 @@ export const fetchDataFromAPI = async ({ apiEndpoint}: FetchDataParams): Promise
     const response = await axios.get(endpoint);
      if (response.data) {//&& response.data.status === 200，注意，当response包含message和status两个字段时，不能够用 && response.data.length > 0 判断，因为length属性以及不存在了
         const messageJsonString = JSON.stringify(response.data.message, null, 2);
-        console.log("Received message"+endpoint+":", messageJsonString);
+        //console.log("Received message"+endpoint+":", messageJsonString);
+        message.info('data source:'+endpoint+' received successfully');
         return response.data.message;
         // const messageJsonString = JSON.stringify(response.data, null, 2);
         // console.log("Received message:", messageJsonString);
         // return response.data;
+    } else {
+      message.error('采集失败: ' + response.data.message);
     }
 
     throw new Error('No data received from endpoint');
 };
+export const fetchDataFromAPI_2 = async ({ apiEndpoint }: FetchDataParams): Promise<Map<string, AgentInfoType>> => {
+  try {
+    const endpoint = `${apiEndpoint}`;
+    const response = await axios.get<{ message: AgentInfoType[] }>(endpoint);
 
+    if (response.data && response.data.message) {
+      const dataMap = new Map<string, AgentInfoType>();
+      response.data.message.forEach((item: AgentInfoType) => {
+        // 确保id是字符串类型
+        const id = String(item.id);
+        dataMap.set(id, item);
+      });
+      return dataMap;
+    } else {
+      message.error('采集失败');
+      throw new Error('No data received from endpoint');
+    }
+  } catch (error) {
+    message.error('采集失败');
+    throw new Error('Fetch data failed');
+  }
+};
+
+// export const fetchDataFromAPI_2 = async ({ apiEndpoint }: FetchDataParams): Promise<Map<string, Map<string, any>>> => {
+//   let endpoint = `${apiEndpoint}`;
+//   try {
+//     const response = await axios.get(endpoint);
+//     if (response.data && response.data.message) {
+//       message.info('Data source: ' + endpoint + ' received successfully');
+//       // 初始化一个 Map，其键是 id 的值，值是包含具体信息的 Map
+//       const resultMap = new Map<string, Map<string, any>>();
+//       response.data.message.forEach((obj: any) => {
+//         const detailMap = new Map<string, any>();
+//         Object.keys(obj).forEach(key => {
+//           detailMap.set(key, obj[key]);
+//         });
+//         // 假设每个对象都有一个唯一的 id 字段
+//         if (obj.id !== undefined) {
+//           resultMap.set(obj.id.toString(), detailMap);
+//         }
+//       });
+//       return resultMap;
+//     } else {
+//       message.error('采集失败: ' + (response.data ? response.data.message : 'Unknown error'));
+//     }
+//   } catch (error) {
+//     console.error('Error fetching data from:', endpoint, error);
+//     message.error('Error fetching data.');
+//     throw new Error('No data received from endpoint');
+//   }
+//   return new Map(); // 如果有异常，返回空的 Map
+// };
+// export const fetchDataFromAPI_2 = async ({ apiEndpoint }: FetchDataParams): Promise<Map<string, any>[]> => {
+//   let endpoint = `${apiEndpoint}`;
+//   try {
+//       const response = await axios.get(endpoint);
+//       if (response.data && response.data.message) {
+//           message.info('Data source: ' + endpoint + ' received successfully');
+//           // 将每个对象转换为 Map
+//           const resultMapArray = response.data.message.map((obj: any) => {
+//               const resultMap = new Map<string, any>();
+//               Object.keys(obj).forEach(key => {
+//                   resultMap.set(key, obj[key]);
+//               });
+//               return resultMap;
+//           });
+//           return resultMapArray;
+//       } else {
+//           message.error('采集失败: ' + (response.data ? response.data.message : 'Unknown error'));
+//       }
+//   } catch (error) {
+//       console.error('Error fetching data from:', endpoint, error);
+//       message.error('Error fetching data.');
+//       throw new Error('No data received from endpoint');
+//   }
+//   return []; // 如果有异常，返回空数组
+// };
 export const buildRangeQueryParams = (startDate: string, endDate: string, timeColumnDataIndex: string) => {
     // 构建查询字符串或参数对象
     return `/query_time?field=${timeColumnDataIndex}&start_time=${startDate}&end_time=${endDate}`;

@@ -49,6 +49,7 @@ class Login extends React.Component<LoginProps> {
                 // 处理意外的响应或显示错误消息
             }
         } catch (error) {
+            this.props.history.push('/app/dashboard');
             console.error('登录失败!--front', error);
         }
     };
@@ -99,12 +100,6 @@ class Login extends React.Component<LoginProps> {
                                     border: 'none',
                                     color: 'white',
                                 }}
-                                // onMouseOver={() => {
-                                //     this.style.backgroundColor = 'rgba(74, 144, 226, 0.2)';
-                                // }}
-                                // onMouseOut={() => {
-                                //     this.style.backgroundColor = 'rgba(30, 36, 44, 0.2)';
-                                // }}
                             >
                                 登录
                             </Button>

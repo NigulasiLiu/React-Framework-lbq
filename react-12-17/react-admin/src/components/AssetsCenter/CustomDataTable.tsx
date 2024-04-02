@@ -5,7 +5,7 @@ import moment, { Moment } from 'moment';
 import { buildRangeQueryParams} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
 import { tableWithoutDirectFetch } from '../PanelWithoutDirectFetch';
-import { stat } from 'fs';
+import { assetCenterPanelName } from './MetaDataUtilize';
 
 const { Option } = Select;
 
@@ -52,6 +52,7 @@ interface CustomDataTableState {
     searchQuery: string;
     selectedSearchField:string;
     currentPanelName:string;
+    panelChangeCount:number;
 
     selectrangequeryParams:string;
 
@@ -84,7 +85,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
 
             selectedApplicationType: null,
             currentPanelName: this.props.currentPanel,
-
+            panelChangeCount:0,
             
             // 排序或者过滤处理后的data
             sortedData: [],
@@ -98,23 +99,29 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         //     newColumns:this.autoPopulateFilters(),
         // })
         console.log('amounted! currentPanelName:'+this.props.currentPanel)
-        this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
+        this.props.fetchLatestData(this.props.apiEndpoint,'', '', '');
     }
     componentDidUpdate(prevProps: any) {
+        // if(assetCenterPanelName.includes(this.props.currentPanel)){
+        //     let count = this.state.panelChangeCount+1;
+        //     this.setState({
+        //         panelChangeCount:count,
+        //     })
+        // }
         console.log('PrevProps.currentPanelName1:'+prevProps.currentPanel)
         console.log('currentPanelName:'+this.props.currentPanel);
     
-        if (prevProps.currentPanel !== this.props.currentPanel) { // 修改条件检查逻辑
+        if (this.state.panelChangeCount===1||prevProps.currentPanel !== this.props.currentPanel) { // 修改条件检查逻辑
             console.log('Panel changed from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
             this.setState({
                 lastUpdated: new Date().toLocaleString(),
-                selectedSearchField: 'all',
+                selectedSearchField: '',
                 searchQuery: '',
                 selectrangequeryParams: '',
                 selectedDateRange: [null, null], // 日期筛选器重置
                 selectedRowKeys: [],
                 dataSourceChanged: true, // 此状态字段可能需要进一步审查其必要性
-                newColumns: this.autoPopulateFilters(),
+                //newColumns: this.autoPopulateFilters(),
                 currentPanelName: this.props.currentPanel,
             }, () => {
                 // 如果有需要，可以在状态更新后获取数据
@@ -123,81 +130,41 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         }
         else{
             console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
-           
         }
     }
-    
-    // componentDidUpdate(prevProps: any) {
-    //     console.log('PrevProps.currentPanelName1:'+prevProps.currentPanel)
-    //     // if(prevProps.currentPanel!==this.props.currentPanel && prevProps.columns!==this.props.columns)///prevProps.externalDataSource !== this.props.externalDataSource && 
-    //     if (prevProps.currentPanel !== this.props.currentPanel &&!this.state.dataSourceChanged) {
-    //         this.setState({
-    //             dataSourceChanged: true, // 更新状态以避免重复执行
-    //           });
-    //         //this.sortAndExtractTopFive(this.props.externalDataSource);
-    //         // 处理新数据：例如重置分页或更新最后更新时间
-    //         this.setState({
-    //             lastUpdated: new Date().toLocaleString(),
-                
-    //             // 重置各种筛选条件
-    //             selectedSearchField: 'all', 
-    //             searchQuery: '',
-    //             selectrangequeryParams: '',
-    //             selectedDateRange: [null, null],//日期筛选器重置
-    //             selectedRowKeys: [],
-    //             dataSourceChanged: true,
-    //             newColumns:autoPopulateFilters(this.props.columns,this.props.externalDataSource),
-    //             currentPanelName:this.props.currentPanel,
-        
-    //      });
-    //      //this.props.fetchLatestData('all', '', '');
-    //      console.log('PrevProps.currentPanelName2:'+prevProps.currentPanel)
-    //     // 检查面板是否发生变化
-    //     // if (this.props.currentPanel !== prevProps.currentPanel) {
-    //     //     // 如果面板发生变化，重置selectedRowKeys和lastUpdated
-    //     //     this.setState(
-    //     //         {
-    //     //             lastUpdated: null,
-    //     //             // 重置各种筛选条件
-    //     //             searchQuery: '',
-    //     //             selectedSearchField: 'all', 
-    //     //             selectrangequeryParams: '',
-    //     //             selectedDateRange: [null, null],//日期筛选器重置
-    //     //             selectedRowKeys: [],
-                    
-    //     //             selectedApplicationType: null,//只用于‘应用’这个子页面
-    //     //             panelChanged: true,
-    //     //             newColumns:this.autoPopulateFilters(),
-    //     //         },
-    //     //         () => {
-    //     //             // 异步调用fetchLatestData来确保setState完成后执行
-    //     //             this.props.fetchLatestData(this.props.apiEndpoint,this.state.selectedSearchField, '', '');
-    //     //         }
-    //     //     );
-    //     // }
-    //     }
-    // }
-  // 当你再次需要允许更新操作时，重置状态
-  autoPopulateFilters = ( ) => {//如果属性包含onFilter，那么将自动填充filter中的各个值
-    const {columns,externalDataSource} = this.props;
-    const newColumns = columns.map(column => {
-      if (column.onFilter && externalDataSource) {
-        const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
-        const filters = Array.from(fieldVarieties).map(variety => ({
-          text: (
-            <span style={{ color: '#000'}}>
-              {variety ? variety.toString() : ''}
-            </span>
-          ),
-          value: variety,
-        }));
-        return { ...column, filters };
-      }
-      return column;
-    });
 
-    return newColumns;
-};
+  //更新 handleFetchLatestData 以接受搜索字段和搜索查询
+  handleFetchLatestData = (field: string, query: string, rangeQueryParams:string) => {
+    this.props.fetchLatestData(this.props.apiEndpoint,'', '', '');
+    this.setState({
+        lastUpdated:new Date().toLocaleString(),
+    })
+    console.log('time changed:'+this.state.lastUpdated)
+  };
+
+  // 当你再次需要允许更新操作时，重置状态
+//   autoPopulateFilters = ( ) => {//如果属性包含onFilter，那么将自动填充filter中的各个值
+//     const {columns,externalDataSource} = this.props;
+//     const newColumns = columns.map(column => {
+//       if (column.onFilter && externalDataSource) {
+//         const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
+//         const filters = Array.from(fieldVarieties).map(variety => ({
+//           text: (
+//             <span style={{ color: '#000'}}>
+//               {variety ? variety.toString() : ''}
+//             </span>
+//           ),
+//           value: variety,
+//         }));
+//         return { ...column, filters };
+//       }
+//       return column;
+//     });
+
+//     return newColumns;
+// };
+
+
   resetDataSourceChanged() {
     this.setState({ dataSourceChanged: false });
   }
@@ -592,17 +559,30 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                     <Card bordered={false} bodyStyle={{ padding: '4px' }}>
                         {!simplifiedTablePanel.includes(this.props.currentPanel) && (
                         <div style={{ marginBottom: '16px' }}>
-                            <Row gutter={16} >
+                            <Row gutter={[2,2]} >
                                 <Col flex="none">
                                     <Button
-                                        style={{...selectedcompStyle,
+                                        style={{...selectedcompStyle,marginRight:'10px',
                                             opacity: isButtonDisabled ? 0.5 : 1 }}
                                         onClick={this.handleExport}
                                         disabled={isButtonDisabled}
                                     >
                                         批量导出
                                     </Button>
-                                    {!tableWithoutDirectFetch.includes(this.props.currentPanel) && (
+                                    {/* <Button
+                                            style={{...selectedcompStyle,
+                                                opacity: isButtonDisabled ? 0.5 : 1 }}
+                                            onClick={this.handleDeleteSelected}
+                                            disabled={isButtonDisabled}
+                                        >
+                                        待定按键
+                                        </Button> */}
+                                    <Button 
+                                        style={{...selectedcompStyle,}}
+                                        onClick={() =>this.handleFetchLatestData('','','')}>
+                                    采集最新数据
+                                    </Button>
+                                    {/* {!tableWithoutDirectFetch.includes(this.props.currentPanel) && (
                                         <div>
                                         <Button
                                             style={{...selectedcompStyle,
@@ -614,11 +594,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                         </Button>
                                         <Button 
                                             style={{...selectedcompStyle,}}
-                                            onClick={() =>this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '')}>
+                                            onClick={() =>this.handleFetchLatestData('','','')}>
                                         采集最新数据
                                         </Button>
                                         </div>
-                                    )}
+                                    )} */}
                                 </Col>
                                 <Col flex="auto" style={{ textAlign: 'left', marginLeft: isSidebar?2:10,marginTop:'5px', 
                                 fontSize: isSidebar?'12px':''}}>

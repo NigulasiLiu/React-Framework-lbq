@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import { GenericDataItem } from '../tableUtils';
 // 定义返回的数据结构类型
 export interface MetaDataResult {
   tupleCount: number;
@@ -7,6 +7,11 @@ export interface MetaDataResult {
   details: Map<string, Map<string, number>>;
 };
 
+export const filterDataByAttribute = (data:any[], attributeName:string, attributeValue:any) => {
+  // 使用filter方法来筛选出包含特定属性值的条目
+  const filteredData: GenericDataItem[] = data.filter(item => item[attributeName] === attributeValue);
+  return filteredData;
+}
 // 获取最大的五个typeCount的值和对应的valueName
 export const getTopFiveTypeCounts = (result: MetaDataResult): [string, number][] => {
   // 将 typeCount Map 转换为数组，然后排序

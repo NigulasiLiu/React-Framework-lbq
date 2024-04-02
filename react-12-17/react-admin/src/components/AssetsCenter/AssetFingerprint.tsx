@@ -122,7 +122,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             case 'fim':
                 return (
                     <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo"
+                    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
                     timeColumnIndex={['event_time']}
                     columns={fimColumns}
                     currentPanel={currentPanel}
@@ -131,7 +131,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             case 'open-ports':
                 return (
                     <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/portinfo"
+                    apiEndpoint="http://localhost:5000/api/portinfo/all"
                     timeColumnIndex={[]}
                     columns={openPortsColumns}
                     currentPanel={currentPanel}
@@ -140,7 +140,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             case 'running-processes':
                 return (
                     <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/process"
+                    apiEndpoint="http://localhost:5000/api/process/all"
                     timeColumnIndex={['createTime']}
                     columns={runningProcessesColumns}
                     currentPanel={currentPanel}
@@ -149,7 +149,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 case 'system-services':
                     return (
                         <FetchAPIDataTable
-                        apiEndpoint="http://localhost:5000/api/asset_mapping"
+                        apiEndpoint="http://localhost:5000/api/asset_mapping/all"
                         timeColumnIndex={[]}
                         columns={systemServicesColumns}
                         currentPanel={currentPanel}
@@ -267,11 +267,11 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                 >
                                     <Menu.Item key="overview">总览</Menu.Item>
                                     <Menu.Item key="fim">文件完整性检验</Menu.Item>
-                                    <Menu.Item key="system-services">系统服务</Menu.Item>
-                                    {/* <Menu.Item key="container">容器</Menu.Item> */}
                                     <Menu.Item key="open-ports">开放端口</Menu.Item>
                                     <Menu.Item key="running-processes">运行进程</Menu.Item>
-                                    <Menu.Item key="system-users">系统用户</Menu.Item>
+                                    <Menu.Item key="system-services">系统服务</Menu.Item>
+                                    {/* <Menu.Item key="container">容器</Menu.Item> */}
+                                    {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
                                     {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
                                     <Menu.Item key="applications">应用</Menu.Item> */}

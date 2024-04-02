@@ -19,10 +19,10 @@ interface FetchAPIDataTableProps {
 }
 
 
-export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type, 
-  apiEndpoint, columns, timeColumnIndex,currentPanel, ...otherProps }) => {
+export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ 
+  table_type, apiEndpoint, columns, timeColumnIndex,currentPanel, ...otherProps }) => {
+    
   const context = useContext(DataContext);
-
   const [data, setData] = useState<any[]>([]);
 
 
@@ -52,7 +52,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
   };
   const handleUpdateSearchQuery = (query: string) => {
       setSearchQuery(query);
-      
+
   };
   const onUpdateRangeField = (rangeQueryParams: string) => {
     setRangeQuery(rangeQueryParams);
@@ -61,7 +61,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ table_type
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await context!.fetchLatestData(apiEndpoint, 'all', '', '', timeColumnIndex);
+      const result = await context!.fetchLatestData(apiEndpoint, '', '', '', timeColumnIndex);
       setData(result);
     };
 

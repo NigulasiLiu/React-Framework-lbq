@@ -8,13 +8,13 @@ import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 interface HostDetailsTableState {
     selectedRowKeys: React.Key[];
     //panel:string;
-    route:string;
+    apiEndpoint:string;
     currentPanel:string;
 }
 interface HostDetailsTableProps {
     selectedRowKeys: React.Key[];
     //panel:string;
-    route:string;
+    apiEndpoint:string;
     currentPanel:string;//用于切换页面的case
     titleName:string;//页面显示的中文标题
     columns:any[];
@@ -27,7 +27,7 @@ class HostDetailsTable extends React.Component<HostDetailsTableProps,HostDetails
         this.state={
             selectedRowKeys:[],
             //panel:'',
-            route:'',
+            apiEndpoint:'',
             currentPanel:'',
         }
       }
@@ -44,7 +44,7 @@ class HostDetailsTable extends React.Component<HostDetailsTableProps,HostDetails
                                     <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{this.props.titleName}</h2>
                                 </div>
                                 <FetchAPIDataTable
-                                apiEndpoint={this.props.route}
+                                apiEndpoint={this.props.apiEndpoint}
                                 timeColumnIndex={[]}
                                 columns={this.props.columns}
                                 currentPanel={this.props.currentPanel}

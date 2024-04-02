@@ -2,18 +2,25 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { templateData } from './SeperateData';
 import useSortedData from './TopFiveDataProvider';
-import { DataItem } from '../tableUtils';
-import useFilterOriginData, {FilteredDataResult,VulnDataItem,ReconstructedDataItem} from './useFilterOriginData';
-import useExtractOrigin, {MetaDataResult, getTopFiveTypeCounts, getCountPastSevenDays,getPastSevenDaysAlerts} from './ExtractOriginData';
-import { fetchDataFromAPI } from '../AssetsCenter/DataService';
+import { DataItem, GenericDataItem,AgentInfoType } from '../tableUtils';
+import useExtractOrigin, {MetaDataResult, getTopFiveTypeCounts, 
+  getCountPastSevenDays,getPastSevenDaysAlerts, filterDataByAttribute} from './ExtractOriginData';
+import { fetchDataFromAPI, fetchDataFromAPI_2 } from '../AssetsCenter/DataService';
 import useFilterOriginData_new,{FilteredDataResult_new} from './useFilterOriginData_new';
 import useTransformedData from '../HostProtection/useTransformedData';
 import useCalculateAverage from './useCalculateAverage';
 import { processData, processVulnData } from '../AssetsCenter/DataService';
+import { useFilterOriginData } from './useFilterOriginData';
+import { message } from 'antd';
+import { useFindFirstMatchingItem } from './useDataMap';
 
 
 
 export interface DataContextType {
+  hostInfo:GenericDataItem | undefined;
+  isDataLoaded:boolean,
+  // hostDetails: GenericDataItem[]|undefined; // 假设 hostDetails 是一个对象，存储特定主机的信息
+  // getHostDetails?: (host: string) => Promise<void>;
 
   fetchLatestData: (apiEndpoint: string, 
     searchField?: string, searchQuery?: string, rangeQuery?: string, 
@@ -75,8 +82,8 @@ export interface DataContextType {
   agentMEMuseMetaData:MetaDataResult;
   agentAVGMEMUse:string;
 
-
-
+host3Info:GenericDataItem[];
+//agentOriginData_2:Map<string, AgentInfoType>|undefined;
 };
 export const DataContext = createContext<DataContextType | undefined>(undefined);
 
@@ -107,7 +114,9 @@ export const DataContext = createContext<DataContextType | undefined>(undefined)
 
 
 const DataManager: React.FC = ({ children }) => {
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [agentOriginData, setAgentOriginData] = useState<any>();
+  // const [agentOriginData_2, setAgentOriginData_2] = useState<Map<string, AgentInfoType>>();
 
   const [fimOriginData, setFimOriginData] = useState<any>({});
   const [portOriginData, setPortOriginData] = useState<any>({});
@@ -117,13 +126,29 @@ const DataManager: React.FC = ({ children }) => {
   const [windowsBaseLineCheckOriginData, setwindowsBLCheckOriginData] = useState<any>({});
 
   const [vulnOriginData, setVulnOriginData] = useState<any>([]);
+  const [hostDetails, setHostDetails] = useState<GenericDataItem[]>();
+
+  // const getHostDetails = async (hostName: string) => {
+  //   message.info('11111:'+hostName);
+  //   // const filteredData = [agentOriginData].filter(item => item['host_name'] === hostName);
+  //   // // 假设 filteredData 是一个数组，取第一个条目作为示例
+  //   // const details = filteredData.length > 0 ? filteredData[0] : [];
+  //   // setHostDetails(details); // 更新 Context 中的 hostDetails 状态
+  //   if(agentOriginData!==undefined){
+  //     message.info('11111:'+[agentOriginData].length);
+  //   }
+  //   else{
+  //     message.info('22222:'+[agentOriginData].length);
+  //   }
+  // };
   
   useEffect(() => {
     const fetchData = async () => {
       try {
 
         const agentOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/agent/all'});
-
+        //const agentOriginData_2 = await fetchDataFromAPI_2({apiEndpoint:'http://localhost:5000/api/agent/all'});
+        
         const fimOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/FileIntegrityInfo/all'});
         const portOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/portinfo/all'});
         const processOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/process/all'});
@@ -136,6 +161,7 @@ const DataManager: React.FC = ({ children }) => {
         //const reformedData = reformatVulnData(vulnOriginData); // 调用重构函数
         //setVulnOriginDataReconstruct(reformedData); // 更新重构后的数据状态
         setAgentOriginData(agentOriginData);
+        //setAgentOriginData_2(agentOriginData_2);
 
         setFimOriginData(fimOriginData);
         setPortOriginData(portOriginData);
@@ -144,6 +170,7 @@ const DataManager: React.FC = ({ children }) => {
         setlinuxBLCheckOriginData(linuxBaseLineCheckOriginData);
         setwindowsBLCheckOriginData(windowsBaseLineCheckOriginData);
         setVulnOriginData(vulnOriginData);
+        setIsDataLoaded(true); // 数据加载完成
         
       } catch (error) {
         console.error('Failed to fetch initial data:', error);
@@ -157,22 +184,22 @@ const DataManager: React.FC = ({ children }) => {
   const fetchLatestData = async (apiEndpoint: string, searchField = '', searchQuery = '', rangeQuery = '', timeColumnIndex: string[] = []) => {
     try {
         // 修改queryParams的构造逻辑
-        let finalEndpoint = `${apiEndpoint}`;
-        if (searchField === 'all') {
-            finalEndpoint += '/all';
-        } else if (searchField && searchQuery) {
-            const queryParams = `?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
-            finalEndpoint += queryParams;
-        }
+        let finalEndpoint = `${apiEndpoint}`;console.log("finalEndpoint:"+finalEndpoint);
+        // if (searchField === 'all') {
+        //     finalEndpoint += '/all';
+        // } else if (searchField && searchQuery) {
+        //     const queryParams = `?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
+        //     finalEndpoint += queryParams;
+        // }
         
-        // 如果有rangeQuery，追加到finalEndpoint
-        if (rangeQuery) {
-            // 确保rangeQuery以'?'或'&'开头，以正确追加到finalEndpoint
-            if (!rangeQuery.startsWith('?') && !rangeQuery.startsWith('&')) {
-                rangeQuery = '&' + rangeQuery; // 假设rangeQuery需要以'&'开头追加
-            }
-            finalEndpoint += rangeQuery;
-        }
+        // // 如果有rangeQuery，追加到finalEndpoint
+        // if (rangeQuery) {
+        //     // 确保rangeQuery以'?'或'&'开头，以正确追加到finalEndpoint
+        //     if (!rangeQuery.startsWith('?') && !rangeQuery.startsWith('&')) {
+        //         rangeQuery = '&' + rangeQuery; // 假设rangeQuery需要以'&'开头追加
+        //     }
+        //     finalEndpoint += rangeQuery;
+        // }
 
         const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint });
         // 检查message字段是否是数组，如果不是，则将其转换为包含该对象的数组
@@ -230,8 +257,8 @@ const DataManager: React.FC = ({ children }) => {
   const transformedData = useTransformedData(vulnOriginData);
   //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
-
-
+  const host3Info = useFilterOriginData('host_name','Host3',agentOriginData);
+  const hostInfo = useFindFirstMatchingItem('id','1',agentOriginData);
 
   const hostCount = agentMetaData_status.tupleCount;
   const vulnHostCount = vulnMetaData_ip.tupleCount;
@@ -243,17 +270,6 @@ const DataManager: React.FC = ({ children }) => {
   const blWindowsHostItemCount_pass = windowsBaseLineCheckMetaData_adjustment_requirement.tupleCount;
 
 
-
-
-
-
-
-
-
-  
-
-
- 
 
 // 转换sortedTypeCounts到DataItem类型,OverViewPanel的TopFive数据展示
   const topFivePortCounts: DataItem[] = topFivePortCountsArray.map(([valueName, value], index) => ({
@@ -284,7 +300,8 @@ const DataManager: React.FC = ({ children }) => {
 
   
   return (
-    <DataContext.Provider value={{fetchLatestData,
+    <DataContext.Provider value={{isDataLoaded,hostInfo,
+      fetchLatestData,host3Info,
       topFiveFimData,
       //agentSearchResults,
       agentCPUuseMetaData,

@@ -1,15 +1,17 @@
 import React from 'react';
 import { Row, Col, Card, Statistic,Button } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { DataContext, DataContextType} from '../ContextAPI/DataManager'
-import { PieChart, Pie, Cell,Label, LineChart, TooltipProps, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
-import DataCard from '../DataCard';
+import { PieChart, Pie, Cell,Label, LineChart, Line, } from 'recharts';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { StatusItem } from '../tableUtils';
-import { GithubOutlined, GlobalOutlined, MailOutlined } from '@ant-design/icons';
+import { GithubOutlined, GlobalOutlined, MailOutlined,RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import CustomLineChart from './CustomLineChart';
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
+import DataCard from '../DataCard';
 
 
 // const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
@@ -158,10 +160,14 @@ class Dashboard extends React.Component<DashboardProps> {
           // });
           console.log('111111:'+last7VulValue);
           const alertData = generateAlertData(last7VulValue);
+          // 转换value为数字类型
+          const processedData = alertData.map(item => ({ ...item, value: Number(item.value) }));
+
+
             // 第二类告警的数据集
             const alertDataTwo = [
-              { name: '待处理告警', value: 75, color: '#FFBB28' },
-              { name: '已处理告警', value: 25, color: '#E5E8EF' },
+              { name: '待处理告警', value: 3, color: '#FFBB28' },
+              { name: '已处理告警', value: 1, color: '#E5E8EF' },
             ];
       
             const alertDataThree = [
@@ -292,16 +298,21 @@ class Dashboard extends React.Component<DashboardProps> {
                           <div style={{
                               // borderTop: '2px solid #E5E6EB',
                               // borderBottom: '2px solid #E5E6EB',
-                              // borderLeft: '2px solid #E5E6EB',
+                              // borderLeft: '2px solid #E5E6EB',line shape="circle" 
                               borderRight: '3px solid #E5E6EB'}}>
                           <ResponsiveContainer width="98%" height={250}>
-                            <LineChart data={alertData}>
-                              <XAxis dataKey="day" tick={{ fontSize: 16 }}/>
-                              {/* <YAxis dataKey="value" tickCount={1} tick={{ fontSize: 13 }}/>  */}
-                              <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
+                            <AreaChart data={processedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis dataKey="day" />
+                              {/* <YAxis /> */}
                               <Tooltip />
-                              <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
-                            </LineChart>
+                              <Area
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#4086FF" // 设置线条颜色为#4086FF
+                                fill="#4086FF" // 设置填充颜色为#4086FF
+                              />
+                            </AreaChart>
                           </ResponsiveContainer>
           
                           </div>
@@ -349,14 +360,19 @@ class Dashboard extends React.Component<DashboardProps> {
                               // borderBottom: '2px solid #E5E6EB',
                               // borderLeft: '2px solid #E5E6EB',
                               borderRight: '3px solid #E5E6EB'}}>
-                          <ResponsiveContainer width="98%" height={250}>
-                            <LineChart data={alertData}>
-                              <XAxis dataKey="day" tick={{ fontSize: 16 }}/>
-                              {/* <YAxis dataKey="value" tickCount={1} tick={{ fontSize: 13 }}/>  */}
-                              <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
+                          <ResponsiveContainer width="98%" height={250}>                            
+                          <AreaChart data={processedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis dataKey="day" />
+                              {/* <YAxis /> */}
                               <Tooltip />
-                              <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
-                            </LineChart>
+                              <Area
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#4086FF" // 设置线条颜色为#4086FF
+                                fill="#4086FF" // 设置填充颜色为#4086FF
+                              />
+                            </AreaChart>
                           </ResponsiveContainer>
           
                           </div>

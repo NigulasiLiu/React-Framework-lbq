@@ -81,7 +81,7 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
               <Card style={{width:'90%',margin:'0px auto'}}>
                   <Row style={{margin:'0px auto',width:'100%'}}>
                       <FetchAPIDataTable
-                      apiEndpoint="http://localhost:5000/api/hostinfo"
+                      apiEndpoint="http://localhost:5000/api/api/agent/all"
                       timeColumnIndex={['updatetime']}
                       columns={createNewTaskColumns}
                       currentPanel={"createnewtask"} // 替换为你的 panel 名称

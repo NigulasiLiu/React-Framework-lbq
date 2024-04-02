@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Card, Typography,Col } from 'antd';
-import { FilteredDataResult } from './useFilterOriginData';
 import { FilteredDataResult_new } from './useFilterOriginData_new';
 
 const { Text, Title } = Typography;

@@ -376,7 +376,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             case 'vulnerabilityalertlist':
                 return (
                         <HostDetailsTable
-                            route="http://localhost:5000/api/files/logs/vulnerabilityalertlist"
+                            apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
                             columns={vulnerabilityColumns}
                             currentPanel={currentPanel}
                             titleName="漏洞概览"
@@ -387,7 +387,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             case 'baselineDetectalertlist':
                 return (
                         <HostDetailsTable
-                            route="http://localhost:5000/api/files/logs/baselineDetectalertlist"
+                            apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
                             columns={baselineDetectColumns}
                             currentPanel={currentPanel}
                             titleName="基线概览"
@@ -399,7 +399,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 return (
                     <div style={{marginTop:'-20px'}}>
                         <AlertList
-                            apiEndpoint={"http://localhost:5000/api/files/logs/runningalertlist/1"}
+                            apiEndpoint={"http://localhost:5000/api/vulndetetion/query?host_ip="}
                             columns={hostalertColumns}
                             currentPanel='runningalertlist'
                         />
@@ -423,7 +423,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             case 'assetfingerprint':
                 return (
                         <HostDetailsTable
-                            route="http://localhost:5000/api/files/logs/assetfingerprint"
+                            apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
                             columns={fimColumns}
                             currentPanel={currentPanel}
                             titleName="资产指纹"
@@ -460,10 +460,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 <Menu.Item key="hostalertlist">安全告警（AlarmTotal）</Menu.Item>
                                 <Menu.Item key="vulnerabilityalertlist">漏洞风险（VulnTotal）</Menu.Item>
                                 <Menu.Item key="baselineDetectalertlist">基线风险（BaselineTotal）</Menu.Item>
-                                <Menu.Item key="runningalertlist">运行时安全告警（RaspAlarmTotal）</Menu.Item>
+                                {/* <Menu.Item key="runningalertlist">运行时安全告警（RaspAlarmTotal）</Menu.Item> */}
                                 <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
                                 <Menu.Item key="performancemonitor">性能监控</Menu.Item>
-                                <Menu.Item key="assetfingerprint">资产指纹</Menu.Item>
+                                {/* <Menu.Item key="assetfingerprint">资产指纹</Menu.Item> */}
                                 {/* 可以根据需要添加更多的Menu.Item */}
                                 {/* 使用透明div作为flex占位符 */}
                                 <div style={{ flexGrow: 1 }}></div>

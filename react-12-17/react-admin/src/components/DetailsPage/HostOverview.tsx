@@ -1,9 +1,7 @@
-/**
- * Created by hao.cheng on 2017/5/3.
- */
 import React,{useEffect} from 'react';
 import { Row, Col, Card, Statistic, Typography ,Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
+import { GenericDataItem,AgentInfoType } from '../tableUtils';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import CustomPieChart from '../AssetsCenter/CustomPieChart';
 import { PieChart, Pie, Cell,Label, ResponsiveContainer} from 'recharts';
@@ -14,7 +12,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 import { DataContext, DataContextType} from '../ContextAPI/DataManager'
 import { MetaDataResult } from '../ContextAPI/ExtractOriginData';
-import useSearchOriginData from '../ContextAPI/useSearchOriginData';
+import { convertUnixTime } from '../AssetsCenter/DataService';
 
 const { Text } = Typography;
 
@@ -23,31 +21,52 @@ interface HostOverviewProps extends RouteComponentProps {
   // ... other props if there are any
     changePanel: (panelName: string) => void; //切换子panel
 }
+export interface agentInfoType{
+    host_name :string; 
+    ip_address :string; 
+    os_version :string; 
+    status :string; 
+    last_seen :string;  
+    disk_total :string; 
+    mem_total :string; 
+    mem_use :string; 
+    cpu_use :string; 
+    py_version :string; 
+    processor_name :string; 
+    processor_architecture :string;
+}
 
 interface HostOverviewState{
-    host:string;
+    hostId:string;
     
     filteredData: any[], // 用于存储过滤后的数据
     activeIndex: any;
+    dataIsReady:boolean;
 } 
 
 class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> {
+    static contextType = DataContext;
     constructor(props: any) {
         super(props);
         this.state = {
             activeIndex: [-1], //一个扇形图
-            
             filteredData: [], // 用于存储过滤后的数据
-            host:'',
+            hostId:'',
+            dataIsReady:false,
         };
     }
     componentDidMount() {
         const queryParams = new URLSearchParams(this.props.location.search);
-        const host = queryParams.get('Host');
+        const hostId = queryParams.get('id');
         this.setState({
-            host : host?host:'default',
+            hostId : hostId?hostId:'default',
         });
+        // if (hostId && this.context.getHostDetails) {
+        //     this.context.getHostDetails(hostId);
+        // }
       }
+
+    
     //扇形图动态效果实现
     handleMouseEnter = (_: any, index: number) => {
         // 使用 map 来更新数组中特定索引的值
@@ -69,26 +88,151 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
     };
-    renderFilteredData = (agentOriginData:any[]) => {
-        // 过滤出主机名为'host1'的数据
-        const filteredData = agentOriginData.filter(item => item.host_name === this.state.host);
-        
-        // 返回一个渲染过滤后数据的JSX
-        return (
-          <div>
-            {filteredData.map((data, index) => (
-              <div key={index}>
-                <p>IP Address: {data.ip_address}</p>
-                <p>OS Version: {data.os_version}</p>
-                <p>Status: {data.status}</p>
-                {/* 更多数据字段 */}
+    renderPieChart = (alertOriginDara:any[]) =>{
+        if(alertOriginDara!==undefined){
+            const filteredData = alertOriginDara.filter(item => item.host_name === this.state.hostId);
+            return (
+              <div>
+                <Row >
+                    <Col className="gutter-row" md={24}>
+                        <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
+                                {filteredData.map((data, index) => (
+                                            <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
+                                            <Col span={6}>
+                                              <p>主机ID: {data.id}</p>
+                                              <p>主机名称: {data.host_name}</p>
+                                              <p>操作系统: {data.os_version}</p>
+                                            </Col>
+                                            <Col span={6}>
+                                              <p>在线状态: {data.status}</p>
+                                              <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
+                                              <p>磁盘大小: {data.disk_total}</p>
+                                            </Col>
+                                            <Col span={6}>
+                                              <p>内存大小: {data.mem_total}</p>
+                                              <p>内存使用率: {data.mem_use}</p>
+                                              <p>CPU使用率: {data.cpu_use}</p>
+                                            </Col>
+                                            <Col span={6}>
+                                              <p>CPU信息: {data.processor_name + '_' + data.processor_architecture}</p>
+                                              <p>python版本: {data.py_version}</p>
+                                            </Col>
+                                          </Row>
+                                ))}
+                        </Card>
+                    </Col>
+                </Row>
               </div>
-            ))}
-          </div>
-        );
+            );
+        }
+        else{
+            return (
+                <div>
+                    Loading...
+                </div>
+            )
+        }
+    }
+    renderBasicInfoData = (agentOriginData:any[]) => {
+        const data = {
+            '主机ID': '-',
+            '主机名称': ' ',
+            '操作系统': '',
+            '在线状态': '',
+            '最后一次上线': '-',
+            '磁盘大小': '-',
+            '内存大小': '-',
+            'CPU使用率': '-',
+            'CPU信息': '-',//架构+版本
+            '内存使用率': '-',
+            'python版本': '-',
+            
+            '系统负载': '-',
+            '公网IPv4': '-',
+            '公网IPv6': '-',
+            '私网IPv4': '-',
+            '私网IPv6': '-',
+            '网络区域': '-',
+            '操作系统版本': '-',
+            '容器平台': '-',
+            '默认网关': '-',
+            '地域':'default',
+            '内存占用率': '--',
+            '磁盘占用': '--',
+            '网卡序列': '-',
+            '注册时间': '!!',
+            '最近活跃时间': '!!',
+            '更新时间': '!!',
+            '探测时间': '!!',
+            'DNS服务器': '-',
+            // ... any other data fields
+        };
+        if(agentOriginData!==undefined){
+            const filteredData = agentOriginData.filter(item => item.id.toString() === this.state.hostId);
+            return (
+              <div>
+                <Row >
+                    <Col className="gutter-row" md={24}>
+                        <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
+                                {filteredData.map((data, index) => (
+                                            <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
+                                            <Col span={6}>
+                                              <p>主机ID: {data.id}</p>
+                                              <p>主机名称: {data.host_name}</p>
+                                              <p>操作系统: {data.os_version}</p>
+                                            </Col>
+                                            <Col span={6}>
+                                              <p>在线状态: {data.status}</p>
+                                              <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
+                                              <p>磁盘大小: {data.disk_total}</p>
+                                            </Col>
+                                            <Col span={6}>
+                                              <p>内存大小: {data.mem_total}</p>
+                                              <p>内存使用率: {data.mem_use}</p>
+                                              <p>CPU使用率: {data.cpu_use}</p>
+                                            </Col>
+                                            <Col span={6}>
+                                              <p>CPU信息: {data.processor_name + '_' + data.processor_architecture}</p>
+                                              <p>python版本: {data.py_version}</p>
+                                            </Col>
+                                          </Row>
+                                // <div key={index}>
+                                //     <p>主机ID: {data.id}</p>
+                                //     <p>主机名称: {data.host_name}</p>
+                                //     <p>操作系统: {data.os_version}</p>
+                                //     <p>在线状态: {data.status}</p>
+                                //     <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
+                                //     <p>磁盘大小: {data.disk_total}</p>
+                                //     <p>内存大小: {data.mem_total}</p>
+                                //     <p>内存使用率: {data.mem_use}</p>
+                                //     <p>CPU使用率: {data.cpu_use}</p>
+                                //     <p>CPU信息: {data.processor_name+'_'+data.processor_architecture}</p>
+                                //     <p>python版本: {data.py_version}</p>
+                                // </div>
+                                ))}
+                        </Card>
+                    </Col>
+                </Row>
+                {/* {Object.entries(data).map(([key, value], index) => (
+                    <Col key={index} span={8} style={{ fontSize:'12px',marginBottom: '12px' }}>
+                    <Text strong>{key}:</Text> <Text>{value}</Text>
+                    </Col>
+                ))} */}
+              </div>
+            );
+        }
+        else{
+            return (
+                <div>
+                    Loading...
+                </div>
+            )
+        }
       }
+
+
     render() {
-          
+        const hostDetails = this.context.hostDetails; // 从 Context 获取 hostDetails
         return(
             <DataContext.Consumer>
             {(context: DataContextType | undefined) => {
@@ -96,23 +240,10 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 return <div>Loading...</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const { topFiveFimData, topFivePortCounts,
-                agentOriginData,
-                fimMetaData_hostname,
-                portMetaData_port_state, portMetaData_port_number,
-                processMetaData_userName,topFiveProcessCounts,topFiveUserCounts,
-                assetMetaData_service, assetMetaData_product,topFiveServiceCounts,topFiveProductCounts,
-                linuxBaseLineCheckMetaData__ip,} = context;
-                // useSearchOriginData(agentOriginData, ['host_name'], [this.state.host], ['os_version', 'status'])
-                // const { searchResults, searchOriginData } = useSearchOriginData();
-                //     // 组件挂载时进行搜索
-                // useEffect(() => {
-                //     if (this.state.host && agentOriginData) {
-                //         searchOriginData(agentOriginData, ['host_name'], [this.state.host], ['os_version', 'status']);
-                //     }
-                // }, [this.state.host, agentOriginData, searchOriginData]);
-                const data = {
-                    '主机名称': this.state.host,
+            const { isDataLoaded,
+                agentOriginData,} = context;
+                const data1 = {
+                    '主机名称': this.state.hostId,
                     '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
                     '操作系统': '',
                     '主机标签': '-',
@@ -142,6 +273,8 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                     'DNS服务器': '192.168.218.2',
                     // ... any other data fields
                     };
+                //const result: GenericDataItem[] = agentOriginData.filter(item => item['host_name'] === this.state.hostId);
+
                     const alertData2_:StatusItem[] = [
                         { label: '紧急', value: 5, color: '#EA635F' },//RED
                         { label: '高风险', value: 1, color: '#846CCE' },//紫
@@ -166,31 +299,15 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
 
                 return (
                     <div>
-                    {/* <div>
-                        {this.renderFilteredData(agentOriginData)}
-                    </div> */}
                         <Row style={{ width: '95%', margin: '0 auto' }}>
                         <Col className="gutter-row" md={24} style={{ border:'false'}}>{/*maxWidth:1260*/}
                             <Row gutter={[8,16]}>
                                 <Card bordered={false}
-                                    style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,paddingBottom:0,fontWeight: 'bold'}}>
+                                    style={{fontWeight: 'bolder', width: '100%', minHeight:150, backgroundColor: '#ffffff' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                         <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基础信息</h2>
                                     </div>
-                                    <Row gutter={[6, 6]}>
-                                        <Col className="gutter-row" md={24}>
-                                            <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
-                                                <Row gutter={16}>
-                                                {Object.entries(data).map(([key, value], index) => (
-                                                    <Col key={index} span={8} style={{ fontSize:'12px',marginBottom: '12px' }}>
-                                                    <Text strong>{key}:</Text> <Text>{value}</Text>
-                                                    </Col>
-                                                ))}
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                    </Row>
-            
+                                    {this.renderBasicInfoData(agentOriginData)}
                                 </Card>
                             </Row>
                             <Row gutter={[8,16]}>
@@ -203,19 +320,18 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             </div>
                                             <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                                         </Row>
-                                    <Row gutter={0}>
-
-                              <Col span={12}>
-                              <CustomPieChart
-                              data={alertData2_}
-                              innerRadius={54}
-                              deltaRadius={8}
-                              outerRadius={80}
-                              cardWidth={200}
-                              cardHeight={200}
-                              hasDynamicEffect={true}
-                              />
-                              </Col>
+                                        <Row gutter={0}>
+                                        <Col span={12}>
+                                        <CustomPieChart
+                                        data={alertData2_}
+                                        innerRadius={54}
+                                        deltaRadius={8}
+                                        outerRadius={80}
+                                        cardWidth={200}
+                                        cardHeight={200}
+                                        hasDynamicEffect={true}
+                                        />
+                                        </Col>
                                         <Col span={2}> </Col>
                                         <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
                                         <StatusPanel statusData={alertData2_} orientation="vertical"/>
@@ -233,35 +349,16 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                                         </Row>
                                     <Row gutter={0}>
-                                        <Col span={12}>
-                                        <ResponsiveContainer width="100%" height={200}>
-                                            <PieChart>
-                                                <Pie className="pie-chart-segment"
-                                                data={alertData3_}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={54}
-                                                fill="#8884d8"
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                                onMouseEnter={(e) => this.handleMouseEnter(e, 1)}
-                                                onMouseLeave={this.handleMouseLeave}
-                                                outerRadius={this.state.activeIndex[1] === 1 ? 80 : 72} // 如果悬停则扇形半径变大
-                                                
-                                                >
-                                                {alertData3_.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                                <Label value={'未处理告警:'+alertData3_.length+'个'} 
-                                                position="center" 
-                                                style={{ fontSize: '14px' }}
-                                                />
-                                                </Pie>
-            
-                                                {/* <Tooltip content={<CustomTooltip />} /> */}
-                                            </PieChart>
-                                            </ResponsiveContainer>
-            
+                                    <Col span={12}>
+                                        <CustomPieChart
+                                        data={alertData3_}
+                                        innerRadius={54}
+                                        deltaRadius={8}
+                                        outerRadius={80}
+                                        cardWidth={200}
+                                        cardHeight={200}
+                                        hasDynamicEffect={true}
+                                        />
                                         </Col>
                                         <Col span={2}> </Col>
                                         <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
@@ -327,35 +424,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                         </div>
                                     </Row>
                                     <Row justify="space-between" align="middle">
-                                        <Col span={2}>
-                                            <Card
-                                                bordered={false}
-                                                style={{
-                                                    height: '75px',
-                                                    width: '140px',
-                                                    minWidth: 110, // 最小宽度100px
-                                                    maxWidth: 200, // 最大宽度200px
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                }}
-                                            >
-                                                <Row>
-                                                    <Col pull={0} span={22}>
-                                                        <Statistic title={<span>容器</span>} value={2} />
-                                                    </Col>
-                                                    <Col span={2} style={{ position: 'relative', top: '-3.5px' }}>
-                                                        <Button
-                                                            type="link"
-                                                            style={{ color: '#000' }}
-                                                            icon={<RightOutlined />}
-                                                            onClick={() => this.goToPanel('container')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
+
                                         <Col span={2}>
                                             <Card
                                                 bordered={false}
@@ -521,39 +590,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                                 </Row>
                                             </Card>
                                         </Col>
-                                        <Col span={2}>
-                                            <Card
-                                                bordered={false}
-                                                style={{
-                                                    height: '75px',
-                                                    width: '140px',
-                                                    minWidth: 110, // 最小宽度100px
-                                                    maxWidth: 200, // 最大宽度200px
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                }}
-                                            >
-                                                <Row>
-                                                    <Col pull={2} span={22}>
-                                                        <Statistic title={<span>系统软件</span>} value={0} />
-                                                    </Col>
-                                                    <Col
-                                                        pull={0}
-                                                        span={2}
-                                                        style={{ position: 'relative', top: '-3.5px' }}
-                                                    >
-                                                        <Button
-                                                            type="link"
-                                                            style={{ color: '#000' }}
-                                                            icon={<RightOutlined />}
-                                                            onClick={() => this.goToPanel('system-software')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
+
                                         <Col span={3}>
                                             <Card
                                                 bordered={false}

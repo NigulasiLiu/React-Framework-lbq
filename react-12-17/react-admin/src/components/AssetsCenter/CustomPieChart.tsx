@@ -61,7 +61,12 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
       style={{ width: cardWidth, height: cardHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
-          <Tooltip content={<TooltipForPieChart />} /> {/* 添加tooltip组件 */}
+          <Tooltip content={<TooltipForPieChart 
+          active={true} 
+          //payload={data} 
+          //borderColor="#ff0000"
+          />
+          }/> {/* 添加tooltip组件 */}
           <Pie
             data={data}
             cx="50%"

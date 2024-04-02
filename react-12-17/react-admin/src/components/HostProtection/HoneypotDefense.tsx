@@ -125,7 +125,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
     render() {
         return (
         <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-          <Button onClick={this.showModal}>添加蜜罐</Button> {/* 临时添加的按钮，用于展示Modal */}
+        <Button onClick={this.showModal}>添加蜜罐</Button> {/* 临时添加的按钮，用于展示Modal */}
         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
         <Modal
             title="添加蜜罐信息"

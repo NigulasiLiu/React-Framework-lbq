@@ -3,7 +3,13 @@ import axios from 'axios';
 import { Progress,} from 'antd';
 import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
 
-
+export const assetCenterPanelName=[
+    "overview",
+    "fim",
+"system-services",
+"open-ports",
+"running-processes",
+];
 
 const APIList=[
 "http://localhost:5000/api/FileIntegrityInfo/all",

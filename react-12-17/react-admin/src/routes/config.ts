@@ -113,40 +113,40 @@ const menus: {
                     title: '用户管理',
                     component: 'UserManagement',
                 },
-                {
-                    key: '/app/extension/queryParams',
-                    title: '问号形式参数',
-                    component: 'QueryParams',
-                    query: '?param1=1&param2=2',
-                },
-                {
-                    key: '/app/extension/visitor',
-                    title: '访客模式',
-                    component: 'Visitor',
-                    login: true,
-                },
-                {
-                    key: '/app/extension/multiple',
-                    title: '多级菜单',
-                    subs: [
-                        {
-                            key: '/app/extension/multiple/child',
-                            title: '多级菜单子菜单',
-                            subs: [
-                                {
-                                    key: '/app/extension/multiple/child/child',
-                                    title: '多级菜单子子菜单',
-                                    component: 'MultipleMenu',
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    key: '/app/extension/env',
-                    title: '环境配置',
-                    component: 'Env',
-                },
+                // {
+                //     key: '/app/extension/queryParams',
+                //     title: '问号形式参数',
+                //     component: 'QueryParams',
+                //     query: '?param1=1&param2=2',
+                // },
+                // {
+                //     key: '/app/extension/visitor',
+                //     title: '访客模式',
+                //     component: 'Visitor',
+                //     login: true,
+                // },
+                // {
+                //     key: '/app/extension/multiple',
+                //     title: '多级菜单',
+                //     subs: [
+                //         {
+                //             key: '/app/extension/multiple/child',
+                //             title: '多级菜单子菜单',
+                //             subs: [
+                //                 {
+                //                     key: '/app/extension/multiple/child/child',
+                //                     title: '多级菜单子子菜单',
+                //                     component: 'MultipleMenu',
+                //                 },
+                //             ],
+                //         },
+                //     ],
+                // },
+                // {
+                //     key: '/app/extension/env',
+                //     title: '环境配置',
+                //     component: 'Env',
+                // },
             ],
         },
         {
