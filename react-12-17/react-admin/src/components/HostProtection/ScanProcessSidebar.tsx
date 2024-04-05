@@ -118,10 +118,10 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps,ScanPro
       }
 
     return (
-        <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+        <div>
             <Col md={24} style={{borderTop: '5px solid #4086FF'}}>
             <Card 
-            style={{fontWeight: 'bolder', width: '100%', height:800}}>
+            style={{fontWeight: 'bolder', width: 800, height:800, border:'solid 1px black',justifyContent:'center'}}>
             <Row>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 ,fontWeight: 'bold'}}>
                   <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[0]}</h2>
@@ -167,7 +167,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps,ScanPro
                 </Col>
             </Row>
             <Row>
-                <Col span={24} style={{ marginLeft:'25px',marginTop: '10px', marginBottom:'10px',maxWidth: '400px', }}>
+                <Col span={22} style={{ marginLeft:'25px',marginTop: '10px', marginBottom:'10px', }}>
                   {/* <LoadingBar/> */}
                   <CustomLoader isLoading={this.state.isLoading} scanProgress={this.state.scanProgress} />
                 </Col>

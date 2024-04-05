@@ -3,11 +3,9 @@ import { Row, Col, Card, Menu, } from 'antd';
 import FetchAPIDataTable from './FetchAPIDataTable';
 import OverviewPanel from './OverviewPanel';
 import MetaDataDisplay from './MetaDataDisplay';
-import { fimColumns,kernelModulesColumns,
-    containerColumns,openPortsColumns,
+import { fimColumns,
+    openPortsColumns,
     runningProcessesColumns,systemServicesColumns,
-    systemSoftwareColumns,applicationsColumns,
-    systemUsersColumns,scheduledTasksColumns,
     GenericDataItem, StatusItem } from '../tableUtils';
 
 

@@ -14,8 +14,8 @@ import { withRouter,RouteComponentProps } from 'react-router-dom';
 interface ValueItem {
     value: string | number;
     backgroundColor?: string; // 背景颜色
-    fontSize?: string;        // 字体大小
-    color?: string;           // 字体颜色
+    fontSize?: string;// 字体大小
+    color?: string;// 字体颜色
   }
   
 
@@ -143,8 +143,8 @@ class DataCard extends React.Component<DataCardProps> { // Use the interface her
           </Col>
           <Col pull={0} span={2} style={{ position: 'relative', top: '-3.5px',left:'-12px' }}>
             <Button
-              type="link"
-              style={{ color: '#000' }}
+              //type="link"
+              style={{ color: '#000',  }}
               icon={<RightOutlined />}
               onClick={() => navigate ? this.handlePanelClick(panelId) : this.goToPanel(panelId)}
             />

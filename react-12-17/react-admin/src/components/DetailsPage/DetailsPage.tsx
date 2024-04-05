@@ -1,10 +1,13 @@
 import React from 'react';
-import { Row, Col, Card, Menu,} from 'antd';
+import { Row, Col, Card, Menu, Button, Modal,Statistic,} from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import { RouteComponentProps, withRouter, useLocation} from 'react-router-dom';
+import { RouteComponentProps, withRouter, Link} from 'react-router-dom';
 import HostOverview from './HostOverview';
+import CustomPieChart from '../AssetsCenter/CustomPieChart';
 import HostDetailsTable from './HostDetailsTable';
-import {hostalertColumns, vulnerabilityColumns, baselineDetectColumns, onSelectChange} from '../tableUtils';
+import VulnerabilityDetailsSidebar from '../HostProtection/VulnerabilityDetailsSidebar';
+import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import {hostalertColumns, fimColumns,vulnerabilityColumns, baselineDetectColumns, virusscanningColumns} from '../tableUtils';
 import AlertList from '../AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
 import PerformanceMonitor from './PerformanceMonitor';
@@ -22,44 +25,37 @@ interface StatusPanelProps {
     statusData: StatusItem[];
 }
 
-interface DetailsPageProps extends RouteComponentProps<{ id: string }> {
+interface DetailsPageProps extends RouteComponentProps<{ uuid: string }> {
     host_name:string;
   }
-interface GenericDataItem {
-    [key: string]: any;
-}
-type DetailsPageState = {
-    selectedhost_name:string;
-    dataSource: any[];
-    topData: {
-        fim: GenericDataItem[];
-        container: GenericDataItem[];
-        openPorts: GenericDataItem[];
-        runningProcesses: GenericDataItem[];
-        systemUsers: GenericDataItem[];
-        scheduledTasks: GenericDataItem[];
-        systemServices: GenericDataItem[];
-        systemSoftware: GenericDataItem[];
-        applications: GenericDataItem[];
-        kernelModules: GenericDataItem[];
-    };
+interface DetailsPageState {
+host_uuid:string;
+dataSource: any[];
 
-    count: number;
-    deleteIndex: number | null;
+selectedVulnUuid:string;
+ignoredVulnerabilitiesCount:number;
+doneVulnerabilitiesCount:number;
+// ...其他状态字段
+showModal: boolean, // 控制模态框显示
+currentRecord: any, // 当前选中的记录
+vulnColumns:any[];
+isSidebarOpen:boolean;
+currentTime: string;
 
-    selectedRowKeys: React.Key[];
-    activeIndex: any;
-    areRowsSelected: boolean;
+count: number;
+deleteIndex: number | null;
 
-    animated: boolean;
-    animatedOne: number;
+selectedRowKeys: React.Key[];
+activeIndex: any;
+areRowsSelected: boolean;
 
-    statusData: StatusItem[]; // 初始状态
-    currentPanel: string;
-    // 新增状态字段，记录每个面板的选中行键
-    panelSelectedRowKeys: {
-        [panelName: string]: React.Key[];
-    };
+
+statusData: StatusItem[]; // 初始状态
+currentPanel: string;
+// 新增状态字段，记录每个面板的选中行键
+panelSelectedRowKeys: {
+    [panelName: string]: React.Key[];
+};
 };
 
 
@@ -95,7 +91,7 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
     );
 };
 
-const fimColumns = [
+const fimColumns_pre = [
     {
         title: '文件名',
         dataIndex: 'filename',
@@ -171,31 +167,72 @@ const fimColumns = [
 class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     constructor(props: any) {
         super(props);
-        this.columns = [];
         this.state = {
-            selectedhost_name: '-1',
+            host_uuid: '-1',
             statusData: [], // 初始状态
-            animated: false,
-            animatedOne: -1,
+
+            showModal: false, // 控制模态框显示
+            currentRecord: null, // 当前选中的记录
+            selectedVulnUuid: '', // 添加状态来存储当前选中的漏洞 id
+            ignoredVulnerabilitiesCount: 0, // 初始化为0或从其他数据源加载的初始值
+            doneVulnerabilitiesCount: 0, // 初始化为0或从其他数据源加载的初始值
+            isSidebarOpen: false,
+            currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
+
             dataSource: [],
-            topData: {
-                fim: [],
-                container: [],
-                openPorts: [],
-                runningProcesses: [],
-                systemUsers: [],
-                scheduledTasks: [],
-                systemServices: [],
-                systemSoftware: [],
-                kernelModules: [],
-                applications: [],
-                // 其他panel的初始化
-            },
             count: 2,
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
 
-            currentPanel: 'HostOverview', // 默认选中的面板
+
+            currentPanel: 'hostoverview', // 默认选中的面板
+            vulnColumns:[
+                {
+                  title: 'ID',
+                  dataIndex: 'id',
+                  key: 'id',
+                },
+                {
+                    title: "主机名称",
+                    dataIndex: 'uuid',
+                    render: (text: string) => (
+                        // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+                          <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+                        </Link>
+                      ),
+                },
+                {
+                  title: '主机IP',
+                  dataIndex: 'ip',
+                },
+                {
+                  title: '端口',
+                  dataIndex: 'port',
+                },
+                {
+                  title: '扫描时刻',
+                  dataIndex: 'scanTime',
+                },
+                {
+                  title: '扫描类型',
+                  dataIndex: 'scanType',
+                },
+                
+                {
+                    title: "操作",
+                    dataIndex: 'operation',
+                    
+                    render: (text:string, record:any) => (
+                        <div>
+                          <Button onClick={() => this.toggleModal(record)} className="custom-link-button">忽略</Button>
+                          <Button onClick={() => this.toggleDetailSidebar(record.uuid)} className="custom-link-button">详情</Button>
+                        </div>
+                      ),
+                },
+            ],
+
+
             selectedRowKeys: [], // 这里用来存储勾选的行的 key 值
             areRowsSelected: false,
             panelSelectedRowKeys: {
@@ -211,21 +248,144 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         };
     }
     componentDidMount() {
-        const { id } = this.props.match.params;
-        this.setState({ selectedhost_name: id });
-
         const queryParams = new URLSearchParams(this.props.location.search);
-        const host = queryParams.get('Host'); // 假设你是通过 ?Host=someValue 传递的参数
-    
-        console.log("Host:", host);
-        // 你可以在这里根据 host 参数进行更多操作，比如发起 API 请求获取详细信息
+        const host_uuid = queryParams.get('uuid');
+        this.setState({
+            host_uuid : host_uuid?host_uuid:'default',
+        });
 
     }
-    // 父组件中
-    handleDataReceived = (data: any[]) => {
-        // 处理从子组件接收到的数据
-        console.log('Received data from child:', data);
-    };
+
+
+    toggleModal = (record = null) => {
+        this.setState(prevState => ({
+          showModal: !prevState.showModal,
+          currentRecord: record // 设置当前记录，以便后续操作
+        }));
+      }
+      
+      handleOk = async () => {
+        // 处理忽略操作
+        const record = this.state.currentRecord;
+        if (record) {
+          // 调用API
+          // 假设API调用的逻辑是放在handleIgnoreButtonClick方法中实现的
+          await this.handleIgnoreButtonClick(record);
+        }
+        this.toggleModal(); // 关闭模态框
+      }
+      
+      handleCancel = () => {
+        this.toggleModal(); // 关闭模态框
+      }
+      
+      handleIgnoreButtonClick = async (record:any) => {
+        try {
+          const response = await fetch('apiEndpoint', {
+            method: 'POST', // 或 'GET', 根据您的API要求
+            headers: {
+              'Content-Type': 'application/json',
+              // 可能还需要其他头部信息，如认证令牌
+            },
+            body: JSON.stringify({
+              // 这里根据API的需要发送适当的数据
+              vulnId: record.id, // 假设每条记录有唯一的id来标识漏洞
+            }),
+          });
+      
+          if (1) {
+            // 如果API调用成功，更新状态以增加累计忽略的漏洞计数
+            this.setState(prevState => ({
+              ignoredVulnerabilitiesCount: prevState.ignoredVulnerabilitiesCount + 1,
+            }));
+          } else {
+            // 处理API调用失败的情况
+            console.error('API调用失败:', response.statusText);
+          }
+        } catch (error) {
+          console.error('请求错误:', error);
+        }
+      }
+      handleDoneButtonClick = async (record:any) => {
+        try {
+          const response = await fetch('apiEndpoint', {
+            method: 'POST', // 或 'GET', 根据您的API要求
+            headers: {
+              'Content-Type': 'application/json',
+              // 可能还需要其他头部信息，如认证令牌
+            },
+            body: JSON.stringify({
+              // 这里根据API的需要发送适当的数据
+              vulnId: record.id, // 假设每条记录有唯一的id来标识漏洞
+            }),
+          });
+      
+          if (1) {
+            // 如果API调用成功，更新状态以增加累计忽略的漏洞计数
+            this.setState(prevState => ({
+              doneVulnerabilitiesCount: prevState.doneVulnerabilitiesCount + 1,
+            }));
+          } else {
+            // 处理API调用失败的情况
+            console.error('API调用失败:', response.statusText);
+          }
+        } catch (error) {
+          console.error('请求错误:', error);
+        }
+      }
+      renderModal = () => {
+        return (
+          <>
+            <Modal
+              title="确认操作"
+              visible={this.state.showModal}
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+              footer={[
+                <Button key="back" onClick={this.handleCancel}>
+                  取消
+                </Button>,
+                <Button key="submit" style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.handleOk}>
+                  是
+                </Button>,
+              ]}
+            //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
+            >
+              确认忽略选中的漏洞？
+            </Modal>
+          </>
+        );
+      };
+      
+      toggleSidebar = () => {
+        this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
+        this.setCurrentTime();
+      };
+    
+      toggleDetailSidebar = (uuid:string) => {
+        this.setState(prevState => ({
+            isSidebarOpen: !prevState.isSidebarOpen,
+            selectedVulnUuid: uuid,
+        }));
+        this.setCurrentTime();
+        //message.info('selectedVulnUuid:'+uuid);
+      };
+    
+      closeSidebar = () => {
+        this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
+      };
+ 
+      setCurrentTime = () => {
+        const now = new Date();
+        // 格式化时间为 YYYY-MM-DD HH:MM:SS
+        const formattedTime = now.getFullYear() + '-' +
+                              ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+                              ('0' + now.getDate()).slice(-2) + ' ' +
+                              ('0' + now.getHours()).slice(-2) + ':' +
+                              ('0' + now.getMinutes()).slice(-2) + ':' +
+                              ('0' + now.getSeconds()).slice(-2);
+        this.setState({ currentTime: formattedTime });
+      };
     changePanel = (panelName: string) => {
         this.setState({ currentPanel: panelName });
     };
@@ -236,15 +396,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             panelSelectedRowKeys: {
                 ...prevState.panelSelectedRowKeys,
                 [panel]: selectedKeys,
-            },
-        }));
-    };
-    //用于OverviewPanel筛选top5数据
-    onTopDataChange = (panelName: string, data: GenericDataItem[]) => {
-        this.setState((prevState) => ({
-            topData: {
-                ...prevState.topData,
-                [panelName]: data,
             },
         }));
     };
@@ -268,8 +419,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         this.setState({ statusData: localStatusData });
     }
 
-
-    // Define the rowSelection object inside the render method
     renderRowSelection = () => {
         return {
             selectedRowKeys: this.state.selectedRowKeys,
@@ -279,27 +428,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             // Add other rowSelection properties and methods as needed
         };
     };
-    onDelete = (record: any, index: number) => {
-        const dataSource = [...this.state.dataSource];
-        dataSource.splice(index, 1);
-        this.setState({ deleteIndex: record.key });
-        setTimeout(() => {
-            this.setState({ dataSource });
-        }, 500);
-    };
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
-        this.setState({
-            dataSource: [newData, ...dataSource],
-            count: count + 1,
-        });
-    };
+
     handleMouseEnter = (_: any, index: number) => {
         // 使用 map 来更新数组中特定索引的值
         this.setState((prevState) => ({
@@ -353,7 +482,45 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         document.body.removeChild(element);
     };
 
+renderList=(apiEndpoint:string, uuid:string, timeColumnIndex:string[], columns:any[], currentPanel:string, title:string)=>{
+    if(uuid!==undefined){
+            return (
+                <div style={{ width: '100%' }}>
+                <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:2640,border:'false'}}>
+                    <Row gutter={[8, 16]} style={{ marginTop: '-21px',marginLeft: '-8px' }}>
+                        <Col md={24}>
+                                <Card bordered={false}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{title}</h2>
+                                    </div>
+                                    <FetchAPIDataTable
+                                    apiEndpoint={apiEndpoint+uuid}
+                                    timeColumnIndex={timeColumnIndex}
+                                    columns={columns}
+                                    currentPanel={currentPanel}
+                                    />
+                                </Card>
+                        </Col>
+                    </Row>
+                </Col>
+                </div>
+            );
+    }
+    return (
+        <div>
+            Loading...
+        </div>
+    );
+}
+
     renderCurrentPanel() {
+                //扇形图数据
+                const vulDataOne:StatusItem[] = [
+                    { label: '严重', value: 1, color: '#E63F3F' },
+                    { label: '高危', value: 1, color: '#846BCE' },
+                    { label: '中危', value: 1, color: '#FEC745' },
+                    { label: '低危', value: 1, color: '#468DFF' }
+                ];
         const { currentPanel } = this.state;
     
         switch (currentPanel) {
@@ -373,38 +540,172 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     />
                     </div>
                 );
-            case 'vulnerabilityalertlist':
-                return (
-                        <HostDetailsTable
-                            apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
-                            columns={vulnerabilityColumns}
-                            currentPanel={currentPanel}
-                            titleName="漏洞概览"
-                            selectedRowKeys={this.state.panelSelectedRowKeys.vulnerabilityalertlist}
-                            onSelectChange={(keys: any) => this.onSelectChange(keys, 'vulnerabilityalertlist')}
-                        />
-                );
-            case 'baselineDetectalertlist':
-                return (
-                        <HostDetailsTable
-                            apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
-                            columns={baselineDetectColumns}
-                            currentPanel={currentPanel}
-                            titleName="基线概览"
-                            selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
-                            onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
-                        />
-                );
-            case 'runningalertlist':
-                return (
-                    <div style={{marginTop:'-20px'}}>
-                        <AlertList
-                            apiEndpoint={"http://localhost:5000/api/vulndetetion/query?host_ip="}
-                            columns={hostalertColumns}
-                            currentPanel='runningalertlist'
-                        />
+            case 'vulnerabilityDetailList':
+                return ( 
+                    <div>                    
+                    <Card bordered={false} /*title="主机状态分布" 产生分界线*/
+                        style={{fontWeight: 'bolder', width: '100%', height:220}}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞概览</h2>
+                        </div>
+                        <Row gutter={[6, 6]}>
+                        {/* <Col className="gutter-row" span={4} style={{ marginLeft: '15px',marginTop: '10px' }}>
+                          <div className="container">
+                            <div className={this.state.isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar}></div>
+                            <div className={this.state.isSidebarOpen ? "sidebar open" : "sidebar"}>
+                              <button onClick={() => this.toggleSidebar} className="close-btn">&times;</button>
+                                <VulnerabilityDetailsSidebar
+                                  //vulnOriginData={vulnOriginData}
+                                  //vulnInfoArray={getSelectedVulnDetails()}
+                                  onDoneButtonClick={this.handleDoneButtonClick}//点击‘处理’按键
+                                  toggleSidebar={this.toggleSidebar}
+                                  host_uuid={this.state.selectedVulnUuid}
+                                  isSidebarOpen={this.state.isSidebarOpen}
+                                />
+                            </div>
+                          </div>
+                        </Col> */}
+                        <Col className="gutter-row" span={10}>
+                          <Card
+                            bordered={false}
+                            style={{
+                                height: '100px',
+                                width: '470px',
+                                minWidth: '200px', // 最小宽度300px，而非100px
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                            }}
+                            >
+                            <Row style={{ width: '100%',marginTop: '0px',paddingRight: '10px' }}>
+                                <Col span={8} style={{ paddingTop:'20px',width:'400px',height:'90px'}}>
+                                    <Statistic title={<span>待处理漏洞</span>} value={99} />
+                                </Col>
+                                <Col span={9} style={{ width:'400px'}}>
+                                  <CustomPieChart
+                                    data={vulDataOne}
+                                    innerRadius={27}
+                                    deltaRadius={2}
+                                    outerRadius={33}
+                                    cardWidth={90}
+                                    cardHeight={90}
+                                    hasDynamicEffect={true}
+                                    />
+                                </Col>
+                                {/* <Col span={7} style={{ width:'420px',height:'100px',paddingTop:'5px'}}>
+                                    <StatusPanel scanPanelData={scanPanelData} orientation="vertical" />
+                                </Col> */}
+                            </Row>
+                          </Card>
+                        </Col>
+                        <Col className="gutter-row" span={6}>
+                          <Card
+                            bordered={false}
+                            style={{
+                                height: '100px',
+                                width: '260px',
+                                minWidth: '200px', // 最小宽度300px，而非100px
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                            }}
+                            >
+                            <Row>
+                                <Col pull={2} span={24} style={{ marginRight: '50px'}}>
+                                    <Statistic title={<span>累计处理的漏洞</span>} value={this.state.doneVulnerabilitiesCount} />
+                                </Col>
+                                
+                            </Row>
+                          </Card>
+                        </Col>              
+                        <Col className="gutter-row" span={6}style={{ marginLeft: '10px' }}>
+                          <Card
+                            bordered={false}
+                            style={{
+                                height: '100px',
+                                width: '240px',
+                                minWidth: '200px', // 最小宽度300px，而非100px
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                            }}
+                            >
+                            <Row>
+                                <Col pull={2} span={24} style={{ marginRight: '50px'}}>
+                                    <Statistic title={<span>累计忽略的漏洞</span>} value={this.state.ignoredVulnerabilitiesCount} />
+                                </Col>
+                                
+                            </Row>
+                          </Card>
+                        </Col> 
+                        <div className="container">
+                            <div className={this.state.isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar}></div>
+                            <div className={this.state.isSidebarOpen ? "sidebar open" : "sidebar"}>
+                              <button onClick={() => this.toggleSidebar} className="close-btn">&times;</button>
+                                <VulnerabilityDetailsSidebar
+                                  //vulnOriginData={vulnOriginData}
+                                  //vulnInfoArray={getSelectedVulnDetails()}
+                                  onDoneButtonClick={this.handleDoneButtonClick}//点击‘处理’按键
+                                  toggleSidebar={this.toggleSidebar}
+                                  host_uuid={this.state.selectedVulnUuid}
+                                  isSidebarOpen={this.state.isSidebarOpen}
+                                />
+                            </div>
+                          </div>
+                         </Row>
+                         </Card>
+                        {this.renderModal()}
+                        {this.renderList('http://localhost:5000/api/vulndetetion/query_uuid?uuid=',
+                        this.state.host_uuid,['scanTime'],this.state.vulnColumns,currentPanel,'漏洞概览')}
                     </div>
+                // <div style={{ width: '100%' }}>
+                // <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:2640,border:'false'}}>
+                //     <Row gutter={[8, 16]} style={{ marginTop: '-21px',marginLeft: '-8px' }}>
+                //         <Col md={24}>
+                //                 <Card bordered={false}>
+                //                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                //                         <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{'漏洞概览'}</h2>
+                //                     </div>
+                //                     <FetchAPIDataTable
+                //                     apiEndpoint={'http://localhost:5000/api/vulndetetion/query_uuid?uuid='+this.state.host_uuid}
+                //                     timeColumnIndex={[]}
+                //                     columns={this.state.vulnColumns}
+                //                     currentPanel={currentPanel}
+                //                     />
+                //                 </Card>
+                //         </Col>
+                //     </Row>
+                // </Col>
+                // </div>
                 );
+            case 'baseLineDetectDetailList':
+                return (
+                    <div>
+                        {this.renderList('http://localhost:5000/api/baseline_check/linux/query_uuid?uuid=',
+                        this.state.host_uuid,['last_checked'],baselineDetectColumns,currentPanel,'基线概览')}
+                    </div>
+                        // <HostDetailsTable
+                        //     apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
+                        //     columns={baselineDetectColumns}
+                        //     currentPanel={currentPanel}
+                        //     titleName="基线概览"
+                        //     selectedRowKeys={this.state.panelSelectedRowKeys.baselineDetectalertlist}
+                        //     onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
+                        // />
+                );
+            // case 'runningalertlist':
+            //     return (
+            //         <div style={{marginTop:'-20px'}}>
+            //             <AlertList
+            //                 apiEndpoint={"http://localhost:5000/api/vulndetetion/query?host_ip="}
+            //                 columns={hostalertColumns}
+            //                 currentPanel='runningalertlist'
+            //             />
+            //         </div>
+            //     );
             case 'virusscanning':
                 return (
                     <div style={{marginTop:'-20px'}}>
@@ -420,17 +721,17 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         <PerformanceMonitor />
                     </div>
                 );
-            case 'assetfingerprint':
-                return (
-                        <HostDetailsTable
-                            apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
-                            columns={fimColumns}
-                            currentPanel={currentPanel}
-                            titleName="资产指纹"
-                            selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
-                            onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
-                        />
-                );
+            // case 'assetfingerprint':
+            //     return (
+            //             <HostDetailsTable
+            //                 apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
+            //                 columns={fimColumns}
+            //                 currentPanel={currentPanel}
+            //                 titleName="资产指纹"
+            //                 selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
+            //                 onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
+            //             />
+            //     );
             default:
                 return (
                         <HostOverview
@@ -458,11 +759,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             >
                                 <Menu.Item key="hostoverview">主机概览</Menu.Item>
                                 <Menu.Item key="hostalertlist">安全告警（AlarmTotal）</Menu.Item>
-                                <Menu.Item key="vulnerabilityalertlist">漏洞风险（VulnTotal）</Menu.Item>
-                                <Menu.Item key="baselineDetectalertlist">基线风险（BaselineTotal）</Menu.Item>
-                                {/* <Menu.Item key="runningalertlist">运行时安全告警（RaspAlarmTotal）</Menu.Item> */}
+                                <Menu.Item key="vulnerabilityDetailList">漏洞风险（VulnTotal）</Menu.Item>
+                                <Menu.Item key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
                                 <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
                                 <Menu.Item key="performancemonitor">性能监控</Menu.Item>
+                                {/* <Menu.Item key="runningalertlist">运行时安全告警（RaspAlarmTotal）</Menu.Item> */}
                                 {/* <Menu.Item key="assetfingerprint">资产指纹</Menu.Item> */}
                                 {/* 可以根据需要添加更多的Menu.Item */}
                                 {/* 使用透明div作为flex占位符 */}

@@ -307,10 +307,11 @@ class Dashboard extends React.Component<DashboardProps> {
                               {/* <YAxis /> */}
                               <Tooltip />
                               <Area
+                                fillOpacity={0.05}
                                 type="monotone"
                                 dataKey="value"
                                 stroke="#4086FF" // 设置线条颜色为#4086FF
-                                fill="#4086FF" // 设置填充颜色为#4086FF
+                                fill="#ffc658" // 设置填充颜色为#4086FF
                               />
                             </AreaChart>
                           </ResponsiveContainer>
@@ -327,7 +328,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                     { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                                     { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                                   ]}
-                                  panelId="/app/HostProtection/HostAlertList"
+                                  panelId="/app/HostProtection/InvasionDetect/HCPAlertList"
                                   height="75px"
                                   width="210px"
                                   backgroundColor="#ffffff"
@@ -367,10 +368,11 @@ class Dashboard extends React.Component<DashboardProps> {
                               {/* <YAxis /> */}
                               <Tooltip />
                               <Area
+                                fillOpacity={0.05}
                                 type="monotone"
                                 dataKey="value"
                                 stroke="#4086FF" // 设置线条颜色为#4086FF
-                                fill="#4086FF" // 设置填充颜色为#4086FF
+                                fill="#ffc658" // 设置填充颜色为#4086FF
                               />
                             </AreaChart>
                           </ResponsiveContainer>
@@ -387,7 +389,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                     { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
                                     { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                                   ]}
-                                  panelId="/app/HostProtection/HostAlertList"
+                                  panelId="/app/HostProtection/VulnerabilityList"
                                   height="75px"
                                   width="210px"
                                   backgroundColor="#ffffff"

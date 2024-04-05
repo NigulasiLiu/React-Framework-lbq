@@ -22,7 +22,7 @@ export const fetchDataFromAPI = async ({ apiEndpoint}: FetchDataParams): Promise
      if (response.data) {//&& response.data.status === 200，注意，当response包含message和status两个字段时，不能够用 && response.data.length > 0 判断，因为length属性以及不存在了
         const messageJsonString = JSON.stringify(response.data.message, null, 2);
         //console.log("Received message"+endpoint+":", messageJsonString);
-        message.info('data source:'+endpoint+' received successfully');
+        //message.info('data source:'+endpoint+' received successfully');
         return response.data.message;
         // const messageJsonString = JSON.stringify(response.data, null, 2);
         // console.log("Received message:", messageJsonString);

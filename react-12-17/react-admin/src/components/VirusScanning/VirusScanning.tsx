@@ -174,7 +174,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                           <Link to="/app/create_virusscan_task" target="_blank">
                               <Button type="link" style={{backgroundColor:'#1664FF',color:'white'}}>立即扫描</Button>
                           </Link>
-                          {/* <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleProcessSidebar}>立即扫描</Button> */}
+                          <Button style={{backgroundColor:'#1664FF',color:'white'}} onClick={this.toggleProcessSidebar}>扫描进度</Button>
                           <Button style={{marginLeft:'10px',backgroundColor:'white',color:'black'}}onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
                         </Row>
                         <div className={isScanningProcessSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeProcessSidebar}></div>

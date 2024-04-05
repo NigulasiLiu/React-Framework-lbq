@@ -1,15 +1,16 @@
 import React,{useEffect} from 'react';
-import { Row, Col, Card, Statistic, Typography ,Button } from 'antd';
+import { Row, Col, Card, Statistic, Typography ,Button, message } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
-import { GenericDataItem,AgentInfoType } from '../tableUtils';
-import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import CustomPieChart from '../AssetsCenter/CustomPieChart';
-import { PieChart, Pie, Cell,Label, ResponsiveContainer} from 'recharts';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { StatusItem } from '../tableUtils';
 import { diskColumns,netColumns,pluginColumns } from './DetailsTableColumns';
+import { fimColumns,
+    openPortsColumns,
+    runningProcessesColumns,systemServicesColumns,
+    GenericDataItem, StatusItem } from '../tableUtils';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
 import { DataContext, DataContextType} from '../ContextAPI/DataManager'
 import { MetaDataResult } from '../ContextAPI/ExtractOriginData';
 import { convertUnixTime } from '../AssetsCenter/DataService';
@@ -37,7 +38,7 @@ export interface agentInfoType{
 }
 
 interface HostOverviewState{
-    hostId:string;
+    host_uuid:string;
     
     filteredData: any[], // 用于存储过滤后的数据
     activeIndex: any;
@@ -45,25 +46,21 @@ interface HostOverviewState{
 } 
 
 class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> {
-    static contextType = DataContext;
     constructor(props: any) {
         super(props);
         this.state = {
             activeIndex: [-1], //一个扇形图
             filteredData: [], // 用于存储过滤后的数据
-            hostId:'',
+            host_uuid:'',
             dataIsReady:false,
         };
     }
     componentDidMount() {
         const queryParams = new URLSearchParams(this.props.location.search);
-        const hostId = queryParams.get('id');
+        const host_uuid = queryParams.get('uuid');
         this.setState({
-            hostId : hostId?hostId:'default',
+            host_uuid : host_uuid?host_uuid:'default',
         });
-        // if (hostId && this.context.getHostDetails) {
-        //     this.context.getHostDetails(hostId);
-        // }
       }
 
     
@@ -88,127 +85,141 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
     };
-    renderPieChart = (alertOriginDara:any[]) =>{
-        if(alertOriginDara!==undefined){
-            const filteredData = alertOriginDara.filter(item => item.host_name === this.state.hostId);
-            return (
-              <div>
-                <Row >
-                    <Col className="gutter-row" md={24}>
-                        <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
-                                {filteredData.map((data, index) => (
-                                            <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
-                                            <Col span={6}>
-                                              <p>主机ID: {data.id}</p>
-                                              <p>主机名称: {data.host_name}</p>
-                                              <p>操作系统: {data.os_version}</p>
-                                            </Col>
-                                            <Col span={6}>
-                                              <p>在线状态: {data.status}</p>
-                                              <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
-                                              <p>磁盘大小: {data.disk_total}</p>
-                                            </Col>
-                                            <Col span={6}>
-                                              <p>内存大小: {data.mem_total}</p>
-                                              <p>内存使用率: {data.mem_use}</p>
-                                              <p>CPU使用率: {data.cpu_use}</p>
-                                            </Col>
-                                            <Col span={6}>
-                                              <p>CPU信息: {data.processor_name + '_' + data.processor_architecture}</p>
-                                              <p>python版本: {data.py_version}</p>
-                                            </Col>
-                                          </Row>
-                                ))}
-                        </Card>
+    renderPieChart = (OriginData:any) =>{
+        if(OriginData!==undefined){
+            // 确保OriginData总是作为数组处理
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+            
+            // message.info("OriginData:"+(originDataArray.length));
+            // message.info("filteredData:"+(filteredData.length));
+            
+            // 确保filteredData不为空再访问它的属性
+            if (filteredData.length > 0) {
+                //message.info("filteredData.filter:"+(filteredData[0].uuid));
+                
+                const alertData3_:StatusItem[]=[
+                    // 确保使用正确的方法来计数
+                    { label: 'Pending', value: filteredData.filter(item => item.status === 'Pending').length, color: '#EA635F' },//RED
+                    { label: '通过', value: 99 - filteredData.filter(item => item.status === 'Pending').length, color: '#468DFF' }//蓝
+                ];
+                return (
+                  <div>
+                    <Row>
+                    <Col span={12}>
+                        <CustomPieChart
+                        data={alertData3_}
+                        innerRadius={54}
+                        deltaRadius={8}
+                        outerRadius={80}
+                        cardWidth={200}
+                        cardHeight={200}
+                        hasDynamicEffect={true}
+                        />
                     </Col>
-                </Row>
-              </div>
-            );
+                    <Col span={2}> </Col>
+                    <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+                        <StatusPanel statusData={alertData3_} orientation="vertical"/>
+                    </div>
+                    </Row>
+                  </div>
+                );
+            }
         }
-        else{
+        return (
+            <div>
+                Loading...
+            </div>
+        );
+    }
+    renderBasicInfoData = (agentOriginData:any) => {
+        if(agentOriginData!==undefined){
+            // 确保agentOriginData总是作为数组处理
+            const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
+            if (originDataArray && originDataArray.length > 0) {
+                const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+        
+                // 如果filteredData为空，则返回一个提示信息或者加载状态
+                if (filteredData.length === 0) {
+                    return <div>No data available for this host.</div>;
+                }
+        
+                return (
+                  <div>
+                    <Row>
+                        <Col className="gutter-row" md={24}>
+                            <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
+                                {filteredData.map((data, index) => (
+                                    <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
+                                    <Col span={6}>
+                                        <p>主机ID: {data.uuid}</p>
+                                        <p>主机名称: {data.host_name}</p>
+                                        <p>操作系统: {data.os_version}</p>
+                                    </Col>
+                                    <Col span={6}>
+                                        <p>在线状态: {data.status}</p>
+                                        <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
+                                        <p>磁盘大小: {data.disk_total}</p>
+                                    </Col>
+                                    <Col span={6}>
+                                        <p>内存大小: {data.mem_total}</p>
+                                        <p>内存使用率: {data.mem_use}</p>
+                                        <p>CPU使用率: {data.cpu_use}</p>
+                                    </Col>
+                                    <Col span={6}>
+                                        <p>CPU信息: {`${data.processor_name}_${data.processor_architecture}`}</p>
+                                        <p>python版本: {data.py_version}</p>
+                                    </Col>
+                                    </Row>
+                                ))}
+                            </Card>
+                        </Col>
+                    </Row>
+                  </div>
+                );
+            } 
+        }
+        else {
             return (
                 <div>
                     Loading...
                 </div>
-            )
+            );
         }
     }
-    renderBasicInfoData = (agentOriginData:any[]) => {
-        const data = {
-            '主机ID': '-',
-            '主机名称': ' ',
-            '操作系统': '',
-            '在线状态': '',
-            '最后一次上线': '-',
-            '磁盘大小': '-',
-            '内存大小': '-',
-            'CPU使用率': '-',
-            'CPU信息': '-',//架构+版本
-            '内存使用率': '-',
-            'python版本': '-',
-            
-            '系统负载': '-',
-            '公网IPv4': '-',
-            '公网IPv6': '-',
-            '私网IPv4': '-',
-            '私网IPv6': '-',
-            '网络区域': '-',
-            '操作系统版本': '-',
-            '容器平台': '-',
-            '默认网关': '-',
-            '地域':'default',
-            '内存占用率': '--',
-            '磁盘占用': '--',
-            '网卡序列': '-',
-            '注册时间': '!!',
-            '最近活跃时间': '!!',
-            '更新时间': '!!',
-            '探测时间': '!!',
-            'DNS服务器': '-',
-            // ... any other data fields
-        };
+    
+
+    renderBasicInfoData_1 = (agentOriginData:any[]) => {
         if(agentOriginData!==undefined){
-            const filteredData = agentOriginData.filter(item => item.id.toString() === this.state.hostId);
+            const filteredData = agentOriginData.filter(item => item.uuid === this.state.host_uuid);
+            //message.info("filteredData:"+this.state.host_uuid);
             return (
               <div>
                 <Row >
                     <Col className="gutter-row" md={24}>
                         <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
                                 {filteredData.map((data, index) => (
-                                            <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
-                                            <Col span={6}>
-                                              <p>主机ID: {data.id}</p>
-                                              <p>主机名称: {data.host_name}</p>
-                                              <p>操作系统: {data.os_version}</p>
-                                            </Col>
-                                            <Col span={6}>
-                                              <p>在线状态: {data.status}</p>
-                                              <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
-                                              <p>磁盘大小: {data.disk_total}</p>
-                                            </Col>
-                                            <Col span={6}>
-                                              <p>内存大小: {data.mem_total}</p>
-                                              <p>内存使用率: {data.mem_use}</p>
-                                              <p>CPU使用率: {data.cpu_use}</p>
-                                            </Col>
-                                            <Col span={6}>
-                                              <p>CPU信息: {data.processor_name + '_' + data.processor_architecture}</p>
-                                              <p>python版本: {data.py_version}</p>
-                                            </Col>
-                                          </Row>
-                                // <div key={index}>
-                                //     <p>主机ID: {data.id}</p>
-                                //     <p>主机名称: {data.host_name}</p>
-                                //     <p>操作系统: {data.os_version}</p>
-                                //     <p>在线状态: {data.status}</p>
-                                //     <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
-                                //     <p>磁盘大小: {data.disk_total}</p>
-                                //     <p>内存大小: {data.mem_total}</p>
-                                //     <p>内存使用率: {data.mem_use}</p>
-                                //     <p>CPU使用率: {data.cpu_use}</p>
-                                //     <p>CPU信息: {data.processor_name+'_'+data.processor_architecture}</p>
-                                //     <p>python版本: {data.py_version}</p>
-                                // </div>
+                                    <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
+                                    <Col span={6}>
+                                        <p>主机ID: {data.uuid}</p>
+                                        <p>主机名称: {data.host_name}</p>
+                                        <p>操作系统: {data.os_version}</p>
+                                    </Col>
+                                    <Col span={6}>
+                                        <p>在线状态: {data.status}</p>
+                                        <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
+                                        <p>磁盘大小: {data.disk_total}</p>
+                                    </Col>
+                                    <Col span={6}>
+                                        <p>内存大小: {data.mem_total}</p>
+                                        <p>内存使用率: {data.mem_use}</p>
+                                        <p>CPU使用率: {data.cpu_use}</p>
+                                    </Col>
+                                    <Col span={6}>
+                                        <p>CPU信息: {data.processor_name + '_' + data.processor_architecture}</p>
+                                        <p>python版本: {data.py_version}</p>
+                                    </Col>
+                                    </Row>
                                 ))}
                         </Card>
                     </Col>
@@ -228,11 +239,64 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 </div>
             )
         }
-      }
+    }
 
+renderTable=(OriginData:any[], title:string, timeColumnIndex:string[], column:any[], currentPanel:string)=>{
+    if(OriginData!==undefined){
+        // 确保OriginData总是作为数组处理
+        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+        const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+        if (filteredData.length > 0) {
+            return (
+              <div style={{fontWeight: 'bolder', width: '100%',}}>
+                <Card bordered={true}
+                    style={{backgroundColor: '#ffffff' }}>
+                    <Row>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                        </div>
+                    </Row>
+                    <DataDisplayTable
+                    externalDataSource={filteredData}
+                    timeColumnIndex={timeColumnIndex}
+                    columns={column}
+                    currentPanel={currentPanel}
+                    />
+                </Card>
+              </div>
+            );
+        }
+    }
+    return (
+        <div>
+            Loading...
+        </div>
+    );
+}
+
+renderDataCard=(OriginData:any[], title:string)=>{
+    if(OriginData!==undefined){
+        // 确保OriginData总是作为数组处理
+        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+        const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+        if (filteredData.length > 0) {
+            return (
+              <div style={{width: '100%',}}>
+                {OriginData!==undefined && <Statistic title={<span>{title}</span>} 
+                value={(Array.isArray(OriginData) ? OriginData : [OriginData]).filter(item => item.uuid === this.state.host_uuid).length}/>}
+                {OriginData===undefined&&<Statistic title={<span>{title}</span>} value={'-'} />}
+              </div>
+            );
+        }
+    }
+    return (
+        <div>
+            Loading...
+        </div>
+    );
+}
 
     render() {
-        const hostDetails = this.context.hostDetails; // 从 Context 获取 hostDetails
         return(
             <DataContext.Consumer>
             {(context: DataContextType | undefined) => {
@@ -240,10 +304,11 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 return <div>Loading...</div>; // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const { isDataLoaded,
+            const { linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,
+                vulnOriginData,portOriginData,assetOriginData,processOriginData,fimOriginData,
                 agentOriginData,} = context;
                 const data1 = {
-                    '主机名称': this.state.hostId,
+                    '主机名称': this.state.host_uuid,
                     '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
                     '操作系统': '',
                     '主机标签': '-',
@@ -273,7 +338,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                     'DNS服务器': '192.168.218.2',
                     // ... any other data fields
                     };
-                //const result: GenericDataItem[] = agentOriginData.filter(item => item['host_name'] === this.state.hostId);
+                //const result: GenericDataItem[] = agentOriginData.filter(item => item['host_name'] === this.state.host_uuid);
 
                     const alertData2_:StatusItem[] = [
                         { label: '紧急', value: 5, color: '#EA635F' },//RED
@@ -282,18 +347,18 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         { label: '低风险', value: 1, color: '#468DFF' }//蓝
                     ];
                     
-                    const alertData3_:StatusItem[] = [
-                        { label: '严重', value: 1, color: '#EA635F' },//RED
-                        { label: '高危', value: 1, color: '#846CCE' },//紫
-                        { label: '中危', value: 1, color: '#FBB12E' },//ORANGE
-                        { label: '低危', value: 1, color: '#468DFF' }//蓝
-                    ];
+                    // const alertData3_:StatusItem[] = [
+                    //     { label: '严重', value: 1, color: '#EA635F' },//RED
+                    //     { label: '高危', value: 1, color: '#846CCE' },//紫
+                    //     { label: '中危', value: 1, color: '#FBB12E' },//ORANGE
+                    //     { label: '低危', value: 1, color: '#468DFF' }//蓝
+                    // ];
                     
-                    const alertData4_:StatusItem[] = [
-                        { label: '高危', value: 1, color: '#EA635F' },//RED
-                        { label: '中危', value: 1, color: '#FBB12E' },//ORANGE
-                        { label: '低危', value: 1, color: '#468DFF' }//蓝
-                    ];
+                    // const alertData4_:StatusItem[] = [
+                    //     { label: '高危', value: 1, color: '#EA635F' },//RED
+                    //     { label: '中危', value: 1, color: '#FBB12E' },//ORANGE
+                    //     { label: '低危', value: 1, color: '#468DFF' }//蓝
+                    // ];
 
                     const agentversion='1.7.0.24';
 
@@ -311,7 +376,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 </Card>
                             </Row>
                             <Row gutter={[8,16]}>
-                                <Col md={8} style={{width:'33%', marginLeft: '0', marginRight: 'auto'}}>
+                                <Col md={8}>
                                 <Card bordered={false}
                                     style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                                         <Row>
@@ -348,23 +413,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             </div>
                                             <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                                         </Row>
+
                                     <Row gutter={0}>
-                                    <Col span={12}>
-                                        <CustomPieChart
-                                        data={alertData3_}
-                                        innerRadius={54}
-                                        deltaRadius={8}
-                                        outerRadius={80}
-                                        cardWidth={200}
-                                        cardHeight={200}
-                                        hasDynamicEffect={true}
-                                        />
-                                        </Col>
-                                        <Col span={2}> </Col>
-                                        <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                        <StatusPanel statusData={alertData3_} orientation="vertical"/>
-                                        </div>
-                                        </Row>
+                                    {this.renderPieChart(vulnOriginData)}
+
+                                    </Row>
+
                                 </Card>
                                 </Col>
                                 <Col md={8} style={{width:'33%', marginLeft: 'auto', marginRight: '0'}}>
@@ -377,40 +431,8 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
                                         </Row>
                                     <Row gutter={0}>
-                                        <Col span={12}>
-                                        <ResponsiveContainer width="100%" height={200}>
-                                            <PieChart>
-                                                <Pie className="pie-chart-segment"
-                                                data={alertData4_}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={54}
-                                                fill="#8884d8"
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                                onMouseEnter={(e) => this.handleMouseEnter(e, 1)}
-                                                onMouseLeave={this.handleMouseLeave}
-                                                outerRadius={this.state.activeIndex[1] === 1 ? 80 : 72} // 如果悬停则扇形半径变大
-                                                
-                                                >
-                                                {alertData4_.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                                ))}
-                                                <Label value={'未处理告警:'+alertData4_.length+'个'} 
-                                                position="center" 
-                                                style={{ fontSize: '14px' }}
-                                                />
-                                                </Pie>
-            
-                                                {/* <Tooltip content={<CustomTooltip />} /> */}
-                                            </PieChart>
-                                            </ResponsiveContainer>
-            
-                                        </Col>
-                                        <Col span={2}> </Col>
-                                        <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                        <StatusPanel statusData={alertData4_} orientation="vertical"/>
-                                        </div>
+                                    {this.renderPieChart(linuxBaseLineCheckOriginData)}
+                                      
                                         </Row>
                                 </Card>
                                 </Col>
@@ -441,7 +463,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             >
                                                 <Row>
                                                     <Col pull={2} span={22}>
-                                                        <Statistic title={<span>开放端口</span>} value={1} />
+                                                    {this.renderDataCard(portOriginData,'开放端口')}
                                                     </Col>
                                                     <Col
                                                         pull={0}
@@ -474,7 +496,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             >
                                                 <Row>
                                                     <Col pull={2} span={22}>
-                                                        <Statistic title={<span>运行进程</span>} value={13} />
+                                                    {this.renderDataCard(processOriginData,'运行进程')}
                                                     </Col>
                                                     <Col
                                                         pull={0}
@@ -507,40 +529,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             >
                                                 <Row>
                                                     <Col pull={2} span={22}>
-                                                        <Statistic title={<span>系统用户</span>} value={3} />
-                                                    </Col>
-                                                    <Col
-                                                        pull={0}
-                                                        span={2}
-                                                        style={{ position: 'relative', top: '-3.5px' }}
-                                                    >
-                                                        <Button
-                                                            type="link"
-                                                            style={{ color: '#000' }}
-                                                            icon={<RightOutlined />}
-                                                            onClick={() => this.goToPanel('system-users')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                        <Col span={2}>
-                                            <Card
-                                                bordered={false}
-                                                style={{
-                                                    height: '75px',
-                                                    width: '140px',
-                                                    minWidth: 110, // 最小宽度100px
-                                                    maxWidth: 200, // 最大宽度200px
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                }}
-                                            >
-                                                <Row>
-                                                    <Col pull={2} span={22}>
-                                                        <Statistic title={<span>定时任务</span>} value={0} />
+                                                        <Statistic title={<span>定时任务</span>} value={99} />
                                                     </Col>
                                                     <Col
                                                         pull={0}
@@ -573,7 +562,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             >
                                                 <Row>
                                                     <Col pull={2} span={22}>
-                                                        <Statistic title={<span>系统服务</span>} value={0} />
+                                                    {this.renderDataCard(assetOriginData,'系统服务')}
                                                     </Col>
                                                     <Col
                                                         pull={0}
@@ -590,7 +579,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                                 </Row>
                                             </Card>
                                         </Col>
-
                                         <Col span={3}>
                                             <Card
                                                 bordered={false}
@@ -605,7 +593,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             >
                                                 <Row>
                                                     <Col pull={2} span={22}>
-                                                        <Statistic title={<span>文件完整性校验</span>} value={0} />
+                                                    {this.renderDataCard(fimOriginData,'文件完整性检验')}
                                                     </Col>
                                                     <Col
                                                         pull={0}
@@ -622,11 +610,44 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                                 </Row>
                                             </Card>
                                         </Col>
+                                        {/* <Col span={2}>
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    height: '75px',
+                                                    width: '140px',
+                                                    minWidth: 110, // 最小宽度100px
+                                                    maxWidth: 200, // 最大宽度200px
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                                }}
+                                            >
+                                                <Row>
+                                                    <Col pull={2} span={22}>
+                                                    {this.renderDataCard(processOriginData,'系统用户')}
+                                                    </Col>
+                                                    <Col
+                                                        pull={0}
+                                                        span={2}
+                                                        style={{ position: 'relative', top: '-3.5px' }}
+                                                    >
+                                                        <Button
+                                                            type="link"
+                                                            style={{ color: '#000' }}
+                                                            icon={<RightOutlined />}
+                                                            onClick={() => this.goToPanel('system-users')}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Col> */}
                                     </Row>
                                 </Card>
                             </Row>
-                            <Row gutter={[8,16]}>
-                                <Card bordered={false}
+                            {/* <Row gutter={[8,16]}>
+                                <Card bordered={true}
                                     style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
                                     <Row>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
@@ -642,7 +663,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 </Card>
                             </Row>
                             <Row gutter={[8,16]}>
-                                <Card bordered={false}
+                                <Card bordered={true}
                                     style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
                                     <Row>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
@@ -658,7 +679,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 </Card>
                             </Row>
                             <Row gutter={[8,16]}>
-                                <Card bordered={false}
+                                <Card bordered={true}
                                     style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
                                     <Row>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
@@ -672,6 +693,19 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                         currentPanel="hostOverviewplugininfolist"
                                     />
                                 </Card>
+                            </Row> */}
+                            <Row gutter={[8,16]}>
+                            {this.renderTable(portOriginData, '开放端口',[],openPortsColumns,this.state.host_uuid+'open-ports')}
+                            </Row>
+                            <Row gutter={[8,16]}>
+                            {this.renderTable(fimOriginData, '文件完整性检验',['event_time'],fimColumns,this.state.host_uuid+'fim')}
+                            </Row>
+                            <Row gutter={[8,16]}>
+                            {this.renderTable(processOriginData, '运行进程',['createTime'],runningProcessesColumns,this.state.host_uuid+'process')}
+                            </Row>
+                            <Row gutter={[8,16]}>
+
+                            {this.renderTable(assetOriginData, '系统服务',[],systemServicesColumns,this.state.host_uuid+'services')}
                             </Row>
                             <Row gutter={[8,16]}>
                                 <Card bordered={false}

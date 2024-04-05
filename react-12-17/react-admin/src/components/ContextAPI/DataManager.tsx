@@ -30,8 +30,13 @@ export interface DataContextType {
   topFivePortCounts: DataItem[];
   
   agentOriginData:any[];
+  fimOriginData:any[];
   agentSearchResults?:any[];
-
+  portOriginData:any[];
+  processOriginData:any[];
+  assetOriginData:any[];
+  linuxBaseLineCheckOriginData:any[];
+  windowsBaseLineCheckOriginData:any[];
   vulnOriginData:any[];
   //vulnOriginDataReconstruct:ReconstructedDataItem;
 
@@ -56,7 +61,7 @@ export interface DataContextType {
   linuxBaseLineCheckMetaData_status: MetaDataResult;
   windowsBaseLineCheckMetaData_ip: MetaDataResult;
 
-  vulnMetaData_ip: MetaDataResult;
+  vulnMetaData_uuid: MetaDataResult;
   vulnMetaData_scanTime: MetaDataResult;
   last7VulValue:number[];
   //vulnFilteredData: Map<string, FilteredDataResult_new[]>;
@@ -250,7 +255,7 @@ const DataManager: React.FC = ({ children }) => {
   const windowsBaseLineCheckMetaData_ip = useExtractOrigin('ip',windowsBaseLineCheckOriginData);
   const windowsBaseLineCheckMetaData_adjustment_requirement = useExtractOrigin('adjustment_requirement',windowsBaseLineCheckOriginData);
 
-  const vulnMetaData_ip = useExtractOrigin('ip',vulnOriginData);
+  const vulnMetaData_uuid = useExtractOrigin('uuid',vulnOriginData);
   const vulnMetaData_scanTime = useExtractOrigin('scanTime',vulnOriginData);
   const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime)
   //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
@@ -261,7 +266,7 @@ const DataManager: React.FC = ({ children }) => {
   const hostInfo = useFindFirstMatchingItem('id','1',agentOriginData);
 
   const hostCount = agentMetaData_status.tupleCount;
-  const vulnHostCount = vulnMetaData_ip.tupleCount;
+  const vulnHostCount = vulnMetaData_uuid.tupleCount;
   const blLinuxHostCount = linuxBaseLineCheckMetaData__ip.typeCount.size;
   const blWindowsHostCount = windowsBaseLineCheckMetaData_ip.typeCount.size;
   const blLinuxHostItemCount = linuxBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整");
@@ -309,7 +314,8 @@ const DataManager: React.FC = ({ children }) => {
       agentMEMuseMetaData,
       agentAVGMEMUse,
 
-      agentOriginData,
+      agentOriginData,processOriginData,assetOriginData,portOriginData,windowsBaseLineCheckOriginData,linuxBaseLineCheckOriginData,fimOriginData,
+      vulnOriginData,
 
       agentMetaData_status,
       agentOnlineCount,
@@ -318,10 +324,9 @@ const DataManager: React.FC = ({ children }) => {
       processMetaData_userName,topFiveProcessCounts,topFiveUserCounts,
       assetMetaData_service,assetMetaData_product, assetMetaData_os_version, topFiveServiceCounts,topFiveProductCounts,
       linuxBaseLineCheckMetaData__ip,linuxBaseLineCheckMetaData_status,windowsBaseLineCheckMetaData_ip,
-
-      vulnOriginData,
+      
       //vulnOriginDataReconstruct,
-      vulnMetaData_ip,//vulnFilteredData,
+      vulnMetaData_uuid,//vulnFilteredData,
       vulnMetaData_scanTime,
       last7VulValue,
       transformedData,

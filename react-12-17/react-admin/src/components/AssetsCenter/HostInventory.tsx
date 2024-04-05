@@ -33,6 +33,7 @@ interface HostInventoryState {
     deleteIndex: number | null;
 
     activeIndex: any;
+
   };
 
   
@@ -266,9 +267,8 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                   </Row>
                   
                   <MetaDataDisplay
-                  metadata={vulnMetaData_scanTime}
+                  metadata={agentMetaData_status}
                   />
-                  {}
               </div>
             );
             }}

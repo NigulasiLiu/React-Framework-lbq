@@ -368,7 +368,7 @@ export interface hostinventoryColumnsType {
 const extractNumberFromPercentString = (percentString: string): number => {
     return parseFloat(percentString.replace('%', ''));
   };
-export const hostinventoryColumns = [
+export const hostinventoryColumns_rel = [
     {
         title: "ID",
         dataIndex: 'id',
@@ -386,7 +386,7 @@ export const hostinventoryColumns = [
         dataIndex: 'host_name',
         // render: (text: string) => (
         //     // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-        //     <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+        //     <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
         //       <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text}</Button>
         //     </Link>
         //   ),
@@ -480,7 +480,115 @@ export const hostinventoryColumns = [
         )
     },
 ];
+export const hostinventoryColumns = [
+    {
+        title: "ID",
+        dataIndex: 'id',
+        key: 'id',
+        render:(text:string)=>(
+            <Button type="link">{text}</Button>
+        ),
+        //width: '13%',
+    },
+    {
+        title: "主机名称",
+        dataIndex: 'uuid',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+            </Link>
+          ),
+    },
+    {
+        title: "主机IP",
+        dataIndex: 'ip_address',
+    }, 
+    {
+        title: "操作系统",
+        dataIndex: 'os_version',
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }: FilterDropdownProps) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    autoFocus
+                    placeholder="搜索..."
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    onClick={() => confirm()}
+                    size="small"
+                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+                >
+                    搜索
+                </Button>
+                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+                    重置
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        onFilter: (values:string, record:hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
+    },
+    {
+        title: "状态",
+        dataIndex: 'status',
+        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
+        filters: [
+            {
+              text: 'Online',
+              value: 'Online',
+            },
+            {
+              text: 'Offline',
+              value: 'Offline',
+            },
+        ],
+          // 修改这里使用record参数，确保函数能访问到当前行的数据
+        render: (text: string, record: hostinventoryColumnsType) => (
+            <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
+        ),
+    },
+    {
+        title: "内存使用量",
+        dataIndex: 'mem_use',
+        sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
+    },
+    {
+        title: "CPU使用率",
+        dataIndex: 'cpu_use',
+        sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
+    },
+    // 操作 列，根据状态禁用按钮style={{ color: record.status === 'Online' ? '#4086f4' : '#d9d9d9' }}
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        render: (text: string, record: any) => (
+        <Link to="/app/create_agent_task" target="_blank">
+        <Button 
+            style={{
+            fontWeight:'bold',
+            border: 'transparent',
+            backgroundColor: 'transparent',
+            color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+            cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+            }} 
+            disabled={record.status !== 'Online'}
+        >
+            下发任务
+        </Button>
+        </Link>
 
+        )
+    },
+];
 export interface FimDataType {
     key: React.Key;
     // filename: string;   
@@ -489,7 +597,7 @@ export interface FimDataType {
     hostIP: string;          
     alert_type: string;        
 } 
-export const fimColumns = [
+export const fimColumns_rel = [
     {
         title: 'ID',
         dataIndex: 'id',
@@ -599,50 +707,116 @@ export const fimColumns = [
           }),
     },
 ];
-export const containerColumns = [
+export const fimColumns = [
     {
-        title: '主机名称',
-        dataIndex: 'host_name',
-        key: 'host_name',
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
     },
     {
-        title: '容器ID',
-        dataIndex: 'containerId',
-        key: 'containerId',
+        title: "主机名称",
+        dataIndex: 'uuid',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+            </Link>
+          ),
     },
     {
-        title: '容器名',
-        dataIndex: 'containerName',
-        key: 'containerName',
-    },
-    {
-        title: '运行状态',
-        dataIndex: 'runStatus',
-        key: 'runStatus',
+        title: '主机IP',
+        dataIndex: 'hostIP',
+        onFilter: (values:string, record:FimDataType) => record.hostIP.toLowerCase().includes(values.toLowerCase()),
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }: FilterDropdownProps) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    autoFocus
+                    placeholder="搜索..."
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    onClick={() => confirm()}
+                    size="small"
+                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+                >
+                    搜索
+                </Button>
+                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+                    重置
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              maxWidth: 170, // 最大宽度200px
+            },
+          }),
+        //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
     },
     {
-        title: '镜像ID',
-        dataIndex: 'imageId',
-        key: 'imageId',
+        title: "文件名",
+        dataIndex: 'filename',
+        onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
     },
     {
-        title: '镜像名',
-        dataIndex: 'imageName',
-        key: 'imageName',
+        title: '主机名',
+        dataIndex: 'hostname',
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
     },
     {
-        title: '创建时间',
-        dataIndex: 'creationTime',
-        key: 'creationTime',
+        title: "告警时间",
+        dataIndex: 'event_time',
+        sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
     },
     {
-        title: '最新扫描时间',
-        dataIndex: 'lastScanTime',
-        key: 'lastScanTime',
+        title: '告警类型',
+        dataIndex: 'alert_type',
+        onFilter: (value: string | number | boolean, record: FimDataType) => record.alert_type.includes(value as string),
+        filters: [
+            {
+              text: 'created',
+              value: 'created',
+            },
+            {
+              text: 'deleted',
+              value: 'deleted',
+            },
+        ],
+          // 修改这里使用record参数，确保函数能访问到当前行的数据
+        render: (text: string, record: FimDataType) => (
+            <Badge status={record.alert_type === 'deleted' ? 'error' : 'default'} text={record.alert_type} />
+        ),
+        
+        
+        onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
     },
 ];
+
 export interface openPortsColumnsType {
     key: React.Key;   
     host_ip: string;          
@@ -659,6 +833,16 @@ export const openPortsColumns = [
               maxWidth: 20, // 最大宽度200px
             },
           }),
+    },
+    {
+        title: "主机名称",
+        dataIndex: 'uuid',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+            </Link>
+          ),
     },
     {
         title: '主机IP',
@@ -831,9 +1015,19 @@ export const runningProcessesColumns = [
         key: 'id',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 20, // 最大宽度200px
+              minWidth: 15, // 最大宽度200px
             },
           }),
+    },
+    {
+        title: "主机名称",
+        dataIndex: 'uuid',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+            </Link>
+          ),
     },
     {
         title: '主机IP',
@@ -1073,6 +1267,16 @@ export const systemServicesColumns = [
               maxWidth: 20, // 最大宽度200px
             },
           }),
+    },
+    {
+        title: "主机名称",
+        dataIndex: 'uuid',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+            </Link>
+          ),
     },
     {
         title: '主机IP',
@@ -1549,10 +1753,10 @@ export const vulnerabilityColumns_new = [//discard
         
         render: (text: string) => (
             <div>
-            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
               <Button className="custom-link-button">忽略</Button>
             </Link>
-            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
               <Button className="custom-link-button">详情</Button>
             </Link>
             </div>
@@ -1602,6 +1806,16 @@ export const baselineDetectColumns = [
         width: '20px',
     },
     {
+        title: "主机名称",
+        dataIndex: 'uuid',
+        render: (text: string) => (
+            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+            </Link>
+          ),
+    },
+    {
         title: "IP",
         dataIndex: 'ip',
         //width: '13%',
@@ -1649,7 +1863,7 @@ export const baselineDetectColumns = [
         
         render: (text: string) => (
             // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?Host=${encodeURIComponent(text)}`} target="_blank">
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
               <Button className="custom-link-button">111</Button>
             </Link>
           ),
@@ -1807,28 +2021,6 @@ export const hostperformanceColumns = [
     },
 ];
 
-// export const vulnerDetailColumns = [
-//     { title: '影响主机', dataIndex: 'ip', key: 'ip' },
-//     { title: '发现时间', dataIndex: 'scanTime', 
-//     sorter: (a: any, b: any) => Date.parse(b.scanTime) - Date.parse(a.scanTime), },
-//     // { title: '状态', dataIndex: 'status', key: 'status',
-//     // filters: [
-//     // ],
-//     // onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string), },
-    
-//     {
-//         title: "操作",
-//         dataIndex: 'operation',
-        
-//         render: (text:string, record:any) => (
-//             <div>
-//               <Button className="custom-link-button">忽略</Button>
-//               <Button className="custom-link-button">处理</Button>
-//               <Button onClick={() => this.toggleDetailSidebar(record.id)} className="custom-link-button">详情</Button>
-//             </div>
-//           ),
-//     },
-// ];
 export const virusscannigAllTasksColumns = [
     { title: '任务名称', dataIndex: 'task_name', key: 'task_name' },
     { title: '任务类型', dataIndex: 'task_type', key: 'task_type',},
