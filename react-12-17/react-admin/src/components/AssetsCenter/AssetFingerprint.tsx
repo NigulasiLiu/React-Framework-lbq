@@ -235,15 +235,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             activeIndex: this.state.activeIndex.map(() => -1),
         });
     };
-    triggerDownload = (data: string, filename: string) => {
-        const element = document.createElement('a');
-        element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-        element.download = filename;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
+
 
     render() {
 

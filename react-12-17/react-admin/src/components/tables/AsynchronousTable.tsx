@@ -65,7 +65,7 @@ class AsynchronousTable extends React.Component {
         const hasSelected = selectedRowKeys.length > 0;
         return (
             <div className="gutter-example">
-                <BreadcrumbCustom breads={['表格', '异步表格']} />
+                <BreadcrumbCustom />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={24}>
                         <div className="gutter-box">

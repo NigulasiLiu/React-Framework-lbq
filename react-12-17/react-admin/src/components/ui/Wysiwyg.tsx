@@ -104,7 +104,7 @@ class Wysiwyg extends Component {
         const { editorContent, editorState } = this.state;
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '富文本']} />
+                <BreadcrumbCustom />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={24}>
                         <div className="gutter-box">

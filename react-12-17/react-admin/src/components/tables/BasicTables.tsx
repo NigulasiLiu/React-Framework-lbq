@@ -11,7 +11,7 @@ import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 
 const BasicTables = () => (
     <div className="gutter-example">
-        <BreadcrumbCustom breads={['表格', '基础表格']} />
+        <BreadcrumbCustom  />
         <Row gutter={16}>
             <Col className="gutter-row" md={24}>
                 <div className="gutter-box">

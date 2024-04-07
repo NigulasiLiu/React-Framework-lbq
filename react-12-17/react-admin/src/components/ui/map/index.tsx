@@ -5,7 +5,7 @@ import BreadcrumbCustom from '../../widget/BreadcrumbCustom';
 
 export default () => (
     <div>
-        <BreadcrumbCustom breads={['UI', '地图']} />
+        <BreadcrumbCustom />
         <Row gutter={16}>
             <Col md={24}>
                 <div style={{ height: 500 }}>

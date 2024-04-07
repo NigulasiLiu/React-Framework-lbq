@@ -6,7 +6,7 @@ import { SettingOutlined } from '@ant-design/icons';
 class ThemePicker extends Component {
     state = {
         switcherOn: false,
-        background: localStorage.getItem('@primary-color') || '#313653',
+        background: localStorage.getItem('@primary-color') || '#ffffff',
     };
     _switcherOn = () => {
         this.setState({

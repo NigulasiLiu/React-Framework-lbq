@@ -248,7 +248,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         // 创建下载链接并点击
         const link = document.createElement('a');
         link.href = href;
-        link.download = 'export.csv';
+        link.download = this.props.currentPanel+'_export.csv';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -618,7 +618,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 <Col flex="none">
                                     <Button 
                                         onClick={this.showModal}
-                                        style={{backgroundColor:'#1664FF',color:'white'}}>新增用户
+                                        style={{backgroundColor:'#1664FF',color:'white',marginRight: '10px'}}>新增用户
                                     </Button>
                                     <Button
                                         style={{...selectedcompStyle,

@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { templateData } from './SeperateData';
 import useSortedData from './TopFiveDataProvider';
+import { convertAndFillData } from './SeperateData';
 import { DataItem, GenericDataItem,AgentInfoType } from '../tableUtils';
 import useExtractOrigin, {MetaDataResult, getTopFiveTypeCounts, 
   getCountPastSevenDays,getPastSevenDaysAlerts, filterDataByAttribute} from './ExtractOriginData';
@@ -277,32 +278,37 @@ const DataManager: React.FC = ({ children }) => {
 
 
 // 转换sortedTypeCounts到DataItem类型,OverViewPanel的TopFive数据展示
-  const topFivePortCounts: DataItem[] = topFivePortCountsArray.map(([valueName, value], index) => ({
-    ...templateData[index], // 复制模板数据的其余属性
-    id: valueName, // 设置 valueName 为 id
-    value: value, // 设置 value
-  }));
-  const topFiveServiceCounts: DataItem[] = topFiveServiceCountsArray.map(([valueName, value], index) => ({
-    ...templateData[index], // 复制模板数据的其余属性
-    id: valueName, // 设置 valueName 为 id
-    value: value, // 设置 value
-  }));
-  const topFiveProductCounts: DataItem[] = topFiveProductCountsArray.map(([valueName, value], index) => ({
-    ...templateData[index], // 复制模板数据的其余属性
-    id: valueName, // 设置 valueName 为 id
-    value: value, // 设置 value
-  }));
-  const topFiveUserCounts: DataItem[] = topFiveUserCountsArray.map(([valueName, value], index) => ({
-    ...templateData[index], // 复制模板数据的其余属性
-    id: valueName, // 设置 valueName 为 id
-    value: value, // 设置 value
-  }));
-  const topFiveProcessCounts: DataItem[] = topFiveProcessCountsArray.map(([valueName, value], index) => ({
-    ...templateData[index], // 复制模板数据的其余属性
-    id: valueName, // 设置 valueName 为 id
-    value: value, // 设置 value
-  }));
+  // const topFivePortCounts: DataItem[] = topFivePortCountsArray.map(([valueName, value], index) => ({
+  //   ...templateData[index], // 复制模板数据的其余属性
+  //   id: valueName, // 设置 valueName 为 id
+  //   value: value, // 设置 value
+  // }));
+  // const topFiveServiceCounts: DataItem[] = topFiveServiceCountsArray.map(([valueName, value], index) => ({
+  //   ...templateData[index], // 复制模板数据的其余属性
+  //   id: valueName, // 设置 valueName 为 id
+  //   value: value, // 设置 value
+  // }));
+  // const topFiveProductCounts: DataItem[] = topFiveProductCountsArray.map(([valueName, value], index) => ({
+  //   ...templateData[index], // 复制模板数据的其余属性
+  //   id: valueName, // 设置 valueName 为 id
+  //   value: value, // 设置 value
+  // }));
+  // const topFiveUserCounts: DataItem[] = topFiveUserCountsArray.map(([valueName, value], index) => ({
+  //   ...templateData[index], // 复制模板数据的其余属性
+  //   id: valueName, // 设置 valueName 为 id
+  //   value: value, // 设置 value
+  // }));
+  // const topFiveProcessCounts: DataItem[] = topFiveProcessCountsArray.map(([valueName, value], index) => ({
+  //   ...templateData[index], // 复制模板数据的其余属性
+  //   id: valueName, // 设置 valueName 为 id
+  //   value: value, // 设置 value
+  // }));
 
+  const topFivePortCounts = convertAndFillData(topFivePortCountsArray, templateData);
+  const topFiveServiceCounts = convertAndFillData(topFiveServiceCountsArray, templateData);
+  const topFiveProductCounts = convertAndFillData(topFiveProductCountsArray, templateData);
+  const topFiveUserCounts = convertAndFillData(topFiveUserCountsArray, templateData);
+  const topFiveProcessCounts = convertAndFillData(topFiveProcessCountsArray, templateData);
   
   return (
     <DataContext.Provider value={{isDataLoaded,hostInfo,

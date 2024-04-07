@@ -11,7 +11,7 @@ class Basic extends Component {
     render() {
         return (
             <div>
-                <BreadcrumbCustom breads={['权限管理', '基础演示']} />
+                <BreadcrumbCustom />
                 <AuthWidget
                     children={(auth: any) => (
                         <Row>

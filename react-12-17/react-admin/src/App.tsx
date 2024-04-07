@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, notification } from 'antd';
-import { GenericDataItem } from './components/tableUtils';
 import umbrella from 'umbrella-storage';
 import { useAlita } from 'redux-alita';
 import Routes from './routes';
@@ -11,6 +10,7 @@ import { checkLogin } from './utils';
 import { fetchMenu } from './service';
 import DataManager from './components/ContextAPI/DataManager';
 import classNames from 'classnames';
+
 
 const { Content, Footer } = Layout;
 
@@ -93,7 +93,6 @@ function openFNotification() {
 // }
 
 function App(props: AppProps){
-    const [topFiveData, setTopFiveData] = useState<GenericDataItem[]>([]);
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [auth, responsive, setAlita] = useAlita(
         { auth: { permissions: null } },
@@ -120,7 +119,7 @@ function App(props: AppProps){
             {!responsive.isMobile && checkLogin(auth.permissions) && (
                 <SiderCustom collapsed={collapsed} />
             )}
-            <ThemePicker />
+            {/* <ThemePicker /> */}
             <Layout
                 className={classNames('app_layout', { 'app_layout-mobile': responsive.isMobile })}
             >

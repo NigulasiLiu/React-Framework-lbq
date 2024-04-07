@@ -4,8 +4,9 @@
 import React, { useEffect, useState } from 'react';
 import screenfull from 'screenfull';
 import avater from '../style/imgs/user1.png';
+import logo from '../style/imgs/owl.png';
 import SiderCustom from './SideMenu/SiderCustom';
-import { LogoutOutlined,SettingOutlined } from '@ant-design/icons';
+
 import { Menu, Layout, Popover, Tooltip,Dropdown, Avatar} from 'antd';
 import { gitOauthToken, gitOauthInfo } from '../service';
 import { parseQuery } from '../utils';
@@ -15,6 +16,7 @@ import { useAlita } from 'redux-alita';
 import umbrella from 'umbrella-storage';
 import { useSwitch } from '../utils/hooks';
 import {
+    DownloadOutlined,LogoutOutlined,SettingOutlined,
     ArrowsAltOutlined,
     BarsOutlined,
     MenuFoldOutlined,
@@ -106,87 +108,105 @@ const HeaderCustom = (props: HeaderCustomProps) => {
 
     //用于隐藏标题
     //const [isSiderVisible, setIsSiderVisible] = useState(true);
-    const pagesWithoutSiderMenu=
-    [
-    '/app/detailspage',
-    '/app/create_agent_task',
-    '/app/create_virusscan_task',
-    '/app/baseline_detail',
-    '/app/virusscan_detail'
-    ];
-    const hideSiderMenu = pagesWithoutSiderMenu.includes(location.pathname);
-
+    const pagesWithoutSiderMenu = [
+        '/app/detailspage',
+        '/app/create_agent_task',
+        '/app/create_virusscan_task',
+        '/app/baseline_detail',
+        '/app/virusscan_detail',
+      ];
+      
+      const hideSiderMenu = pagesWithoutSiderMenu.some(page =>
+        location.pathname.includes(page)
+      );
+      
+    //const isDetailPage = pagesWithoutSiderMenu.includes(location.pathname);
     return (
-    <Row align="middle" className="header-row">
-        <Col span={24}>
-        <Header className="header-row  header-border"
-                    style={{
-                        zIndex: 2, // 设置顶侧栏的z-index为2
-                        borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
-                        // 其他已有样式
-                    }}>
-            
-            {hideSiderMenu?null:(responsive?.isMobile ? (
-                <Popover
-                    content={<SiderCustom popoverHide={turn.turnOff} />}
-                    trigger="click"
-                    placement="bottomLeft"
-                    visible={visible}
-                    onVisibleChange={(visible) => (visible ? turn.turnOn() : turn.turnOff())}
-                >
-                    <BarsOutlined className="header-row" />
-                </Popover>
-            ) : props.collapsed ? (
-                <Tooltip title="展开"> {/* 添加Tooltip并设置title为"展开" */}
-                    <MenuUnfoldOutlined
-                        className="header-row"
-                        onClick={props.toggle}
-                    />
-                </Tooltip>
-            ) : (
-                <Tooltip title="收起"> {/* 添加Tooltip并设置title为"收起" */}
-                    <MenuFoldOutlined
-                        className="header-row"
-                        onClick={props.toggle}
-                    />
-                </Tooltip>
-            ))}
-            <Menu
-                mode="horizontal"
-                style={{ lineHeight: '64px', float: 'right' }}
-                onClick={menuClick}
-            >
-            {/* Add version info here */}
-
-                {/* <Menu.Item key="pwa">
-                    <PwaInstaller />
-                </Menu.Item> */}
-                <Menu.Item key="full" >
-                    <ArrowsAltOutlined onClick={screenFull} />
-                </Menu.Item>
-                {/* <Menu.Item key="1">
-                    <Badge count={25} overflowCount={10} style={{ marginLeft: 10 }}>
-                        <NotificationOutlined />
-                    </Badge>
-                </Menu.Item> */}
-                <Dropdown overlay={logoutmenu} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()}>
-                        <Avatar src={user?.user?.avatar || avater} style={{ marginRight: 20 }}/>
-                    <span style={{
-                            color: 'black',
-                            fontWeight: 'bold',
-                            marginRight: 20
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#4086FF'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>
-                            {user?.user?.userName || 'Guest'}
-                        </span> 
-                    </a>
-                </Dropdown>
-            </Menu>
-        </Header>
-        </Col>
-    </Row>
+        <div style={{ background: '#FFFFFF', borderBottom: '3px solid #F6F7FB' }}>
+            <Row align="middle" className="header-row">
+                <Col span={24}>
+                <Header className="header-row  header-border"
+                            style={{ 
+                                zIndex: 2, // 设置顶侧栏的z-index为2
+                                //borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
+                                // 其他已有样式
+                            }}
+                            >
+                    <Row>
+                        {hideSiderMenu?null:(responsive?.isMobile ? (
+                            <Popover
+                                content={<SiderCustom popoverHide={turn.turnOff} />}
+                                trigger="click"
+                                placement="bottomLeft"
+                                visible={visible}
+                                onVisibleChange={(visible) => (visible ? turn.turnOn() : turn.turnOff())}
+                            >
+                                <BarsOutlined className="header-row" />
+                            </Popover>
+                        ) : props.collapsed ? (
+                            <Tooltip title="展开"> {/* 添加Tooltip并设置title为"展开" */}
+                                <MenuUnfoldOutlined
+                                    className="header-row"
+                                    onClick={props.toggle}
+                                />
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="收起"> {/* 添加Tooltip并设置title为"收起" */}
+                                <MenuFoldOutlined
+                                    className="header-row"
+                                    onClick={props.toggle}
+                                />
+                            </Tooltip>
+                        ))}
+                        {!hideSiderMenu&&(//backgroundColor:'#F6F7FB',
+                            <div style={{color:'#000', marginLeft:'15px'}}>
+                                Community Edition v1.9.1
+                            </div>
+                        )}
+                        {hideSiderMenu&&(
+                            <div className="logo-title-container" style={{ margin: '0px,0px',marginLeft:'-40px',display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                            <img src={logo} alt="Logo" style={{ width: '60px', height: '60px', marginRight: '20px' }} />
+                            <h2 style={{ fontFamily: "'YouYuan', sans-serif", 
+                            fontWeight: 'bold',padding: '22px,6px', margin: '10px,0px', color: 'rgba(0, 0, 0, 0.85)', 
+                            display: 'flex', alignItems: 'center',fontSize:'20px' }}>Security Platform</h2>
+                            </div>
+                        )}
+                        <Menu
+                            mode="horizontal"
+                            style={{ lineHeight: '64px', float: 'right',marginLeft:'auto',marginRight:'0px' }}
+                            onClick={menuClick}
+                        >
+                            {/* <Menu.Item key="pwa">
+                                <PwaInstaller />
+                            </Menu.Item> */}
+                            <Menu.Item key="full" >
+                                <ArrowsAltOutlined onClick={screenFull} />
+                            </Menu.Item>
+                            {/* <Menu.Item key="1">
+                                <Badge count={25} overflowCount={10} style={{ marginLeft: 10 }}>
+                                    <NotificationOutlined />
+                                </Badge>
+                            </Menu.Item> */}
+                            <Dropdown overlay={logoutmenu} trigger={['click']}>
+                                <a onClick={e => e.preventDefault()}>
+                                    <Avatar src={user?.user?.avatar || avater} style={{ marginRight: 20 }}/>
+                                <span style={{
+                                        color: 'black',
+                                        fontWeight: 'bold',
+                                        marginRight: 20
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = '#4086FF'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>
+                                        {user?.user?.userName || 'Guest'}
+                                    </span> 
+                                </a>
+                            </Dropdown>
+                        </Menu>
+                    </Row>
+                </Header>
+                </Col>
+            </Row>
+        </div>
     );
 };
 

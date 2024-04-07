@@ -148,7 +148,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         // 创建下载链接并点击
         const link = document.createElement('a');
         link.href = href;
-        link.download = 'export.csv';
+        link.download = this.props.currentPanel+'_export.csv';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

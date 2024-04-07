@@ -7,10 +7,11 @@
  * Copyright 2018 - present, chenghao
  */
 import React, { Component } from 'react';
-
+import { CommentOutlined, CustomerServiceOutlined } from '@ant-design/icons';
+//import { FloatButton } from 'antd';
 class PwaInstaller extends Component {
     state = {
-        installed: true,
+        installed: false,
     };
     componentDidMount() {
         window.addEventListener('beforeinstallprompt', this.beforeInstallPrompt);
@@ -51,6 +52,7 @@ class PwaInstaller extends Component {
         const { installed } = this.state;
         return (
             !installed && (
+                // <Button icon={<DownloadOutlined />}onClick={this.download}/>
                 <div className="installer" onClick={this.download}>
                     <div className="installer__btn" />
                 </div>

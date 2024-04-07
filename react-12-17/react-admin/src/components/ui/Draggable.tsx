@@ -40,7 +40,7 @@ class Drags extends React.Component {
         const { deltaPosition } = this.state;
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '拖拽']} />
+                <BreadcrumbCustom  />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={6}>
                         <div className="gutter-box">

@@ -46,7 +46,7 @@ class Buttons extends React.Component<any, ButtonsState> {
         );
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '按钮']} />
+                <BreadcrumbCustom  />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={12}>
                         <div className="gutter-box">

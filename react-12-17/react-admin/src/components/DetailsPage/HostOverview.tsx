@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react';
-import { Row, Col, Card, Statistic, Typography ,Button, message } from 'antd';
+import { Row, Col, Card, Statistic, Typography ,Button, Badge } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import CustomPieChart from '../AssetsCenter/CustomPieChart';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
@@ -132,7 +132,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             </div>
         );
     }
-    renderBasicInfoData = (agentOriginData:any) => {
+    renderBasicInfoData_1 = (agentOriginData:any) => {
         if(agentOriginData!==undefined){
             // 确保agentOriginData总是作为数组处理
             const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
@@ -163,7 +163,7 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                     </Col>
                                     <Col span={6}>
                                         <p>内存大小: {data.mem_total}</p>
-                                        <p>内存使用率: {data.mem_use}</p>
+                                        <p>内存使用: {data.mem_use}</p>
                                         <p>CPU使用率: {data.cpu_use}</p>
                                     </Col>
                                     <Col span={6}>
@@ -189,112 +189,119 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
     }
     
 
-    renderBasicInfoData_1 = (agentOriginData:any[]) => {
-        if(agentOriginData!==undefined){
-            const filteredData = agentOriginData.filter(item => item.uuid === this.state.host_uuid);
-            //message.info("filteredData:"+this.state.host_uuid);
-            return (
-              <div>
-                <Row >
-                    <Col className="gutter-row" md={24}>
-                        <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
-                                {filteredData.map((data, index) => (
-                                    <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
-                                    <Col span={6}>
-                                        <p>主机ID: {data.uuid}</p>
-                                        <p>主机名称: {data.host_name}</p>
-                                        <p>操作系统: {data.os_version}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                        <p>在线状态: {data.status}</p>
-                                        <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
-                                        <p>磁盘大小: {data.disk_total}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                        <p>内存大小: {data.mem_total}</p>
-                                        <p>内存使用率: {data.mem_use}</p>
-                                        <p>CPU使用率: {data.cpu_use}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                        <p>CPU信息: {data.processor_name + '_' + data.processor_architecture}</p>
-                                        <p>python版本: {data.py_version}</p>
-                                    </Col>
-                                    </Row>
-                                ))}
-                        </Card>
-                    </Col>
+    renderBasicInfoData = (agentOriginData: any) => {
+        if (agentOriginData !== undefined) {
+            // 确保agentOriginData总是作为数组处理
+            const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
+            if (originDataArray && originDataArray.length > 0) {
+                const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid);
+                
+                if (!filteredData) {
+                    return <div>No data available for this host.</div>;
+                }
+    
+                // 将filteredData转换为所需的data结构
+                const data = {
+                    '主机名称': filteredData.host_name,
+                    '主机ID': filteredData.uuid,
+                    '操作系统': filteredData.os_version,
+                    '在线状态': filteredData.status,
+                    '最后一次上线': convertUnixTime(filteredData.last_seen),
+                    '磁盘大小': filteredData.disk_total,
+                    '内存大小': filteredData.mem_total,
+                    '内存使用': filteredData.mem_use,
+                    'CPU使用率': filteredData.cpu_use,
+                    'CPU信息': `${filteredData.processor_name}_${filteredData.processor_architecture}`,
+                    'python版本': filteredData.py_version,
+                    // 其他字段按需填充
+                };
+    
+                return (
+                    // <Row gutter={[16, 16]}>
+                    //     {Object.entries(data).map(([key, value], index) => (
+                    //         <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
+                    //             <Text style={{color:'#686E7A'}}strong>{key}:</Text> <Text>{value}</Text>
+                    //         </Col>
+                    //     ))}
+                    // </Row>
+                    <Row gutter={[16, 16]}>
+                    {Object.entries(data).map(([key, value], index) => (
+                        <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px'}}>
+                            <Text style={{color:'#686E7A'}} strong>{key}: </Text> 
+                            {key === '在线状态' ? (
+                                <Badge status={filteredData.status === 'Online' ? 'success' : 'error'} text={filteredData.status} />
+                            ) : (
+                                <Text>{value}</Text>
+                            )}
+                        </Col>
+                    ))}
                 </Row>
-                {/* {Object.entries(data).map(([key, value], index) => (
-                    <Col key={index} span={8} style={{ fontSize:'12px',marginBottom: '12px' }}>
-                    <Text strong>{key}:</Text> <Text>{value}</Text>
-                    </Col>
-                ))} */}
-              </div>
-            );
-        }
-        else{
+                );
+            } 
+        } else {
             return (
                 <div>
                     Loading...
                 </div>
-            )
-        }
-    }
-
-renderTable=(OriginData:any[], title:string, timeColumnIndex:string[], column:any[], currentPanel:string)=>{
-    if(OriginData!==undefined){
-        // 确保OriginData总是作为数组处理
-        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-        const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-        if (filteredData.length > 0) {
-            return (
-              <div style={{fontWeight: 'bolder', width: '100%',}}>
-                <Card bordered={true}
-                    style={{backgroundColor: '#ffffff' }}>
-                    <Row>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
-                        </div>
-                    </Row>
-                    <DataDisplayTable
-                    externalDataSource={filteredData}
-                    timeColumnIndex={timeColumnIndex}
-                    columns={column}
-                    currentPanel={currentPanel}
-                    />
-                </Card>
-              </div>
             );
         }
-    }
-    return (
-        <div>
-            Loading...
-        </div>
-    );
-}
+    };
+    
 
-renderDataCard=(OriginData:any[], title:string)=>{
-    if(OriginData!==undefined){
-        // 确保OriginData总是作为数组处理
-        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-        const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-        if (filteredData.length > 0) {
-            return (
-              <div style={{width: '100%',}}>
-                {OriginData!==undefined && <Statistic title={<span>{title}</span>} 
-                value={(Array.isArray(OriginData) ? OriginData : [OriginData]).filter(item => item.uuid === this.state.host_uuid).length}/>}
-                {OriginData===undefined&&<Statistic title={<span>{title}</span>} value={'-'} />}
-              </div>
-            );
+    renderTable=(OriginData:any[], title:string, timeColumnIndex:string[], column:any[], currentPanel:string)=>{
+        if(OriginData!==undefined){
+            // 确保OriginData总是作为数组处理
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+            if (filteredData.length > 0) {
+                return (
+                <div style={{fontWeight: 'bolder', width: '100%',}}>
+                    <Card bordered={true}
+                        style={{backgroundColor: '#ffffff' }}>
+                        <Row>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                            </div>
+                        </Row>
+                        <DataDisplayTable
+                        externalDataSource={filteredData}
+                        timeColumnIndex={timeColumnIndex}
+                        columns={column}
+                        currentPanel={currentPanel}
+                        />
+                    </Card>
+                </div>
+                );
+            }
         }
+        return (
+            <div>
+                Loading...
+            </div>
+        );
     }
-    return (
-        <div>
-            Loading...
-        </div>
-    );
-}
+
+    renderDataCard=(OriginData:any[], title:string)=>{
+        if(OriginData!==undefined){
+            // 确保OriginData总是作为数组处理
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+            if (filteredData.length > 0) {
+                return (
+                <div style={{width: '100%',}}>
+                    {OriginData!==undefined && <Statistic title={<span>{title}</span>} 
+                    value={(Array.isArray(OriginData) ? OriginData : [OriginData]).filter(item => item.uuid === this.state.host_uuid).length}/>}
+                    {OriginData===undefined&&<Statistic title={<span>{title}</span>} value={'-'} />}
+                </div>
+                );
+            }
+        }
+        return (
+            <div>
+                Loading...
+            </div>
+        );
+    }
 
     render() {
         return(
@@ -307,7 +314,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
             const { linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,
                 vulnOriginData,portOriginData,assetOriginData,processOriginData,fimOriginData,
                 agentOriginData,} = context;
-                const data1 = {
+                const data = {
                     '主机名称': this.state.host_uuid,
                     '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
                     '操作系统': '',
@@ -337,7 +344,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
                     '探测时间': '2023-12-27 04:09:03',
                     'DNS服务器': '192.168.218.2',
                     // ... any other data fields
-                    };
+                };
                 //const result: GenericDataItem[] = agentOriginData.filter(item => item['host_name'] === this.state.host_uuid);
 
                     const alertData2_:StatusItem[] = [
@@ -364,7 +371,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
 
                 return (
                     <div>
-                        <Row style={{ width: '95%', margin: '0 auto' }}>
+                        <Row style={{ width: '97%', margin: '0 auto' }}>
                         <Col className="gutter-row" md={24} style={{ border:'false'}}>{/*maxWidth:1260*/}
                             <Row gutter={[8,16]}>
                                 <Card bordered={false}
@@ -372,7 +379,9 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                         <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基础信息</h2>
                                     </div>
+                                    <div style={{marginLeft:'90px'}}>
                                     {this.renderBasicInfoData(agentOriginData)}
+                                    </div>
                                 </Card>
                             </Row>
                             <Row gutter={[8,16]}>
@@ -383,7 +392,11 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>安全告警</h2>
                                             </div>
-                                            <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
+                                            <Button 
+                                            type="link"
+                                            style={{fontWeight:'bold',border:'transparent',
+                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: '300px',marginTop: '-55px'}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
+                                            onClick={()=>this.goToPanel('hostalertlist')}>详情</Button>
                                         </Row>
                                         <Row gutter={0}>
                                         <Col span={12}>
@@ -411,7 +424,11 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
                                             </div>
-                                            <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
+                                            <Button 
+                                            type="link"
+                                            style={{fontWeight:'bold',border:'transparent',
+                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: '300px',marginTop: '-55px'}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
+                                            onClick={()=>this.goToPanel('vulnerabilityDetailList')}>详情</Button>
                                         </Row>
 
                                     <Row gutter={0}>
@@ -428,7 +445,11 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基线风险</h2>
                                             </div>
-                                            <Button style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}>详情</Button>
+                                            <Button 
+                                            type="link"
+                                            style={{fontWeight:'bold',border:'transparent',
+                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: '300px',marginTop: '-55px'}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
+                                            onClick={()=>this.goToPanel('baseLineDetectDetailList')}>详情</Button>
                                         </Row>
                                     <Row gutter={0}>
                                     {this.renderPieChart(linuxBaseLineCheckOriginData)}
@@ -446,7 +467,6 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                         </div>
                                     </Row>
                                     <Row justify="space-between" align="middle">
-
                                         <Col span={2}>
                                             <Card
                                                 bordered={false}
@@ -472,7 +492,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                                     >
                                                         <Button
                                                             type="link"
-                                                            style={{ color: '#000' }}
+                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                                                             icon={<RightOutlined />}
                                                             onClick={() => this.goToPanel('open-ports')}
                                                         />
@@ -505,7 +525,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                                     >
                                                         <Button
                                                             type="link"
-                                                            style={{ color: '#000' }}
+                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                                                             icon={<RightOutlined />}
                                                             onClick={() => this.goToPanel('running-processes')}
                                                         />
@@ -538,7 +558,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                                     >
                                                         <Button
                                                             type="link"
-                                                            style={{ color: '#000' }}
+                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                                                             icon={<RightOutlined />}
                                                             onClick={() => this.goToPanel('scheduled-tasks')}
                                                         />
@@ -571,7 +591,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                                     >
                                                         <Button
                                                             type="link"
-                                                            style={{ color: '#000' }}
+                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                                                             icon={<RightOutlined />}
                                                             onClick={() => this.goToPanel('system-services')}
                                                         />
@@ -602,7 +622,7 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                                     >
                                                         <Button
                                                             type="link"
-                                                            style={{ color: '#000' }}
+                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                                                             icon={<RightOutlined />}
                                                             onClick={() => this.goToPanel('fim')}
                                                         />
@@ -610,39 +630,6 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                                 </Row>
                                             </Card>
                                         </Col>
-                                        {/* <Col span={2}>
-                                            <Card
-                                                bordered={false}
-                                                style={{
-                                                    height: '75px',
-                                                    width: '140px',
-                                                    minWidth: 110, // 最小宽度100px
-                                                    maxWidth: 200, // 最大宽度200px
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                }}
-                                            >
-                                                <Row>
-                                                    <Col pull={2} span={22}>
-                                                    {this.renderDataCard(processOriginData,'系统用户')}
-                                                    </Col>
-                                                    <Col
-                                                        pull={0}
-                                                        span={2}
-                                                        style={{ position: 'relative', top: '-3.5px' }}
-                                                    >
-                                                        <Button
-                                                            type="link"
-                                                            style={{ color: '#000' }}
-                                                            icon={<RightOutlined />}
-                                                            onClick={() => this.goToPanel('system-users')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col> */}
                                     </Row>
                                 </Card>
                             </Row>
@@ -695,17 +682,17 @@ renderDataCard=(OriginData:any[], title:string)=>{
                                 </Card>
                             </Row> */}
                             <Row gutter={[8,16]}>
-                            {this.renderTable(portOriginData, '开放端口',[],openPortsColumns,this.state.host_uuid+'open-ports')}
+                            {this.renderTable(portOriginData, '开放端口',[],openPortsColumns,'open-ports_'+this.state.host_uuid)}
                             </Row>
                             <Row gutter={[8,16]}>
-                            {this.renderTable(fimOriginData, '文件完整性检验',['event_time'],fimColumns,this.state.host_uuid+'fim')}
+                            {this.renderTable(fimOriginData, '文件完整性检验',['event_time'],fimColumns,'fim_'+this.state.host_uuid)}
                             </Row>
                             <Row gutter={[8,16]}>
-                            {this.renderTable(processOriginData, '运行进程',['createTime'],runningProcessesColumns,this.state.host_uuid+'process')}
+                            {this.renderTable(processOriginData, '运行进程',['createTime'],runningProcessesColumns,'process_'+this.state.host_uuid)}
                             </Row>
                             <Row gutter={[8,16]}>
 
-                            {this.renderTable(assetOriginData, '系统服务',[],systemServicesColumns,this.state.host_uuid+'services')}
+                            {this.renderTable(assetOriginData, '系统服务',[],systemServicesColumns,'services_'+this.state.host_uuid)}
                             </Row>
                             <Row gutter={[8,16]}>
                                 <Card bordered={false}

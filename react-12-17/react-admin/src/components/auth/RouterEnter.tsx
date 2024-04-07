@@ -16,7 +16,7 @@ class RouterEnter extends Component {
     render() {
         return (
             <div>
-                <BreadcrumbCustom breads={['权限管理', '路由拦截']} />
+                <BreadcrumbCustom  />
                 <AuthWidget
                     children={(auth: any) => (
                         <Row>

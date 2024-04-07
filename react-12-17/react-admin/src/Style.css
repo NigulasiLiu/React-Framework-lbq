@@ -1,0 +1,17 @@
+/* App.css 或其他CSS文件 */
+.custom-button {
+    font-weight: bold;
+    border: transparent;
+    background-color: transparent;
+    color: #4086FF;
+    text-align: left; /* 文本左对齐 */
+    padding-left: 0; /* 保证按钮内文本的左对齐 */
+    width: 100%; /* 按钮宽度，根据需要调整 */
+}
+
+.custom-button:hover {
+    color: #0056b3; /* 鼠标悬停时的字体颜色 */
+    border: transparent;
+}
+
+

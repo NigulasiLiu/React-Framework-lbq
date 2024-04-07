@@ -11,7 +11,7 @@ class AdvancedTables extends React.Component {
     render() {
         return (
             <div className="gutter-example">
-                <BreadcrumbCustom breads={['表格', '高级表格']} />
+                <BreadcrumbCustom />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={24}>
                         <div className="gutter-box">

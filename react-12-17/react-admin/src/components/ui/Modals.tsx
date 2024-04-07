@@ -122,7 +122,7 @@ class S extends Component {
     render() {
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '对话框']} />
+                <BreadcrumbCustom  />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={24}>
                         <div className="gutter-box">

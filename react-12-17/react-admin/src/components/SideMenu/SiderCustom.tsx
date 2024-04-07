@@ -121,9 +121,6 @@
 // export default withRouter(SiderCustom);
 
 
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -134,6 +131,14 @@ import { useSwitch } from '../../utils/hooks';
 import { usePrevious } from 'ahooks';
 import logo from '../../style/imgs/owl.png';
 const { Sider } = Layout;
+
+const pagesWithoutSiderMenu = [
+    '/app/detailspage',
+    '/app/create_agent_task',
+    '/app/create_virusscan_task',
+    '/app/baseline_detail',
+    '/app/virusscan_detail',
+];
 
 type SiderCustomProps = RouteComponentProps<any> & {
     popoverHide?: () => void;
@@ -147,6 +152,7 @@ interface IMenu {
 }
 
 const SiderCustom = (props: SiderCustomProps) => {
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
     const [collapsed, tCollapsed] = useSwitch();
     const [firstHide, tFirstHide] = useSwitch();
     const [menu, setMenu] = useState<IMenu>({ openKeys: [''], selectedKey: '' });
@@ -156,6 +162,16 @@ const SiderCustom = (props: SiderCustomProps) => {
     const prePathname = usePrevious(props.location.pathname);
 
     useEffect(() => {
+       // 检查当前路由是否在pagesWithoutSiderMenu列表中
+        const shouldCollapse = pagesWithoutSiderMenu.some(path => props.location.pathname.includes(path));
+        
+        // 如果当前路由不在列表中，则展开侧边栏
+        if (!shouldCollapse) {
+            setIsCollapsed(false); // 使用新的状态设置函数
+        } else {
+            setIsCollapsed(true); // 使用新的状态设置函数
+        }
+
         const recombineOpenKeys = (openKeys: string[]) => {
             let i = 0;
             let strPlus = '';
@@ -206,7 +222,7 @@ const SiderCustom = (props: SiderCustomProps) => {
         <Sider
             trigger={null}
             breakpoint="lg"
-            collapsed={collapsed}
+            collapsed={collapsed&&isCollapsed}
             collapsedWidth={0}
             width={165}
             style={{

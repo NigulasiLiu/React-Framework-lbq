@@ -18,7 +18,7 @@ class QueryParams extends Component<QueryParamsProps> {
         const { query } = this.props;
         return (
             <div>
-                <BreadcrumbCustom breads={['queryParams']} />
+                <BreadcrumbCustom  />
                 <Row gutter={16}>
                     <Col md={24}>
                         <Card title="query参数Demo" bordered={false}>

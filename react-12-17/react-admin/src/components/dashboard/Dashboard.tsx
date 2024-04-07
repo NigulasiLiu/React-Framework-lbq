@@ -307,11 +307,12 @@ class Dashboard extends React.Component<DashboardProps> {
                               {/* <YAxis /> */}
                               <Tooltip />
                               <Area
-                                fillOpacity={0.05}
+                                fillOpacity={0.5}
+                                stroke="#4086FF" // 设置线条颜色为#4086FF
+                                strokeWidth={2} // 设置线条厚度为3px
+                                fill="#F1F8FE" // 设置填充颜色为#4086FF
                                 type="monotone"
                                 dataKey="value"
-                                stroke="#4086FF" // 设置线条颜色为#4086FF
-                                fill="#ffc658" // 设置填充颜色为#4086FF
                               />
                             </AreaChart>
                           </ResponsiveContainer>
@@ -368,11 +369,12 @@ class Dashboard extends React.Component<DashboardProps> {
                               {/* <YAxis /> */}
                               <Tooltip />
                               <Area
-                                fillOpacity={0.05}
+                                fillOpacity={0.5}
+                                stroke="#4086FF" // 设置线条颜色为#4086FF
+                                strokeWidth={2} // 设置线条厚度为3px
+                                fill="#F1F8FE" // 设置填充颜色为#4086FF
                                 type="monotone"
                                 dataKey="value"
-                                stroke="#4086FF" // 设置线条颜色为#4086FF
-                                fill="#ffc658" // 设置填充颜色为#4086FF
                               />
                             </AreaChart>
                           </ResponsiveContainer>
@@ -474,7 +476,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         <Col pull={0} span={2} style={{ position: 'relative', top: '-6px',right:'210px' }}>
                           <Button
                             type="link"
-                            style={{ color: '#000' }}
+                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                             icon={<RightOutlined />}
                             onClick={() => this.props.history.push('/app/AssetsCenter/HostInventory')}
                           />
@@ -585,8 +587,9 @@ class Dashboard extends React.Component<DashboardProps> {
                                 showTopBorder={false}
                                 showBottomBorder={false}
                                 showLeftBorder={false}
-                                showRightBorder={false}/>
-                                </div>
+                                showRightBorder={false}
+                                />
+                      </div>
                         <DataCard
                                 title="离线 Agent"
                                 value={hostCount-agentOnlineCount}

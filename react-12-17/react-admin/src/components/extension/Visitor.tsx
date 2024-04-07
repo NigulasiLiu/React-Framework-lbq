@@ -13,7 +13,7 @@ import { Row, Col, Card } from 'antd';
 const Visitor = () => {
     return (
         <>
-            <BreadcrumbCustom breads={['visitor']} />
+            <BreadcrumbCustom />
             <Row gutter={16}>
                 <Col md={24}>
                     <Card

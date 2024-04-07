@@ -114,7 +114,7 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
             const percent=100*finished/total;
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold',width:'90%',margin:'0 auto' }}>
-            <BreadcrumbCustom breads={['基线检查', '详情页']} />
+            <BreadcrumbCustom />
             {/* <Button
                         type="link"
                         style={{width:'50px',height:'50px',border:'false'}}
@@ -131,11 +131,11 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
                         </div>
                         <Row gutter={[6, 6]}>
                             <Col className="gutter-row" md={24}>
-                                <Card bordered={true} style={{ fontFamily: 'YouYuan, sans-serif'}}>
+                                <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
                                     <Row gutter={16}>
                                     {Object.entries(data).map(([key, value], index) => (
-                                        <Col key={index} span={6} style={{ fontSize:'12px',marginBottom: '15px' }}>
-                                        <Text strong>{key}:</Text> <Text>{value}</Text>
+                                        <Col key={index} span={6} style={{ fontSize:'15px',marginBottom: '10px' }}>
+                                        <Text style={{color:'#686E7A'}} strong>{key}:</Text> <Text>{value}</Text>
                                         </Col>
                                     ))}
                                     </Row>

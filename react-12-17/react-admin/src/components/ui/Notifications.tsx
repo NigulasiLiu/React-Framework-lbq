@@ -69,7 +69,7 @@ class Notifications extends Component {
     render() {
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '通知提醒框']} />
+                <BreadcrumbCustom />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={12}>
                         <div className="gutter-box">

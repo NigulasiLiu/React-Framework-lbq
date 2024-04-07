@@ -284,7 +284,7 @@ const iconsList = Object.keys(icons).map((v) =>
 
 const Icons = () => (
     <div className="gutter-example">
-        <BreadcrumbCustom breads={['UI', '图标']} />
+        <BreadcrumbCustom  />
         <Row gutter={16}>
             <Col className="gutter-row" md={24}>
                 <div className="gutter-box">

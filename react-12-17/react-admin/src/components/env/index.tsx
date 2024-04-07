@@ -16,7 +16,7 @@ const Env = () => {
     console.log(process.env);
     return (
         <div>
-            <BreadcrumbCustom breads={['环境变量配置']} />
+            <BreadcrumbCustom  />
             <Row gutter={16}>
                 <Col md={24}>
                     <Card title="环境变量配置" bordered={false}>

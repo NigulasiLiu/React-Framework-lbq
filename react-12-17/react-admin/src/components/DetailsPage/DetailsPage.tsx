@@ -7,7 +7,7 @@ import CustomPieChart from '../AssetsCenter/CustomPieChart';
 import HostDetailsTable from './HostDetailsTable';
 import VulnerabilityDetailsSidebar from '../HostProtection/VulnerabilityDetailsSidebar';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
-import {hostalertColumns, fimColumns,vulnerabilityColumns, baselineDetectColumns, virusscanningColumns} from '../tableUtils';
+import {hostalertColumns, fimColumns, baselineDetectColumns, virusscanningColumns} from '../tableUtils';
 import AlertList from '../AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
 import PerformanceMonitor from './PerformanceMonitor';
@@ -225,8 +225,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     
                     render: (text:string, record:any) => (
                         <div>
-                          <Button onClick={() => this.toggleModal(record)} className="custom-link-button">忽略</Button>
-                          <Button onClick={() => this.toggleDetailSidebar(record.uuid)} className="custom-link-button">详情</Button>
+                        <Button onClick={() => this.toggleModal(record)} className="custom-link-button" 
+                        style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',marginRight: '20px',
+                        padding:'0 0' }}>忽略</Button>
+                        <Button onClick={() => this.toggleDetailSidebar(record.uuid)} className="custom-link-button"
+                        style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+                        padding:'0 0'}}>详情</Button>
                         </div>
                       ),
                 },
@@ -444,43 +448,37 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         });
     };
     handleExport = () => {
-        const { dataSource, selectedRowKeys } = this.state;
-
-        // 过滤出已选中的行数据
-        const selectedData = dataSource.filter((row: DataType) =>
-            selectedRowKeys.includes(row.key)
-        );
-
-        // 检查是否有选中的行
-        if (selectedData.length === 0) {
-            alert('没有选中的行');
-            return;
-        }
-
-        // 转换数据为CSV格式
-        const csvData = this.convertToCSV(selectedData);
-
-        // 触发下载
-        this.triggerDownload(csvData, 'export.csv');
-    };
-    convertToCSV = (data: DataType[]) => {
-        // 假设您希望导出的CSV中包括所有字段
-        const headers = Object.keys(data[0]).join(',');
-        const rows = data.map((row: DataType) => {
-            const riskValues = Object.values(row.risks).join(',');
-            return `${row.key},${row.host_name},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
-        });
-        return [headers, ...rows].join('\n');
-    };
-    triggerDownload = (data: string, filename: string) => {
-        const element = document.createElement('a');
-        element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data);
-        element.download = filename;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
+      const { dataSource, selectedRowKeys } = this.state;
+  
+      // 过滤出已选中的行数据
+      const selectedData = dataSource.filter(row =>
+          selectedRowKeys.includes(row.key)
+      );
+  
+      // 检查是否有选中的行
+      if (selectedData.length === 0) {
+          alert('没有选中的行');
+          return;
+      }
+  
+      // 假设您希望导出的CSV中包括所有字段
+      const headers = Object.keys(selectedData[0]).join(',');
+      const rows = selectedData.map(row => {
+          const riskValues = Object.values(row.risks).join(',');
+          return `${row.key},${row.host_name},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
+      });
+      const csvData = [headers, ...rows].join('\n');
+  
+      // 触发下载
+      const element = document.createElement('a');
+      element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvData);
+      element.download = this.state.currentPanel+'_export.csv';
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+  };
+  
 
 renderList=(apiEndpoint:string, uuid:string, timeColumnIndex:string[], columns:any[], currentPanel:string, title:string)=>{
     if(uuid!==undefined){
@@ -593,9 +591,9 @@ renderList=(apiEndpoint:string, uuid:string, timeColumnIndex:string[], columns:a
                                     hasDynamicEffect={true}
                                     />
                                 </Col>
-                                {/* <Col span={7} style={{ width:'420px',height:'100px',paddingTop:'5px'}}>
-                                    <StatusPanel scanPanelData={scanPanelData} orientation="vertical" />
-                                </Col> */}
+                                <Col span={7} style={{ width:'420px',height:'100px',paddingTop:'5px'}}>
+                                    {/* <StatusPanel scanPanelData={scanPanelData} orientation="vertical" /> */}
+                                </Col>
                             </Row>
                           </Card>
                         </Col>
@@ -696,16 +694,6 @@ renderList=(apiEndpoint:string, uuid:string, timeColumnIndex:string[], columns:a
                         //     onSelectChange={(keys: any) => this.onSelectChange(keys, 'baselineDetectalertlist')}
                         // />
                 );
-            // case 'runningalertlist':
-            //     return (
-            //         <div style={{marginTop:'-20px'}}>
-            //             <AlertList
-            //                 apiEndpoint={"http://localhost:5000/api/vulndetetion/query?host_ip="}
-            //                 columns={hostalertColumns}
-            //                 currentPanel='runningalertlist'
-            //             />
-            //         </div>
-            //     );
             case 'virusscanning':
                 return (
                     <div style={{marginTop:'-20px'}}>
@@ -744,7 +732,7 @@ renderList=(apiEndpoint:string, uuid:string, timeColumnIndex:string[], columns:a
     render() {
         return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-                <BreadcrumbCustom breads={['主机列表', '详情页']} />
+                <BreadcrumbCustom />
                 <span>
                     {this.props.host_name}
                 </span>

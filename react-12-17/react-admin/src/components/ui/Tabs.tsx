@@ -65,7 +65,7 @@ class TabsCustom extends Component<any, TabsCustomState> {
         const { mode } = this.state;
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '标签页']} />
+                <BreadcrumbCustom />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={12}>
                         <div className="gutter-box">

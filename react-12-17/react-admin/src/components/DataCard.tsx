@@ -144,7 +144,7 @@ class DataCard extends React.Component<DataCardProps> { // Use the interface her
           <Col pull={0} span={2} style={{ position: 'relative', top: '-3.5px',left:'-12px' }}>
             <Button
               //type="link"
-              style={{ color: '#000',  }}
+              style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
               icon={<RightOutlined />}
               onClick={() => navigate ? this.handlePanelClick(panelId) : this.goToPanel(panelId)}
             />

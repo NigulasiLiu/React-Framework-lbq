@@ -28,7 +28,7 @@ class Spins extends React.Component {
         );
         return (
             <div className="gutter-example button-demo">
-                <BreadcrumbCustom breads={['UI', '加载中']} />
+                <BreadcrumbCustom />
                 <Row gutter={16}>
                     <Col className="gutter-row" md={12}>
                         <div className="gutter-box">
