@@ -6,6 +6,7 @@ import { buildRangeQueryParams} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
 import { tableWithoutDirectFetch } from '../PanelWithoutDirectFetch';
 import { assetCenterPanelName } from './MetaDataUtilize';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -648,6 +649,22 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 </Row>
                             </Row>
                         </div> */}
+                        
+                        {/* {externalDataSource.length !== 0 ? (
+                        <Table
+                            className={selectedTableStyle}
+                            rowSelection={rowSelection}
+                            rowKey={this.props.columns[0].key}
+                            dataSource={externalDataSource}
+                            columns={this.props.columns}
+                            locale={this.state.dataSourceChanged && this.props.externalDataSource.length === 0 ? customLocale : undefined}
+                        />
+                        ) : (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+                            <LoadingOutlined style={{ fontSize: '3em' }} />
+                        </div>
+                        )} */}
+                        {externalDataSource.length!==0 && (
                         <Table
                             className={selectedTableStyle}
                             rowSelection={rowSelection}
@@ -658,7 +675,13 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                             //pagination={false}
                             locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
                                 ? customLocale:undefined}
-                        />
+                        />)}
+                        {externalDataSource.length===0 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                        <LoadingOutlined style={{ fontSize: '3em' }} />
+                        </div>
+                        )}
+
                     </Card>
                 </Col>
             </Row>

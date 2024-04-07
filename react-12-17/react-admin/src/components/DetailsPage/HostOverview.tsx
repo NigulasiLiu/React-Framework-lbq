@@ -1,6 +1,6 @@
 import React,{useEffect} from 'react';
 import { Row, Col, Card, Statistic, Typography ,Button, Badge } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
+import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 import CustomPieChart from '../AssetsCenter/CustomPieChart';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { diskColumns,netColumns,pluginColumns } from './DetailsTableColumns';
@@ -127,8 +127,9 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             }
         }
         return (
-            <div>
-                Loading...
+            
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+            <LoadingOutlined style={{ fontSize: '3em' }} />
             </div>
         );
     }
@@ -181,8 +182,9 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         }
         else {
             return (
-                <div>
-                    Loading...
+                
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                <LoadingOutlined style={{ fontSize: '3em' }} />
                 </div>
             );
         }
@@ -240,8 +242,9 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             } 
         } else {
             return (
-                <div>
-                    Loading...
+                
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                <LoadingOutlined style={{ fontSize: '3em' }} />
                 </div>
             );
         }
@@ -275,8 +278,11 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             }
         }
         return (
-            <div>
-                Loading...
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', }}>
+            <Card bordered={true}
+                style={{backgroundColor: '#ffffff' }}>
+            <LoadingOutlined style={{ fontSize: '3em' }} />
+            </Card>
             </div>
         );
     }
@@ -297,8 +303,9 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             }
         }
         return (
-            <div>
-                Loading...
+            
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+            <LoadingOutlined style={{ fontSize: '3em' }} />
             </div>
         );
     }
@@ -308,7 +315,10 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             <DataContext.Consumer>
             {(context: DataContextType | undefined) => {
             if (!context) {
-                return <div>Loading...</div>; // 或者其他的加载状态显示
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                    <LoadingOutlined style={{ fontSize: '3em' }} />
+                    </div>); // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
             const { linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,
@@ -389,13 +399,13 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 <Card bordered={false}
                                     style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
                                         <Row>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>安全告警</h2>
                                             </div>
                                             <Button 
                                             type="link"
                                             style={{fontWeight:'bold',border:'transparent',
-                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: '300px',marginTop: '-55px'}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
+                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: 'auto',marginRight:'0',}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
                                             onClick={()=>this.goToPanel('hostalertlist')}>详情</Button>
                                         </Row>
                                         <Row gutter={0}>
@@ -420,14 +430,15 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 <Col md={8}>
                                 <Card bordered={false}
                                     style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
+                                        
                                         <Row>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
                                             </div>
                                             <Button 
                                             type="link"
                                             style={{fontWeight:'bold',border:'transparent',
-                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: '300px',marginTop: '-55px'}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
+                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: 'auto',marginRight:'0',}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
                                             onClick={()=>this.goToPanel('vulnerabilityDetailList')}>详情</Button>
                                         </Row>
 
@@ -441,14 +452,15 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                 <Col md={8} style={{width:'33%', marginLeft: 'auto', marginRight: '0'}}>
                                 <Card bordered={false}
                                     style={{fontWeight: 'bolder', width: '100%', minHeight:200, backgroundColor: '#ffffff' }}>
+                                        
                                         <Row>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                                 <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>基线风险</h2>
                                             </div>
                                             <Button 
                                             type="link"
                                             style={{fontWeight:'bold',border:'transparent',
-                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: '300px',marginTop: '-55px'}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
+                                            backgroundColor:'transparent',color:'#686E7A',marginLeft: 'auto',marginRight:'0',}}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
                                             onClick={()=>this.goToPanel('baseLineDetectDetailList')}>详情</Button>
                                         </Row>
                                     <Row gutter={0}>
@@ -467,6 +479,8 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                         </div>
                                     </Row>
                                     <Row justify="space-between" align="middle">
+                                        <Col span={2}>
+                                        </Col>
                                         <Col span={2}>
                                             <Card
                                                 bordered={false}
@@ -629,6 +643,8 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                                     </Col>
                                                 </Row>
                                             </Card>
+                                        </Col>
+                                        <Col span={2}>
                                         </Col>
                                     </Row>
                                 </Card>

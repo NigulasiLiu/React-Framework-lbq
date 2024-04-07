@@ -12,6 +12,7 @@ import AlertList from '../AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
 import PerformanceMonitor from './PerformanceMonitor';
 import { DataType } from './DetailsTableColumns'
+import { LoadingOutlined } from '@ant-design/icons';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -505,9 +506,10 @@ renderList=(apiEndpoint:string, uuid:string, timeColumnIndex:string[], columns:a
             );
     }
     return (
-        <div>
-            Loading...
-        </div>
+        
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+      <LoadingOutlined style={{ fontSize: '3em' }} />
+      </div>
     );
 }
 

@@ -5,7 +5,7 @@ import { DataContext, DataContextType} from '../ContextAPI/DataManager'
 import { PieChart, Pie, Cell,Label, LineChart, Line, } from 'recharts';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { StatusItem } from '../tableUtils';
-import { GithubOutlined, GlobalOutlined, MailOutlined,RightOutlined } from '@ant-design/icons';
+import { GithubOutlined, GlobalOutlined, LoadingOutlined, MailOutlined,RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import CustomLineChart from './CustomLineChart';
 import {
@@ -132,7 +132,10 @@ class Dashboard extends React.Component<DashboardProps> {
         <DataContext.Consumer>
         {(context: DataContextType | undefined) => {
         if (!context) {
-            return <div>Loading...</div>; // 或者其他的加载状态显示
+            return (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+              <LoadingOutlined style={{ fontSize: '3em' }} />
+              </div>); // 或者其他的加载状态显示
         }
         // 从 context 中解构出 topFiveFimData 和 n
         const { 

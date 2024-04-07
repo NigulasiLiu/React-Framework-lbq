@@ -9,6 +9,7 @@ import FetchAPIDataTable from './FetchAPIDataTable';
 import CustomPieChart from './CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import MetaDataDisplay from './MetaDataDisplay';
+import { LoadingOutlined } from '@ant-design/icons';
 
 //const { Search } = Input;
 
@@ -133,7 +134,10 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
           <DataContext.Consumer>
             {(context: DataContextType | undefined) => {
               if (!context) {
-                return <div>Loading...n?</div>; // 或者其他的加载状态显示
+                return (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                  <LoadingOutlined style={{ fontSize: '3em' }} />
+                  </div>); // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
             const {agentMetaData_status, vulnMetaData_scanTime,agentOriginData,hostInfo,
