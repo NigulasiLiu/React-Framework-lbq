@@ -238,8 +238,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
             const { agentSearchResults,
                 fimMetaData_hostname,
                 portMetaData_port_state, portMetaData_port_number,
-                processMetaData_userName,assetMetaData_service, assetMetaData_os_version,
-                linuxBaseLineCheckMetaData__ip,
+                processMetaData_userName,assetMetaData_service, 
 
                 topFiveFimData, topFivePortCounts, topFiveProcessCounts,topFiveUserCounts,topFiveServiceCounts,topFiveProductCounts,
             } = context;

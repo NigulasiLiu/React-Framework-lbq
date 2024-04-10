@@ -47,6 +47,7 @@ const pagesWithoutRenderUUID = [
   const notRendUUID = pagesWithoutRenderUUID.some(page =>
     location.pathname.includes(page)
   );
+  const isBLDetailPage = location.pathname.includes('/app/baseline_detail');
 
     // 检查是否在详情页且存在uuid参数
     //const isDetailPage = location.pathname.includes('/app/detailspage');
@@ -62,11 +63,13 @@ const pagesWithoutRenderUUID = [
                         <Link to={'/app/dashboard'}>安全概览</Link>
                     </Breadcrumb.Item>
                 )} */}
-                {isDetailPage && (
+                {isDetailPage && 
+                (
                     <div>
                         <Row style={{fontSize:'14px'}}>
                         <Breadcrumb.Item>
-                            <Link to={'/app/AssetsCenter/HostInventory'}>主机列表</Link>
+                        {isBLDetailPage?
+                        (<Link to={'/app/HostProtection/BaselineDetectList'}>基线检查</Link>):<Link to={'/app/AssetsCenter/HostInventory'}>主机列表</Link>}
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>详情页</Breadcrumb.Item>
                         </Row>
@@ -77,7 +80,8 @@ const pagesWithoutRenderUUID = [
                         </span>)}
                         </Row>
                     </div>
-                )}
+                )
+                }
                 {breads?.map((bread, i) => (
                     <Breadcrumb.Item key={i}>{bread}</Breadcrumb.Item>
                 ))}

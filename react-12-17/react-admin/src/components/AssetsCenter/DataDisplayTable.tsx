@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal } from 'antd';
 import moment, { Moment } from 'moment';
-import { buildRangeQueryParams} from './DataService';
+import { buildRangeQueryParams, convertUnixTime} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
 
 const { Option } = Select;
 
-type RangeValue<T> = [T | null, T | null] | null;
-const { RangePicker } = DatePicker;
 interface GenericDataItem {
     [key: string]: any;
 }
@@ -18,6 +16,10 @@ interface DataDisplayTableProps {
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
     // 可以根据需要添加其他 props，比如分页大小等
     currentPanel: string;
+
+    childrenColumnName?: string; // 作为可选属性
+    indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
+    expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
 
 }
 
@@ -43,7 +45,6 @@ interface DataDisplayTableState {
     user_character: string;
     dataSourceChanged:boolean;
 }
-const { TextArea } = Input;
 
 
 class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDisplayTableState> {
@@ -73,6 +74,9 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         };
     }
     componentDidMount() {
+        this.setState({
+            lastUpdated:new Date().toLocaleString(),
+        })
     }
     componentDidUpdate(prevProps: any) {
     
@@ -100,270 +104,158 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
 
 
 
-  resetDataSourceChanged() {
-    this.setState({ dataSourceChanged: false });
-  }
-    
-    onSelectChange = (selectedRowKeys: React.Key[]) => {
-        this.setState({ selectedRowKeys });
+    // onSelectChange = (selectedRowKeys: React.Key[]) => {
+    //     this.setState({ selectedRowKeys });
 
-    };
+    // };
 
-
-    handleExport = () => {
-        const { externalDataSource, columns } = this.props;
-
-        // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
-        if (this.state.selectedRowKeys.length === 0 || externalDataSource.length === 0) {
-            alert('没有可导出的数据');
-            return;
-        }
+    onSelectChange = (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+        // 新的 selectedRowKeys 将基于当前选择的行，同时考虑子行
+        let newSelectedRowKeys = [...selectedRowKeys];
     
-        // 筛选出要导出的数据
-        const dataToExport = externalDataSource.filter((item) => this.state.selectedRowKeys.includes(item.id));
-    
-        // 创建 CSV 字符串
-        let csvContent = '';
-    
-        // 添加标题行（从 columns 获取列标题）
-        const headers = columns.map(column => `"${column.title}"`).join(",");
-        csvContent += headers + "\r\n";
-    
-        // 添加数据行（根据 columns 的 dataIndex 来获取值）
-        dataToExport.forEach(item => {
-            const row = columns.map(column => {
-                const value = item[column.dataIndex];
-                return `"${value}"`; // 用引号包裹，以便正确处理包含逗号或换行符的数据
-            }).join(",");
-            csvContent += row + "\r\n";
+        selectedRows.forEach(row => {
+            if (row.children && row.children.length > 0) {
+                // 对于每个选中的行，如果它有子行，则将这些子行的 key 也加入到 newSelectedRowKeys 中
+                const childKeys = row.children.map((child: any) => child.key);
+                newSelectedRowKeys = [...newSelectedRowKeys, ...childKeys];
+            }
         });
     
-        // UTF-8 编码的字节顺序标记 (BOM)
-        const BOM = "\uFEFF";
+        // 更新状态以反映新的选择
+        this.setState({ selectedRowKeys: newSelectedRowKeys });
+    };
     
-        // 创建 Blob 对象
-        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const href = URL.createObjectURL(blob);
+    // handleExport = () => {
+    //     const { externalDataSource, columns } = this.props;
+
+    //     // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
+    //     if (this.state.selectedRowKeys.length === 0 || externalDataSource.length === 0) {
+    //         alert('没有可导出的数据');
+    //         return;
+    //     }
     
-        // 创建下载链接并点击
-        const link = document.createElement('a');
-        link.href = href;
-        link.download = this.props.currentPanel+'_export.csv';
+    //     // 筛选出要导出的数据
+    //     const dataToExport = externalDataSource.filter((item) => this.state.selectedRowKeys.includes(item.id));
+    
+    //     // 创建 CSV 字符串
+    //     let csvContent = '';
+    
+    //     // 添加标题行（从 columns 获取列标题）
+    //     const headers = columns.map(column => `"${column.title}"`).join(",");
+    //     csvContent += headers + "\r\n";
+    
+    //     // 添加数据行（根据 columns 的 dataIndex 来获取值）
+    //     dataToExport.forEach(item => {
+    //         const row = columns.map(column => {
+    //             const value = item[column.dataIndex];
+    //             return `"${value}"`; // 用引号包裹，以便正确处理包含逗号或换行符的数据
+    //         }).join(",");
+    //         csvContent += row + "\r\n";
+    //     });
+    
+    //     // UTF-8 编码的字节顺序标记 (BOM)
+    //     const BOM = "\uFEFF";
+    
+    //     // 创建 Blob 对象
+    //     const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    //     const href = URL.createObjectURL(blob);
+    
+    //     // 创建下载链接并点击
+    //     const link = document.createElement('a');
+    //     link.href = href;
+    //     link.download = this.props.currentPanel+'_export.csv';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // };
+    
+    handleExport = () => {
+        const { externalDataSource, columns } = this.props;
+        const { selectedRowKeys } = this.state;
+      
+        // 如果没有选中的行，则不执行导出
+        if (selectedRowKeys.length === 0) {
+          alert("没有可导出的数据");
+          return;
+        }
+      
+        // 准备 CSV 内容
+        let csvContent = "data:text/csv;charset=utf-8,";
+      
+        // 添加标题行
+        const headers = columns.map(col => `"${col.title}"`).join(",");
+        csvContent += headers + "\r\n";
+      
+        // 定义一个递归函数来处理每行数据的导出
+        const processRow = (row: { [x: string]: any; key: React.Key; children: any[]; }, isChild = false) => {
+          if (selectedRowKeys.includes(row.key) || isChild) {
+            const rowData = columns.map(col => {
+              let value = row[col.dataIndex];
+              // 处理需要特殊格式化的数据，例如时间戳
+              if (col.dataIndex === "scanTime") {
+                value = convertUnixTime(value); // 假设 convertUnixTime 是一个转换时间戳的函数
+              }
+              return `"${value}"`; // 确保数据中的逗号不会干扰 CSV 格式
+            }).join(",");
+            csvContent += rowData + "\r\n";
+          }
+          // 如果当前行有子行，递归处理
+          if (row.children) {
+            row.children.forEach(childRow => processRow(childRow, true));
+          }
+        };
+      
+        // 遍历数据源，并处理每行数据
+        externalDataSource.forEach(row => processRow(row));
+      
+        // 编码 URI 并创建下载链接
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "exported_data.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    };
-    
-
+      };
+      
+      
     handleDeleteSelected = () => {
         // 重置选中的行
         this.setState({ selectedRowKeys: [] });
     };
-    // onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
-    //     if (dates) {
-    //         const [start, end] = dateStrings;
-    //         this.setState({ selectedDateRange: [start, end] });
-    
-    //         const { timeColumnIndex } = this.props;
-    //         if (timeColumnIndex) {
-    //             // 转换日期为 Unix 时间戳（秒）
-    //             const startDateTimestamp = moment(start).unix();
-    //             const endDateTimestamp = moment(end).unix();
-                
-    //             const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
-    //                         this.setState({
-    //             dataSourceChanged: true, // 更新状态以避免重复执行
-    //           });
-    //             this.props.onUpdateRangeField(selectedqueryParams);
-
-    //             this.setState({
-    //                 dataSourceChanged: true, // 更新状态以避免重复执行
-    //               });
-
-    //             this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
-    //                 // 在状态更新后立即触发数据获取
-    //                 this.props.fetchLatestData(this.props.apiEndpoint,'', '', selectedqueryParams);
-    //             });
-    //         }
-    //     } else {
-    //         this.setState({
-    //             dataSourceChanged: true, // 更新状态以避免重复执行
-    //           });
-    //         this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
-    //             // 当日期范围被清空时，重置数据
-    //             this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
-    //         });
-    //     }
-    // };
-    
 
 
-      showModal = () => {
-          this.setState({
-            showModal: true,
-          });
-      };
-      toggleModal = () => {
-        this.setState(prevState => ({
-            showModal: !prevState.showModal,
-        }));
-    };
-
-      handleFormCharaterFieldChange = (value:string) => {
-        this.setState({
-            user_character: value,
-          });
-      };
-        handleOk = () => {
-          this.setState({
-            showModal: false,
-          });
-          // 这里处理确认操作
-        };
-      
-        handleCancel = () => {
-          this.setState({
-            showModal: false,
-          });
-        };
-        formItemLayout = {
-            labelCol: {
-              xs: { span: 24 },
-              sm: { span: 6 },
-            },
-            wrapperCol: {
-              xs: { span: 24 },
-              sm: { span: 14 },
-            },
-          };
-
-
-        renderModal = () => {
-          return (
-            <>
-            {/* <Button type="primary" onClick={this.showModal}>
-              新建 SHA256 任务
-            </Button> */}
-            <Modal
-            style={{fontWeight:'bolder'}}
-              title="新增用户"
-              visible={this.state.showModal}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}
-              footer={[
-                <Button style={{backgroundColor:'white',color:'black'}} key="back" onClick={this.handleCancel}>
-                  取消
-                </Button>,
-                <Button style={{backgroundColor:'#1664FF',color:'white'}} key="submit" type="primary" onClick={this.handleOk}>
-                  提交任务
-                </Button>,
-              ]}
-            >
-                <Form {...this.formItemLayout}
-                    name="new_user_info"
-                >
-                    <Form.Item
-                    label="用户名"
-                    name="username"
-                    rules={[{ required: true, message: '用户名支持中英文和数字，不少于四个字符' }]}
-                    >
-                    <Input placeholder="用户名支持中英文和数字，不少于四个字符" />
-                    </Form.Item>
-                    <Form.Item
-                    label="密码"
-                    name="password"
-                    rules={[{ required: true, message: '密码长度不少于4个字符' }]}
-                    >
-                    <Input placeholder="密码长度不少于4个字符" />
-                    </Form.Item>
-                    <Form.Item
-                    label="确认密码"
-                    name="password"
-                    rules={[{ required: true, message: '请再次输入密码' }]}
-                    >
-                    <Input placeholder="请再次输入密码" />
-                    </Form.Item>
-                    <Form.Item
-                    label="用户角色"
-                    name="cycle"
-                    rules={[{ required: true, message: '请选择用户角色' }]}
-                    >
-                    <Select placeholder="用户角色" defaultValue="admin" onChange={this.handleFormCharaterFieldChange}>
-                        <Option value="admin">管理员</Option>
-                        <Option value="user">普通用户</Option>
-                        {/* 更多选项... */}
-                    </Select>
-                    </Form.Item>
-                    
-                    {this.state.user_character === 'admin' && (
-                    <>
-                    <Form.Item label="说明"
-                    name="description">
-                        <p style={{margin: '0px auto' ,
-                            display: 'flex',
-                            //justifyContent: 'center', // 水平居中
-                            alignItems: 'center', // 垂直居中
-                        }}> 拥有全部功能的读写权限
-                        </p>
-                    </Form.Item>
-                    <Form.Item label="用户权限"
-                    name="auth">
-                        <p style={{margin: '0px auto' ,
-                            display: 'flex',
-                            //justifyContent: 'center', // 水平居中
-                            alignItems: 'center', // 垂直居中
-                        }}> 读写
-                        </p>
-                    </Form.Item>
-                    </>)}
-                    {this.state.user_character === 'user' && (
-                    <>
-                    <Form.Item label="说明"
-                    name="description">
-                        <p style={{margin: '0px auto' ,
-                            display: 'flex',
-                            //justifyContent: 'center', // 水平居中
-                            alignItems: 'center', // 垂直居中
-                        }}> 拥有全部功能的只读权限
-                        </p>
-                    </Form.Item>
-                    <Form.Item label="用户权限"
-                    name="auth">
-                        <p style={{margin: '0px auto' ,
-                            display: 'flex',
-                            //justifyContent: 'center', // 水平居中
-                            alignItems: 'center', // 垂直居中
-                        }}> 只读
-                        </p>
-                    </Form.Item>
-                    </>)}
-                </Form>
-            </Modal>
-          </>
-          );
-        };
 
     render() {       
           // 构建无数据时的展示配置
             const customLocale = {
                 emptyText: '没有数据'
             }; 
-        const rowSelection = {//checkbox勾选状态独立
+        const rowSelection1 = {//checkbox勾选状态独立
             selectedRowKeys:this.state.selectedRowKeys,
             onChange: this.onSelectChange,
         };
-        const {externalDataSource} = this.props;
-        
-
-        const compStyle_small={
-            textAlign: 'center',
-            maxwidth: '90px',
-            height: '30px',
-            // 由于按钮高度较小，可能需要调整字体大小或内边距来改善显示
-            fontSize: '12px', // 根据需要调整字体大小
-            //borderRadius: '4px', // 如果您想要圆角边框
-            
-        }
+        // rowSelection object indicates the need for row selection
+        const rowSelection = {
+            selectedRowKeys: this.state.selectedRowKeys,
+            onChange: (selectedRowKeys: any, selectedRows: any) => {
+            // 更新 selectedRowKeys 状态以包括父行和子行的键值
+            this.setState({ selectedRowKeys });
+            },
+            // 如果需要，可以在这里添加 getCheckboxProps 来定制每一行复选框的行为
+        };
+  
+          
+        const data = this.props.externalDataSource.map(item => {
+            // 时间转换
+            if (this.props.timeColumnIndex) {
+                this.props.timeColumnIndex.forEach(column => {
+                    if (item[column]) {
+                        item[column] = convertUnixTime(parseFloat(item[column]));
+                    }
+                });
+            };return item;
+        })
 
         const compStyle_normal={
             //opacity: isButtonDisabled ? 0.5 : 1,
@@ -415,8 +307,11 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                             className={selectedTableStyle}
                             rowSelection={rowSelection}
                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
-                            dataSource={externalDataSource}
+                            dataSource={data}
                             columns={this.props.columns}
+                            childrenColumnName={this.props.childrenColumnName}
+                            expandedRowRender={this.props.expandedRowRender}
+                            //indentSize={this.props.indentSize}
                             locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
                                 ? customLocale:undefined}
                         />

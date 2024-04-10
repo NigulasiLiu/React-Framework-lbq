@@ -176,9 +176,9 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                             style={{ lineHeight: '64px', float: 'right',marginLeft:'auto',marginRight:'0px' }}
                             onClick={menuClick}
                         >
-                            {/* <Menu.Item key="pwa">
+                            <Menu.Item key="pwa">
                                 <PwaInstaller />
-                            </Menu.Item> */}
+                            </Menu.Item>
                             <Menu.Item key="full" >
                                 <ArrowsAltOutlined onClick={screenFull} />
                             </Menu.Item>

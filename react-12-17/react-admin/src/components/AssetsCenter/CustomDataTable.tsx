@@ -40,6 +40,10 @@ interface CustomDataTableProps {
     onDeleteSelected:(selectedRowKeys: React.Key[]) => void;
     onSelectedRowKeysChange:(selectedRowKeys: React.Key[]) => void;
 
+    childrenColumnName?: string; // 作为可选属性
+    indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
+    expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
+
 }
 
 interface CustomDataTableState {
@@ -99,8 +103,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         // this.setState({
         //     newColumns:this.autoPopulateFilters(),
         // })
-        console.log('amounted! currentPanelName:'+this.props.currentPanel)
+        //console.log('amounted! currentPanelName:'+this.props.currentPanel)
         this.props.fetchLatestData(this.props.apiEndpoint,'', '', '');
+        this.setState({
+            lastUpdated:new Date().toLocaleString(),
+        })
     }
     componentDidUpdate(prevProps: any) {
         // if(assetCenterPanelName.includes(this.props.currentPanel)){
@@ -109,8 +116,8 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         //         panelChangeCount:count,
         //     })
         // }
-        console.log('PrevProps.currentPanelName1:'+prevProps.currentPanel)
-        console.log('currentPanelName:'+this.props.currentPanel);
+        // console.log('PrevProps.currentPanelName:'+prevProps.currentPanel)
+        // console.log('currentPanelName:'+this.props.currentPanel);
     
         if (this.state.panelChangeCount===1||prevProps.currentPanel !== this.props.currentPanel) { // 修改条件检查逻辑
             console.log('Panel changed from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
@@ -670,11 +677,14 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                             rowSelection={rowSelection}
                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
                             dataSource={externalDataSource}
-                            //dataSource={this.state.topFiveSortedData}
                             columns={this.props.columns}
+                            childrenColumnName={this.props.childrenColumnName}
+                            expandedRowRender={this.props.expandedRowRender}
+                            //indentSize={this.props.indentSize}
+                            //dataSource={this.state.topFiveSortedData}
                             //pagination={false}
-                            locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
-                                ? customLocale:undefined}
+                            // locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
+                            //     ? customLocale:undefined}
                         />)}
                         {externalDataSource.length===0 && (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>

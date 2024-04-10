@@ -12,6 +12,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import DataCard from '../DataCard';
+import CustomPieChart from '../AssetsCenter/CustomPieChart';
 
 
 // const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
@@ -79,34 +80,67 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
   );
 };
 
+const renderBLPieChart = (linuxOriginData:any, winOriginData:any, 
+  title1:string,title2:string, wholeCount:number,
+  width?:number,height?:number,inner?:number,delta?:number,outter?:number) =>{
+  if(linuxOriginData!==undefined && winOriginData!==undefined){
+      // 确保OriginData总是作为数组处理
+      const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
+      const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+
+      const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
+      const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+      // 确保needAdjItems不为空再访问它的属性
+      if (needAdjItems1.length > 0 || needAdjItems2.length>0) {
+          // 使用reduce和findIndex方法统计唯一uuid个数
+          const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
+            // 查找在累积数组中uuid是否已存在
+            const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+            // 如果不存在，则添加到累积数组中
+            if (index === -1) {
+              acc.push(current);
+            }
+            return acc;
+          }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+          const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
+            // 查找在累积数组中uuid是否已存在
+            const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+            // 如果不存在，则添加到累积数组中
+            if (index === -1) {
+              acc.push(current);
+            }
+            return acc;
+          }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+          
+          const alertData3_:StatusItem[]=[
+              // 确保使用正确的方法来计数
+              { label: title1, value: uniqueUuidCount1+uniqueUuidCount2, color: '#EA635F' },//RED
+              { label: title2, value: wholeCount - (uniqueUuidCount1+uniqueUuidCount2), color: '#468DFF' }//蓝
+          ];
+          return (
+            <CustomPieChart
+            data={alertData3_}
+            innerRadius={34}
+            deltaRadius={5}
+            outerRadius={50}
+            cardHeight={150}
+            hasDynamicEffect={true}
+            />
+          );
+      }
+  }
+  return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+      <LoadingOutlined style={{ fontSize: '3em' }} />
+      </div>
+  );
+}
+
 class Dashboard extends React.Component<DashboardProps> {
     
+
+
     render() {
-      // function getPastSevenDays() {
-      //   const currentDate = new Date();
-      //   const pastSevenDays = [];
-      
-      //   for (let i = 6; i >= 0; i--) {
-      //     const date = new Date(currentDate);
-      //     date.setDate(date.getDate() - i);
-      
-      //     // 如果日期小于 1，则回滚到上个月的最后一天
-      //     if (date.getDate() < 1) {
-      //       date.setDate(0); // 将日期设置为上个月的最后一天
-      //     }
-      
-      //     pastSevenDays.push(date);
-      //   }
-      
-      //   return pastSevenDays;
-      // }
-      
-      // const pastSevenDays = getPastSevenDays();
-      // const alertData = pastSevenDays.map(date => {
-      //   const month = String(date.getMonth() + 1).padStart(2, '0');
-      //   const day = String(date.getDate()).padStart(2, '0');
-      //   return { day: `${month}-${day}`, value: day };
-      // });
       const generateAlertData = (alertsCount: number[]): { day: string; value: string }[] => {
         const alertData: { day: string; value: string }[] = [];
         // const formatDay = (date: Date): string => {
@@ -128,6 +162,8 @@ class Dashboard extends React.Component<DashboardProps> {
         return alertData;
       };
       
+
+
       return(
         <DataContext.Consumer>
         {(context: DataContextType | undefined) => {
@@ -144,24 +180,19 @@ class Dashboard extends React.Component<DashboardProps> {
             portMetaData_port_state, 
             assetMetaData_service,      
             hostCount,
+            vulnOriginData,
             vulnHostCount,last7VulValue,
           
+            linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,
             blLinuxHostCount,
             blWindowsHostCount,
-            blLinuxHostItemCount,
-            blWindowsHostItemCount,
-            blLinuxHostItemCount_pass,blWindowsHostItemCount_pass,
-            agentCPUuseMetaData,
+            blLinuxNeedAdjustmentItemCount,
+            blWindowsNeedAdjustmentItemCount,
+            blLinuxNeedAdjustmentItemCount_pass,blWindowsNeedAdjustmentItemCount_pass,
+            
             agentAVGCPUUse,agentAVGMEMUse,
           } = context;
-          // let totalWeightedPercent = 0;
-          // let totalCount
-          // Object.entries(agentCPUuseMetaData.typeCount).forEach(([typeName, count]) => {
-          //   const percentValue = parseFloat(typeName.replace('%', ''));
-          //   totalWeightedPercent += percentValue * count;
-          //   totalCount += count;
-          // });
-          console.log('111111:'+last7VulValue);
+          //console.log('过去7日漏洞风险:'+last7VulValue);
           const alertData = generateAlertData(last7VulValue);
           // 转换value为数字类型
           const processedData = alertData.map(item => ({ ...item, value: Number(item.value) }));
@@ -169,17 +200,17 @@ class Dashboard extends React.Component<DashboardProps> {
 
             // 第二类告警的数据集
             const alertDataTwo = [
-              { name: '待处理告警', value: 3, color: '#FFBB28' },
-              { name: '已处理告警', value: 1, color: '#E5E8EF' },
+              { label: '待处理告警', value: 1, color: '#FFBB28' },
+              { label: '已处理告警', value: 1, color: '#E5E8EF' },
             ];
       
             const alertDataThree = [
-              { name: '无风险主机', value: hostCount-vulnHostCount, color: '#E5E8EF' },//GREY
-              { name: '存在高可利用漏洞', value: vulnHostCount, color: '#EA635F' }//RED
+              { label: '无风险主机', value: hostCount-vulnHostCount, color: '#E5E8EF' },//GREY
+              { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' }//RED
             ];
             const alertDataFour = [
-              { name: '无风险主机', value: hostCount-(blLinuxHostCount+blWindowsHostCount), color: '#E5E8EF' },//GREY
-              { name: '存在高危基线', value: blLinuxHostCount+blWindowsHostCount, color: '#4086FF' }//BLUE
+              { label: '无风险主机', value: hostCount-(blLinuxHostCount+blWindowsHostCount), color: '#E5E8EF' },//GREY
+              { label: '存在高危基线主机', value: blLinuxHostCount+blWindowsHostCount, color: '#4086FF' }//BLUE
             ];
             const riskData: StatusItem[] = [
               { color: '#faad14', label: '建议调整 ', value: 1 },//蓝色E53F3F
@@ -187,7 +218,7 @@ class Dashboard extends React.Component<DashboardProps> {
               // { color: '#468DFF', label: '低风险 ', value: 2 },
             ];
       const labels = ['Windows主机基线检查建议调整项', 'Linux主机基线检查建议调整项','基线检查通过项' ];
-      const values = [blWindowsHostItemCount||0, blLinuxHostItemCount||0,blLinuxHostItemCount_pass+blWindowsHostItemCount_pass];
+      const values = [blWindowsNeedAdjustmentItemCount||0, blLinuxNeedAdjustmentItemCount||0,blLinuxNeedAdjustmentItemCount_pass+blWindowsNeedAdjustmentItemCount_pass];
       const colors = ['#faad14', '#faad14', '#52c41a']; // 指定每个进度条的颜色,弃用的绿色'#52c41a'，红ff4d4f
             return (
            
@@ -327,10 +358,10 @@ class Dashboard extends React.Component<DashboardProps> {
                                   title="主机安全告警"
                                   value={5}
                                   valueItem={[
-                                    { value: '1', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                                    { value: '1', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                                    { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-                                    { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                                   ]}
                                   panelId="/app/HostProtection/InvasionDetect/HCPAlertList"
                                   height="75px"
@@ -389,10 +420,10 @@ class Dashboard extends React.Component<DashboardProps> {
                                   title="待处理高可利用漏洞"
                                   value={vulnHostCount}
                                   valueItem={[
-                                    { value: '1', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                                    { value: '1', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                                    { value: '1', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-                                    { value: '2', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+                                    { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                                   ]}
                                   panelId="/app/HostProtection/VulnerabilityList"
                                   height="75px"
@@ -487,82 +518,36 @@ class Dashboard extends React.Component<DashboardProps> {
                     </div>
                     <Row style={{marginTop:'-25px'}} gutter={[6, 6]}>
                       <Col span={8}>
-                        <ResponsiveContainer width="100%" height={150}>
-                            <PieChart>
-                                <Pie className="pie-chart-segment"
+                      <CustomPieChart
                                 data={alertDataTwo}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={39}
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="value"
-                                outerRadius={50} // 如果悬停则扇形半径变大
-                                >
-                                {alertDataTwo.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                                <Label value={'待处理告警:'+`${Math.round(alertDataTwo[1].value/(alertDataTwo[0].value+alertDataTwo[1].value)*100)}%`} 
-                                position="center" 
-                                style={{ fontSize: '11px' }}
+                                innerRadius={34}
+                                deltaRadius={5}
+                                outerRadius={50}
+                                cardHeight={150}
+                                hasDynamicEffect={true}
                                 />
-                                </Pie>
-          
-                                {/* <Tooltip content={<CustomTooltip />} /> */}
-                            </PieChart>
-                        </ResponsiveContainer>
                       </Col>
                       <Col span={8}>
-                        <ResponsiveContainer width="100%" height={150}>
-                            <PieChart>
-                                <Pie className="pie-chart-segment"
+                        
+                      <CustomPieChart
                                 data={alertDataThree}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={39}
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="value"
-                                outerRadius={50} // 如果悬停则扇形半径变大
-                                >
-                                {alertDataThree.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                                <Label value={'高可用漏洞:'+`${Math.round(alertDataThree[1].value/(alertDataThree[0].value+alertDataThree[1].value)*100)}%`} 
-                                position="center" 
-                                style={{ fontSize: '11px' }}
+                                innerRadius={34}
+                                deltaRadius={5}
+                                outerRadius={50}
+                                cardHeight={150}
+                                hasDynamicEffect={true}
                                 />
-                                </Pie>
-          
-                                {/* <Tooltip content={<CustomTooltip />} /> */}
-                            </PieChart>
-                        </ResponsiveContainer>
                       </Col>
                       <Col span={8}>
-                        <ResponsiveContainer width="100%" height={150}>
-                            <PieChart>
-                                <Pie className="pie-chart-segment"
+                        {renderBLPieChart(linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,'无风险主机','存在高危基线主机',blLinuxHostCount+blWindowsHostCount)}
+                      {/* <CustomPieChart
                                 data={alertDataFour}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={39}
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="value"
-                                outerRadius={50} // 如果悬停则扇形半径变大
-                                >
-                                {alertDataFour.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                                <Label value={'待加固基线:'+`${Math.round(alertDataFour[1].value/(alertDataFour[0].value+alertDataFour[1].value)*100)}%`} 
-                                position="center" 
-                                style={{ fontSize: '11px' }}
-                                />
-                                </Pie>
-          
-                                {/* <Tooltip content={<CustomTooltip />} /> */}
-                            </PieChart>
-                        </ResponsiveContainer>
+                                innerRadius={34}
+                                deltaRadius={5}
+                                outerRadius={50}
+                                cardHeight={150}
+                                hasDynamicEffect={true}
+                                /> */}
                       </Col>
                     </Row>
                   </Card>

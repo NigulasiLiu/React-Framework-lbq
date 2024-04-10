@@ -7,7 +7,8 @@
  * Copyright 2018 - present, chenghao
  */
 import React, { Component } from 'react';
-import { CommentOutlined, CustomerServiceOutlined } from '@ant-design/icons';
+import { CommentOutlined, CustomerServiceOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 //import { FloatButton } from 'antd';
 class PwaInstaller extends Component {
     state = {
@@ -52,9 +53,9 @@ class PwaInstaller extends Component {
         const { installed } = this.state;
         return (
             !installed && (
-                // <Button icon={<DownloadOutlined />}onClick={this.download}/>
                 <div className="installer" onClick={this.download}>
                     <div className="installer__btn" />
+                    {/* <Button icon={<DownloadOutlined />}onClick={this.download}/> */}
                 </div>
             )
         );

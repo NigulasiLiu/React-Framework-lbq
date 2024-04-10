@@ -16,11 +16,14 @@ interface FetchAPIDataTableProps {
     currentPanel:string;
     //prePanel:string;
     // ... 其他需要的 props
+    childrenColumnName?: string; // 作为可选属性
+    indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
+    expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
 }
 
 
 export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ 
-  table_type, apiEndpoint, columns, timeColumnIndex,currentPanel, ...otherProps }) => {
+  table_type, apiEndpoint, columns, timeColumnIndex,currentPanel, childrenColumnName, indentSize, expandedRowRender, ...otherProps }) => {
     
   const context = useContext(DataContext);
   const [data, setData] = useState<any[]>([]);
@@ -136,6 +139,9 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({
           //handleApplicationTypeSelect={/* 对应的函数 */}
           //renderSearchFieldDropdown={/* 对应的函数 */}
           //handleSearch={/* 对应的函数 */}
+          childrenColumnName={childrenColumnName}
+          expandedRowRender={expandedRowRender}
+          //indentSize={indentSize}
       />
       </div>
     );

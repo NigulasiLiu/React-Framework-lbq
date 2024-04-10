@@ -149,12 +149,12 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         default:
             return (
               <Row style={{ width: '100%', margin: '0 auto' }}>                  
-               {/* <FetchAPIDataTable
+               <FetchAPIDataTable
                 apiEndpoint="http://localhost:5000/api/baseline_check/linux"
                 timeColumnIndex={['last_checked']}
                 columns={baselineDetectColumns}
                 currentPanel="baseline_check_linux"
-              /> */}
+              />
               </Row>
             );
     }
@@ -180,10 +180,17 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
           return <div>Loading...</div>; // 或者其他的加载状态显示
       }
       // 从 context 中解构出 topFiveFimData 和 n
-      const {linuxBaseLineCheckMetaData__ip,linuxBaseLineCheckMetaData_status,windowsBaseLineCheckMetaData_ip} = context;
-      const hostCheckedPassedCount = linuxBaseLineCheckMetaData_status.typeCount.get('TRUE');//检查通过数量
-      const hostCheckedCount = linuxBaseLineCheckMetaData__ip.tupleCount;//检查项数量
-      const hostCheckedPassedRate = hostCheckedPassedCount===undefined?0:hostCheckedPassedCount/hostCheckedCount;
+      const {linuxBaseLineCheckMetaData_uuid,
+        linuxBaseLineCheckMetaData_status,
+        windowsBaseLineCheckMetaData_uuid,
+        blLinuxHostCount,blWindowsHostCount,blLinuxNeedAdjustmentItemCount,blWindowsNeedAdjustmentItemCount,
+      blWindowsCheckNameCount,blLinuxCheckNameCount} = context;
+
+
+
+      //const hostCheckedPassedCount = linuxBaseLineCheckMetaData_status.typeCount.get('TRUE');//检查通过数量
+      const hostCheckedCount = linuxBaseLineCheckMetaData_uuid.tupleCount;//检查项数量
+      const hostCheckedPassedRate = 1-((blLinuxNeedAdjustmentItemCount||0)+(blWindowsNeedAdjustmentItemCount||0))/(blWindowsCheckNameCount+blLinuxCheckNameCount);
           return (
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
               <Row gutter={[12, 6]}/*(列间距，行间距)*/>
@@ -239,7 +246,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                               <Row>
                                   <Col pull={2} span={24}>
                                       <Statistic title={<span>最近检查通过率</span>} 
-                                      value={hostCheckedPassedRate.toString()+'%'}/>
+                                      value={(hostCheckedPassedRate*100).toString().slice(0,4)+'%'}/>
                                   </Col>
                                   
                               </Row>
@@ -261,7 +268,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                               <Row>
                                   <Col pull={2} span={24}>
                                       <Statistic title={<span>检查主机数</span>} 
-                                      value={Array.from(linuxBaseLineCheckMetaData__ip.typeCount).length} />
+                                      value={blLinuxHostCount+blWindowsHostCount} />
                                   </Col>
                                   
                               </Row>
@@ -282,7 +289,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                               >
                               <Row>
                                   <Col pull={2} span={24}>
-                                      <Statistic title={<span>检查项</span>} value={hostCheckedCount} />
+                                      <Statistic title={<span>检查项</span>} value={blWindowsCheckNameCount+blLinuxCheckNameCount} />
                                   </Col>
                                   
                               </Row>

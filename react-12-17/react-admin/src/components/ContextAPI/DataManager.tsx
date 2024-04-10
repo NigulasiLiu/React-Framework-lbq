@@ -58,9 +58,9 @@ export interface DataContextType {
   topFiveServiceCounts: DataItem[];
   topFiveProductCounts: DataItem[];
 
-  linuxBaseLineCheckMetaData__ip: MetaDataResult;
+  linuxBaseLineCheckMetaData_uuid: MetaDataResult;
   linuxBaseLineCheckMetaData_status: MetaDataResult;
-  windowsBaseLineCheckMetaData_ip: MetaDataResult;
+  windowsBaseLineCheckMetaData_uuid: MetaDataResult;
 
   vulnMetaData_uuid: MetaDataResult;
   vulnMetaData_scanTime: MetaDataResult;
@@ -77,10 +77,13 @@ export interface DataContextType {
   blLinuxHostCount:number;
   blWindowsHostCount:number;
 
-  blLinuxHostItemCount:number|undefined;
-  blWindowsHostItemCount:number|undefined;
-  blLinuxHostItemCount_pass:number;
-  blWindowsHostItemCount_pass:number;
+  blLinuxCheckNameCount:number;
+  blWindowsCheckNameCount:number;
+
+  blLinuxNeedAdjustmentItemCount:number|undefined;
+  blWindowsNeedAdjustmentItemCount:number|undefined;
+  blLinuxNeedAdjustmentItemCount_pass:number;
+  blWindowsNeedAdjustmentItemCount_pass:number;
 
   agentOnlineCount:number;
   agentCPUuseMetaData:MetaDataResult;
@@ -220,8 +223,7 @@ const DataManager: React.FC = ({ children }) => {
     }
 };
 
-  const topFiveFimData = useSortedData('filename','event_time','http://localhost:5000/api/FileIntegrityInfo/all'); // 这将返回DataItem[]类型的数据
-
+  //agent信息
   const agentMetaData_status=useExtractOrigin('status',agentOriginData);//各类status主机的数量
   const agentOnlineCount = agentMetaData_status.typeCount.get("Online") || -1;
 
@@ -230,37 +232,64 @@ const DataManager: React.FC = ({ children }) => {
   const agentAVGCPUUse = (((useCalculateAverage('cpu_use',agentOriginData).average)||0)*100).toString()+'%';
   const agentAVGMEMUse = (((useCalculateAverage('mem_use',agentOriginData).average)||0)*100).toString()+'GB';
 
-  const fimMetaData_hostname=useExtractOrigin('hostname',fimOriginData);
 
+
+
+  //完整性检验信息
+  const fimMetaData_hostname=useExtractOrigin('hostname',fimOriginData);
+  const topFiveFimData = useSortedData('filename','event_time','http://localhost:5000/api/FileIntegrityInfo/all'); // 这将返回DataItem[]类型的数据
+
+
+  //端口信息
   const portMetaData_port_state = useExtractOrigin('port_state',portOriginData);
   const portMetaData_port_number = useExtractOrigin('port_number',portOriginData);
   const topFivePortCountsArray = getTopFiveTypeCounts(portMetaData_port_number);
 
+  //运行进程信息
   const processMetaData_userName = useExtractOrigin('userName',processOriginData);
   const topFiveUserCountsArray = getTopFiveTypeCounts(processMetaData_userName);
   const processMetaData_name = useExtractOrigin('name',processOriginData);
   const topFiveProcessCountsArray = getTopFiveTypeCounts(processMetaData_name);
 
+  //资产测绘信息
   const assetMetaData_service = useExtractOrigin('service',assetOriginData);
   const assetMetaData_product = useExtractOrigin('product',assetOriginData);
   const assetMetaData_os_version = useExtractOrigin('os_version',assetOriginData);
   
+  //系统服务，系统应用信息
   const topFiveServiceCountsArray = getTopFiveTypeCounts(assetMetaData_service);
   const topFiveProductCountsArray = getTopFiveTypeCounts(assetMetaData_product);
   
-  
-  const linuxBaseLineCheckMetaData__ip = useExtractOrigin('ip',linuxBaseLineCheckOriginData);
-  const linuxBaseLineCheckMetaData_status = useExtractOrigin('status',linuxBaseLineCheckOriginData);
+  //基线检查信息
+  const linuxBaseLineCheckMetaData_uuid = useExtractOrigin('uuid',linuxBaseLineCheckOriginData);
+  const linuxBaseLineCheckMetaData_check_name = useExtractOrigin('check_name',linuxBaseLineCheckOriginData);
   const linuxBaseLineCheckMetaData_adjustment_requirement = useExtractOrigin('adjustment_requirement',linuxBaseLineCheckOriginData);
+  const linuxBaseLineCheckMetaData_status = useExtractOrigin('status',linuxBaseLineCheckOriginData);
 
-  const windowsBaseLineCheckMetaData_ip = useExtractOrigin('ip',windowsBaseLineCheckOriginData);
+  const windowsBaseLineCheckMetaData_uuid = useExtractOrigin('uuid',windowsBaseLineCheckOriginData);
+  const windowsBaseLineCheckMetaData_check_name = useExtractOrigin('check_name',windowsBaseLineCheckOriginData);
   const windowsBaseLineCheckMetaData_adjustment_requirement = useExtractOrigin('adjustment_requirement',windowsBaseLineCheckOriginData);
 
+  const blLinuxHostCount = linuxBaseLineCheckMetaData_uuid.typeCount.size;
+  const blWindowsHostCount = windowsBaseLineCheckMetaData_uuid.typeCount.size;
+  const blLinuxCheckNameCount = linuxBaseLineCheckMetaData_check_name.tupleCount;
+  const blWindowsCheckNameCount = windowsBaseLineCheckMetaData_check_name.tupleCount;
+
+  const blLinuxNeedAdjustmentItemCount = linuxBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整") || 0;
+  const blWindowsNeedAdjustmentItemCount = windowsBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整") || 0;
+
+  const blLinuxNeedAdjustmentItemCount_pass = linuxBaseLineCheckMetaData_adjustment_requirement.tupleCount;
+  const blWindowsNeedAdjustmentItemCount_pass = windowsBaseLineCheckMetaData_adjustment_requirement.tupleCount;
+
+
+
+
+  //漏洞 信息
   const vulnMetaData_uuid = useExtractOrigin('uuid',vulnOriginData);
   const vulnMetaData_scanTime = useExtractOrigin('scanTime',vulnOriginData);
   const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime)
-  //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
   const transformedData = useTransformedData(vulnOriginData);
+  //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
   //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
   const host3Info = useFilterOriginData('host_name','Host3',agentOriginData);
@@ -268,48 +297,20 @@ const DataManager: React.FC = ({ children }) => {
 
   const hostCount = agentMetaData_status.tupleCount;
   const vulnHostCount = vulnMetaData_uuid.tupleCount;
-  const blLinuxHostCount = linuxBaseLineCheckMetaData__ip.typeCount.size;
-  const blWindowsHostCount = windowsBaseLineCheckMetaData_ip.typeCount.size;
-  const blLinuxHostItemCount = linuxBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整");
-  const blWindowsHostItemCount = windowsBaseLineCheckMetaData_adjustment_requirement.typeCount.get("建议调整");
-  const blLinuxHostItemCount_pass = linuxBaseLineCheckMetaData_adjustment_requirement.tupleCount;
-  const blWindowsHostItemCount_pass = windowsBaseLineCheckMetaData_adjustment_requirement.tupleCount;
 
 
-
-// 转换sortedTypeCounts到DataItem类型,OverViewPanel的TopFive数据展示
-  // const topFivePortCounts: DataItem[] = topFivePortCountsArray.map(([valueName, value], index) => ({
-  //   ...templateData[index], // 复制模板数据的其余属性
-  //   id: valueName, // 设置 valueName 为 id
-  //   value: value, // 设置 value
-  // }));
-  // const topFiveServiceCounts: DataItem[] = topFiveServiceCountsArray.map(([valueName, value], index) => ({
-  //   ...templateData[index], // 复制模板数据的其余属性
-  //   id: valueName, // 设置 valueName 为 id
-  //   value: value, // 设置 value
-  // }));
-  // const topFiveProductCounts: DataItem[] = topFiveProductCountsArray.map(([valueName, value], index) => ({
-  //   ...templateData[index], // 复制模板数据的其余属性
-  //   id: valueName, // 设置 valueName 为 id
-  //   value: value, // 设置 value
-  // }));
-  // const topFiveUserCounts: DataItem[] = topFiveUserCountsArray.map(([valueName, value], index) => ({
-  //   ...templateData[index], // 复制模板数据的其余属性
-  //   id: valueName, // 设置 valueName 为 id
-  //   value: value, // 设置 value
-  // }));
-  // const topFiveProcessCounts: DataItem[] = topFiveProcessCountsArray.map(([valueName, value], index) => ({
-  //   ...templateData[index], // 复制模板数据的其余属性
-  //   id: valueName, // 设置 valueName 为 id
-  //   value: value, // 设置 value
-  // }));
-
+  //top5表单
   const topFivePortCounts = convertAndFillData(topFivePortCountsArray, templateData);
   const topFiveServiceCounts = convertAndFillData(topFiveServiceCountsArray, templateData);
   const topFiveProductCounts = convertAndFillData(topFiveProductCountsArray, templateData);
   const topFiveUserCounts = convertAndFillData(topFiveUserCountsArray, templateData);
   const topFiveProcessCounts = convertAndFillData(topFiveProcessCountsArray, templateData);
   
+
+
+
+
+
   return (
     <DataContext.Provider value={{isDataLoaded,hostInfo,
       fetchLatestData,host3Info,
@@ -329,7 +330,7 @@ const DataManager: React.FC = ({ children }) => {
       portMetaData_port_state,portMetaData_port_number,topFivePortCounts,
       processMetaData_userName,topFiveProcessCounts,topFiveUserCounts,
       assetMetaData_service,assetMetaData_product, assetMetaData_os_version, topFiveServiceCounts,topFiveProductCounts,
-      linuxBaseLineCheckMetaData__ip,linuxBaseLineCheckMetaData_status,windowsBaseLineCheckMetaData_ip,
+      linuxBaseLineCheckMetaData_uuid,linuxBaseLineCheckMetaData_status,windowsBaseLineCheckMetaData_uuid,
       
       //vulnOriginDataReconstruct,
       vulnMetaData_uuid,//vulnFilteredData,
@@ -341,10 +342,13 @@ const DataManager: React.FC = ({ children }) => {
       vulnHostCount,
       blLinuxHostCount,
       blWindowsHostCount,
-      blLinuxHostItemCount,
-      blWindowsHostItemCount,
-      blLinuxHostItemCount_pass,
-      blWindowsHostItemCount_pass,
+      blLinuxNeedAdjustmentItemCount,
+      blWindowsNeedAdjustmentItemCount,
+      blLinuxNeedAdjustmentItemCount_pass,
+      blWindowsNeedAdjustmentItemCount_pass,
+      
+      blLinuxCheckNameCount,
+      blWindowsCheckNameCount,
     }}>
       {children}
     </DataContext.Provider>

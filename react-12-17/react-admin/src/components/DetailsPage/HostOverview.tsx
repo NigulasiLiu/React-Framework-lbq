@@ -43,6 +43,7 @@ interface HostOverviewState{
     filteredData: any[], // 用于存储过滤后的数据
     activeIndex: any;
     dataIsReady:boolean;
+
 } 
 
 class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> {
@@ -85,111 +86,255 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
     };
-    renderPieChart = (OriginData:any) =>{
+    // renderVulPieChart1 = (OriginData:any) =>{
+    //     if(OriginData!==undefined){
+    //         // 确保OriginData总是作为数组处理
+    //         const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+    //         const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+            
+    //         // 确保filteredData不为空再访问它的属性
+    //         if (filteredData.length > 0) {
+    //             //message.info("filteredData.filter:"+(filteredData[0].uuid));
+                
+    //             const alertData3_:StatusItem[]=[
+    //                 // 确保使用正确的方法来计数
+    //                 { label: 'Pending', value: filteredData.filter(item => item.status === 'Pending').length, color: '#EA635F' },//RED
+    //                 { label: '通过', value: 99 - filteredData.filter(item => item.status === 'Pending').length, color: '#468DFF' }//蓝
+    //             ];
+    //             return (
+    //               <div>
+    //                 <Row>
+    //                 <Col span={12}>
+    //                     <CustomPieChart
+    //                     data={alertData3_}
+    //                     innerRadius={54}
+    //                     deltaRadius={8}
+    //                     outerRadius={80}
+    //                     cardWidth={200}
+    //                     cardHeight={200}
+    //                     hasDynamicEffect={true}
+    //                     />
+    //                 </Col>
+    //                 <Col span={2}> </Col>
+    //                 <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+    //                     <StatusPanel statusData={alertData3_} orientation="vertical"/>
+    //                 </div>
+    //                 </Row>
+    //               </div>
+    //             );
+    //         }
+    //     }
+    //     return (
+    //         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+    //         <LoadingOutlined style={{ fontSize: '3em' }} />
+    //         </div>
+    //     );
+    // }
+    renderVulPieChart=(OriginData:any[], title:string, panelDataTitle1:string, panelDataTitle2:string)=>{
         if(OriginData!==undefined){
             // 确保OriginData总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-            
-            // message.info("OriginData:"+(originDataArray.length));
-            // message.info("filteredData:"+(filteredData.length));
-            
-            // 确保filteredData不为空再访问它的属性
-            if (filteredData.length > 0) {
-                //message.info("filteredData.filter:"+(filteredData[0].uuid));
+            let totalExpResultCount = 0;
+            originDataArray.forEach(item => {
+              totalExpResultCount += item.vul_detection_exp_result.length;
+            });
+            const scanPanelData: StatusItem[] = [
+              { color: '#E63F3F', label: panelDataTitle1, value: totalExpResultCount },
+              { color: '#468DFF', label: panelDataTitle2, value: 99 },];
+            return (
+                <div>
+                <Row>
+                <Col span={12}>
+                    <CustomPieChart
+                    data={scanPanelData}
+                    innerRadius={54}
+                    deltaRadius={8}
+                    outerRadius={80}
+                    cardWidth={200}
+                    cardHeight={200}
+                    hasDynamicEffect={true}
+                    />
+                </Col>
+                <Col span={2}> </Col>
+                <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+                    <StatusPanel statusData={scanPanelData} orientation="vertical"/>
+                </div>
+                </Row>
+            </div>
+        );
+        }
+        else{
+          return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', }}>
+              <Card bordered={true}
+                  style={{backgroundColor: '#ffffff' , width: '100%',}}>
+              <LoadingOutlined style={{ fontSize: '3em' }} />
+              </Card>
+            </div>);
+          }
+      }
+
+    renderBLPieChart = (linuxOriginData:any, winOriginData:any, 
+        title1:string,title2:string, wholeCount:number,
+        width?:number,height?:number,inner?:number,delta?:number,outter?:number) =>{
+        if(linuxOriginData!==undefined && winOriginData!==undefined){
+            // 确保OriginData总是作为数组处理
+            const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
+            const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+      
+            const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
+            const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+            // 确保needAdjItems不为空再访问它的属性
+            if (needAdjItems1.length > 0 || needAdjItems2.length>0) {
+                // 使用reduce和findIndex方法统计唯一uuid个数
+                const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
+                  // 查找在累积数组中uuid是否已存在
+                  const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+                  // 如果不存在，则添加到累积数组中
+                  if (index === -1) {
+                    acc.push(current);
+                  }
+                  return acc;
+                }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+                const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
+                  // 查找在累积数组中uuid是否已存在
+                  const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+                  // 如果不存在，则添加到累积数组中
+                  if (index === -1) {
+                    acc.push(current);
+                  }
+                  return acc;
+                }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
                 
                 const alertData3_:StatusItem[]=[
                     // 确保使用正确的方法来计数
-                    { label: 'Pending', value: filteredData.filter(item => item.status === 'Pending').length, color: '#EA635F' },//RED
-                    { label: '通过', value: 99 - filteredData.filter(item => item.status === 'Pending').length, color: '#468DFF' }//蓝
+                    { label: title1, value: uniqueUuidCount1+uniqueUuidCount2, color: '#EA635F' },//RED
+                    { label: title2, value: wholeCount - (uniqueUuidCount1+uniqueUuidCount2), color: '#468DFF' }//蓝
                 ];
                 return (
-                  <div>
-                    <Row>
-                    <Col span={12}>
-                        <CustomPieChart
-                        data={alertData3_}
-                        innerRadius={54}
-                        deltaRadius={8}
-                        outerRadius={80}
-                        cardWidth={200}
-                        cardHeight={200}
-                        hasDynamicEffect={true}
-                        />
-                    </Col>
-                    <Col span={2}> </Col>
-                    <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                        <StatusPanel statusData={alertData3_} orientation="vertical"/>
-                    </div>
-                    </Row>
-                  </div>
+                  <CustomPieChart
+                  data={alertData3_}
+                  innerRadius={34}
+                  deltaRadius={5}
+                  outerRadius={50}
+                  cardHeight={150}
+                  hasDynamicEffect={true}
+                  />
                 );
             }
         }
         return (
-            
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+            <LoadingOutlined style={{ fontSize: '3em' }} />
+            </div>
+        );
+      }
+    renderPieCharBaseLineChart = (OriginData:any, linux:any, windows:any) =>{
+        if(OriginData!==undefined){
+            // 确保OriginData总是作为数组处理
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            if (originDataArray.length > 0) {
+                const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid);
+
+                if (!filteredData) {
+                    return <div>No data available for this host.</div>;
+                }
+                if (filteredData.os_version.includes('tu')) {
+                    if(linux!==undefined){
+                        // 确保OriginData总是作为数组处理
+                        const array = Array.isArray(linux) ? linux : [linux];
+                        const linuxData = array.filter(item => item.uuid === this.state.host_uuid);
+                        const needAdjItemCounts = linuxData.filter(item => item.adjustment_requirement === '建议调整').length;
+                        if(linuxData.length>0){
+                            const alertData3_:StatusItem[]=[
+                                // 确保使用正确的方法来计数
+                                { label: '建议调整项', value: needAdjItemCounts, color: '#EA635F' },//RED
+                                { label: '自行判断项', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
+                            ];
+                            return (
+                            <div>
+                                <Row>
+                                <Col span={12}>
+                                    <CustomPieChart
+                                    data={alertData3_}
+                                    innerRadius={54}
+                                    deltaRadius={8}
+                                    outerRadius={80}
+                                    cardWidth={200}
+                                    cardHeight={200}
+                                    hasDynamicEffect={true}
+                                    />
+                                </Col>
+                                <Col span={2}> </Col>
+                                <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
+                                    <StatusPanel statusData={alertData3_} orientation="vertical"/>
+                                </div>
+                                </Row>
+                            </div>
+                            );
+                        }
+                    }
+                    else{
+                        return (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                            <LoadingOutlined style={{ fontSize: '3em' }} />
+                            </div>
+                    );
+                    }
+                }
+                else{
+                    if(windows!==undefined){
+                        // 确保OriginData总是作为数组处理
+                        const array = Array.isArray(windows) ? windows : [windows];
+                        const linuxData = array.filter(item => item.uuid === this.state.host_uuid);
+                        const needAdjItemCounts = linuxData.filter(item => item.adjustment_requirement === '建议调整').length;
+                        if(linuxData.length>0){
+                            const alertData3_:StatusItem[]=[
+                                // 确保使用正确的方法来计数
+                                { label: '建议调整项', value: needAdjItemCounts, color: '#EA635F' },//RED
+                                { label: '自行判断项', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
+                            ];
+                            return (
+                            <div>
+                                <Row>
+                                <Col span={12}>
+                                    <CustomPieChart
+                                    data={alertData3_}
+                                    innerRadius={54}
+                                    deltaRadius={8}
+                                    outerRadius={80}
+                                    cardWidth={200}
+                                    cardHeight={200}
+                                    hasDynamicEffect={true}
+                                    />
+                                </Col>
+                                <Col span={2}> </Col>
+                                <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
+                                    <StatusPanel statusData={alertData3_} orientation="vertical"/>
+                                </div>
+                                </Row>
+                            </div>
+                            );
+                        }
+                    }
+                    else{
+                        return (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                            <LoadingOutlined style={{ fontSize: '3em' }} />
+                            </div>
+                    );
+                    }
+                }
+            }
+        }
+    else {
+        return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
             <LoadingOutlined style={{ fontSize: '3em' }} />
             </div>
         );
     }
-    renderBasicInfoData_1 = (agentOriginData:any) => {
-        if(agentOriginData!==undefined){
-            // 确保agentOriginData总是作为数组处理
-            const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
-            if (originDataArray && originDataArray.length > 0) {
-                const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-        
-                // 如果filteredData为空，则返回一个提示信息或者加载状态
-                if (filteredData.length === 0) {
-                    return <div>No data available for this host.</div>;
-                }
-        
-                return (
-                  <div>
-                    <Row>
-                        <Col className="gutter-row" md={24}>
-                            <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif'}}>
-                                {filteredData.map((data, index) => (
-                                    <Row gutter={[6, 6]} key={index} style={{fontSize:'15px',width:'100%', marginBottom: '10px' }}>
-                                    <Col span={6}>
-                                        <p>主机ID: {data.uuid}</p>
-                                        <p>主机名称: {data.host_name}</p>
-                                        <p>操作系统: {data.os_version}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                        <p>在线状态: {data.status}</p>
-                                        <p>最后一次上线: {convertUnixTime(data.last_seen)}</p>
-                                        <p>磁盘大小: {data.disk_total}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                        <p>内存大小: {data.mem_total}</p>
-                                        <p>内存使用: {data.mem_use}</p>
-                                        <p>CPU使用率: {data.cpu_use}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                        <p>CPU信息: {`${data.processor_name}_${data.processor_architecture}`}</p>
-                                        <p>python版本: {data.py_version}</p>
-                                    </Col>
-                                    </Row>
-                                ))}
-                            </Card>
-                        </Col>
-                    </Row>
-                  </div>
-                );
-            } 
-        }
-        else {
-            return (
-                
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                <LoadingOutlined style={{ fontSize: '3em' }} />
-                </div>
-            );
-        }
     }
-    
 
     renderBasicInfoData = (agentOriginData: any) => {
         if (agentOriginData !== undefined) {
@@ -201,7 +346,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                 if (!filteredData) {
                     return <div>No data available for this host.</div>;
                 }
-    
                 // 将filteredData转换为所需的data结构
                 const data = {
                     '主机名称': filteredData.host_name,
@@ -242,7 +386,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
             } 
         } else {
             return (
-                
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
                 <LoadingOutlined style={{ fontSize: '3em' }} />
                 </div>
@@ -363,25 +506,12 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                         { label: '中风险', value: 1, color: '#FBB12E' },//ORANGE
                         { label: '低风险', value: 1, color: '#468DFF' }//蓝
                     ];
-                    
-                    // const alertData3_:StatusItem[] = [
-                    //     { label: '严重', value: 1, color: '#EA635F' },//RED
-                    //     { label: '高危', value: 1, color: '#846CCE' },//紫
-                    //     { label: '中危', value: 1, color: '#FBB12E' },//ORANGE
-                    //     { label: '低危', value: 1, color: '#468DFF' }//蓝
-                    // ];
-                    
-                    // const alertData4_:StatusItem[] = [
-                    //     { label: '高危', value: 1, color: '#EA635F' },//RED
-                    //     { label: '中危', value: 1, color: '#FBB12E' },//ORANGE
-                    //     { label: '低危', value: 1, color: '#468DFF' }//蓝
-                    // ];
 
                     const agentversion='1.7.0.24';
 
                 return (
                     <div>
-                        <Row style={{ width: '97%', margin: '0 auto' }}>
+                        <Row style={{ width: '100%', margin: '0 auto' }}>
                         <Col className="gutter-row" md={24} style={{ border:'false'}}>{/*maxWidth:1260*/}
                             <Row gutter={[8,16]}>
                                 <Card bordered={false}
@@ -443,7 +573,8 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                         </Row>
 
                                     <Row gutter={0}>
-                                    {this.renderPieChart(vulnOriginData)}
+                                    {/* {this.renderVulPieChart(vulnOriginData)} */}
+                              {this.renderVulPieChart(vulnOriginData,'待处理高可利用漏洞','风险项','通过项')}
 
                                     </Row>
 
@@ -464,8 +595,9 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             onClick={()=>this.goToPanel('baseLineDetectDetailList')}>详情</Button>
                                         </Row>
                                     <Row gutter={0}>
-                                    {this.renderPieChart(linuxBaseLineCheckOriginData)}
+                                    {this.renderPieCharBaseLineChart(agentOriginData,linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData)}
                                       
+                                    {/* {this.renderVulPieChart(vulnOriginData)} */}
                                         </Row>
                                 </Card>
                                 </Col>
@@ -563,39 +695,6 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                             >
                                                 <Row>
                                                     <Col pull={2} span={22}>
-                                                        <Statistic title={<span>定时任务</span>} value={99} />
-                                                    </Col>
-                                                    <Col
-                                                        pull={0}
-                                                        span={2}
-                                                        style={{ position: 'relative', top: '-3.5px' }}
-                                                    >
-                                                        <Button
-                                                            type="link"
-                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                                            icon={<RightOutlined />}
-                                                            onClick={() => this.goToPanel('scheduled-tasks')}
-                                                        />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                        <Col span={2}>
-                                            <Card
-                                                bordered={false}
-                                                style={{
-                                                    height: '75px',
-                                                    width: '140px',
-                                                    minWidth: 110, // 最小宽度100px
-                                                    maxWidth: 200, // 最大宽度200px
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                }}
-                                            >
-                                                <Row>
-                                                    <Col pull={2} span={22}>
                                                     {this.renderDataCard(assetOriginData,'系统服务')}
                                                     </Col>
                                                     <Col
@@ -639,6 +738,39 @@ class HostOverview extends React.Component<HostOverviewProps,HostOverviewState> 
                                                             style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
                                                             icon={<RightOutlined />}
                                                             onClick={() => this.goToPanel('fim')}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Col>
+                                        <Col span={2}>
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    height: '75px',
+                                                    width: '140px',
+                                                    minWidth: 110, // 最小宽度100px
+                                                    maxWidth: 200, // 最大宽度200px
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                                }}
+                                            >
+                                                <Row>
+                                                    <Col pull={2} span={22}>
+                                                        <Statistic title={<span>定时任务</span>} value={99} />
+                                                    </Col>
+                                                    <Col
+                                                        pull={0}
+                                                        span={2}
+                                                        style={{ position: 'relative', top: '-3.5px' }}
+                                                    >
+                                                        <Button
+                                                            type="link"
+                                                            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
+                                                            icon={<RightOutlined />}
+                                                            onClick={() => this.goToPanel('scheduled-tasks')}
                                                         />
                                                     </Col>
                                                 </Row>

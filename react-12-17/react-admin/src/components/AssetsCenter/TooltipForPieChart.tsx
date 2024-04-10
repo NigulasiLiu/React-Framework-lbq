@@ -63,7 +63,7 @@ const TooltipForPieChart: React.FC<TooltipForPieChartProps> = ({ active, payload
 
     return (
       <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
         padding: '10px',
         borderRadius: '5px',
         border: `2px solid ${color}`, // 动态设置边框颜色
