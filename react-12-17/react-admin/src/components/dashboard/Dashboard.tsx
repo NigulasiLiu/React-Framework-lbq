@@ -114,12 +114,13 @@ const renderBLPieChart = (linuxOriginData:any, winOriginData:any,
           
           const alertData3_:StatusItem[]=[
               // 确保使用正确的方法来计数
-              { label: title1, value: uniqueUuidCount1+uniqueUuidCount2, color: '#EA635F' },//RED
-              { label: title2, value: wholeCount - (uniqueUuidCount1+uniqueUuidCount2), color: '#468DFF' }//蓝
+              { label: title1, value: uniqueUuidCount1+uniqueUuidCount2, color: '#E5E8EF' },//GREY
+              { label: title2, value: wholeCount - (uniqueUuidCount1+uniqueUuidCount2), color: '#4086FF' }//BLUE
           ];
           return (
             <CustomPieChart
             data={alertData3_}
+            title={'基线'}
             innerRadius={34}
             deltaRadius={5}
             outerRadius={50}
@@ -139,6 +140,49 @@ const renderBLPieChart = (linuxOriginData:any, winOriginData:any,
 class Dashboard extends React.Component<DashboardProps> {
     
 
+    renderDataCard = (OriginData:any[]) =>{
+      if(OriginData!==undefined){
+        // 确保OriginData总是作为数组处理
+        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+        let totalExpResultCount = 0;
+        originDataArray.forEach(item => {
+          totalExpResultCount += item.vul_detection_exp_result.length;
+        });
+
+          return(    
+            <div>
+              <DataCard
+              title="待处理高可利用漏洞"
+              value={totalExpResultCount}
+              valueItem={[
+                { value: '0', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
+                { value: '0', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
+                { value: '0', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+                { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
+              ]}
+              panelId="/app/HostProtection/VulnerabilityList"
+              height="75px"
+              width="210px"
+              backgroundColor="#ffffff"
+              navigate={true}
+              showTopBorder={false}
+              showBottomBorder={false}
+              showLeftBorder={false}
+              showRightBorder={false}
+            />
+            </div>
+              );
+    }
+    else{
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', }}>
+          <Card bordered={true}
+              style={{backgroundColor: '#ffffff' , width: '100%',}}>
+          <LoadingOutlined style={{ fontSize: '3em' }} />
+          </Card>
+        </div>);
+      }
+    }
 
     render() {
       const generateAlertData = (alertsCount: number[]): { day: string; value: string }[] => {
@@ -178,10 +222,10 @@ class Dashboard extends React.Component<DashboardProps> {
             agentMetaData_status,
             agentOnlineCount,
             portMetaData_port_state, 
-            assetMetaData_service,      
-            hostCount,
+            assetMetaData_service,
+            vulnHostCount,hostCount,
             vulnOriginData,
-            vulnHostCount,last7VulValue,
+            last7VulValue,
           
             linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,
             blLinuxHostCount,
@@ -194,7 +238,7 @@ class Dashboard extends React.Component<DashboardProps> {
           } = context;
           //console.log('过去7日漏洞风险:'+last7VulValue);
           const alertData = generateAlertData(last7VulValue);
-          // 转换value为数字类型
+          // 转换value为DataItem类型
           const processedData = alertData.map(item => ({ ...item, value: Number(item.value) }));
 
 
@@ -205,13 +249,16 @@ class Dashboard extends React.Component<DashboardProps> {
             ];
       
             const alertDataThree = [
-              { label: '无风险主机', value: hostCount-vulnHostCount, color: '#E5E8EF' },//GREY
+              { label: '无漏洞风险主机', value: hostCount-vulnHostCount, color: '#E5E8EF' },//GREY
               { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' }//RED
             ];
-            const alertDataFour = [
-              { label: '无风险主机', value: hostCount-(blLinuxHostCount+blWindowsHostCount), color: '#E5E8EF' },//GREY
-              { label: '存在高危基线主机', value: blLinuxHostCount+blWindowsHostCount, color: '#4086FF' }//BLUE
-            ];
+            // const alertDataFour = [
+            //   { label: '无风险主机', value: hostCount-(blLinuxHostCount+blWindowsHostCount), color: '#E5E8EF' },//GREY
+            //   { label: '存在高危基线主机', value: blLinuxHostCount+blWindowsHostCount, color: '#4086FF' }//BLUE
+            // ];
+
+
+            //进度条型展示时，使用一个各项值为1的panel
             const riskData: StatusItem[] = [
               { color: '#faad14', label: '建议调整 ', value: 1 },//蓝色E53F3F
               { color: '#52c41a', label: '自行判断 ', value: 1 },
@@ -325,7 +372,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       <Card bordered={false}  
                         style={{fontWeight: 'bolder', width: '100%', height:350}}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                            <h2 style={{ fontSize:'19px',fontWeight: 'bold', marginLeft: '0px' }}>入侵告警</h2>
+                            <h2 style={{ fontSize:'19px',fontWeight: 'bold', marginLeft: '0px' }}>主机告警</h2>
                         </div>
                         <Row gutter={[6, 6]}>
                           <Col span={18}>
@@ -416,7 +463,8 @@ class Dashboard extends React.Component<DashboardProps> {
                           </div>
                           </Col>
                           <Col span={6}>
-                          <DataCard
+                            {this.renderDataCard(vulnOriginData)}
+                          {/* <DataCard
                                   title="待处理高可利用漏洞"
                                   value={vulnHostCount}
                                   valueItem={[
@@ -434,8 +482,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                   showBottomBorder={false}
                                   showLeftBorder={false}
                                   showRightBorder={false}
-                                  //onPanelClick={(panelId) => { this.goToPanel('running-processes') }}
-                              />
+                              /> */}
                           </Col>
                         </Row>
           
@@ -520,6 +567,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       <Col span={8}>
                       <CustomPieChart
                                 data={alertDataTwo}
+                                title={'告警'}
                                 innerRadius={34}
                                 deltaRadius={5}
                                 outerRadius={50}
@@ -528,9 +576,9 @@ class Dashboard extends React.Component<DashboardProps> {
                                 />
                       </Col>
                       <Col span={8}>
-                        
                       <CustomPieChart
                                 data={alertDataThree}
+                                title={'漏洞'}
                                 innerRadius={34}
                                 deltaRadius={5}
                                 outerRadius={50}
@@ -539,15 +587,8 @@ class Dashboard extends React.Component<DashboardProps> {
                                 />
                       </Col>
                       <Col span={8}>
-                        {renderBLPieChart(linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,'无风险主机','存在高危基线主机',blLinuxHostCount+blWindowsHostCount)}
-                      {/* <CustomPieChart
-                                data={alertDataFour}
-                                innerRadius={34}
-                                deltaRadius={5}
-                                outerRadius={50}
-                                cardHeight={150}
-                                hasDynamicEffect={true}
-                                /> */}
+                        {renderBLPieChart(linuxBaseLineCheckOriginData,windowsBaseLineCheckOriginData,
+                          '无基线风险主机','存在高危基线主机',blLinuxHostCount+blWindowsHostCount)}
                       </Col>
                     </Row>
                   </Card>

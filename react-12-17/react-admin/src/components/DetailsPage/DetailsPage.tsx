@@ -174,7 +174,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     render: (text: string) => (
                         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
                         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-                          <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(1,4)}</Button>
+                          <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF'}}>{text.slice(0,5)}</Button>
                         </Link>
                       ),
                 },
@@ -224,7 +224,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                       // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
                       <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
                         <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                                  padding:'0 0'}}>{text.slice(1,4)}</Button>
+                                  padding:'0 0'}}>{text.slice(0,5)}</Button>
                       </Link>
                     ),
               },

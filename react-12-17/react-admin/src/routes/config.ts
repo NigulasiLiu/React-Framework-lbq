@@ -113,40 +113,11 @@ const menus: {
                     title: '用户管理',
                     component: 'UserManagement',
                 },
-                // {
-                //     key: '/app/extension/queryParams',
-                //     title: '问号形式参数',
-                //     component: 'QueryParams',
-                //     query: '?param1=1&param2=2',
-                // },
-                // {
-                //     key: '/app/extension/visitor',
-                //     title: '访客模式',
-                //     component: 'Visitor',
-                //     login: true,
-                // },
-                // {
-                //     key: '/app/extension/multiple',
-                //     title: '多级菜单',
-                //     subs: [
-                //         {
-                //             key: '/app/extension/multiple/child',
-                //             title: '多级菜单子菜单',
-                //             subs: [
-                //                 {
-                //                     key: '/app/extension/multiple/child/child',
-                //                     title: '多级菜单子子菜单',
-                //                     component: 'MultipleMenu',
-                //                 },
-                //             ],
-                //         },
-                //     ],
-                // },
-                // {
-                //     key: '/app/extension/env',
-                //     title: '环境配置',
-                //     component: 'Env',
-                // },
+                {
+                    key: '/app/extension/ScheduleTask',
+                    title: '定时任务',
+                    component: 'ScheduleTask',
+                },
             ],
         },
         {
@@ -193,7 +164,82 @@ const menus: {
                 },
             ],
         },
-        // {
+       
+    ],
+    others: [
+        {
+            key: '/app/detailspage', 
+            title: '详情页面',
+            component: 'DetailsPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/create_agent_task', 
+            title: '新建任务',
+            component: 'CreateAgentTaskPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/create_virusscan_task', 
+            title: '新建病毒扫描任务',
+            component: 'CreateVirusScanTaskPage', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/baseline_detail', 
+            title: '基线检查详情页面',
+            component: 'baseline_detail_age', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+        {
+            key: '/app/virusscan_detail', 
+            title: '病毒扫描详情页面',
+            component: 'virus_detail_age', // 组件名称
+            // 额外的配置项，如果有的话...
+        },
+    ], // 非菜单相关路由
+};
+
+export default menus;
+
+
+                // {
+                //     key: '/app/extension/queryParams',
+                //     title: '问号形式参数',
+                //     component: 'QueryParams',
+                //     query: '?param1=1&param2=2',
+                // },
+                // {
+                //     key: '/app/extension/visitor',
+                //     title: '访客模式',
+                //     component: 'Visitor',
+                //     login: true,
+                // },
+                // {
+                //     key: '/app/extension/multiple',
+                //     title: '多级菜单',
+                //     subs: [
+                //         {
+                //             key: '/app/extension/multiple/child',
+                //             title: '多级菜单子菜单',
+                //             subs: [
+                //                 {
+                //                     key: '/app/extension/multiple/child/child',
+                //                     title: '多级菜单子子菜单',
+                //                     component: 'MultipleMenu',
+                //                 },
+                //             ],
+                //         },
+                //     ],
+                // },
+                // {
+                //     key: '/app/extension/env',
+                //     title: '环境配置',
+                //     component: 'Env',
+                // },
+
+
+ // {
         //     key: '/app/ARP',
         //     title: '应用运行时防护',
         //     icon: 'area-chart',
@@ -268,39 +314,3 @@ const menus: {
         //     component: 'DetailsPage', // 组件名称
         //     // 额外的配置项，如果有的话...
         // },
-    ],
-    others: [
-        {
-            key: '/app/detailspage', 
-            title: '详情页面',
-            component: 'DetailsPage', // 组件名称
-            // 额外的配置项，如果有的话...
-        },
-        {
-            key: '/app/create_agent_task', 
-            title: '新建任务',
-            component: 'CreateAgentTaskPage', // 组件名称
-            // 额外的配置项，如果有的话...
-        },
-        {
-            key: '/app/create_virusscan_task', 
-            title: '新建病毒扫描任务',
-            component: 'CreateVirusScanTaskPage', // 组件名称
-            // 额外的配置项，如果有的话...
-        },
-        {
-            key: '/app/baseline_detail', 
-            title: '基线检查详情页面',
-            component: 'baseline_detail_age', // 组件名称
-            // 额外的配置项，如果有的话...
-        },
-        {
-            key: '/app/virusscan_detail', 
-            title: '病毒扫描详情页面',
-            component: 'virus_detail_age', // 组件名称
-            // 额外的配置项，如果有的话...
-        },
-    ], // 非菜单相关路由
-};
-
-export default menus;

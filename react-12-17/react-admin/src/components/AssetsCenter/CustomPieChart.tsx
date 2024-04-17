@@ -27,7 +27,10 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
   //children, // 將 children 放在正確的位置
 }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
-
+  const getRadius = (index: number) => {
+    // 计算每个扇区的基础外径
+    return outerRadius - index * deltaRadius;
+  };
   const handleMouseEnter = (_: MouseEvent, index: number) => {
     // 使用 set 方法来更新状态
     setActiveIndex(index);
@@ -37,25 +40,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
     // 重置索引为 -1
     setActiveIndex(-1);
   };
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    // 使用可选链操作符确保安全地访问属性
-    const { left, top, width, height } = e.currentTarget?.getBoundingClientRect() || {
-      left: 0,
-      top: 0,
-      width: 0,
-      height: 0,
-    };
-    const mouseX = e.clientX - left;
-    const mouseY = e.clientY - top;
-  
-    // 计算鼠标距离中心点的距离
-    const distanceToCenter = Math.sqrt(Math.pow(mouseX - width / 2, 2) + Math.pow(mouseY - height / 2, 2));
-  
-    // 根据鼠标距离设定 activeIndex
-    setActiveIndex(distanceToCenter <= outerRadius && distanceToCenter >= innerRadius ? 0 : -1);
-  };
-  
-
+ 
   return (
     <div
       style={{ width: cardWidth, height: cardHeight }}>
@@ -74,7 +59,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
             innerRadius={innerRadius}
             outerRadius={activeIndex === 0 ? outerRadius : outerRadius - deltaRadius}
             fill="#8884d8"
-            paddingAngle={5}
+            paddingAngle={data.length === 1 ? 1 : 1} // 当只有一个数据点时，没有间隙
             dataKey="value"
             // 修改这里，将事件绑定到 Pie 元素上
             onMouseEnter={(e: MouseEvent) => hasDynamicEffect && handleMouseEnter(e, 0)}
@@ -86,24 +71,14 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
             ))}
             {title && (
               <Label
-                value={`${title}: ${Math.round((data[1].value / (data[0].value + data[1].value)) * 100)}%`}
+                value={`${title}:${Math.round((data[1].value / (data[0].value + data[1].value)) * 100)}%`}
                 position="center"
                 style={{ fontSize: '14px' }}
               />
             )}
+            
           </Pie>
         </PieChart>
-          {/* <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              textAlign: 'center',
-            }}
-          >
-            {children?children:'asd'}
-          </div> */}
       </ResponsiveContainer>
     </div>
   );

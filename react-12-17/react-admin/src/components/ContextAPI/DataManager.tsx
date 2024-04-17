@@ -229,8 +229,8 @@ const DataManager: React.FC = ({ children }) => {
 
   const agentCPUuseMetaData=useExtractOrigin('cpu_use',agentOriginData);//各类status主机的数量
   const agentMEMuseMetaData=useExtractOrigin('mem_use',agentOriginData);//各类status主机的数量
-  const agentAVGCPUUse = (((useCalculateAverage('cpu_use',agentOriginData).average)||0)*100).toString()+'%';
-  const agentAVGMEMUse = (((useCalculateAverage('mem_use',agentOriginData).average)||0)*100).toString()+'GB';
+  const agentAVGCPUUse = (((useCalculateAverage('cpu_use',agentOriginData).average)||0)*100).toString().slice(0,4)+'%';
+  const agentAVGMEMUse = (((useCalculateAverage('mem_use',agentOriginData).average)||0)*100).toString().slice(0,4)+'GB';
 
 
 
@@ -296,7 +296,7 @@ const DataManager: React.FC = ({ children }) => {
   const hostInfo = useFindFirstMatchingItem('id','1',agentOriginData);
 
   const hostCount = agentMetaData_status.tupleCount;
-  const vulnHostCount = vulnMetaData_uuid.tupleCount;
+  const vulnHostCount = vulnMetaData_uuid.typeCount.size;
 
 
   //top5表单

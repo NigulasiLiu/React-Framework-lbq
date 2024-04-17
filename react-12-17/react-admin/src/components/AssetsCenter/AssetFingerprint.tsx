@@ -11,18 +11,6 @@ import { fimColumns,
 
 type AssetFingerprintProps = {};
 type AssetFingerprintState = {
-    topData: {
-        fim: GenericDataItem[];
-        container: GenericDataItem[];
-        openPorts: GenericDataItem[];
-        runningProcesses: GenericDataItem[];
-        systemUsers: GenericDataItem[];
-        scheduledTasks: GenericDataItem[];
-        systemServices: GenericDataItem[];
-        systemSoftware: GenericDataItem[];
-        applications: GenericDataItem[];
-        kernelModules: GenericDataItem[];
-    };
 
     count: number;
     deleteIndex: number | null;
@@ -44,19 +32,19 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
         this.columns = [];
         this.state = {
             statusData: [], // 初始状态
-            topData: {
-                fim: [],
-                container: [],
-                openPorts: [],
-                runningProcesses: [],
-                systemUsers: [],
-                scheduledTasks: [],
-                systemServices: [],
-                systemSoftware: [],
-                kernelModules: [],
-                applications: [],
-                // 其他panel的初始化
-            },
+            // topData: {
+            //     fim: [],
+            //     container: [],
+            //     openPorts: [],
+            //     runningProcesses: [],
+            //     systemUsers: [],
+            //     scheduledTasks: [],
+            //     systemServices: [],
+            //     systemSoftware: [],
+            //     kernelModules: [],
+            //     applications: [],
+            //     // 其他panel的初始化
+            // },
             count: 2,
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
@@ -75,14 +63,14 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     };
 
     //用于OverviewPanel筛选top5数据
-    onTopDataChange = (panelName: string, data: GenericDataItem[]) => {
-        this.setState((prevState) => ({
-            topData: {
-                ...prevState.topData,
-                [panelName]: data,
-            },
-        }));
-    };
+    // onTopDataChange = (panelName: string, data: GenericDataItem[]) => {
+    //     this.setState((prevState) => ({
+    //         topData: {
+    //             ...prevState.topData,
+    //             [panelName]: data,
+    //         },
+    //     }));
+    // };
 
     columns: any;
     // 点击Menu.Item时调用的函数

@@ -49,7 +49,7 @@ import HoneypotDefense from './HostProtection/HoneypotDefense';
 import MemoryHorseDetection from './HostProtection/MemoryHorseDetection';
 import ThreatHunting from './HostProtection/ThreatHunting';
 import MicroIsolation from './HostProtection/MicroIsolation';
-
+import ScheduleTask from './extension/ScheduleTask';
 
 const WysiwygBundle = Loadable({
     // 按需加载富文本配置
@@ -104,4 +104,5 @@ export default {
     MemoryHorseDetection,
     ThreatHunting,
     MicroIsolation,
+    ScheduleTask,
 } as any;

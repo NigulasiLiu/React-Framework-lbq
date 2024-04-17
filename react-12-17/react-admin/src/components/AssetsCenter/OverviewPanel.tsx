@@ -142,7 +142,7 @@ const generateColumns = (divValue:number, tableName: string, tbName_Right: strin
             key: 'value',
             render: (value: number) => {
                 if (showProgress) {
-                    const percent_real = Math.round(value/divValue)*100;
+                    const percent_real = parseFloat(value.toString())/parseFloat(divValue.toString())*100;
                     return (
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Progress percent={percent_real} strokeColor="#4086FF" showInfo={false} />
@@ -219,14 +219,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
 
 
     render() {
-        const topFiveData_default: GenericDataItem[] = [
-            // 假设这是从某处获取的 topFiveData
-            { filename: 'nginx', event_time: 1 },
-            { filename: 'bash', event_time: 1 },
-            { filename: 'java', event_time: 1 },
-            { filename: 'nginx uploader', event_time: 1 },
-            { filename: 'prometheus', event_time: 1 },
-          ];
 
         return(
             <DataContext.Consumer>

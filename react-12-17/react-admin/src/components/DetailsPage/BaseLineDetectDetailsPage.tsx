@@ -360,21 +360,21 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                 <BreadcrumbCustom />
                 <Row style={{ width:'110%', height:'80px',backgroundColor: '#FFFFFF', //height:'40px',
                     marginLeft:'-20px',padding: '12px', borderBottom: '1px solid #F6F7FB' }}>
-                <div style={{ margin:'auto 10px'}}>
-                    <Button
-                            type="link"
-                            style={{width:'40px',height:'40px',fontWeight:'bold',border:'transparent',
-                            backgroundColor:'#F6F7FB',color:'#88878C'}}
-                            icon={<LeftOutlined />}
-                            onClick={() => {
-                                window.close();
-                              }}
-                            />
-                    <span style={{fontSize:'20px',marginLeft:'20px'}}>
-                        基线检查详情
-                    </span>
-                </div>
-            </Row>
+                    <div style={{ margin:'auto 10px'}}>
+                        <Button
+                                type="link"
+                                style={{width:'40px',height:'40px',fontWeight:'bold',border:'transparent',
+                                backgroundColor:'#F6F7FB',color:'#88878C'}}
+                                icon={<LeftOutlined />}
+                                onClick={() => {
+                                    window.close();
+                                }}
+                                />
+                        <span style={{fontSize:'20px',marginLeft:'20px'}}>
+                            基线检查详情
+                        </span>
+                    </div>
+                </Row>
                 <div>
                     <Row gutter={[12, 6]} style={{ marginTop: '10px',width: '100%', margin: '0 auto' }}>
                         <Col md={24}>

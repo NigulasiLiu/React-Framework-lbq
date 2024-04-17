@@ -13,15 +13,13 @@ export const assetCenterPanelName=[
 
 const APIList=[
 "http://localhost:5000/api/FileIntegrityInfo/all",
-"http://localhost:5000/api/files/container/all",
-"http://localhost:5000/api/files/open-ports/all",
-"http://localhost:5000/api/files/running-processe/all",
-"http://localhost:5000/api/files/system-users/all",
-"http://localhost:5000/api/files/scheduled-tasks/all",
-"http://localhost:5000/api/files/system-services/all",
-"http://localhost:5000/api/files/system-software/all",
-"http://localhost:5000/api/files/applications/all",
-"http://localhost:5000/api/files/kernel-modules/all",
+"http://localhost:5000/api/agent/all",
+"http://localhost:5000/api/monitored/all",
+"http://localhost:5000/api/asset_mapping/all",
+"http://localhost:5000/api/baseline_check/linux/all",
+"http://localhost:5000/api/vulndetetion/all",
+"http://localhost:5000/api/process/all",
+"http://localhost:5000/api/portinfo/all",
 ]
 
 const fetchData = async(api:string)=>{

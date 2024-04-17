@@ -1,11 +1,8 @@
 import React, {useState} from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal } from 'antd';
-import SidebarComponent from '../SubComponents/SidebarComponent'
 import moment, { Moment } from 'moment';
 import { buildRangeQueryParams} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
-import { tableWithoutDirectFetch } from '../PanelWithoutDirectFetch';
-import { assetCenterPanelName } from './MetaDataUtilize';
 import { LoadingOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -43,6 +40,7 @@ interface CustomDataTableProps {
     childrenColumnName?: string; // 作为可选属性
     indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
     expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
+    keyIndex?:number;
 
 }
 
@@ -52,6 +50,7 @@ interface CustomDataTableState {
     selectedDateRange: [string | null, string | null];
 
     selectedRowKeys: React.Key[];// 可选属性，代表被选中行的keys，用于控制独立的key
+    selectedRows:any[];//存储整行数据
 
     selectedApplicationType: string|null,
     searchQuery: string;
@@ -81,6 +80,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
             user_character: 'admin',
 
             selectedRowKeys: [],
+            selectedRows:[],
             lastUpdated:null,
             selectedDateRange: [null,null],
             
@@ -178,8 +178,9 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
   }
     
     onSelectChange = (selectedRowKeys: React.Key[]) => {
-        this.setState({ selectedRowKeys });
-        //傳遞給父組件以構建DELETE請求，刪除在數據庫中刪除被選中的條目
+        this.setState({ 
+            selectedRowKeys,
+        });
         if (this.props.onSelectedRowKeysChange) {
             this.props.onSelectedRowKeysChange(selectedRowKeys);
         }
@@ -301,39 +302,72 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
         // 重置选中的行
         this.setState({ selectedRowKeys: [] });
     };
+    // onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
+    //     if (dates) {
+    //         const [start, end] = dateStrings;
+    //         this.setState({ selectedDateRange: [start, end] });
+    
+    //         const { timeColumnIndex } = this.props;
+    //         if (timeColumnIndex) {
+    //             // 转换日期为 Unix 时间戳（秒）
+    //             const startDateTimestamp = moment(start).unix();
+    //             const endDateTimestamp = moment(end).unix();
+                
+    //             const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
+    //                         this.setState({
+    //             dataSourceChanged: true, // 更新状态以避免重复执行
+    //           });
+    //             this.props.onUpdateRangeField(selectedqueryParams);
+
+    //             this.setState({
+    //                 dataSourceChanged: true, // 更新状态以避免重复执行
+    //               });
+
+    //             this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
+    //                 // 在状态更新后立即触发数据获取
+    //                 this.props.fetchLatestData(this.props.apiEndpoint,'', '', selectedqueryParams);
+    //             });
+    //         }
+    //     } else {
+    //         this.setState({
+    //             dataSourceChanged: true, // 更新状态以避免重复执行
+    //           });
+    //         this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
+    //             // 当日期范围被清空时，重置数据
+    //             this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
+    //         });
+    //     }
+    // };
+    
     onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
         if (dates) {
             const [start, end] = dateStrings;
             this.setState({ selectedDateRange: [start, end] });
     
-            const { timeColumnIndex } = this.props;
-            if (timeColumnIndex) {
+            const { timeColumnIndex, externalDataSource } = this.props;
+            if (timeColumnIndex && timeColumnIndex.length > 0) {
                 // 转换日期为 Unix 时间戳（秒）
                 const startDateTimestamp = moment(start).unix();
                 const endDateTimestamp = moment(end).unix();
-                
-                const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
-                            this.setState({
-                dataSourceChanged: true, // 更新状态以避免重复执行
-              });
-                this.props.onUpdateRangeField(selectedqueryParams);
-
+    
+                // 筛选 externalDataSource 中符合日期范围的数据
+                const filteredData = externalDataSource.filter(item => {
+                    const itemTimestamp = item[timeColumnIndex[0]]; // 假设时间戳已经是 Unix 时间戳格式
+                    return itemTimestamp >= startDateTimestamp && itemTimestamp <= endDateTimestamp;
+                });
+    
+                // 更新状态以重新渲染表格
                 this.setState({
-                    dataSourceChanged: true, // 更新状态以避免重复执行
-                  });
-
-                this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
-                    // 在状态更新后立即触发数据获取
-                    this.props.fetchLatestData(this.props.apiEndpoint,'', '', selectedqueryParams);
+                    sortedData: filteredData,
+                    dataSourceChanged: true, // 标记数据源已更改
                 });
             }
         } else {
+            // 如果日期范围被清除，显示全部数据
             this.setState({
-                dataSourceChanged: true, // 更新状态以避免重复执行
-              });
-            this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
-                // 当日期范围被清空时，重置数据
-                this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
+                sortedData: this.props.externalDataSource,
+                selectedDateRange: [null, null],
+                dataSourceChanged: true,
             });
         }
     };
@@ -612,11 +646,11 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                                 fontSize: isSidebar?'12px':''}}>
                                     <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
                                 </Col>
-                                {/* {!isSidebar && this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
-                                <Col flex="none" style={{ marginLeft: 'auto' }}>
-                                    <RangePicker style={{ width: 250 }} onChange={this.onDateRangeChange}/>
+                                {!isSidebar && this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
+                                <Col flex="none" span={5} style={{ marginLeft: 'auto',marginRight:'0px' }}>
+                                    <RangePicker onChange={this.onDateRangeChange}/>
                                 </Col>
-                                )} */}
+                                )}
                                 
                             </Row>
                         </div>)}
@@ -675,8 +709,8 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                         <Table
                             className={selectedTableStyle}
                             rowSelection={rowSelection}
-                            rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
-                            dataSource={externalDataSource}
+                            rowKey={this.props.columns[this.props.keyIndex || 0].key}//使用第一个字段区分各个row，最好是PK
+                            dataSource={externalDataSource}//externalDataSource
                             columns={this.props.columns}
                             childrenColumnName={this.props.childrenColumnName}
                             expandedRowRender={this.props.expandedRowRender}
@@ -688,7 +722,7 @@ class CustomDataTable extends React.Component<CustomDataTableProps, CustomDataTa
                         />)}
                         {externalDataSource.length===0 && (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                        <LoadingOutlined style={{ fontSize: '3em' }} />
+                            <LoadingOutlined style={{ fontSize: '3em' }} />
                         </div>
                         )}
 

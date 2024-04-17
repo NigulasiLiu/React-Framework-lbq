@@ -19,11 +19,15 @@ interface FetchAPIDataTableProps {
     childrenColumnName?: string; // 作为可选属性
     indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
     expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
+
+
+    onSelectedRowKeysChange?: (selectedRowKeys: React.Key[]) => void;
+    keyIndex?: number; 
 }
 
 
 export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({ 
-  table_type, apiEndpoint, columns, timeColumnIndex,currentPanel, childrenColumnName, indentSize, expandedRowRender, ...otherProps }) => {
+  table_type, apiEndpoint, columns, timeColumnIndex,currentPanel, childrenColumnName, indentSize, expandedRowRender, onSelectedRowKeysChange, keyIndex, ...otherProps }) => {
     
   const context = useContext(DataContext);
   const [data, setData] = useState<any[]>([]);
@@ -35,7 +39,7 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-  const handleDeleteSelected = async () => {//通過搜索特定IP，然後選中所有搜搜結果，點擊刪除
+  const handleDeleteSelected = async () => {
     if (selectedRowKeys.length > 0) {
         try {
             // 发送 DELETE 请求
@@ -48,7 +52,11 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({
         }
     }
   };
-
+    // 在组件内部，当 selectedRowKeys 更新时调用这个函数
+    const handleRowSelectionChange = (selectedKeys: React.Key[]) => {
+      setSelectedRowKeys(selectedKeys);
+      onSelectedRowKeysChange?.(selectedKeys); // 通知父组件
+    };
   const handleUpdateSearchField = (field: string) => {
     setSearchField(field);
     
@@ -79,17 +87,17 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({
 
   // 用于构建查询参数
 
-  const buildQueryParams = (searchField:string, searchQuery:string) => {
-    let queryParams = '';
-    if(searchField === 'all' || searchQuery === ''){
-        queryParams = '/all';
-    }
-    else if (searchField !== 'all' && searchField && searchQuery) {
-        queryParams = `/query?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
-        //queryParams = `?${searchField}=${searchQuery}`;
-    }
-    return queryParams;
-  };
+  // const buildQueryParams = (searchField:string, searchQuery:string) => {
+  //   let queryParams = '';
+  //   if(searchField === 'all' || searchQuery === ''){
+  //       queryParams = '/all';
+  //   }
+  //   else if (searchField !== 'all' && searchField && searchQuery) {
+  //       queryParams = `/query?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
+  //       //queryParams = `?${searchField}=${searchQuery}`;
+  //   }
+  //   return queryParams;
+  // };
 
   // const fetchLatestData = useCallback(async (searchField:string, searchQuery:string, rangeQuery:string) => {
   //   try {
@@ -130,7 +138,9 @@ export const FetchAPIDataTable: React.FC<FetchAPIDataTableProps> = ({
           //prePanel={prePanel}
           
           fetchLatestData={context!.fetchLatestData}
-          onSelectedRowKeysChange={setSelectedRowKeys}
+
+          onSelectedRowKeysChange={handleRowSelectionChange}
+          keyIndex={keyIndex||0}
 
           onUpdateSearchField={handleUpdateSearchField}
           onUpdateSearchQuery={handleUpdateSearchQuery}

@@ -3,6 +3,7 @@ import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal }
 import moment, { Moment } from 'moment';
 import { buildRangeQueryParams, convertUnixTime} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
+import { Link } from 'react-router-dom';
 
 const { Option } = Select;
 
@@ -285,6 +286,14 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                         <div style={{ marginBottom: '16px' }}>
                             <Row gutter={[2,2]} >
                                 <Col flex="none">
+                                    <Link to="/app/create_agent_task" target="_blank">
+                                        <Button 
+                                        style={{...selectedcompStyle,
+                                            backgroundColor:'#1664FF',color:'white',marginRight:'10px',}}
+                                        >
+                                            新增任务
+                                        </Button>
+                                    </Link>
                                     <Button
                                         style={{...selectedcompStyle,marginRight:'10px',
                                             opacity: isButtonDisabled ? 0.5 : 1 }}
@@ -293,10 +302,10 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                     >
                                         批量导出
                                     </Button>
-                                    <Button 
+                                    {/* <Button 
                                         style={{...selectedcompStyle,}}>
                                     采集最新数据
-                                    </Button>
+                                    </Button> */}
                                 </Col>
                                 <Col flex="auto" style={{ textAlign: 'left', marginLeft:10,marginTop:'5px',}}>
                                     <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
