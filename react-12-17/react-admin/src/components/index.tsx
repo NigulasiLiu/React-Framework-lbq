@@ -14,7 +14,7 @@ import Notifications from './ui/Notifications';
 import Tabs from './ui/Tabs';
 import Banners from './ui/banners';
 import Drags from './ui/Draggable';
-import Dashboard from './dashboard/Dashboard';
+import Dashboard from './Dashboard/Dashboard'
 import HCPAlertList from './HostProtection/HostAlertList';
 import HCPWhiteList from './HostProtection/HostWhiteList';
 import ARPAlertList from './ARP/ARPAlertList';

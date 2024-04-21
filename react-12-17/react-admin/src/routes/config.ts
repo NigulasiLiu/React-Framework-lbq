@@ -21,7 +21,7 @@ const menus: {
 } = {
     menus: [
         // 菜单相关路由
-        { key: '/app/dashboard', title: '安全概览', icon: 'mobile', component: 'Dashboard' },
+        { key: '/app/Dashboard', title: '安全概览', icon: 'mobile', component: 'Dashboard' },
         {
             key: '/app/AssetsCenter',
             title: '资产中心',

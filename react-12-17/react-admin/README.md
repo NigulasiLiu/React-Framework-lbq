@@ -166,7 +166,7 @@ npx saigao myapp
 |   |    |    --- ...
 |   |    +-- charts                         ---图表组件
 |   |    |    --- ...
-|   |    +-- dashboard                      ---首页组件
+|   |    +-- Dashboard                      ---首页组件
 |   |    |    --- ...
 |   |    +-- forms                          ---表单组件
 |   |    |    --- ...
@@ -352,7 +352,7 @@ react-admin
 │  │  │  ├─ DataDisplayTable.tsx
 │  │  │  ├─ FileIntegrityContext.tsx
 │  │  │  └─ VirusScanning.tsx
-│  │  ├─ dashboard
+│  │  ├─ Dashboard
 │  │  │  ├─ card.less
 │  │  │  ├─ Dashboard.tsx
 │  │  │  ├─ EchartsProjects.tsx

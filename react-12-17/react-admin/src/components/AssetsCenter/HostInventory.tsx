@@ -88,6 +88,7 @@ const renderBLPieChart = (linuxOriginData:any, winOriginData:any,
             cardHeight={200}
             cardWidth={200}
             hasDynamicEffect={true}
+            title={'基线风险'}
             />
           );
       }
@@ -218,6 +219,7 @@ const renderPieChart = (linuxOriginData:any, winOriginData:any, hostCount:number
             cardWidth={200}
             cardHeight={200}
             hasDynamicEffect={true}
+            title={'告警'}
             />
             </Col>
             <Col span={5}>
@@ -229,6 +231,7 @@ const renderPieChart = (linuxOriginData:any, winOriginData:any, hostCount:number
             cardHeight={200}
             cardWidth={200}
             hasDynamicEffect={true}
+            title={'存在漏洞'}
             />
             </Col>
             <Col span={5}>

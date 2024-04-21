@@ -7,7 +7,7 @@ import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { StatusItem } from '../tableUtils';
 import { GithubOutlined, GlobalOutlined, LoadingOutlined, MailOutlined,RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import CustomLineChart from './CustomLineChart';
+
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';

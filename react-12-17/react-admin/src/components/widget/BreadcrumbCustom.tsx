@@ -60,7 +60,7 @@ const pagesWithoutRenderUUID = [
                 <Breadcrumb>
                 {/* {!isDetailPage && (
                     <Breadcrumb.Item>
-                        <Link to={'/app/dashboard'}>安全概览</Link>
+                        <Link to={'/app/Dashboard'}>安全概览</Link>
                     </Breadcrumb.Item>
                 )} */}
                 {isDetailPage && 

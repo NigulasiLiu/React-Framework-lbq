@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import buttonStyles from '../style/button.module.css'
 import '../Style.css';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -497,8 +498,9 @@ export const hostinventoryColumns = [
     // },
     {
         title: "主机名称",
-        dataIndex: 'uuid', key: 'uuid',
-        onFilter: (values:string, record:hostinventoryColumnsType) => record.uuid.includes(values),
+        dataIndex: 'uuid',
+        key: 'uuid',
+        onFilter: (values: string, record: hostinventoryColumnsType) => record.uuid.includes(values) || record.ip_address.toLowerCase().includes(values.toLowerCase()),
         filterDropdown: ({
             setSelectedKeys,
             selectedKeys,
@@ -508,7 +510,7 @@ export const hostinventoryColumns = [
             <div style={{ padding: 8 }}>
                 <Input
                     autoFocus
-                    placeholder="搜索..."
+                    placeholder="搜索主机名称或IP..."
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => confirm()}
@@ -527,49 +529,103 @@ export const hostinventoryColumns = [
             </div>
         ),
         filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
+        render: (text: string, record: hostinventoryColumnsType) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{fontWeight:'bold', border:'transparent', backgroundColor:'transparent', color:'#4086FF', padding:'0 0'}}>
+                            {record.uuid.slice(0,5)}
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{ 
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip_address}
+                </div>
+            </div>
+        ),
     },
-    {
-        title: "主机IP",
-        dataIndex: 'ip_address',
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        onFilter: (values:string, record:hostinventoryColumnsType) => record.ip_address.toString().toLowerCase().includes(values.toLowerCase()),
+    // {
+    //     title: "主机名称",
+    //     dataIndex: 'uuid', key: 'uuid',
+    //     onFilter: (values:string, record:hostinventoryColumnsType) => record.uuid.includes(values),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     
-    }, 
+    //     render: (text: string) => (
+    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+    //           <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+    //                     padding:'0 0'}}>{text.slice(0,5)}</Button>
+    //         </Link>
+    //       ),
+    // },
+    // {
+    //     title: "主机IP",
+    //     dataIndex: 'ip_address',
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    //     onFilter: (values:string, record:hostinventoryColumnsType) => record.ip_address.toString().toLowerCase().includes(values.toLowerCase()),
+    
+    // }, 
     {
         title: "操作系统",
         dataIndex: 'os_version',
@@ -643,8 +699,8 @@ export const hostinventoryColumns = [
                 fontWeight:'bold',padding:'0 0',
                 border: 'transparent',
                 backgroundColor: 'transparent',
-                color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
-                cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
                 }} 
                 disabled={record.status !== 'Online'}
             >
@@ -672,8 +728,9 @@ export const fimColumns = [
     },
     {
         title: "主机名称",
-        dataIndex: 'uuid', key: 'uuid',
-        onFilter: (values:string, record:FimDataType) => record.uuid.includes(values),
+        dataIndex: 'uuid',
+        key: 'uuid',
+        onFilter: (values: string, record: FimDataType) => record.uuid.includes(values) || record.hostIP.toLowerCase().includes(values.toLowerCase()),
         filterDropdown: ({
             setSelectedKeys,
             selectedKeys,
@@ -683,7 +740,7 @@ export const fimColumns = [
             <div style={{ padding: 8 }}>
                 <Input
                     autoFocus
-                    placeholder="搜索..."
+                    placeholder="搜索主机名称或IP..."
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => confirm()}
@@ -702,56 +759,110 @@ export const fimColumns = [
             </div>
         ),
         filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        render: (text: string, record: FimDataType) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{fontWeight:'bold', border:'transparent', backgroundColor:'transparent', color:'#4086FF', padding:'0 0'}}>
+                            {record.uuid.slice(0,5)}
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{ 
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.hostIP}
+                </div>
+            </div>
+        ),
+    },
+    // {
+    //     title: "主机名称",
+    //     dataIndex: 'uuid', key: 'uuid',
+    //     onFilter: (values:string, record:FimDataType) => record.uuid.includes(values),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: '主机IP',
-        dataIndex: 'hostIP',
-        onFilter: (values:string, record:FimDataType) => record.hostIP.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    //     render: (text: string) => (
+    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+    //           <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+    //                     padding:'0 0'}}>{text.slice(0,5)}</Button>
+    //         </Link>
+    //       ),
+    // },
+    // {
+    //     title: '主机IP',
+    //     dataIndex: 'hostIP',
+    //     onFilter: (values:string, record:FimDataType) => record.hostIP.toLowerCase().includes(values.toLowerCase()),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         
-        onHeaderCell: () => ({
-            style: {
-              minWidth: 80, // 最小宽度100px
-              maxWidth: 170, // 最大宽度200px
-            },
-          }),
-        //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
-    },
+    //     onHeaderCell: () => ({
+    //         style: {
+    //           minWidth: 80, // 最小宽度100px
+    //           maxWidth: 170, // 最大宽度200px
+    //         },
+    //       }),
+    //     //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
+    // },
     {
         title: "文件名",
         dataIndex: 'filename',
@@ -794,6 +905,7 @@ export const fimColumns = [
     {
         title: "告警时间",
         dataIndex: 'event_time',
+        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
         sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
     },
     {
@@ -812,7 +924,7 @@ export const fimColumns = [
         ],
           // 修改这里使用record参数，确保函数能访问到当前行的数据
         render: (text: string, record: FimDataType) => (
-            <Badge status={record.alert_type === 'deleted' ? 'error' : 'default'} text={record.alert_type} />
+            <Badge status={record.alert_type === 'deleted' ? 'error' : 'processing'} text={record.alert_type} />
         ),
         
         
@@ -840,10 +952,12 @@ export const openPortsColumns = [
         key: 'id',
         Maxwidth: '15px',
     },
+    
     {
         title: "主机名称",
-        dataIndex: 'uuid', key: 'uuid',
-        onFilter: (values:string, record:openPortsColumnsType) => record.uuid.includes(values),
+        dataIndex: 'uuid',
+        key: 'uuid',
+        onFilter: (values: string, record: openPortsColumnsType) => record.uuid.includes(values) || record.host_ip.toLowerCase().includes(values.toLowerCase()),
         filterDropdown: ({
             setSelectedKeys,
             selectedKeys,
@@ -853,7 +967,7 @@ export const openPortsColumns = [
             <div style={{ padding: 8 }}>
                 <Input
                     autoFocus
-                    placeholder="搜索..."
+                    placeholder="搜索主机名称或IP..."
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => confirm()}
@@ -872,54 +986,108 @@ export const openPortsColumns = [
             </div>
         ),
         filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        render: (text: string, record: openPortsColumnsType) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{fontWeight:'bold', border:'transparent', backgroundColor:'transparent', color:'#4086FF', padding:'0 0'}}>
+                            {record.uuid.slice(0,5)}
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{ 
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.host_ip}
+                </div>
+            </div>
+        ),
+    },
+    // {
+    //     title: "主机名称",
+    //     dataIndex: 'uuid', key: 'uuid',
+    //     onFilter: (values:string, record:openPortsColumnsType) => record.uuid.includes(values),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: '主机IP',
-        dataIndex: 'host_ip',
-        onFilter: (values:string, record:openPortsColumnsType) => record.host_ip.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    //     render: (text: string) => (
+    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+    //           <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+    //                     padding:'0 0'}}>{text.slice(0,5)}</Button>
+    //         </Link>
+    //       ),
+    // },
+    // {
+    //     title: '主机IP',
+    //     dataIndex: 'host_ip',
+    //     onFilter: (values:string, record:openPortsColumnsType) => record.host_ip.toLowerCase().includes(values.toLowerCase()),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         
-        onHeaderCell: () => ({
-            style: {
-              //minWidth: 80, // 最小宽度100px
-            },
-          }),
-    },
+    //     onHeaderCell: () => ({
+    //         style: {
+    //           //minWidth: 80, // 最小宽度100px
+    //         },
+    //       }),
+    // },
     {
         title: '端口号',
         dataIndex: 'port_number',
@@ -1063,6 +1231,7 @@ export const openPortsColumns = [
     // ... 其他字段定义
 ];
 export interface runningProcessesColumnsType {
+    scanTime: string;
     key: React.Key;   
     uuid:string;
     agentIP:string;
@@ -1085,8 +1254,9 @@ export const runningProcessesColumns = [
     },
     {
         title: "主机名称",
-        dataIndex: 'uuid', key: 'uuid',
-        onFilter: (values:string, record:runningProcessesColumnsType) => record.uuid.includes(values),
+        dataIndex: 'uuid',
+        key: 'uuid',
+        onFilter: (values: string, record: runningProcessesColumnsType) => record.uuid.includes(values) || record.agentIP.toLowerCase().includes(values.toLowerCase()),
         filterDropdown: ({
             setSelectedKeys,
             selectedKeys,
@@ -1096,7 +1266,7 @@ export const runningProcessesColumns = [
             <div style={{ padding: 8 }}>
                 <Input
                     autoFocus
-                    placeholder="搜索..."
+                    placeholder="搜索主机名称或IP..."
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => confirm()}
@@ -1115,54 +1285,108 @@ export const runningProcessesColumns = [
             </div>
         ),
         filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        render: (text: string, record: runningProcessesColumnsType) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{fontWeight:'bold', border:'transparent', backgroundColor:'transparent', color:'#4086FF', padding:'0 0'}}>
+                            {record.uuid.slice(0,5)}
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{ 
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agentIP}
+                </div>
+            </div>
+        ),
+    },
+    // {
+    //     title: "主机名称",
+    //     dataIndex: 'uuid', key: 'uuid',
+    //     onFilter: (values:string, record:runningProcessesColumnsType) => record.uuid.includes(values),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: '主机IP',
-        dataIndex: 'agentIP',
-        onFilter: (values:string, record:runningProcessesColumnsType) => record.agentIP.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    //     render: (text: string) => (
+    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+    //           <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+    //                     padding:'0 0'}}>{text.slice(0,5)}</Button>
+    //         </Link>
+    //       ),
+    // },
+    // {
+    //     title: '主机IP',
+    //     dataIndex: 'agentIP',
+    //     onFilter: (values:string, record:runningProcessesColumnsType) => record.agentIP.toLowerCase().includes(values.toLowerCase()),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         
-        onHeaderCell: () => ({
-            style: {
-              //minWidth: 80, // 最小宽度100px
-            },
-          }),
-    },
+    //     onHeaderCell: () => ({
+    //         style: {
+    //           //minWidth: 80, // 最小宽度100px
+    //         },
+    //       }),
+    // },
     {
         title: '进程ID',
         dataIndex: 'pid',
@@ -1219,7 +1443,7 @@ export const runningProcessesColumns = [
         // ),
         render: (text: string, record: runningProcessesColumnsType) => (
             <Tooltip title={record.cmdline}>
-              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
+              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
                 {record.cmdline}
               </div>
             </Tooltip>
@@ -1236,8 +1460,15 @@ export const runningProcessesColumns = [
         sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.memoryPercent) - parseFloat(b.memoryPercent),
     },
     {
+        title: '扫描时间',
+        dataIndex: 'scanTime',
+        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+        sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.scanTime) - parseFloat(b.scanTime),
+    },
+    {
         title: '创建时间',
         dataIndex: 'createTime',
+        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
         sorter: (a:runningProcessesColumnsType, b:runningProcessesColumnsType) => parseFloat(a.createTime) - parseFloat(b.createTime),
     },
     {
@@ -1252,7 +1483,10 @@ export const runningProcessesColumns = [
 export interface systemServicesColumnsType {
     key: React.Key;   
     service:string;
+    ip:string;
     uuid:string;
+    product:string;
+    os_type:string;
 } 
 export const systemServicesColumns = [
     {
@@ -1263,8 +1497,9 @@ export const systemServicesColumns = [
     },
     {
         title: "主机名称",
-        dataIndex: 'uuid', key: 'uuid',
-        onFilter: (values:string, record:systemServicesColumnsType) => record.uuid.includes(values),
+        dataIndex: 'uuid',
+        key: 'uuid',
+        onFilter: (values: string, record: systemServicesColumnsType) => record.uuid.includes(values) || record.ip.toLowerCase().includes(values.toLowerCase()),
         filterDropdown: ({
             setSelectedKeys,
             selectedKeys,
@@ -1274,7 +1509,7 @@ export const systemServicesColumns = [
             <div style={{ padding: 8 }}>
                 <Input
                     autoFocus
-                    placeholder="搜索..."
+                    placeholder="搜索主机名称或IP..."
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => confirm()}
@@ -1293,19 +1528,73 @@ export const systemServicesColumns = [
             </div>
         ),
         filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        render: (text: string, record: systemServicesColumnsType) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{fontWeight:'bold', border:'transparent', backgroundColor:'transparent', color:'#4086FF', padding:'0 0'}}>
+                            {record.uuid.slice(0,5)}
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{ 
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                </div>
+            </div>
+        ),
+    },
+    // {
+    //     title: "主机名称",
+    //     dataIndex: 'uuid', key: 'uuid',
+    //     onFilter: (values:string, record:systemServicesColumnsType) => record.uuid.includes(values),
+    //     filterDropdown: ({
+    //         setSelectedKeys,
+    //         selectedKeys,
+    //         confirm,
+    //         clearFilters,
+    //     }: FilterDropdownProps) => (
+    //         <div style={{ padding: 8 }}>
+    //             <Input
+    //                 autoFocus
+    //                 placeholder="搜索..."
+    //                 value={selectedKeys[0]}
+    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //             />
+    //             <Button
+    //                 onClick={() => confirm()}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+    //             >
+    //                 搜索
+    //             </Button>
+    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+    //                 重置
+    //             </Button>
+    //         </div>
+    //     ),
+    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: '主机IP',
-        dataIndex: 'ip',
-    },
+    //     render: (text: string) => (
+    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+    //           <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+    //                     padding:'0 0'}}>{text.slice(0,5)}</Button>
+    //         </Link>
+    //       ),
+    // },
+    // {
+    //     title: '主机IP',
+    //     dataIndex: 'ip',
+    // },
     {
         title: '服务',
         dataIndex: 'service',
@@ -1341,12 +1630,88 @@ export const systemServicesColumns = [
         
     },
     {
-        title: '软件',
-        dataIndex: 'product',
+        title: '端口',
+        dataIndex: 'port',
     },
     {
-        title: '版本',
+        title: '协议',
+        dataIndex: 'protocol',
+    },
+    {
+        title: '服务',
+        dataIndex: 'service',
+    },
+    {
+        title: '应用',
+        dataIndex: 'product',
+        onFilter: (values:string, record:systemServicesColumnsType) => record.product.toLowerCase().includes(values.toLowerCase()),
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }: FilterDropdownProps) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    autoFocus
+                    placeholder="搜索..."
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    onClick={() => confirm()}
+                    size="small"
+                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+                >
+                    搜索
+                </Button>
+                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+                    重置
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        
+    },
+    {
+        title: '应用版本',
         dataIndex: 'version',
+    },
+    {
+        title: '操作系统',
+        dataIndex: 'ostype',
+        onFilter: (values:string, record:systemServicesColumnsType) => record.os_type.toLowerCase().includes(values.toLowerCase()),
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }: FilterDropdownProps) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    autoFocus
+                    placeholder="搜索..."
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    onClick={() => confirm()}
+                    size="small"
+                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+                >
+                    搜索
+                </Button>
+                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+                    重置
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        
     },
     // {
     //     title: '类型',
@@ -1566,7 +1931,142 @@ export const whitelistColumns = [
         ),
     },
 ];
-
+export interface baselineDetectColumnsType {
+    key: React.Key;
+    ip:string;
+    uuid:string;
+    check_name:string;
+    createTime:string;
+    instruction: string;       // 指令
+    status:string;
+}
+export const baselineDetectColumns = [
+    {
+        title: "ID",
+        dataIndex: 'id',
+        key: 'id',
+        Maxwidth: '15px',
+    },
+    
+    {
+        title: "主机名称",
+        dataIndex: 'uuid',
+        key: 'uuid',
+        onFilter: (values: string, record: baselineDetectColumnsType) => record.uuid.includes(values) || record.ip.toLowerCase().includes(values.toLowerCase()),
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }: FilterDropdownProps) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    autoFocus
+                    placeholder="搜索主机名称或IP..."
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    onClick={() => confirm()}
+                    size="small"
+                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+                >
+                    搜索
+                </Button>
+                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+                    重置
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        render: (text: string, record: baselineDetectColumnsType) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{fontWeight:'bold', border:'transparent', backgroundColor:'transparent', color:'#4086FF', padding:'0 0'}}>
+                            {record.uuid.slice(0,5)}
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{ 
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                </div>
+            </div>
+        ),
+    },
+    
+    {
+        title: "基线名称",
+        dataIndex: 'check_name',
+        render: (text: string, record: baselineDetectColumnsType) => (
+            <Tooltip title={record.check_name}>
+              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
+                {record.check_name}
+              </div>
+            </Tooltip>
+          ),
+    },
+    {
+        title: "检查详情",
+        dataIndex: 'details',
+        Maxwidth: 100,
+    },
+    {
+        title: "调整建议",
+        dataIndex: 'adjustment_requirement',
+        filters: [{text:'建议调整',value:'建议调整'},{text:'自行判断',value:'自行判断'}
+        ],
+        onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
+    
+        render: (text: string, record: baselineDetectColumnsType) => (
+            <Tooltip title={record.instruction}>
+                {text}
+            </Tooltip>
+        ),
+    },
+    {
+        title: "状态",
+        dataIndex: 'status',
+        filters: [{text:'true',value:'true'},{text:'fail',value:'fail'}
+        ],
+        onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
+    },
+    {
+        title: "最新扫描时间",
+        dataIndex: 'last_checked',
+        
+        // render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+        // sorter: (a: any, b: any) => Date.parse(b.occurrenceTime) - Date.parse(a.occurrenceTime),
+        // sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
+        // sortDirections: ['ascend', 'descend'],
+    },
+    {
+        title: "操作",
+        dataIndex: 'operation',
+        render: (text: string, record: baselineDetectColumnsType) => (
+            
+            <div>
+            <Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',marginRight:'20px',
+                        padding:'0 0'}} className="custom-link-button">详情</Button>
+            </Link>
+            {/* <Button className="custom-link-button" 
+            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+            padding:'0 0' }}>加白名单</Button> */}
+            </div>
+          ),
+          
+    },
+];
 
 export const virusscannigAllTasksColumns = [
     { title: '任务名称', dataIndex: 'task_name', key: 'task_name' },
@@ -1756,113 +2256,6 @@ export const hostinventoryColumns_rel = [
         </Link>
 
         )
-    },
-];
-
-export const fimColumns_rel = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        Maxwidth: '15px',
-    },
-    {
-        title: '主机IP',
-        dataIndex: 'hostIP',
-        onFilter: (values:string, record:FimDataType) => record.hostIP.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        
-        onHeaderCell: () => ({
-            style: {
-              minWidth: 80, // 最小宽度100px
-              maxWidth: 170, // 最大宽度200px
-            },
-          }),
-        //sorter: (a: any, b: any) => new Date(a.mtime).getTime() - new Date(b.mtime).getTime(),
-    },
-    {
-        title: "文件名",
-        dataIndex: 'filename',
-        onHeaderCell: () => ({
-            style: {
-              maxWidth: 200, // 最大宽度200px
-            },
-          }),
-    },
-    {
-        title: '主机名',
-        dataIndex: 'hostname',
-        onHeaderCell: () => ({
-            style: {
-              minWidth: 80, // 最小宽度100px
-              //maxWidth: 170, // 最大宽度200px
-            },
-          }),
-        //   render: (text: string, record: any) => (
-        //   // 在 render 方法中返回包含按钮的元素
-        //   <Link to="/app/detailspage" target="_blank">
-        //       <Button type="link" className="custom-link-button">{text}</Button>
-        //   </Link>
-        //   ),
-    },
-    {
-        title: "告警时间",
-        dataIndex: 'event_time',
-        sorter: (a: any, b: any) => Date.parse(b.event_time) - Date.parse(a.event_time),
-    },
-    {
-        title: '告警类型',
-        dataIndex: 'alert_type',
-        onFilter: (value: string | number | boolean, record: FimDataType) => record.alert_type.includes(value as string),
-        filters: [
-            {
-              text: 'created',
-              value: 'created',
-            },
-            {
-              text: 'deleted',
-              value: 'deleted',
-            },
-        ],
-          // 修改这里使用record参数，确保函数能访问到当前行的数据
-        render: (text: string, record: FimDataType) => (
-            <Badge status={record.alert_type === 'deleted' ? 'error' : 'default'} text={record.alert_type} />
-        ),
-        
-        
-        onHeaderCell: () => ({
-            style: {
-              minWidth: 80, // 最小宽度100px
-              //maxWidth: 170, // 最大宽度200px
-            },
-          }),
     },
 ];
 
@@ -2222,156 +2615,7 @@ export interface vulColumnsType {
     uuid:string;
     port:string;
 }
-export interface baselineDetectColumnsType {
-    key: React.Key;
-    ip:string;
-    uuid:string;
-    check_name:string;
-    createTime:string;
-    instruction: string;       // 指令
-    status:string;
-}
-export const baselineDetectColumns = [
-    {
-        title: "ID",
-        dataIndex: 'id',
-        key: 'id',
-        Maxwidth: '15px',
-    },
-    {
-        title: "主机名称",
-        dataIndex: 'uuid', key: 'uuid',
-        onFilter: (values:string, record:baselineDetectColumnsType) => record.uuid.includes(values),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: "IP",
-        dataIndex: 'ip',
-        onFilter: (values:string, record:baselineDetectColumnsType) => record.ip.includes(values),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    },
-    {
-        title: "基线名称",
-        dataIndex: 'check_name',
-        render: (text: string, record: baselineDetectColumnsType) => (
-            <Tooltip title={record.check_name}>
-              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
-                {record.check_name}
-              </div>
-            </Tooltip>
-          ),
-    },
-    {
-        title: "检查详情",
-        dataIndex: 'details',
-        // Maxwidth: '45px',
-    },
-    {
-        title: "调整建议",
-        dataIndex: 'adjustment_requirement',
-        filters: [{text:'建议调整',value:'建议调整'},{text:'自行判断',value:'自行判断'}
-        ],
-        onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
-    
-        render: (text: string, record: baselineDetectColumnsType) => (
-            <Tooltip title={record.instruction}>
-                {text}
-            </Tooltip>
-        ),
-    },
-    {
-        title: "状态",
-        dataIndex: 'status',
-        filters: [{text:'true',value:'true'},{text:'fail',value:'fail'}
-        ],
-        onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
-    },
-    {
-        title: "最新扫描时间",
-        dataIndex: 'last_checked',
-        sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
-        sortDirections: ['ascend', 'descend'],
-    },
-    {
-        title: "操作",
-        dataIndex: 'operation',
-        render: (text: string, record: baselineDetectColumnsType) => (
-            
-            <div>
-            <Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-                <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',marginRight:'20px',
-                        padding:'0 0'}} className="custom-link-button">详情</Button>
-            </Link>
-            {/* <Button className="custom-link-button" 
-            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-            padding:'0 0' }}>加白名单</Button> */}
-            </div>
-          ),
-          
-    },
-];
+
 
 export const RASPProcessColums = [
     {

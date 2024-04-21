@@ -39,6 +39,7 @@ export interface DataContextType {
   linuxBaseLineCheckOriginData:any[];
   windowsBaseLineCheckOriginData:any[];
   vulnOriginData:any[];
+  taskOriginData:any[];
   //vulnOriginDataReconstruct:ReconstructedDataItem;
 
 
@@ -98,33 +99,11 @@ export const DataContext = createContext<DataContextType | undefined>(undefined)
 
 
 
-// const searchOriginData = (
-//   originData:any[],      // The actual array of data objects
-//   filterKeys:string[],      // Keys to filter by
-//   filterValues:string[],    // Corresponding values for filtering
-//   targetAttributes:string[] // Attributes to be included in the final result
-// ) => {
-//   // Filter data based on filterKeys and filterValues
-//   const filteredData = originData.filter(item =>
-//     filterKeys.every((key, index) => item[key] === filterValues[index])
-//   );
-
-//   // Extract only the target attributes from the filtered data
-//   return filteredData.map(item => {
-//     const resultItem:any = {};
-//     targetAttributes.forEach(attr => {
-//       resultItem[attr] = item[attr];
-//     });
-//     return resultItem;
-//   });
-// };
-
-
-
 
 const DataManager: React.FC = ({ children }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [agentOriginData, setAgentOriginData] = useState<any>();
+  const [taskOriginData, setTaskOriginData] = useState<any>({});
   // const [agentOriginData_2, setAgentOriginData_2] = useState<Map<string, AgentInfoType>>();
 
   const [fimOriginData, setFimOriginData] = useState<any>({});
@@ -166,7 +145,11 @@ const DataManager: React.FC = ({ children }) => {
         const windowsBaseLineCheckOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/baseline_check/windows/all'});
         
         const vulnOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/vulndetetion/all'});
+
+        const taskOriginData = await fetchDataFromAPI({apiEndpoint:'http://localhost:5000/api/task/all'});
+
         setVulnOriginData(vulnOriginData);
+        setTaskOriginData(taskOriginData);
         //const reformedData = reformatVulnData(vulnOriginData); // 调用重构函数
         //setVulnOriginDataReconstruct(reformedData); // 更新重构后的数据状态
         setAgentOriginData(agentOriginData);
@@ -322,7 +305,7 @@ const DataManager: React.FC = ({ children }) => {
       agentAVGMEMUse,
 
       agentOriginData,processOriginData,assetOriginData,portOriginData,windowsBaseLineCheckOriginData,linuxBaseLineCheckOriginData,fimOriginData,
-      vulnOriginData,
+      vulnOriginData,taskOriginData,
 
       agentMetaData_status,
       agentOnlineCount,

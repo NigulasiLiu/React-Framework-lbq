@@ -1,12 +1,13 @@
 // ScheduleTask.tsx
 
 import React from 'react';
-import { Card, Col, Button, Row, Modal, Form, Input, Badge } from 'antd'
+import { Card, Col, Button, Row, Modal, Form, Input, Badge, message } from 'antd'
 import { Link } from 'react-router-dom';
 import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
 import DataDisplayTable from '../AssetsCenter/DataDisplayTable';
-import { SearchOutlined } from '@ant-design/icons';
+import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 
 export interface ScheduleTaskType {
     key: React.Key;   
@@ -20,227 +21,200 @@ export interface ScheduleTaskType {
 class ScheduleTask extends React.Component<{}> {
 
     ScheduleTaskColumns = [
-    {
-        title: '任务编号',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: '主机名称',
-        dataIndex: 'uuid',
-        key: 'uuid',
-        onFilter: (values:string, record:ScheduleTaskType) => record.uuid.includes(values),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+        {
+            title: 'ID',
+            dataIndex: 'task_id',
+            key: 'task_id',
+        },
+        {
+            title: '作业编号',
+            dataIndex: 'job_id',
+            // key: 'job_id',
+        },
+        {
+            title: '开始时间',
+            dataIndex: 'start_time',
+            // key: 'start_time',
+        },
+        {
+            title: '结束时间',
+            dataIndex: 'end_time',
+            //key: 'end_time',
+        },
+        {
+            title: '创建时间',
+            dataIndex: 'create_time',
+            //key: 'create_time',
+        },
+        {
+            title: '更新时间',
+            dataIndex: 'update_time',
+            //key: 'update_time',
+        },
+        {
+            title: '运行时间',
+            dataIndex: 'process_time',
+            //key: 'process_time',
+        },
+        {
+            title: '返回值',
+            dataIndex: 'retval',
+            //key: 'retval',
+        },
+        {
+            title: '异常',
+            dataIndex: 'exception',
+            //key: 'exception',
+        },
+        {
+            title: "操作",
+            dataIndex: 'operation',
+            render: (text: string, record: any) => (
+            <Link to="/app/create_agent_task" target="_blank">
+                <Button 
+                    style={{
+                    fontWeight:'bold',padding:'0 0',
+                    border: 'transparent',
+                    backgroundColor: 'transparent',
+                    //color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                    //cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                    }} 
+                    //disabled={record.status !== 'Online'}
                 >
-                    搜索
+                    删除任务
                 </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        // eslint-disable-next-line react/jsx-no-undef
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
             </Link>
-          ),
-    },
-    {
-        title: '任务名称',
-        dataIndex: 'task_name',
-        key: 'task_name',
-        onFilter: (values:string, record:ScheduleTaskType) => record.uuid.includes(values),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        // eslint-disable-next-line react/jsx-no-undef
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: '任务类型',
-        dataIndex: 'task_type',
-        key: 'task_type',
-        onFilter: (values:string, record:ScheduleTaskType) => record.uuid.includes(values),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        // eslint-disable-next-line react/jsx-no-undef
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-                        padding:'0 0'}}>{text.slice(0,5)}</Button>
-            </Link>
-          ),
-    },
-    {
-        title: '创建者',
-        dataIndex: 'user',
-        key: 'user',
-    },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        onFilter: (value: string | number | boolean, record: ScheduleTaskType) => record.status.includes(value as string),
-        filters: [
-            {
-              text: '已完成',
-              value: '已完成',
-            },
-            {
-              text: '运行中',
-              value: '运行中',
-            },
-            {
-              text: '下发或运行失败',
-              value: '下发或运行失败',
-            },
-        ],
-          // 修改这里使用record参数，确保函数能访问到当前行的数据
-        render: (text: string, record: ScheduleTaskType) => (
-            <Badge status={record.status === '已完成' ? 'success' : (record.status === '运行中' ? 'processing' : 'error')} text={record.status} />
-        ),
-    },
-    {
-        title: '创建时间',
-        dataIndex: 'create_time',
-        key: 'create_time',
-        sorter: (a:ScheduleTaskType, b:ScheduleTaskType) => parseFloat(a.create_Time) - parseFloat(b.create_Time),
-    
-    },
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        key: 'operation',
-        render: (text: string, record: any) => (
-        // 在 render 方法中返回包含按钮的元素
-        <Link to="/app/detailspage" target="_blank">
-            <Button type="link" className='custom-link-button'>{"详情"}</Button>
-        </Link>)
-    }
+            )
+        },
+        // {
+        //     title: '问题回溯',
+        //     dataIndex: 'traceback',
+        //     key: 'traceback',
+        // },
     ];
-      
+    
+    renderTable=(OriginData:any[], title:string, timeColumnIndex:string[], column:any[], currentPanel:string)=>{
+        if(OriginData!==undefined){
+            // 确保OriginData总是作为数组处理
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            originDataArray.forEach(item => {
+                console.log("create_time:", item.create_time);
+                console.log("end_time:", item.end_time);
+                console.log("exception:", item.exception);
+                console.log("job_id:", item.job_id);
+                console.log("process_time:", item.process_time);
+                console.log("retval:", item.retval);
+                console.log("start_time:", item.start_time);
+                console.log("task_id:", item.task_id);
+                console.log("traceback:", item.traceback);
+                console.log("update_time:", item.update_time);
+                console.log("\n"); // 打印空行分隔每个元素
+            });
+            if (originDataArray.length > 0) {
+                if (!originDataArray) {
+                    return <div>No data available.</div>;
+                }
+                message.info("len:"+originDataArray.length)
+                return (
+                <div style={{fontWeight: 'bolder', width: '100%',}}>
+                    <Card bordered={true}
+                        style={{backgroundColor: '#ffffff' }}>
+                        <Row>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                            </div>
+                        </Row>
+                        <DataDisplayTable
+                            externalDataSource={originDataArray}
+                            timeColumnIndex={timeColumnIndex}
+                            columns={column}
+                            currentPanel={currentPanel}
+                        />
+                    </Card>
+                </div>
+                );
+            }
+        }
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', }}>
+            <Card bordered={true}
+                style={{backgroundColor: '#ffffff', width: '100%' }}>
+                <LoadingOutlined style={{ fontSize: '3em' }} />
+            </Card>
+            </div>
+        );
+    }
+    
     render() {
         return (
-        <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-            <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                        <Col md={24}>
-                        <div style={{fontWeight: 'bolder', width: '100%',}}>
-                            <Card bordered={true}
-                                style={{backgroundColor: '#ffffff' }}>
-                                <Row>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                        <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{"定时任务"}</h2>
-                                    </div>
-                                </Row>
-                                <DataDisplayTable
-                                externalDataSource={[]}
-                                timeColumnIndex={['create_time']}
-                                columns={this.ScheduleTaskColumns}
-                                currentPanel={"ScheduleTasklist"}
-                                />
-                            </Card>
-                        </div>
-                            {/* <div className="gutter-box">
-                            <Card bordered={false}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>用户管理</h2>
-                                </div>
-                                <FetchAPIDataTable
-                                apiEndpoint="http://localhost:5000/api/ScheduleTask"
-                                timeColumnIndex={[]}
-                                columns={this.ScheduleTaskColumns}
-                                currentPanel={"ScheduleTasklist"}
-                                />
-                                </Card>
-                            </div> */}
-                        </Col>
-
-            </Row>
-        </div>
-        );
+            <DataContext.Consumer>
+              {(context: DataContextType | undefined) => {
+                if (!context) {
+                  return (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                    <LoadingOutlined style={{ fontSize: '3em' }} />
+                    </div>); // 或者其他的加载状态显示
+              }
+              // 从 context 中解构出 topFiveFimData 和 n
+              const {taskOriginData} = context;
+ 
+                  return (
+                    <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
+                        <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                                    <Col md={24}>
+                                    {this.renderTable(taskOriginData, '任务详情',['update_time','create_time','start_time','end_time',],this.ScheduleTaskColumns,'ScheduleTasklist')}
+                                    {/* <div style={{fontWeight: 'bolder', width: '100%',}}>
+                                        <Card bordered={true}
+                                            style={{backgroundColor: '#ffffff' }}>
+                                            <Row>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{"任务详情"}</h2>
+                                                </div>
+                                            </Row>
+                                            <DataDisplayTable
+                                            externalDataSource={taskOriginDataArray}
+                                            timeColumnIndex={[]}
+                                            columns={this.ScheduleTaskColumns}
+                                            currentPanel={"ScheduleTasklist"}
+                                            />
+                                        </Card>
+                                        
+                                        <Card bordered={true}      //'update_time','create_time','start_time','end_time',
+                                            style={{backgroundColor: '#ffffff' }}>
+                                            <Row>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>{"定时任务"}</h2>
+                                                </div>
+                                            </Row>
+                                            <DataDisplayTable
+                                            externalDataSource={[]}
+                                            timeColumnIndex={['create_time']}
+                                            columns={this.ScheduleTaskColumns}
+                                            currentPanel={"ScheduleTasklist"}
+                                            />
+                                        </Card>
+                                    </div> */}
+                                        {/* <div className="gutter-box">
+                                        <Card bordered={false}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
+                                                <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>任务详情</h2>
+                                            </div>
+                                            <FetchAPIDataTable
+                                            apiEndpoint="http://localhost:5000/api/task/all"
+                                            timeColumnIndex={[]}
+                                            columns={this.ScheduleTaskColumns}
+                                            currentPanel={"ScheduleTasklist"}
+                                            />
+                                            </Card>
+                                        </div> */}
+                                    </Col>
+            
+                        </Row>
+                    </div>
+                    );
+              }}
+            </DataContext.Consumer>
+          )
       }
 }
 

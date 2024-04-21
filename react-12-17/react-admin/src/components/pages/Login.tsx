@@ -44,12 +44,12 @@ class Login extends React.Component<LoginProps> {
                 });
                 localStorage.setItem("user", JSON.stringify(response.data));
                 //this.props.history.push("/");
-                this.props.history.push('/app/dashboard');
+                this.props.history.push('/app/Dashboard');
             } else {
                 // 处理意外的响应或显示错误消息
             }
         } catch (error) {
-            this.props.history.push('/app/dashboard');
+            this.props.history.push('/app/Dashboard');
             console.error('登录失败!--front', error);
         }
     };

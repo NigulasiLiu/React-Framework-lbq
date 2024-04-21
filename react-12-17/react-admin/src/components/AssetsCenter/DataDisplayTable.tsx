@@ -4,6 +4,7 @@ import moment, { Moment } from 'moment';
 import { buildRangeQueryParams, convertUnixTime} from './DataService';
 import { simplifiedTablePanel } from '../tableUtils';
 import { Link } from 'react-router-dom';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -171,7 +172,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
     // };
     
     handleExport = () => {
-        const { externalDataSource, columns } = this.props;
+        const { externalDataSource, columns, currentPanel } = this.props;
         const { selectedRowKeys } = this.state;
       
         // 如果没有选中的行，则不执行导出
@@ -213,7 +214,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "exported_data.csv");
+        link.setAttribute("download", currentPanel+"_exported_data.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -255,7 +256,8 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                         item[column] = convertUnixTime(parseFloat(item[column]));
                     }
                 });
-            };return item;
+            };
+            return item;
         })
 
         const compStyle_normal={

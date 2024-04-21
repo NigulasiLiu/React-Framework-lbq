@@ -9,7 +9,7 @@ import DetailsPage from './components/DetailsPage/DetailsPage';
 export default () => (
     <Router>
         <Switch>
-            {/* <Route exact path="/" render={() => <Redirect to="/app/dashboard" push />} /> */}
+            {/* <Route exact path="/" render={() => <Redirect to="/app/Dashboard" push />} /> */}
             <Route exact path="/" render={() => <Redirect to="/login" push />} />
             <Route path="/app" component={App} />
             <Route path="/details/:id" component={DetailsPage} />
