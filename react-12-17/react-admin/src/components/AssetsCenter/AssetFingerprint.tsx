@@ -1,12 +1,14 @@
 import React from 'react';
 import { Row, Col, Card, Menu, } from 'antd';
-import FetchAPIDataTable from './FetchAPIDataTable';
+import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+
 import OverviewPanel from './OverviewPanel';
-import MetaDataDisplay from './MetaDataDisplay';
-import { fimColumns,
+import {
+    fimColumns,
     openPortsColumns,
-    runningProcessesColumns,systemServicesColumns,
-    GenericDataItem, StatusItem } from '../tableUtils';
+    runningProcessesColumns, systemServicesColumns,
+    GenericDataItem, StatusItem
+} from '../tableUtils';
 
 
 type AssetFingerprintProps = {};
@@ -21,7 +23,7 @@ type AssetFingerprintState = {
     statusData: StatusItem[]; // 初始状态
     currentPanel: string;
 
-    
+
     sortedData: GenericDataItem[];
 };
 
@@ -50,11 +52,11 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
 
             currentPanel: 'overview', // 默认选中的面板
-            
+
             sortedData: [],
         };
     }
-    setSortedData = (data:GenericDataItem[]) => {
+    setSortedData = (data: GenericDataItem[]) => {
         this.setState({ sortedData: data });
     };
 
@@ -93,8 +95,8 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
 
     // 渲染当前激活的子面板
     renderCurrentPanel() {
-        const {currentPanel} = this.state;
-        console.log('this.state.currentPanel:'+currentPanel)
+        const { currentPanel } = this.state;
+        console.log('this.state.currentPanel:' + currentPanel)
         switch (currentPanel) {
             case 'overview':
                 return (
@@ -107,43 +109,43 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 );
             case 'fim':
                 return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
-                    timeColumnIndex={['event_time']}
-                    columns={fimColumns}
-                    currentPanel={currentPanel}
+                    <FetchDataForElkeidTable
+                        apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
+                        timeColumnIndex={['event_time']}
+                        columns={fimColumns}
+                        currentPanel={currentPanel}
                     />
                 );
             case 'open-ports':
                 return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/portinfo/all"
-                    timeColumnIndex={[]}
-                    columns={openPortsColumns}
-                    currentPanel={currentPanel}
+                    <FetchDataForElkeidTable
+                        apiEndpoint="http://localhost:5000/api/portinfo/all"
+                        timeColumnIndex={[]}
+                        columns={openPortsColumns}
+                        currentPanel={currentPanel}
                     />
                 );
             case 'running-processes':
                 return (
-                    <FetchAPIDataTable
-                    apiEndpoint="http://localhost:5000/api/process/all"
-                    timeColumnIndex={['createTime']}
-                    columns={runningProcessesColumns}
-                    currentPanel={currentPanel}
+                    <FetchDataForElkeidTable
+                        apiEndpoint="http://localhost:5000/api/process/all"
+                        timeColumnIndex={['createTime']}
+                        columns={runningProcessesColumns}
+                        currentPanel={currentPanel}
                     />
                 );
-                case 'system-services':
-                    return (
-                        <FetchAPIDataTable
+            case 'system-services':
+                return (
+                    <FetchDataForElkeidTable
                         apiEndpoint="http://localhost:5000/api/asset_mapping/all"
                         timeColumnIndex={[]}
                         columns={systemServicesColumns}
                         currentPanel={currentPanel}
-                        />
-                    );
+                    />
+                );
             // case 'system-users':
             //     return (
-            //         <FetchAPIDataTable
+            //         <FetchDataForElkeidTable
             //         apiEndpoint="http://localhost:5000/api/files/system-users"
             //         timeColumnIndex={[]}
             //         columns={systemUsersColumns}
@@ -152,7 +154,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             //     );
             // case 'scheduled-tasks':
             //     return (
-            //         <FetchAPIDataTable
+            //         <FetchDataForElkeidTable
             //         apiEndpoint="http://localhost:5000/api/files/scheduled-tasks"
             //         timeColumnIndex={[]}
             //         columns={scheduledTasksColumns}
@@ -161,7 +163,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             //     );
             // case 'system-software':
             //     return (
-            //         <FetchAPIDataTable
+            //         <FetchDataForElkeidTable
             //         apiEndpoint="http://localhost:5000/api/files/system-software"
             //         timeColumnIndex={[]}
             //         columns={systemSoftwareColumns}
@@ -170,7 +172,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             //     );
             // case 'applications':
             //     return (
-            //         <FetchAPIDataTable
+            //         <FetchDataForElkeidTable
             //         apiEndpoint="http://localhost:5000/api/files/applications"
             //         timeColumnIndex={[]}
             //         columns={applicationsColumns}
@@ -179,22 +181,22 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             //     );
             // case 'kernel-modules':
             //     return (
-            //         <FetchAPIDataTable
+            //         <FetchDataForElkeidTable
             //         apiEndpoint="http://localhost:5000/api/files/kernel-modules"
             //         timeColumnIndex={[]}
             //         columns={kernelModulesColumns}
             //         currentPanel={currentPanel}
             //         />
             //     );
-                // case 'container':
-                //     return (
-                //         <FetchAPIDataTable
-                //         apiEndpoint="http://localhost:5000/api/files/container"
-                //         timeColumnIndex={[]}
-                //         columns={containerColumns}
-                //         currentPanel={currentPanel}
-                //         />
-                //     );
+            // case 'container':
+            //     return (
+            //         <FetchDataForElkeidTable
+            //         apiEndpoint="http://localhost:5000/api/files/container"
+            //         timeColumnIndex={[]}
+            //         columns={containerColumns}
+            //         currentPanel={currentPanel}
+            //         />
+            //     );
 
             // default:
             //     return (
@@ -231,39 +233,39 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                 <div>
                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                            <Col md={24}>
-                                <div className="gutter-box">
+                        <Col md={24}>
+                            <div className="gutter-box">
                                 <Card bordered={false}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 ,fontWeight: 'bold'}}>
-                                        <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontWeight: 'bold' }}>
+                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
                                     </div>
-                                <Menu
-                                    onClick={this.handleMenuClick}
-                                    selectedKeys={[this.state.currentPanel]}
-                                    mode="horizontal"
-                                    style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
-                                >
-                                    <Menu.Item key="overview">总览</Menu.Item>
-                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
-                                    <Menu.Item key="open-ports">开放端口</Menu.Item>
-                                    <Menu.Item key="running-processes">运行进程</Menu.Item>
-                                    <Menu.Item key="system-services">系统服务</Menu.Item>
-                                    {/* <Menu.Item key="container">容器</Menu.Item> */}
-                                    {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
-                                    {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
+                                    <Menu
+                                        onClick={this.handleMenuClick}
+                                        selectedKeys={[this.state.currentPanel]}
+                                        mode="horizontal"
+                                        style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
+                                    >
+                                        <Menu.Item key="overview">总览</Menu.Item>
+                                        <Menu.Item key="fim">文件完整性检验</Menu.Item>
+                                        <Menu.Item key="open-ports">开放端口</Menu.Item>
+                                        <Menu.Item key="running-processes">运行进程</Menu.Item>
+                                        <Menu.Item key="system-services">系统服务</Menu.Item>
+                                        {/* <Menu.Item key="container">容器</Menu.Item> */}
+                                        {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
+                                        {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
                                     <Menu.Item key="applications">应用</Menu.Item> */}
-                                    {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
-                                    {/* 可以根据需要添加更多的Menu.Item */}
-                                    {/* 使用透明div作为flex占位符 */}
-                                    <div style={{ flexGrow: 1 }}></div>
-                                    
-                                </Menu>
-                                {/* 渲染当前激活的子面板 */}
-                                <Card bordered={false}>{this.renderCurrentPanel()}</Card>
+                                        {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
+                                        {/* 可以根据需要添加更多的Menu.Item */}
+                                        {/* 使用透明div作为flex占位符 */}
+                                        <div style={{ flexGrow: 1 }}></div>
+
+                                    </Menu>
+                                    {/* 渲染当前激活的子面板 */}
+                                    <Card bordered={false}>{this.renderCurrentPanel()}</Card>
                                 </Card>
-                                </div>
-                            </Col>
+                            </div>
+                        </Col>
                     </Row>
                 </div>
             </div>

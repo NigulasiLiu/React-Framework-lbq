@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Button, Modal, Form, Input, message, Row,Card } from 'antd';
 import axios from 'axios';
-import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 
 interface TTP {
   key: string;
@@ -126,7 +126,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                       <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>TTPs信息</h2>
                   </div>
-                  <FetchAPIDataTable
+                  <FetchDataForElkeidTable
                   apiEndpoint="http://localhost:5000/api/files/threathunting"
                   timeColumnIndex={[]}
                   columns={threatHuntingColumns}

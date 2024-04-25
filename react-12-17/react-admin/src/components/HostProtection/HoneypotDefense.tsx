@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import { Card, Col, Row, Modal, Form, Input, Button,message } from 'antd';
 import axios from 'axios';
-import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 
 interface HoneypotDefenseProps{
 
@@ -173,7 +173,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                         <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>蜜罐信息</h2>
                     </div>
-                    <FetchAPIDataTable
+                    <FetchDataForElkeidTable
                     apiEndpoint="http://localhost:5000/api/files/hostinventory"
                     timeColumnIndex={[]}
                     columns={columnsHoneypotInfo}
@@ -190,7 +190,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                         <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>捕获信息</h2>
                     </div>
-                    <FetchAPIDataTable
+                    <FetchDataForElkeidTable
                     apiEndpoint="http://localhost:5000/honeypot/attack/data"
                     timeColumnIndex={[]}
                     columns={columnsAttackerInfo2}

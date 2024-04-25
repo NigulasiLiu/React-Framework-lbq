@@ -1,3 +1,6 @@
+import { Tooltip } from "antd";
+import React from "react";
+
 export interface Risk {
     key: React.Key;
     name: string;
@@ -33,9 +36,9 @@ export const diskColumns = [
         key: 'diskname',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 200, // 最大宽度200px
+                maxWidth: 200, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '挂载点',
@@ -48,9 +51,9 @@ export const diskColumns = [
         key: 'filesystem',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '总空间',
@@ -58,9 +61,9 @@ export const diskColumns = [
         key: 'totalspace',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '已用空间',
@@ -68,9 +71,9 @@ export const diskColumns = [
         key: 'spentspace',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     }
 ];
 export const netColumns = [
@@ -81,7 +84,7 @@ export const netColumns = [
         onHeaderCell: () => ({
             style: {
             },
-          }),
+        }),
     },
     {
         title: 'IP地址',
@@ -90,7 +93,7 @@ export const netColumns = [
         onHeaderCell: () => ({
             style: {
             },
-          }),
+        }),
     },
     {
         title: '硬件地址',
@@ -99,7 +102,7 @@ export const netColumns = [
         onHeaderCell: () => ({
             style: {
             },
-          }),
+        }),
     }
 ];
 export const pluginColumns = [
@@ -109,9 +112,9 @@ export const pluginColumns = [
         key: 'pluginname',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 200, // 最大宽度200px
+                maxWidth: 200, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '版本',
@@ -124,9 +127,9 @@ export const pluginColumns = [
         key: 'status',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '客户端资源使用',
@@ -134,9 +137,9 @@ export const pluginColumns = [
         key: 'resourcespent',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '启动时间',
@@ -144,9 +147,9 @@ export const pluginColumns = [
         key: 'starttime',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     },
     {
         title: '活跃时间',
@@ -154,9 +157,9 @@ export const pluginColumns = [
         key: 'activetime',
         onHeaderCell: () => ({
             style: {
-              maxWidth: 170, // 最大宽度200px
+                maxWidth: 170, // 最大宽度200px
             },
-          }),
+        }),
     }
 ];
 
@@ -247,6 +250,13 @@ export const openPortsColumns = [
         title: '进程命令行',
         dataIndex: 'processCmd',
         key: 'processCmd',
+        render: (text: string, record: any) => (
+            <Tooltip title={record.processCmd}>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+                    {record.processCmd}
+                </div>
+            </Tooltip>
+        ),
     },
     {
         title: '用户ID',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col,Card,Typography ,} from 'antd';
 import { StatusItem,virusscannigAllTasksColumns } from '../tableUtils';
-import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 const { Text } = Typography;
 
 interface VirusScanTableSidebarState {
@@ -91,7 +91,7 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps,V
                             <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px'}}>全部扫描任务</h2>
                         </div>
                         <div style={{ maxWidth: sidebartablewidth, width: '100%', margin: '0 auto'}}>
-                            <FetchAPIDataTable
+                            <FetchDataForElkeidTable
                                 apiEndpoint="http://localhost:5000/api/vulnerdetailpage"
                                 timeColumnIndex={['foundtime']}
                                 columns={virusscannigAllTasksColumns}

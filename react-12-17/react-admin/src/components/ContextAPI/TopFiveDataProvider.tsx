@@ -1,6 +1,6 @@
 // src/hooks/useSortedData.tsx
 import { useState, useEffect } from 'react';
-import { fetchDataFromAPI, processData } from '../AssetsCenter/DataService';
+import { fetchDataFromAPI, processData } from './DataService';
 import { DataItem, GenericDataItem } from '../tableUtils';
 import { templateData } from './SeperateData';
 

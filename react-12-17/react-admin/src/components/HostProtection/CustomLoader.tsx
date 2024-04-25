@@ -31,23 +31,23 @@ import PropTypes from 'prop-types';
 import { Spin, Progress, Col, Row } from 'antd';
 
 const CustomLoader = ({ isLoading, scanProgress }: { isLoading: boolean; scanProgress: number }) => {
-    const renderLoader = () => <Spin size="large" tip="Loading..." style={{ color: 'blue',}}/>;
-    const renderProgress = () => <Progress 
-                 strokeColor="#4086FF"
-                 strokeWidth={5}
-                 format={() => `${scanProgress}%`} 
-                 percent={scanProgress} showInfo={false}/>;
+    const renderLoader = () => <Spin size="large" tip="Loading..." style={{ color: 'blue', }} />;
+    const renderProgress = () => <Progress
+        strokeColor="#4086FF"
+        strokeWidth={5}
+        format={() => `${scanProgress}%`}
+        percent={scanProgress} showInfo={false} />;
 
     return (
         <div style={{ padding: '0px' }} aria-live="polite">
             <Row>
-            {/* {isLoading ? renderProgress() : renderProgress()} */}
-            {/* <Col span={4}>
+                {/* {isLoading ? renderProgress() : renderProgress()} */}
+                {/* <Col span={4}>
                 {renderLoader()}
             </Col> */}
-            <Col span={24}>
-                {renderProgress()}
-            </Col>
+                <Col span={24}>
+                    {renderProgress()}
+                </Col>
             </Row>
         </div>
     );

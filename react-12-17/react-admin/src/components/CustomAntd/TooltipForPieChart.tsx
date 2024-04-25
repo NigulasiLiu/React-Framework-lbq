@@ -26,7 +26,7 @@
 // export default TooltipForPieChart;
 import React from 'react';
 import { StatusItem } from '../tableUtils';
-interface TooltipForPieChartProps {  
+interface TooltipForPieChartProps {
   payload?: { color: string; payload: StatusItem }[]; // 调整类型以匹配实际数据结构
 
   active?: boolean;

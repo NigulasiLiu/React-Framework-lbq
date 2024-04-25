@@ -40,18 +40,18 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
     // 重置索引为 -1
     setActiveIndex(-1);
   };
- 
+
   return (
     <div
       style={{ width: cardWidth, height: cardHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
-          <Tooltip content={<TooltipForPieChart 
-          active={true} 
+          <Tooltip content={<TooltipForPieChart
+            active={true}
           //payload={data} 
           //borderColor="#ff0000"
           />
-          }/> {/* 添加tooltip组件 */}
+          } /> {/* 添加tooltip组件 */}
           <Pie
             data={data}
             cx="50%"
@@ -65,7 +65,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
             onMouseEnter={(e: MouseEvent) => hasDynamicEffect && handleMouseEnter(e, 0)}
             onMouseLeave={hasDynamicEffect ? handleMouseLeave : undefined}
             className={hasDynamicEffect && activeIndex === 0 ? 'pie-hovered' : 'pie-normal'}
-         >
+          >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
@@ -76,7 +76,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
                 style={{ fontSize: '14px' }}
               />
             )}
-            
+
           </Pie>
         </PieChart>
       </ResponsiveContainer>

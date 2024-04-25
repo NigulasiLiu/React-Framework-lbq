@@ -4,9 +4,9 @@ import { Row, Col, Card, Button, Statistic } from 'antd';
 import { Link } from 'react-router-dom';
 import VirusScanningTaskSidebar from './VirusScanTableSidebar';
 import VirusScanProcessSidebar from '../HostProtection/ScanProcessSidebar';
-import CustomPieChart from '../AssetsCenter/CustomPieChart';
+import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { StatusItem, virusscanningColumns } from '../tableUtils';
-import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 
 interface VirusScanningProps {
   hostID:string;
@@ -289,7 +289,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
                       <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>扫描结果</h2>
                   </div>
-                  <FetchAPIDataTable
+                  <FetchDataForElkeidTable
                       apiEndpoint="http://localhost:5000/api/files/vulnerability"
                       timeColumnIndex={[]}
                       columns={virusscanningColumns}

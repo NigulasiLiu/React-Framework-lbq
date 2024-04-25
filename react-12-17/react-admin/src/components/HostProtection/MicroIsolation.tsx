@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Col, Row, Form, Input, Button, message,Modal,Table,Descriptions } from 'antd';
 import axios from 'axios';
-import FetchAPIDataTable from '../AssetsCenter/FetchAPIDataTable';
+import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 
 
 interface MicroIsolationProps{
@@ -256,7 +256,7 @@ handleEncryptSubmit = async () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                   <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
                 </div>
-                <FetchAPIDataTable 
+                <FetchDataForElkeidTable 
                 apiEndpoint="http://localhost:5000/api/FetchSpFile" 
                 columns={this.state.spFilesColumns} 
                 timeColumnIndex={[]}
@@ -284,7 +284,7 @@ handleEncryptSubmit = async () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                   <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>隔离文件列表</h2>
                 </div>
-                <FetchAPIDataTable 
+                <FetchDataForElkeidTable 
                 apiEndpoint="http://localhost:5000/api/MicroIsolationlist" 
                 columns={this.state.columns} 
                 timeColumnIndex={[]}

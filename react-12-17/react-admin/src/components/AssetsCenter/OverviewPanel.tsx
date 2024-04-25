@@ -3,11 +3,10 @@ import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd'
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
-import MetaDataDisplay from './MetaDataDisplay';
-import DataCard from '../DataCard';
-import { DataContext, DataContextType} from '../ContextAPI/DataManager'
+import DataCard from '../CustomAntd/DataCard';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager'
 interface OverviewPanelProps extends RouteComponentProps {
-    currentPanel:string;
+    currentPanel: string;
     statusData: StatusItem[];
     //currentPanel: string;
     changePanel: (panelName: string) => void; //切换子panel
@@ -15,7 +14,7 @@ interface OverviewPanelProps extends RouteComponentProps {
 
 type OverviewPanelState = {
     activeIndex: any;
-    tempdata:GenericDataItem[];
+    tempdata: GenericDataItem[];
 };
 const baseDataItems: BaseItem[] = [
     { key: '1', color: '#F24040' },
@@ -102,13 +101,13 @@ const colorOrder = baseDataItems.map((item) => item.color); // Keep original col
 
 
 //显示从接口得到stime数据时，去除进度条
-const generateColumns = (divValue:number, tableName: string, tbName_Right: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
+const generateColumns = (divValue: number, tableName: string, tbName_Right: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
     const showProgress = tableName !== '文件完整性校验-最新变更二进制文件 TOP5'; // 判断是否要显示进度条
 
     return [
         {
-            title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }} 
-            onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
+            title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }}
+                onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
             key: 'id',
             render: (text: any, record: DataItem, index: number) => {
                 const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色 style={{ cursor: 'pointer' }} onClick={() => goToPanel(record.id)}
@@ -142,7 +141,7 @@ const generateColumns = (divValue:number, tableName: string, tbName_Right: strin
             key: 'value',
             render: (value: number) => {
                 if (showProgress) {
-                    const percent_real = parseFloat(value.toString())/parseFloat(divValue.toString())*100;
+                    const percent_real = parseFloat(value.toString()) / parseFloat(divValue.toString()) * 100;
                     return (
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Progress percent={percent_real} strokeColor="#4086FF" showInfo={false} />
@@ -156,15 +155,16 @@ const generateColumns = (divValue:number, tableName: string, tbName_Right: strin
         },
     ];
 };
-const tbName:GenericDataItem={
-    '开放端口 TOP5':'open-ports',
-    '系统软件 TOP5':'system-software',
-    '系统服务 TOP5':'system-services',
-    '运行进程 TOP5':'running-processes',
-    '文件完整性校验-最新变更二进制文件 TOP5':'fim',
-    '应用 TOP5':'applications',
-    '内核模块 TOP5':'kernel-modules',
-    '容器运行状态分布':'container',}
+const tbName: GenericDataItem = {
+    '开放端口 TOP5': 'open-ports',
+    '系统软件 TOP5': 'system-software',
+    '系统服务 TOP5': 'system-services',
+    '运行进程 TOP5': 'running-processes',
+    '文件完整性校验-最新变更二进制文件 TOP5': 'fim',
+    '应用 TOP5': 'applications',
+    '内核模块 TOP5': 'kernel-modules',
+    '容器运行状态分布': 'container',
+}
 const tbNameList = [
     '开放端口 TOP5',
     '系统用户 TOP5',
@@ -178,14 +178,14 @@ const tbNameList = [
 const tbName_Right = ['指纹数', '变更时间', ''];
 // 预定义的模板数组，包含 key 和 color
 
-  
+
 
 class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelState> {
     constructor(props: any) {
         super(props);
         this.state = {
             activeIndex: [-1], //一个扇形图
-            tempdata:[],
+            tempdata: [],
         };
     }
 
@@ -220,172 +220,172 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
 
     render() {
 
-        return(
+        return (
             <DataContext.Consumer>
-            {(context: DataContextType | undefined) => {
-            if (!context) {
-                return <div>Loading...</div>; // 或者其他的加载状态显示
-            }
-            // 从 context 中解构出 topFiveFimData 和 n
-            const { agentSearchResults,
-                fimMetaData_hostname,
-                portMetaData_port_state, portMetaData_port_number,
-                processMetaData_userName,assetMetaData_service, 
+                {(context: DataContextType | undefined) => {
+                    if (!context) {
+                        return <div>Loading...</div>; // 或者其他的加载状态显示
+                    }
+                    // 从 context 中解构出 topFiveFimData 和 n
+                    const {
+                        fimMetaData_hostname,
+                        portMetaData_port_state,
+                        processMetaData_userName, assetMetaData_service,
 
-                topFiveFimData, topFivePortCounts, topFiveProcessCounts,topFiveUserCounts,topFiveServiceCounts,topFiveProductCounts,
-            } = context;
+                        topFiveFimData, topFivePortCounts, topFiveProcessCounts, topFiveUserCounts, topFiveServiceCounts, topFiveProductCounts,
+                    } = context;
 
 
-            const columns = [
-                generateColumns(findMaxValue(topFivePortCounts),tbNameList[0], tbName_Right[0], tbNameList, this.goToPanel),//开放端口
-                generateColumns(findMaxValue(topFiveUserCounts),tbNameList[1], tbName_Right[0], tbNameList, this.goToPanel),//系统用户
-                generateColumns(findMaxValue(topFiveServiceCounts),tbNameList[2], tbName_Right[0], tbNameList, this.goToPanel),//系统服务
-                generateColumns(findMaxValue(topFiveProcessCounts),tbNameList[3], tbName_Right[0], tbNameList, this.goToPanel), //运行进程
-                generateColumns(findMaxValue(topFiveFimData),tbNameList[4], tbName_Right[1], tbNameList, this.goToPanel),//fim
-                generateColumns(findMaxValue(topFiveProductCounts),tbNameList[5], tbName_Right[0], tbNameList, this.goToPanel),//系统应用
-                // generateColumns(tbNameList[6], tbName_Right[0], tbNameList, this.goToPanel),
-                // generateColumns(tbNameList[7], tbName_Right[2], tbNameList, this.goToPanel),
-            ];
+                    const columns = [
+                        generateColumns(findMaxValue(topFivePortCounts), tbNameList[0], tbName_Right[0], tbNameList, this.goToPanel),//开放端口
+                        generateColumns(findMaxValue(topFiveUserCounts), tbNameList[1], tbName_Right[0], tbNameList, this.goToPanel),//系统用户
+                        generateColumns(findMaxValue(topFiveServiceCounts), tbNameList[2], tbName_Right[0], tbNameList, this.goToPanel),//系统服务
+                        generateColumns(findMaxValue(topFiveProcessCounts), tbNameList[3], tbName_Right[0], tbNameList, this.goToPanel), //运行进程
+                        generateColumns(findMaxValue(topFiveFimData), tbNameList[4], tbName_Right[1], tbNameList, this.goToPanel),//fim
+                        generateColumns(findMaxValue(topFiveProductCounts), tbNameList[5], tbName_Right[0], tbNameList, this.goToPanel),//系统应用
+                        // generateColumns(tbNameList[6], tbName_Right[0], tbNameList, this.goToPanel),
+                        // generateColumns(tbNameList[7], tbName_Right[2], tbNameList, this.goToPanel),
+                    ];
 
-            return (
-            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-            <Row gutter={[8, 16]}>
-                <Col span={3}>
+                    return (
+                        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                            <Row gutter={[8, 16]}>
+                                <Col span={3}>
 
-                </Col>
-                <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>开放端口</span>} value={portMetaData_port_state.typeCount.get('open')} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('open-ports')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>运行进程</span>} value={processMetaData_userName.tupleCount} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('running-processes')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>系统服务</span>} value={assetMetaData_service.tupleCount} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('system-services')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>系统用户</span>} value={processMetaData_userName.typeCount.size}/>
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('running-processes')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                {/* <Col span={3}>
+                                </Col>
+                                <Col span={3}>
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            height: '75px',
+                                            width: '150px',
+                                            minWidth: 80, // 最小宽度100px
+                                            maxWidth: 200, // 最大宽度200px
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col pull={2} span={22}>
+                                                <Statistic title={<span>开放端口</span>} value={portMetaData_port_state.typeCount.get('open')} />
+                                            </Col>
+                                            <Col
+                                                pull={0}
+                                                span={2}
+                                                style={{ position: 'relative', top: '-3.5px' }}
+                                            >
+                                                <Button
+                                                    type="link"
+                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                                                    icon={<RightOutlined />}
+                                                    onClick={() => this.goToPanel('open-ports')}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col span={3}>
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            height: '75px',
+                                            width: '150px',
+                                            minWidth: 80, // 最小宽度100px
+                                            maxWidth: 200, // 最大宽度200px
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col pull={2} span={22}>
+                                                <Statistic title={<span>运行进程</span>} value={processMetaData_userName.tupleCount} />
+                                            </Col>
+                                            <Col
+                                                pull={0}
+                                                span={2}
+                                                style={{ position: 'relative', top: '-3.5px' }}
+                                            >
+                                                <Button
+                                                    type="link"
+                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                                                    icon={<RightOutlined />}
+                                                    onClick={() => this.goToPanel('running-processes')}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col span={3}>
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            height: '75px',
+                                            width: '150px',
+                                            minWidth: 80, // 最小宽度100px
+                                            maxWidth: 200, // 最大宽度200px
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col pull={2} span={22}>
+                                                <Statistic title={<span>系统服务</span>} value={assetMetaData_service.tupleCount} />
+                                            </Col>
+                                            <Col
+                                                pull={0}
+                                                span={2}
+                                                style={{ position: 'relative', top: '-3.5px' }}
+                                            >
+                                                <Button
+                                                    type="link"
+                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                                                    icon={<RightOutlined />}
+                                                    onClick={() => this.goToPanel('system-services')}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                <Col span={3}>
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            height: '75px',
+                                            width: '150px',
+                                            minWidth: 80, // 最小宽度100px
+                                            maxWidth: 200, // 最大宽度200px
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col pull={2} span={22}>
+                                                <Statistic title={<span>系统用户</span>} value={processMetaData_userName.typeCount.size} />
+                                            </Col>
+                                            <Col
+                                                pull={0}
+                                                span={2}
+                                                style={{ position: 'relative', top: '-3.5px' }}
+                                            >
+                                                <Button
+                                                    type="link"
+                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                                                    icon={<RightOutlined />}
+                                                    onClick={() => this.goToPanel('running-processes')}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
+                                {/* <Col span={3}>
                     <Card
                         bordered={false}
                         style={{
@@ -418,96 +418,96 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Row>
                     </Card>
                 </Col> */}
-                <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>完整性检验</span>} value={fimMetaData_hostname.tupleCount} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('fim')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
+                                <Col span={3}>
+                                    <Card
+                                        bordered={false}
+                                        style={{
+                                            height: '75px',
+                                            width: '150px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col pull={2} span={22}>
+                                                <Statistic title={<span>完整性检验</span>} value={fimMetaData_hostname.tupleCount} />
+                                            </Col>
+                                            <Col
+                                                pull={0}
+                                                span={2}
+                                                style={{ position: 'relative', top: '-3.5px' }}
+                                            >
+                                                <Button
+                                                    type="link"
+                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                                                    icon={<RightOutlined />}
+                                                    onClick={() => this.goToPanel('fim')}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Col>
 
-                {/* ... other statistic cards */}
-            </Row>
-            <Row gutter={[8, 16]}>
-                <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={topFivePortCounts}//开放端口
-                        columns={columns[0]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col>
-                <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={topFiveUserCounts}//系统用户
-                        columns={columns[1]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col>
-                <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={topFiveServiceCounts}//系统服务
-                        columns={columns[2]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col>
-                <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={topFiveProcessCounts}//运行进程
-                        columns={columns[3]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col>
-                <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={topFiveFimData}//fim
-                        columns={columns[4]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col>
-                <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={topFiveProductCounts}//系统应用
-                        columns={columns[5]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col>
-                {/* <Col span={12}>
+                                {/* ... other statistic cards */}
+                            </Row>
+                            <Row gutter={[8, 16]}>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFivePortCounts}//开放端口
+                                        columns={columns[0]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFiveUserCounts}//系统用户
+                                        columns={columns[1]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFiveServiceCounts}//系统服务
+                                        columns={columns[2]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFiveProcessCounts}//运行进程
+                                        columns={columns[3]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFiveFimData}//fim
+                                        columns={columns[4]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFiveProductCounts}//系统应用
+                                        columns={columns[5]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                {/* <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
                         dataSource={sortedData[6]}
@@ -516,7 +516,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         rowKey="id"
                     />
                 </Col> */}
-                {/* <Col span={12}>
+                                {/* <Col span={12}>
                     <Table<DataItem>
                         className="customTable"
                         //dataSource={sortedData[7]}
@@ -546,13 +546,13 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                         </Row>
                     </Card>
                 </Col> */}
-            </Row>
-            {/* <MetaDataDisplay
+                            </Row>
+                            {/* <MetaDataDisplay
             metadata={assetMetaData_service}
             /> */}
-            </div>
-            );
-            }}
+                        </div>
+                    );
+                }}
             </DataContext.Consumer>
         )
     }

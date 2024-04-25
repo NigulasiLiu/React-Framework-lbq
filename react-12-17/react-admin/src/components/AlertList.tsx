@@ -1,7 +1,6 @@
 import React from 'react';
 import { Statistic,Row, Col, Card, Button, } from 'antd';
-import FetchAPIDataTable from './AssetsCenter/FetchAPIDataTable';
-
+import FetchDataForElkeidTable from './ElkeidTable/FetchDataForElkeidTable';
 type AlertListProps = {
     apiEndpoint:string;
     columns:any[];
@@ -232,7 +231,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                                     <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>告警内容</h2>
                                 <Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>
                                 </div>
-                                <FetchAPIDataTable
+                                <FetchDataForElkeidTable
                                     apiEndpoint={this.props.apiEndpoint}
                                     timeColumnIndex={[]}
                                     columns={this.props.columns}

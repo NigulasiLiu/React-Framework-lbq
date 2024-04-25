@@ -4,9 +4,7 @@
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
-//import DataDisplayTable from './ContextAPI/DataDisplayTable';
-import FetchAPIDataTable from './AssetsCenter/FetchAPIDataTable';
-
+import FetchDataForElkeidTable from './ElkeidTable/FetchDataForElkeidTable';
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -262,7 +260,7 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
                                 selectedRowKeys={this.state.selectedRowKeys}
                                 onSelectChange={(keys: any) => this.onSelectChange(keys)}
                             /> */}
-                                <FetchAPIDataTable
+                                <FetchDataForElkeidTable
                                     apiEndpoint={this.props.apiEndpoint}
                                     timeColumnIndex={[]}
                                     columns={this.props.columns}
