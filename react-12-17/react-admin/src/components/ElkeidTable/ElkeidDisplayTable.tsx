@@ -185,39 +185,6 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
         }
     };
 
-    // autoPopulateFilters = () => {//如果属性包含onFilter，那么将自动填充filter中的各个值
-    //     const { columns, externalDataSource } = this.props;
-
-    //     const newColumns = columns.map(column => {
-    //       if (column.onFilter && externalDataSource) {
-    //         const fieldVarieties = new Set(externalDataSource.map(item => item[column.dataIndex]));
-    //         const filters = Array.from(fieldVarieties).map(variety => ({
-    //           text: (
-    //             <span style={{ color: '#000'}}>
-    //               {variety ? variety.toString() : ''}
-    //             </span>
-    //           ),
-    //           value: variety,
-    //         }));
-    //         return { ...column, filters };
-    //       }
-    //       return column;
-    //     });
-
-    //     return newColumns;
-    // };
-    // 处理表格排序变化的函数
-
-    // 渲染侧边栏组件
-    renderSidebar = () => {
-        const applicationTypes = ['全部应用', '数据库', 'Web服务器', 'DevOps工具', '缓存服务']; // 示例应用类型，后续最好读取后再构造菜单
-
-
-        return (<div></div>
-            // <SidebarComponent onApplicationTypeSelect={this.props.handleApplicationTypeSelect} />
-        );
-    };
-
     handleExport = () => {
         const { externalDataSource, columns } = this.props;
 
@@ -588,14 +555,6 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
                 width: this.props.currentPanel?.includes('baseLineDetectScanResult1') ? '64%' : tableWidth
             }}>
                 <Row gutter={[12, 6]} style={{ marginTop: '-10px' }}>
-                    {/* Conditionally render the sidebar for applications */}
-                    {this.props.currentPanel === 'applications1' && (
-                        <Col md={4} style={{ paddingRight: '12px', borderRight: '1px solid #ccc' }}>
-                            {/* Render Sidebar here */}
-                            {this.renderSidebar()}
-                        </Col>
-                    )}
-
                     {/* Main content area */}
                     <Col
                         md={this.props.currentPanel === 'applications1' ? 20 : 24}

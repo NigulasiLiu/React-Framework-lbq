@@ -135,7 +135,7 @@ const DataManager: React.FC = ({ children }) => {
       const setDataFunction = setDataFunctions[apiEndpoint];
       if (setDataFunction) {
         setDataFunction(data); // 更新状态
-        message.success(apiEndpoint+'Data refreshed successfully');
+        message.success(apiEndpoint+' Data refreshed successfully');
       } else {
         console.error('No matching function found for the API endpoint');
       }

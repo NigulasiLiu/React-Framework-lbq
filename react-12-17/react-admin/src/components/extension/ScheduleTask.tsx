@@ -10,6 +10,7 @@ import { FilterDropdownProps } from 'antd/lib/table/interface';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import moment from 'moment';
 import axios from 'axios';
+import { fetchDataFromAPI } from '../ContextAPI/DataService';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -19,12 +20,14 @@ export interface ScheduleTaskType {
     create_Time: string;
     status: string;
 }
-interface ScheduleTaskProps { };
+interface ScheduleTaskProps {
+ };
 interface ScheduleTaskState {
     selectedVulnUuid: string;
     showModal: boolean, // 控制模态框显示
     currentRecord: any, // 当前选中的记录
     operationName: string,
+    
 }
 
 
@@ -67,6 +70,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             sorter: (a: any, b: any) => parseFloat(a.update_timestamp) - parseFloat(b.update_timestamp),
         },
         {
+            title: '执行次数',
+            dataIndex: 'excute_times',
+            key: 'excute_times',
+            render: (text: string) => text || '0',
+            sorter: (a: any, b: any) => parseFloat(a.excute_times) - parseFloat(b.excute_times),
+        },
+        {
             title: '启动耗时',
             dataIndex: 'process_time',
             sorter: (a: any, b: any) => parseFloat(a.process_time) - parseFloat(b.process_time),
@@ -81,7 +91,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                     value: 'running',
                 },
                 {
-                    text: 'startting',
+                    text: 'starting',
                     value: 'starting',
                 },
                 {
@@ -106,14 +116,21 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
         {
             title: '返回值',
             dataIndex: 'retval',
-            render: (text: string) => {
-                try {
-                    const parsedText = JSON.parse(`"${text}"`);
-                    return parsedText || '-';
-                } catch (error) {
-                    return text || '-';
-                }
-            },
+            // render: (text: string) => {
+            //     try {
+            //         const parsedText = JSON.parse(`"${text}"`);
+            //         return parsedText || '-';
+            //     } catch (error) {
+            //         return text || '-';
+            //     }
+            // },
+            render: (text: string, record: any) => (
+                <Tooltip title={record.retval}>
+                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'clip', maxWidth: '90px' }}>
+                        {record.retval || '-'}
+                    </div>
+                </Tooltip>
+            ),
         },
         {
             title: "操作",
@@ -191,7 +208,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             key: 'job_id',
             render: (text: string, record: any) => (
                 <Tooltip title={record.job_id}>
-                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'clip', maxWidth: '100px' }}>
                         {record.job_id || '-'}
                     </div>
                 </Tooltip>
@@ -202,19 +219,17 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             dataIndex: 'job_class',
             key: 'job_class',
             render: (text: string, record: any) => (
-                <Tooltip title={record.job_id}>
+                <Tooltip title={record.job_class}>
                     <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
-                        {record.job_id || '-'}
+                        {record.job_class || '-'}
                     </div>
                 </Tooltip>
             ),
         },
         {
-            title: '执行次数',
-            dataIndex: 'excute_times',
-            key: 'excute_times',
-            render: (text: string) => text || '0',
-            sorter: (a: any, b: any) => parseFloat(a.excute_times) - parseFloat(b.excute_times),
+            title: '表达式',
+            dataIndex: 'expression',
+            key: 'expression',
         },
         {
             title: '执行策略',
@@ -332,13 +347,17 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             currentRecord: record // 设置当前记录，以便后续操作
         }));
     }
-
+    handleRefresh = (api:string) => {
+        // 这个方法将被用于调用context中的refreshDataFromAPI
+        this.context.refreshDataFromAPI();
+      };
 
     handleDelete = (job_id: string) => {
         axios.delete(`http://localhost:5000/api/delete_task?job_id=${job_id}`)
             .then(response => {
                 message.success('任务删除成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
+                this.handleRefresh("http://localhost:5000/api/taskdetail/all")
             })
             .catch(error => {
                 message.error('任务删除失败');
@@ -350,6 +369,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
+                this.handleRefresh("http://localhost:5000/api/taskdetail/all")
             })
             .catch(error => {
                 message.error('任务暂停失败');
@@ -361,6 +381,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
+                this.handleRefresh("http://localhost:5000/api/taskdetail/all")
             })
             .catch(error => {
                 message.error('任务恢复失败');
@@ -500,8 +521,9 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const { taskDetailsOriginData } = context;
-
+                    const { taskDetailsOriginData,refreshDataFromAPI } = context;
+                    // 将函数绑定到类组件的实例上
+                    this.handleRefresh = refreshDataFromAPI;
                     return (
                         <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
                             {this.renderModal()}

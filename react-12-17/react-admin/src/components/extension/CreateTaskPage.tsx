@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createRef, useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, TimePicker, Col } from 'antd';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { createNewTaskColumns } from '../tableUtils';
 import { LeftOutlined } from '@ant-design/icons';
 import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { fetchDataFromAPI } from '../ContextAPI/DataService';
 
 const { Step } = Steps;
@@ -24,13 +24,15 @@ interface CreateTaskPageState {
     selectedUuids: React.Key[];
     job_name?: string;
     taskDescription?: string;
-    taskType: string;
   }
 
   existingJobIds: any[];
+  startTime: Moment | null;
+  endTime: Moment | null;
+  excuteTime: Moment | null;
 }
 class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPageState> {
-  formRef: any;
+
   constructor(props: CreateTaskPageProps) {
     super(props);
     this.state = {
@@ -38,17 +40,20 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
       currentStep: 0,
       taskData: {
         selectedUuids: [],
-        taskType: "reboot", // 默认选中的任务类型
       },
       selectedTaskType: "interval", // 默认选中的任务类型
       selectedTaskStatus: "normal", // 默认选中的任务类型
       selectedUuids: [],
+      startTime: null,
+      endTime: null,
+      excuteTime:null,
     };
   }
 
   componentDidMount() {
     this.fetchTaskDetails();
-  }
+  }  
+  //获取已经存在的任务的uuid，用于判断用户输入的新job_id是否合理
   async fetchTaskDetails() {
     try {
       const taskData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/taskdetail/all' });
@@ -82,8 +87,83 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
     }
   };
 
+  handleStartTimeChange = (date: Moment | null, dateString: string) => {
+    if (!date) {
+        this.setState({ startTime: null });
+        return;
+    }
+
+    // 使用moment进行日期比较
+    const { endTime } = this.state;
+    if (endTime && date.isAfter(endTime)) {
+        this.setState({ startTime: null });
+        message.error('开始时间不能晚于结束时间！');
+        return;
+    }
+    this.setState({ startTime: date });
+};
+
+handleEndTimeChange = (date: Moment | null, dateString: string) => {
+    if (!date) {
+        this.setState({ endTime: null });
+        return;
+    }
+
+    const { startTime } = this.state;
+    if (date) {
+        if (startTime && date.isBefore(startTime)) {
+            this.setState({ endTime: null });
+            message.error('结束时间必须晚于开始时间！');
+            return;
+        }
+        if (date.isBefore(moment())) {
+            this.setState({ endTime: null });
+            message.error('结束时间必须晚于当前时间！');
+            return;
+        }
+        this.setState({ endTime: date });
+    }
+};
+handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
+  if (!date) {
+      this.setState({ excuteTime: null });
+      return;
+  }
+
+  if (date.isBefore(moment())) {
+      this.setState({ excuteTime: null });
+      message.error('一次性任务预定时间不能早于当前时间！');
+      return;
+  }
+  this.setState({ excuteTime: date });
+};
   handleSubmit = async (values: any) => {
     const { selectedTaskType, selectedTaskStatus } = this.state;
+    if(selectedTaskType!=="date"){
+      const { startTime, endTime } = this.state;
+      if (!startTime || !endTime) {
+          message.error('请填写有效的时间字段！');
+          return;
+      }
+      if (endTime.isBefore(startTime)) {
+          message.error('结束时间必须晚于开始时间！');
+          this.setState({ endTime: null });
+          return;
+      }
+      if (endTime.isBefore(moment())) {
+          message.error('结束时间必须晚于当前时间！');
+          this.setState({ endTime: null });
+          return;
+      }
+    }
+    else{
+      const { excuteTime } = this.state;
+      if (excuteTime&&excuteTime.isBefore(moment())) {
+          message.error('结束时间必须晚于当前时间！');
+          this.setState({ endTime: null });
+          return;
+      }
+    }
     try {
       const postDataArray = this.state.selectedUuids.map(uuid => ({
         uuid: uuid,
@@ -236,7 +316,6 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
             <Card style={{ width: '90%', margin: '0px auto' }}>
               <Row style={{ width: '100%', margin: '0px auto' }}>
                 <Form
-                  ref={this.formRef}
                   layout="vertical"
                   style={{ width: '70%', margin: '0px auto' }}
                   onFinish={this.handleSubmit}>
@@ -330,14 +409,21 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
                                 </Col> */}
                             <Col span={11}>
                               <Form.Item label="开始时间" name="startTime" rules={[{ required: true, message: '请选择开始时间' }]}>
-                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} />
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} 
+                                  value={this.state.startTime}
+                                  onChange={this.handleStartTimeChange}/>
                               </Form.Item>
                             </Col>
                             <Col span={2}>
                             </Col>
                             <Col span={11} >
-                              <Form.Item label="结束时间" name="endTime" rules={[{ required: true, message: '请选择结束时间' }]}>
-                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} />
+                              <Form.Item label="结束时间" name="endTime"             
+                              rules={[
+                                { required: true, message: '请选择结束时间' },
+                              ]}>
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} 
+                                  value={this.state.endTime}
+                                  onChange={this.handleEndTimeChange}/>
                               </Form.Item>
                             </Col>
                           </Row>
@@ -348,7 +434,9 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
                       <Row style={{ width: '100%' }}>
                         <Col span={24}>
                           <Form.Item label="执行时间" name="executionTime" rules={[{ required: true, message: '请选择执行时间' }]}>
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} />
+                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} 
+                                  value={this.state.excuteTime}
+                                  onChange={this.handleExcuteTimeChange}/>
                           </Form.Item>
                         </Col>
                       </Row>
@@ -358,7 +446,7 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
                         <Form.Item label="任务状态" name="status" valuePropName="checked">
                           <Radio.Group onChange={(e) => this.setState({ selectedTaskStatus: e.target.value })} defaultValue="normal">
                             <Radio value="normal" onClick={() => this.setState({ selectedTaskStatus: 'normal' })}>正常</Radio>
-                            <Radio value="disabled" onClick={() => this.setState({ selectedTaskStatus: 'disabled' })}>停用</Radio>
+                            {/* <Radio value="disabled" onClick={() => this.setState({ selectedTaskStatus: 'disabled' })}>停用</Radio> */}
                           </Radio.Group>
                         </Form.Item>
                       </Col>
@@ -403,50 +491,6 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
             </Card>
           )}
         </Row>
-
-        {/* <Row style={{ width: '90%', margin: '0px auto' }}>
-          <Card style={{width: '100%'}}>
-              <div style={{margin: '0px auto' ,
-                  display: 'flex',
-                  justifyContent: 'center', // 水平居中
-                  alignItems: 'center', // 垂直居中
-              }}>
-                      {currentStep === 0 && (
-                      <>
-                          <Button
-                          style={{backgroundColor:'white',color:'black',marginRight:'20px'}}
-                          onClick={this.goBack} // 或者其他取消操作的逻辑
-                          >
-                          取消
-                          </Button>
-                          <Button
-                          disabled={this.state.selectedUuids.length===0}
-                          style={{backgroundColor:'#1664FF',color:'white'}}
-                          onClick={() => this.setState({ currentStep: currentStep + 1 })}
-                          >
-                          下一步
-                          </Button>
-                      </>
-                      )}
-                      {currentStep === 1 && (
-                      <>
-                          <Button
-                          style={{backgroundColor:'white',color:'black',marginRight:'20px'}}
-                          onClick={() => this.setState({ currentStep: currentStep - 1 })}
-                          >
-                          上一步
-                          </Button>
-                          <Button
-                          style={{backgroundColor:'#1664FF',color:'white'}}
-                          onClick={this.handleSubmit} // 确保按钮触发表单提交
-                          >
-                          确定
-                          </Button>
-                      </>
-                      )}
-              </div>
-            </Card>
-        </Row> */}
       </div>
     );
   }
