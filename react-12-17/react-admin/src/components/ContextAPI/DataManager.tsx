@@ -3,19 +3,17 @@ import React, { createContext, useState, useEffect, Dispatch, SetStateAction } f
 import { templateData } from './SeperateData';
 import useSortedData from './TopFiveDataProvider';
 import { convertAndFillData } from './SeperateData';
-import { DataItem, GenericDataItem, AgentInfoType } from '../tableUtils';
+import { DataItem,} from '../tableUtils';
 import useExtractOrigin, {
   MetaDataResult, getTopFiveTypeCounts,
-  getCountPastSevenDays, getPastSevenDaysAlerts, filterDataByAttribute
+  getCountPastSevenDays, getPastSevenDaysAlerts,
 } from './ExtractOriginData';
 import { fetchDataFromAPI, } from './DataService';
-import useFilterOriginData_new, { FilteredDataResult_new } from './useFilterOriginData_new';
+import { FilteredDataResult_new } from './useFilterOriginData_new';
 import useTransformedData from '../HostProtection/useTransformedData';
 import useCalculateAverage from './useCalculateAverage';
-import { processData, processVulnData } from './DataService';
-import { useFilterOriginData } from './useFilterOriginData';
+import { processData, } from './DataService';
 import { message } from 'antd';
-import { useFindFirstMatchingItem } from './useDataMap';
 
 
 
@@ -41,7 +39,8 @@ export interface DataContextType {
   windowsBaseLineCheckOriginData: any[];
   vulnOriginData: any[];
   taskDetailsOriginData: any[];
-
+  memHorseOriginData:any[];
+  honeyPotOriginData:any[];
 
   agentMetaData_status: MetaDataResult;
   fimMetaData_hostname: MetaDataResult;
@@ -113,6 +112,8 @@ const DataManager: React.FC = ({ children }) => {
 
   const [vulnOriginData, setVulnOriginData] = useState<any>([]);
 
+  const [memHorseOriginData, setmemHorseOriginData] = useState<any>([]);
+  const [honeyPotOriginData, sethoneyPotOriginData] = useState<any>([]);
   // 数据更新函数映射表
   const setDataFunctions: SetDataFunctions = {
     'http://localhost:5000/api/agent/all': setAgentOriginData,
@@ -124,6 +125,8 @@ const DataManager: React.FC = ({ children }) => {
     'http://localhost:5000/api/baseline_check/linux/all': setlinuxBLCheckOriginData,
     'http://localhost:5000/api/baseline_check/windows/all': setwindowsBLCheckOriginData,
     'http://localhost:5000/api/taskdetail/all': settaskDetailsOriginData,
+    'http://localhost:5000/api/memHorse/all': setmemHorseOriginData,
+    'http://localhost:5000/api/honeyPot/all': sethoneyPotOriginData,
     // 添加其他API端点和对应的设置函数
   };
 
@@ -141,7 +144,7 @@ const DataManager: React.FC = ({ children }) => {
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      message.error('Failed to refresh data');
+      message.error('Failed to refresh'+ {apiEndpoint}+ 'data');
     }
   };
 
@@ -156,6 +159,8 @@ const DataManager: React.FC = ({ children }) => {
     refreshDataFromAPI('http://localhost:5000/api/baseline_check/windows/all');
     refreshDataFromAPI('http://localhost:5000/api/vulndetetion/all');
     refreshDataFromAPI('http://localhost:5000/api/taskdetail/all');
+    refreshDataFromAPI('http://localhost:5000/api/memHorse/all');
+    refreshDataFromAPI('http://localhost:5000/api/honeyPot/all');
     // const fetchData = async () => {
 
     //   try {
@@ -200,28 +205,10 @@ const DataManager: React.FC = ({ children }) => {
     try {
       // 修改queryParams的构造逻辑
       let finalEndpoint = `${apiEndpoint}`; console.log("finalEndpoint:" + finalEndpoint);
-      // if (searchField === 'all') {
-      //     finalEndpoint += '/all';
-      // } else if (searchField && searchQuery) {
-      //     const queryParams = `?${encodeURIComponent(searchField)}=${encodeURIComponent(searchQuery)}`;
-      //     finalEndpoint += queryParams;
-      // }
-
-      // // 如果有rangeQuery，追加到finalEndpoint
-      // if (rangeQuery) {
-      //     // 确保rangeQuery以'?'或'&'开头，以正确追加到finalEndpoint
-      //     if (!rangeQuery.startsWith('?') && !rangeQuery.startsWith('&')) {
-      //         rangeQuery = '&' + rangeQuery; // 假设rangeQuery需要以'&'开头追加
-      //     }
-      //     finalEndpoint += rangeQuery;
-      // }
-
       const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint });
       // 检查message字段是否是数组，如果不是，则将其转换为包含该对象的数组
       const messageData = Array.isArray(rawData) ? rawData : [rawData];
       const processedData = processData(messageData, timeColumnIndex);
-      // if(apiEndpoint.includes("vulndetetion")) console.log("is vuln list!!!!!!!!")
-      // const result = apiEndpoint.includes("vulndetetion")?processVulnData(processedData):processedData;
       return processedData;
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -327,6 +314,7 @@ const DataManager: React.FC = ({ children }) => {
 
       agentOriginData, processOriginData, assetOriginData, portOriginData, windowsBaseLineCheckOriginData, linuxBaseLineCheckOriginData, fimOriginData,
       vulnOriginData, taskDetailsOriginData,//taskRecordOriginData,
+      memHorseOriginData,honeyPotOriginData,
 
       agentMetaData_status,
       agentOnlineCount,

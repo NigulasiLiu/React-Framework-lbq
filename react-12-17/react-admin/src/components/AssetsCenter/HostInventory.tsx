@@ -4,7 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card } from 'antd';
-import { hostinventoryColumns, StatusItem } from '../tableUtils';
+import { constRenderTable, hostinventoryColumns, StatusItem } from '../tableUtils';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
@@ -314,7 +314,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
               </div>); // 或者其他的加载状态显示
           }
           // 从 context 中解构出 topFiveFimData 和 n
-          const { agentMetaData_status,
+          const { agentMetaData_status, agentOriginData,
             linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
             blLinuxHostCount,
             blWindowsHostCount,
@@ -351,7 +351,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                       </Col>
                       <Col span={2}>
                       </Col>
-                      <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+                      <div style={{ transform: 'translateX(40px) translateY(60px)' }}>
                         <StatusPanel statusData={runningStatusData} orientation="vertical" />
                       </div>
                     </Row>
@@ -413,7 +413,10 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
               </Row>
               <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}>
                 <Col md={24}>
-                  <div className="gutter-box">
+                {constRenderTable(agentOriginData, '主机内容', [], 
+                      hostinventoryColumns, 'hostinventory',"http://localhost:5000/api/agent/all",
+                      ["uuid","os_version"])}
+                  {/* <div className="gutter-box">
                     <Card bordered={false}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                         <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
@@ -425,7 +428,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                         currentPanel="hostinventory"
                       />
                     </Card>
-                  </div>
+                  </div> */}
                 </Col>
               </Row>
 

@@ -1,7 +1,9 @@
 import React, { createRef } from 'react';
 import { Card, Col, Row, Modal, Form, Input, Button,message } from 'antd';
 import axios from 'axios';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import { constRenderTable } from '../tableUtils';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager';
+import { LoadingOutlined } from '@ant-design/icons';
 
 interface HoneypotDefenseProps{
 
@@ -121,87 +123,83 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
       message.error('蜜罐信息添加失败，请稍后再试');
     }
   };
-  
+  renderHoneyPotModal=()=>{
+    return (
+      <Modal
+          title="添加蜜罐信息"
+          visible={this.state.modalVisible}
+          onOk={() => document.getElementById('honeypotInfoForm')?.dispatchEvent(new Event('submit', { cancelable: true }))}
+          onCancel={this.hideHoneypotModal}
+          okText="确认"
+          cancelText="取消"
+          okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+        >
+        <Form
+          name="honeypotInfoForm"
+          onFinish={this.handleHoneypotSubmit}
+          layout="vertical"
+          autoComplete="off"
+        >
+          <Form.Item
+            label="蜜罐端口"
+            name="honeypot_port"
+            rules={[{ required: true, message: '请输入蜜罐设置的端口' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            label="蜜罐类型"
+            name="honeypot_type"
+            rules={[{ required: true, message: '请输入蜜罐类型' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+          <Form.Item
+            label="蜜罐状态"
+            name="honeypot_status"
+            rules={[{ required: true, message: '请输入蜜罐状态' }]}
+          >
+            <Input type="number" />
+          </Form.Item>
+        </Form>
+        </Modal>);
+  }
+
     render() {
-        return (
-        <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-        <Button onClick={this.showModal}>添加蜜罐</Button> {/* 临时添加的按钮，用于展示Modal */}
-        <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-        <Modal
-            title="添加蜜罐信息"
-            visible={this.state.modalVisible}
-            onOk={() => document.getElementById('honeypotInfoForm')?.dispatchEvent(new Event('submit', { cancelable: true }))}
-            onCancel={this.hideHoneypotModal}
-            okText="确认"
-            cancelText="取消"
-            okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
-          >
-          <Form
-            name="honeypotInfoForm"
-            onFinish={this.handleHoneypotSubmit}
-            layout="vertical"
-            autoComplete="off"
-          >
-            <Form.Item
-              label="蜜罐端口"
-              name="honeypot_port"
-              rules={[{ required: true, message: '请输入蜜罐设置的端口' }]}
-            >
-              <Input type="number" />
-            </Form.Item>
-            <Form.Item
-              label="蜜罐类型"
-              name="honeypot_type"
-              rules={[{ required: true, message: '请输入蜜罐类型' }]}
-            >
-              <Input type="number" />
-            </Form.Item>
-            <Form.Item
-              label="蜜罐状态"
-              name="honeypot_status"
-              rules={[{ required: true, message: '请输入蜜罐状态' }]}
-            >
-              <Input type="number" />
-            </Form.Item>
-          </Form>
-          </Modal>
+      return (
+        <DataContext.Consumer>
+            {(context: DataContextType | undefined) => {
+                if (!context) {
+                    return (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                            <LoadingOutlined style={{ fontSize: '3em' }} />
+                        </div>); // 或者其他的加载状态显示
+                }
+                // 从 context 中解构出 topFiveFimData 和 n
+                const { honeyPotOriginData} = context;
+                // 将函数绑定到类组件的实例上
+  
 
-
-            <Col md={24}>
-                <div className="gutter-box">
-                <Card bordered={false}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                        <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>蜜罐信息</h2>
-                    </div>
-                    <FetchDataForElkeidTable
-                    apiEndpoint="http://localhost:5000/api/files/hostinventory"
-                    timeColumnIndex={[]}
-                    columns={columnsHoneypotInfo}
-                    currentPanel={"HoneypotDefenselist"}
-                    />
-                    </Card>
-                </div>
-            </Col>
-        </Row>
-        <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-            <Col md={24}>
-                <div className="gutter-box">
-                <Card bordered={false}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 ,fontWeight: 'bold'}}>
-                        <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>捕获信息</h2>
-                    </div>
-                    <FetchDataForElkeidTable
-                    apiEndpoint="http://localhost:5000/honeypot/attack/data"
-                    timeColumnIndex={[]}
-                    columns={columnsAttackerInfo2}
-                    currentPanel={"AttackerCatchedlist"}
-                    />
-                    </Card>
-                </div>
-            </Col>
-        </Row>
-        </div>
-        );
+                return (
+                  <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
+                  <Button onClick={this.showModal}>添加蜜罐</Button> {/* 临时添加的按钮，用于展示Modal */}
+                  <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                      <Col md={24}>
+                      {constRenderTable(honeyPotOriginData, '蜜罐信息', [], 
+                                columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeyPot/all")}
+                      </Col>
+                  </Row>
+                  <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                      <Col md={24}>
+                      {constRenderTable(honeyPotOriginData, '蜜罐捕获信息', [], 
+                                columnsAttackerInfo2, 'honeyPotCatchlist',"http://localhost:5000/api/honeyPotCatch/all")}
+                      </Col>
+                  </Row>
+                  </div>
+                  );
+            }}
+        </DataContext.Consumer>
+    )
       }
 }
 

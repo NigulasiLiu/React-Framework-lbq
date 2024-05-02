@@ -61,7 +61,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
       isSidebarOpen: false,
       currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
       riskItemCount: 5,
-      currentPanel: 'linuxBaseLineCheck',
+      currentPanel: 'linux',
     };
   }
   columns: any;
@@ -123,41 +123,54 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
   };
   renderCurrentPanel() {
     const { currentPanel } = this.state;
-    switch (currentPanel) {
-      case 'windowsBaseLineCheck':
-        return (
-          <Row style={{ width: '100%', }}>
-            <FetchDataForElkeidTable
-              apiEndpoint="http://localhost:5000/api/baseline_check/windows/all"
-              timeColumnIndex={['last_checked']}
-              columns={baselineDetectColumns}
-              currentPanel="baseLine_check_windows"
-            />
-          </Row>
-        );
-      case 'linuxBaseLineCheck':
-        return (
-          <Row style={{ width: '100%', }}>
-            <FetchDataForElkeidTable
-              apiEndpoint="http://localhost:5000/api/baseline_check/linux/all"
-              timeColumnIndex={['last_checked']}
-              columns={baselineDetectColumns}
-              currentPanel="baseLine_check_linux"
-            />
-          </Row>
-        );
-      default:
-        return (
-          <Row style={{ width: '100%', margin: '0 auto' }}>
-            <FetchDataForElkeidTable
-              apiEndpoint="http://localhost:5000/api/baseline_check/linux"
-              timeColumnIndex={['last_checked']}
-              columns={baselineDetectColumns}
-              currentPanel="baseline_check_linux"
-            />
-          </Row>
-        );
-    }
+    return (
+      <Row style={{ width: '100%', }}>
+        <FetchDataForElkeidTable
+          apiEndpoint={"http://localhost:5000/api/baseline_check/"+currentPanel+"/all"}
+          timeColumnIndex={['last_checked']}
+          columns={baselineDetectColumns}
+          currentPanel={currentPanel==="windows"?"baseLine_check_windows":"baseLine_check_linux"}
+          search={["uuid","check_name"]}
+        />
+      </Row>
+    );
+    // switch (currentPanel) {
+    //   case 'windowsBaseLineCheck':
+    //     return (
+    //       <Row style={{ width: '100%', }}>
+    //         <FetchDataForElkeidTable
+    //           apiEndpoint="http://localhost:5000/api/baseline_check/windows/all"
+    //           timeColumnIndex={['last_checked']}
+    //           columns={baselineDetectColumns}
+    //           currentPanel="baseLine_check_windows"
+    //           search={["uuid","check_name"]}
+    //         />
+    //       </Row>
+    //     );
+    //   case 'linuxBaseLineCheck':
+    //     return (
+    //       <Row style={{ width: '100%', }}>
+    //         <FetchDataForElkeidTable
+    //           apiEndpoint="http://localhost:5000/api/baseline_check/linux/all"
+    //           timeColumnIndex={['last_checked']}
+    //           columns={baselineDetectColumns}
+    //           currentPanel="baseLine_check_linux"
+    //           search={["uuid","check_name"]}
+    //         />
+    //       </Row>
+    //     );
+    //   default:
+    //     return (
+    //       <Row style={{ width: '100%', margin: '0 auto' }}>
+    //         <FetchDataForElkeidTable
+    //           apiEndpoint="http://localhost:5000/api/baseline_check/linux"
+    //           timeColumnIndex={['last_checked']}
+    //           columns={baselineDetectColumns}
+    //           currentPanel="baseline_check_linux"
+    //         />
+    //       </Row>
+    //     );
+    // }
   }
 
 
@@ -314,8 +327,8 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                         mode="horizontal"
                         style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                       >
-                        <Menu.Item key="linuxBaseLineCheck">Linux基线检查</Menu.Item>
-                        <Menu.Item key="windowsBaseLineCheck">Windows基线检查</Menu.Item>
+                        <Menu.Item key="linux">Linux基线检查</Menu.Item>
+                        <Menu.Item key="windows">Windows基线检查</Menu.Item>
                         {/* 可以根据需要添加更多的Menu.Item */}
                         {/* 使用透明div作为flex占位符 */}
                         <div style={{ flexGrow: 1 }}></div>

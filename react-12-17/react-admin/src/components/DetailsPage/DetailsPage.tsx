@@ -175,16 +175,29 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         {
           title: "主机名称",
           dataIndex: 'uuid',
-          render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF' }}>{text.slice(0, 5)}</Button>
-            </Link>
+          key: 'uuid',
+          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+          render: (text: string, record: any) => (
+            <div>
+              <div>
+                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                  <Button style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF', padding: '0 0' }}>
+                    {record.uuid.slice(0, 5)}
+                  </Button>
+                </Link>
+              </div>
+              <div style={{
+                fontSize: 'small', // 字体更小
+                background: '#f0f0f0', // 灰色背景
+                padding: '2px 4px', // 轻微内边距
+                borderRadius: '2px', // 圆角边框
+                display: 'inline-block', // 使得背景色仅围绕文本
+                marginTop: '4px', // 上边距
+              }}>
+                <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+              </div>
+            </div>
           ),
-        },
-        {
-          title: '主机IP',
-          dataIndex: 'ip',
         },
         {
           title: '端口',
@@ -226,54 +239,37 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
           Maxwidth: '15px',
         },
         {
-          title: "主机名称",
-          dataIndex: 'uuid', key: 'uuid',
-          render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-              <Button style={{
-                fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-                padding: '0 0'
-              }}>{text.slice(0, 5)}</Button>
-            </Link>
-          ),
-        },
-        {
-          title: "IP",
-          dataIndex: 'ip',
-          onFilter: (values: string, record: baselineDetectColumnsType) => record.ip.includes(values),
-          filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-              <Input
-                autoFocus
-                placeholder="搜索..."
-                value={selectedKeys[0]}
-                onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                onPressEnter={() => confirm()}
-                style={{ width: 188, marginBottom: 8, display: 'block' }}
-              />
-              <Button
-                onClick={() => confirm()}
-                size="small"
-                style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-              >
-                搜索
-              </Button>
-              <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                重置
-              </Button>
-            </div>
-          ),
-          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            title: "主机名称",
+            dataIndex: 'uuid',
+            key: 'uuid',
+            filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+            render: (text: string, record: baselineDetectColumnsType) => (
+                <div>
+                    <div>
+                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                            <Button style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF', padding: '0 0' }}>
+                                {record.uuid.slice(0, 5)}
+                            </Button>
+                        </Link>
+                    </div>
+                    <div style={{
+                        fontSize: 'small', // 字体更小
+                        background: '#f0f0f0', // 灰色背景
+                        padding: '2px 4px', // 轻微内边距
+                        borderRadius: '2px', // 圆角边框
+                        display: 'inline-block', // 使得背景色仅围绕文本
+                        marginTop: '4px', // 上边距
+                    }}>
+                        <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                    </div>
+                </div>
+            ),
         },
         {
           title: "基线名称",
           dataIndex: 'check_name',
+          
+          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
           render: (text: string, record: baselineDetectColumnsType) => (
             <Tooltip title={record.check_name}>
               <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
@@ -679,7 +675,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
   };
 
 
-  renderList = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string) => {
+  renderList = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string,searchIndex:string[]) => {
     if (uuid !== undefined) {
       return (
         <div style={{ width: '100%' }}>
@@ -698,6 +694,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     expandedRowRender={this.expandedRowRender}
                     indentSize={15} // 设置缩进大小，单位是像素
                     childrenColumnName="children" // 指定子数据的属性名称
+                    search={searchIndex}
                   />
                 </Card>
               </Col>
@@ -997,7 +994,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 </Card>
                 {this.renderModal()}
                 {this.renderList('http://localhost:5000/api/vulndetetion/query_uuid?uuid=',
-                  this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel, '漏洞概览')}
+                  this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel, '漏洞概览',["port"])}
               </div>
               // <div style={{ width: '100%' }}>
               // <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:2640,border:'false'}}>
@@ -1111,7 +1108,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 <Row style={{ width: '100%', margin: '0 auto' }}>
                   {this.renderBLWhiteListModal()}
                   {this.renderList('http://localhost:5000/api/baseline_check/' + os_version + '/query_uuid?uuid=',
-                    this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线概览')}
+                    this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线概览',["check_name"])}
                 </Row>
               </div>
               // <HostDetailsTable

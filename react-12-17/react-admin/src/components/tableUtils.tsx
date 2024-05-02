@@ -1,17 +1,22 @@
 import React from 'react';
-import { Tooltip, Button, Select, Tag, Badge, Input, Space } from 'antd';
-import { FilterDropdownProps } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
+import { Tooltip, Button, Select, Tag, Badge, Input, Space, Card, Row } from 'antd';
+import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import buttonStyles from '../style/button.module.css'
 import '../Style.css';
 import moment from 'moment';
+import DataDisplayTable from './ElkeidTable/DataDisplayTable';
 
 const { Option } = Select;
 
 export const ServerPort = "http://localhost:5000"
-
+export interface FilterDropdownProps {
+    setSelectedKeys: (keys: string[]) => void;
+    selectedKeys: string[];
+    confirm: () => void;
+    clearFilters?: () => void;
+  }
 export interface AgentInfoType {
     id: string;
     cpu_use: string;
@@ -512,34 +517,34 @@ export const hostinventoryColumns = [
         dataIndex: 'uuid',
         key: 'uuid',
         onFilter: (values: string, record: hostinventoryColumnsType) => record.uuid.includes(values) || record.ip_address.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索主机名称或IP..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索主机名称或IP..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        //filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: hostinventoryColumnsType) => (
             <div>
                 <div>
@@ -640,35 +645,35 @@ export const hostinventoryColumns = [
     {
         title: "操作系统",
         dataIndex: 'os_version',
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        onFilter: (values: string, record: hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
     },
     {
         title: "状态",
@@ -741,35 +746,35 @@ export const fimColumns = [
         title: "主机名称",
         dataIndex: 'uuid',
         key: 'uuid',
-        onFilter: (values: string, record: FimDataType) => record.uuid.includes(values) || record.hostIP.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索主机名称或IP..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: FimDataType) => record.uuid.includes(values) || record.hostIP.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索主机名称或IP..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: FimDataType) => (
             <div>
                 <div>
@@ -877,35 +882,35 @@ export const fimColumns = [
     {
         title: "文件名",
         dataIndex: 'filename',
-        onFilter: (values: string, record: FimDataType) => record.filename.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: FimDataType) => record.filename.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
 
         onHeaderCell: () => ({
             style: {
@@ -968,35 +973,35 @@ export const openPortsColumns = [
         title: "主机名称",
         dataIndex: 'uuid',
         key: 'uuid',
-        onFilter: (values: string, record: openPortsColumnsType) => record.uuid.includes(values) || record.host_ip.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索主机名称或IP..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: openPortsColumnsType) => record.uuid.includes(values) || record.host_ip.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索主机名称或IP..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: openPortsColumnsType) => (
             <div>
                 <div>
@@ -1102,37 +1107,37 @@ export const openPortsColumns = [
     {
         title: '端口号',
         dataIndex: 'port_number',
-        onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.port_number === value,
+        //onFilter: (value: string | number | boolean, record: openPortsColumnsType) => record.port_number === value,
 
         //onFilter: (values:string, record:openPortsColumnsType) => record.host_ip.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
 
         onHeaderCell: () => ({
             style: {
@@ -1169,35 +1174,35 @@ export const openPortsColumns = [
     {
         title: '端口名称',
         dataIndex: 'port_name',
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        onFilter: (values: string, record: openPortsColumnsType) => record.port_name.toString().toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: openPortsColumnsType) => record.port_name.toString().toLowerCase().includes(values.toLowerCase()),
 
     },
     {
@@ -1267,35 +1272,35 @@ export const runningProcessesColumns = [
         title: "主机名称",
         dataIndex: 'uuid',
         key: 'uuid',
-        onFilter: (values: string, record: runningProcessesColumnsType) => record.uuid.includes(values) || record.agentIP.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索主机名称或IP..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: runningProcessesColumnsType) => record.uuid.includes(values) || record.agentIP.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索主机名称或IP..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: runningProcessesColumnsType) => (
             <div>
                 <div>
@@ -1399,7 +1404,7 @@ export const runningProcessesColumns = [
     //       }),
     // },
     {
-        title: '进程ID',
+        title: 'PID',
         dataIndex: 'pid',
 
         sorter: (a: runningProcessesColumnsType, b: runningProcessesColumnsType) => parseFloat(a.pid) - parseFloat(b.pid),
@@ -1456,13 +1461,23 @@ export const runningProcessesColumns = [
         ),
     },
     {
-        title: 'CPU占用',
+        title: 'CPU',
         dataIndex: 'cpuPercent',
+        render: (text: string, record: any) => (
+            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '30px' }}>
+                {record.cpuPercent}
+            </div>
+        ),
         sorter: (a: runningProcessesColumnsType, b: runningProcessesColumnsType) => parseFloat(a.cpuPercent) - parseFloat(b.cpuPercent),
     },
     {
-        title: '内存占用',
+        title: '内存',
         dataIndex: 'memoryPercent',
+        render: (text: string, record: any) => (
+            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '50px' }}>
+                {record.memoryPercent}
+            </div>
+        ),
         sorter: (a: runningProcessesColumnsType, b: runningProcessesColumnsType) => parseFloat(a.memoryPercent) - parseFloat(b.memoryPercent),
     },
     {
@@ -1505,35 +1520,35 @@ export const systemServicesColumns = [
         title: "主机名称",
         dataIndex: 'uuid',
         key: 'uuid',
-        onFilter: (values: string, record: systemServicesColumnsType) => record.uuid.includes(values) || record.ip.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索主机名称或IP..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: systemServicesColumnsType) => record.uuid.includes(values) || record.ip.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索主机名称或IP..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: systemServicesColumnsType) => (
             <div>
                 <div>
@@ -1604,35 +1619,35 @@ export const systemServicesColumns = [
     {
         title: '服务',
         dataIndex: 'service',
-        onFilter: (values: string, record: systemServicesColumnsType) => record.service.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //: (values: string, record: systemServicesColumnsType) => record.service.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
 
     },
     {
@@ -1650,35 +1665,35 @@ export const systemServicesColumns = [
     {
         title: '应用',
         dataIndex: 'product',
-        onFilter: (values: string, record: systemServicesColumnsType) => record.product.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: systemServicesColumnsType) => record.product.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
 
     },
     {
@@ -1688,35 +1703,35 @@ export const systemServicesColumns = [
     {
         title: '操作系统',
         dataIndex: 'ostype',
-        onFilter: (values: string, record: systemServicesColumnsType) => record.os_type.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: systemServicesColumnsType) => record.os_type.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
 
     },
     // {
@@ -1953,40 +1968,39 @@ export const baselineDetectColumns = [
         key: 'id',
         Maxwidth: '15px',
     },
-
     {
         title: "主机名称",
         dataIndex: 'uuid',
         key: 'uuid',
-        onFilter: (values: string, record: baselineDetectColumnsType) => record.uuid.includes(values) || record.ip.toLowerCase().includes(values.toLowerCase()),
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索主机名称或IP..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        //onFilter: (values: string, record: baselineDetectColumnsType) => record.uuid.includes(values) || record.ip.toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索主机名称或IP..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: baselineDetectColumnsType) => (
             <div>
                 <div>
@@ -2035,7 +2049,7 @@ export const baselineDetectColumns = [
     {
         title: "调整建议",
         dataIndex: 'adjustment_requirement',
-        filters: [{ text: '建议调整', value: '建议调整' }, { text: '自行判断', value: '自行判断' }
+        filters: [{ text: "建议调整", value: "建议调整" }, { text: "自行判断", value: "自行判断" }
         ],
         onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
 
@@ -2081,6 +2095,59 @@ export const baselineDetectColumns = [
 
     },
 ];
+
+
+// 假设这是FilterDropdownProps类型的定义，为了方便演示，我将其简化了
+// interface FilterDropdownProps {
+//     setSelectedKeys: (keys: string[]) => void;
+//     selectedKeys: string[];
+//     confirm: () => void;
+//     clearFilters?: () => void;
+//   }
+export const generate_new_columns=(columns: any[], search_index: string[]): any[] =>{
+    // 遍历this.props.columns中的每一列
+    return columns.map((column: any) => {
+      // 如果列名在search_index中
+      if (search_index.includes(column.dataIndex)) {
+        // 为这列添加搜索功能
+        return {
+          ...column,
+          filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
+            <div style={{ padding: 8 }}>
+              <Input
+                autoFocus
+                placeholder={`搜索${column.title}...`}
+                value={filterDropdownProps.selectedKeys[0]}
+                onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                onPressEnter={() => filterDropdownProps.confirm()}
+                style={{ width: 188, marginBottom: 8, display: 'block' }}
+              />
+              <Button
+                onClick={() => filterDropdownProps.confirm()}
+                size="small"
+                style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+              >
+                搜索
+              </Button>
+              <Button
+                disabled={filterDropdownProps.clearFilters === undefined}
+                onClick={() => filterDropdownProps.clearFilters?.()}
+                size="small"
+                style={{ width: 90 }}
+              >
+                重置
+              </Button>
+            </div>
+          ),
+        };
+      } else {
+        // 如果不在search_index中，直接返回原列
+        return column;
+      }
+    });
+  }
+
+
 
 export const virusscannigAllTasksColumns = [
     { title: '任务名称', dataIndex: 'task_name', key: 'task_name' },
@@ -2367,34 +2434,71 @@ export const hostperformanceColumns = [
         title: "操作系统",
         dataIndex: 'ostype',
         key: 'ostype',
-        filterDropdown: ({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-        }: FilterDropdownProps) => (
-            <div style={{ padding: 8 }}>
-                <Input
-                    autoFocus
-                    placeholder="搜索..."
-                    value={selectedKeys[0]}
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => confirm()}
-                    style={{ width: 188, marginBottom: 8, display: 'block' }}
-                />
-                <Button
-                    onClick={() => confirm()}
-                    size="small"
-                    style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-                >
-                    搜索
-                </Button>
-                <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-                    重置
-                </Button>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        onFilter: (values:string, record:hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
+        // filterDropdown: ({
+        //     setSelectedKeys,
+        //     selectedKeys,
+        //     confirm,
+        //     clearFilters,
+        // }: FilterDropdownProps) => (
+        //     <div style={{ padding: 8 }}>
+        //         <Input
+        //             autoFocus
+        //             placeholder="搜索..."
+        //             value={selectedKeys[0]}
+        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        //             onPressEnter={() => confirm()}
+        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+        //         />
+        //         <Button
+        //             onClick={() => confirm()}
+        //             size="small"
+        //             style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
+        //         >
+        //             搜索
+        //         </Button>
+        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+        //             重置
+        //         </Button>
+        //     </div>
+        // ),
+        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        // onFilter: (values:string, record:hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
     },
 ];
+
+export const constRenderTable = (OriginData: any[], title: string, 
+    timeColumnIndex: string[], column: any[], currentPanel: string,api:string,
+searchIndex?:string[]) => {
+    if (OriginData !== undefined) {
+        // 确保OriginData总是作为数组处理
+        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+        return (
+            <div style={{ fontWeight: 'bolder', width: '100%', }}>
+                <Card bordered={true}
+                    style={{ backgroundColor: '#ffffff' }}>
+                    <Row>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold' }}>
+                            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                        </div>
+                    </Row>
+                    <DataDisplayTable
+                        externalDataSource={originDataArray}
+                        apiEndpoint={api}
+                        timeColumnIndex={timeColumnIndex}
+                        columns={column}
+                        currentPanel={currentPanel}
+                        searchColumns={searchIndex}
+                    />
+                </Card>
+            </div>
+        );
+    }
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', }}>
+            <Card bordered={true}
+                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#ffffff', width: '100%' }}>
+                <LoadingOutlined style={{ fontSize: '3em' }} />
+            </Card>
+        </div>
+    );
+}

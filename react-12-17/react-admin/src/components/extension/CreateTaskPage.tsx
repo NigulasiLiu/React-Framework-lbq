@@ -168,7 +168,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
       const postDataArray = this.state.selectedUuids.map(uuid => ({
         uuid: uuid,
         job_name: values.job_name,
-        taskDescription: values.taskDescription || '',
+        taskDescription: values.taskDescription || 'no',
         callTarget: values.target,
         args: values.args,
         kwargs: values.kwargs,
@@ -284,7 +284,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
               <Row style={{ margin: '0px auto', width: '100%' }}>
                 <FetchDataForElkeidTable
                   apiEndpoint="http://localhost:5000/api/agent/all"
-                  timeColumnIndex={['updatetime']}
+                  timeColumnIndex={[]}
                   columns={createNewTaskColumns}
                   currentPanel={"createnewtask"} // 替换为你的 panel 名称
                   keyIndex={1}

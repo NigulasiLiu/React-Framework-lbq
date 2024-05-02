@@ -50,21 +50,26 @@ const menus: {
             icon: 'copy',
             subs: [
                 {
-                    key: '/app/HostProtection/InvasionDetect',
-                    title: '入侵检测',
-                    subs: [
-                        {
-                            key: '/app/HostProtection/InvasionDetect/HCPAlertList',
-                            title: '告警列表',
-                            component: 'HCPAlertList',
-                        },
-                        {
-                            key: '/app/HostProtection/InvasionDetect/HCPWhiteList',
-                            title: '白名单',
-                            component: 'HCPWhiteList',
-                        },
-                    ],
+                    key: '/app/HostProtection/TotalAlertList',
+                    title: '告警列表',
+                    component: 'TotalAlertList',
                 },
+                // {
+                //     key: '/app/HostProtection/InvasionDetect',
+                //     title: '入侵检测',
+                //     subs: [
+                //         {
+                //             key: '/app/HostProtection/InvasionDetect/HCPAlertList',
+                //             title: '告警列表',
+                //             component: 'HCPAlertList',
+                //         },
+                //         {
+                //             key: '/app/HostProtection/InvasionDetect/HCPWhiteList',
+                //             title: '白名单',
+                //             component: 'HCPWhiteList',
+                //         },
+                //     ],
+                // },
                 {
                     key: '/app/HostProtection/VulnerabilityList',
                     title: '漏洞检查',
@@ -81,6 +86,11 @@ const menus: {
                     component: 'MicroIsolation',
                 },
                 { key: '/app/HostProtection/memory-horse', title: '内存马检测', component: 'MemoryHorseDetection' },
+                {
+                    key: '/app/HostProtection/TotalWhiteList',
+                    title: '白名单',
+                    component: 'TotalWhiteList',
+                },
             ],
         },
         {

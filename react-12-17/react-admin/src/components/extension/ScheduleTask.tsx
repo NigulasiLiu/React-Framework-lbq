@@ -91,8 +91,8 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                     value: 'running',
                 },
                 {
-                    text: 'starting',
-                    value: 'starting',
+                    text: 'waiting',
+                    value: 'waiting',
                 },
                 {
                     text: 'pending',
@@ -105,7 +105,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                         record.status === 'running' ? 'processing' :
                             record.status === 'pending' ? 'warning' :
                                 record.status === 'error' ? 'error' :
-                                    record.status === 'starting' ? 'default' :
+                                    record.status === 'waiting' ? 'default' :
                                         'success'
                     }
                     text={record.status}
@@ -136,13 +136,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             title: "操作",
             dataIndex: 'operation',
             render: (text: string, record: any) => (
-                <div>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'clip', minWidth: '120px' }}>
                     <Row>
                         <Button
                             onClick={() => this.toggleModal(record, "暂停")}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 fontSize: '12px', // 设置字体大小为 12 像素
@@ -155,7 +155,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             onClick={() => this.toggleModal(record, "恢复")}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 fontSize: '12px', // 设置字体大小为 12 像素
@@ -168,13 +168,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             onClick={() => this.toggleModal(record, "删除")}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 color: '#EA635F', // 设置按钮的颜色
                                 fontSize: '12px', // 设置字体大小为 12 像素
                             }}
-                            disabled={record.status === "starting"}
+                            disabled={record.status === "waiting"}
                         >
                             删除
                         </Button>
@@ -184,7 +184,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             onClick={() => this.toggleModal(record)}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 color: '#EA635F', // 设置按钮的颜色
@@ -230,6 +230,21 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             title: '表达式',
             dataIndex: 'expression',
             key: 'expression',
+            render: (text: string, record: any) => (
+                <Tooltip title={record.expression}>
+                    <div style={{ 
+                        whiteSpace: 'nowrap', overflow: 'hidden', 
+                    textOverflow: 'ellipsis', maxWidth: '100px',
+                    // backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    // padding: '10px',
+                    // borderRadius: '5px',
+                    // boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    // textAlign: 'center', 
+                    }}>
+                        {record.expression || '-'}
+                    </div>
+                </Tooltip>
+            ),
         },
         {
             title: '执行策略',
@@ -274,13 +289,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             title: "操作",
             dataIndex: 'operation',
             render: (text: string, record: any) => (
-                <div>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'clip', minWidth: '120px' }}>
                     <Row>
                         <Button
                             onClick={() => this.toggleModal(record, "暂停")}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 fontSize: '12px', // 设置字体大小为 12 像素
@@ -293,7 +308,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             onClick={() => this.toggleModal(record, "恢复")}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 fontSize: '12px', // 设置字体大小为 12 像素
@@ -306,13 +321,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             onClick={() => this.toggleModal(record, "删除")}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 color: '#EA635F', // 设置按钮的颜色
                                 fontSize: '12px', // 设置字体大小为 12 像素
                             }}
-                            disabled={record.status === "starting"}
+                            disabled={record.status === "waiting"}
                         >
                             删除
                         </Button>
@@ -322,7 +337,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             onClick={() => this.toggleModal(record)}
                             style={{
                                 fontWeight: 'bold',
-                                padding: '8px 16px', // 设置按钮的内边距
+                                padding: '3px 4px', // 设置按钮的内边距
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
                                 color: '#EA635F', // 设置按钮的颜色
@@ -438,19 +453,6 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-            // originDataArray.forEach(item => {
-            //     console.log("create_time:", item.create_time);
-            //     console.log("end_time:", item.end_time);
-            //     console.log("exception:", item.exception);
-            //     console.log("job_id:", item.job_id);
-            //     console.log("process_time:", item.process_time);
-            //     console.log("retval:", item.retval);
-            //     console.log("start_time:", item.start_time);
-            //     console.log("task_id:", item.task_id);
-            //     console.log("traceback:", item.traceback);
-            //     console.log("update_time:", item.update_time);
-            //     console.log("\n"); // 打印空行分隔每个元素
-            // });
             return (
                 <div style={{ fontWeight: 'bolder', width: '100%', }}>
                     <Card bordered={true}

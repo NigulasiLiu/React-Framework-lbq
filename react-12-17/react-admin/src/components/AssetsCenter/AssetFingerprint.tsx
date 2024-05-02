@@ -7,7 +7,8 @@ import {
     fimColumns,
     openPortsColumns,
     runningProcessesColumns, systemServicesColumns,
-    GenericDataItem, StatusItem
+    GenericDataItem, StatusItem,
+    constRenderTable
 } from '../tableUtils';
 
 
@@ -114,6 +115,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         timeColumnIndex={['event_time']}
                         columns={fimColumns}
                         currentPanel={currentPanel}
+                        search={["uuid","filename"]}
                     />
                 );
             case 'open-ports':
@@ -123,6 +125,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         timeColumnIndex={[]}
                         columns={openPortsColumns}
                         currentPanel={currentPanel}
+                        search={["uuid","port_number","port_name"]}
                     />
                 );
             case 'running-processes':
@@ -132,6 +135,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         timeColumnIndex={['createTime']}
                         columns={runningProcessesColumns}
                         currentPanel={currentPanel}
+                        search={["uuid","name"]}
                     />
                 );
             case 'system-services':
@@ -141,72 +145,10 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         timeColumnIndex={[]}
                         columns={systemServicesColumns}
                         currentPanel={currentPanel}
+                        search={["uuid","service","product","ostype",]}
                     />
                 );
-            // case 'system-users':
-            //     return (
-            //         <FetchDataForElkeidTable
-            //         apiEndpoint="http://localhost:5000/api/files/system-users"
-            //         timeColumnIndex={[]}
-            //         columns={systemUsersColumns}
-            //         currentPanel={currentPanel}
-            //         />
-            //     );
-            // case 'scheduled-tasks':
-            //     return (
-            //         <FetchDataForElkeidTable
-            //         apiEndpoint="http://localhost:5000/api/files/scheduled-tasks"
-            //         timeColumnIndex={[]}
-            //         columns={scheduledTasksColumns}
-            //         currentPanel={currentPanel}
-            //         />
-            //     );
-            // case 'system-software':
-            //     return (
-            //         <FetchDataForElkeidTable
-            //         apiEndpoint="http://localhost:5000/api/files/system-software"
-            //         timeColumnIndex={[]}
-            //         columns={systemSoftwareColumns}
-            //         currentPanel={currentPanel}
-            //         />
-            //     );
-            // case 'applications':
-            //     return (
-            //         <FetchDataForElkeidTable
-            //         apiEndpoint="http://localhost:5000/api/files/applications"
-            //         timeColumnIndex={[]}
-            //         columns={applicationsColumns}
-            //         currentPanel={currentPanel}
-            //         />
-            //     );
-            // case 'kernel-modules':
-            //     return (
-            //         <FetchDataForElkeidTable
-            //         apiEndpoint="http://localhost:5000/api/files/kernel-modules"
-            //         timeColumnIndex={[]}
-            //         columns={kernelModulesColumns}
-            //         currentPanel={currentPanel}
-            //         />
-            //     );
-            // case 'container':
-            //     return (
-            //         <FetchDataForElkeidTable
-            //         apiEndpoint="http://localhost:5000/api/files/container"
-            //         timeColumnIndex={[]}
-            //         columns={containerColumns}
-            //         currentPanel={currentPanel}
-            //         />
-            //     );
-
-            // default:
-            //     return (
-            //         <OverviewPanel
-            //             changePanel={this.changePanel}
-            //             //topData={this.state.topData}
-            //             statusData={this.state.statusData}
-            //             currentPanel={'overview'}
-            //         />
-            //     );
+ 
         }
     }
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal } from 'antd';
 import moment, { Moment } from 'moment';
-import { simplifiedTablePanel } from '../tableUtils';
-import { LoadingOutlined } from '@ant-design/icons';
+import { FilterDropdownProps, simplifiedTablePanel } from '../tableUtils';
+import { ExclamationCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { handleExport } from '../ContextAPI/DataService';
 
 const { Option } = Select;
 
@@ -12,10 +13,11 @@ interface GenericDataItem {
     [key: string]: any;
 }
 
-interface CustomDataTableProps {
+interface ElkeidDisplayTableProps {
     externalDataSource: GenericDataItem[];
     columns: any[]; // 根据实际列数据结构定义更明确的类型
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
+    searchColumns?:string[];
     // 可以根据需要添加其他 props，比如分页大小等
     currentPanel: string;
     //prePanel:string;
@@ -30,10 +32,7 @@ interface CustomDataTableProps {
     fetchLatestData: (apiEndpoint: string,
         searchField?: string | undefined, searchQuery?: string | undefined, rangeQuery?: string | undefined,
         timeColumnIndex?: string[] | undefined) => void;
-    onUpdateSearchField: (field: string) => void;
-    onUpdateSearchQuery: (query: string) => void;
-    onUpdateRangeField: (queryParams: string) => void;
-    onDeleteSelected: (selectedRowKeys: React.Key[]) => void;
+    
     onSelectedRowKeysChange: (selectedRowKeys: React.Key[]) => void;
 
     childrenColumnName?: string; // 作为可选属性
@@ -43,13 +42,14 @@ interface CustomDataTableProps {
 
 }
 
-interface CustomDataTableState {
+interface ElkeidDisplayTableState {
     newColumns: any[],
     lastUpdated: string | null;
     selectedDateRange: [string | null, string | null];
 
     selectedRowKeys: React.Key[];// 可选属性，代表被选中行的keys，用于控制独立的key
     selectedRows: any[];//存储整行数据
+    clearKeys:boolean;
 
     selectedApplicationType: string | null,
     searchQuery: string;
@@ -65,13 +65,13 @@ interface CustomDataTableState {
 
     showModal: boolean;
     user_character: string;
-    dataSourceChanged: boolean;
+    fetchDataCalled:number;
 }
 const { TextArea } = Input;
 
 
-class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDataTableState> {
-    constructor(props: CustomDataTableProps) {
+class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, ElkeidDisplayTableState> {
+    constructor(props: ElkeidDisplayTableProps) {
         super(props);
         this.state = {
             newColumns: [],
@@ -80,6 +80,8 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
 
             selectedRowKeys: [],
             selectedRows: [],
+            clearKeys:false,
+
             lastUpdated: null,
             selectedDateRange: [null, null],
 
@@ -95,51 +97,49 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
             sortedData: [],
             sortConfig: null,
 
-            dataSourceChanged: false,
+            fetchDataCalled: 0 // 初始化数据获取调用计数
         };
     }
     componentDidMount() {
-        // this.setState({
-        //     newColumns:this.autoPopulateFilters(),
-        // })
-        //console.log('amounted! currentPanelName:'+this.props.currentPanel)
-        this.props.fetchLatestData(this.props.apiEndpoint, '', '', '');
+        this.fetchDataIfNeeded();
         this.setState({
             lastUpdated: new Date().toLocaleString(),
         })
     }
     componentDidUpdate(prevProps: any) {
-        // if(assetCenterPanelName.includes(this.props.currentPanel)){
-        //     let count = this.state.panelChangeCount+1;
-        //     this.setState({
-        //         panelChangeCount:count,
-        //     })
-        // }
-        // console.log('PrevProps.currentPanelName:'+prevProps.currentPanel)
-        // console.log('currentPanelName:'+this.props.currentPanel);
-
-        if (this.state.panelChangeCount === 1 || prevProps.currentPanel !== this.props.currentPanel) { // 修改条件检查逻辑
+        //this.state.panelChangeCount === 1 || 
+        if (prevProps.currentPanel !== this.props.currentPanel) { // 修改条件检查逻辑
             console.log('Panel changed from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
             this.setState({
                 lastUpdated: new Date().toLocaleString(),
-                selectedSearchField: '',
-                searchQuery: '',
-                selectrangequeryParams: '',
                 selectedDateRange: [null, null], // 日期筛选器重置
                 selectedRowKeys: [],
-                dataSourceChanged: true, // 此状态字段可能需要进一步审查其必要性
                 //newColumns: this.autoPopulateFilters(),
                 currentPanelName: this.props.currentPanel,
-            }, () => {
-                // 如果有需要，可以在状态更新后获取数据
-                // this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
             });
         }
-        else {
-            console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
-        }
+        // if(this.state.clearKeys){
+        //     this.setState({
+        //         selectedRowKeys: [],
+        //     });
+        // }
+        // else {
+        //     console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
+        // }
     }
 
+    fetchDataIfNeeded() {
+        // 如果数据未被获取过，或者只获取了一次，则调用获取数据
+        if (this.state.fetchDataCalled < 1) {
+            console.log('this.state.fetchDataCalled change ' + this.state.fetchDataCalled + ' times.');
+            
+            this.props.fetchLatestData(this.props.apiEndpoint, '', '', '');
+            this.setState(prevState => ({
+                lastUpdated: new Date().toLocaleString(),
+                fetchDataCalled: prevState.fetchDataCalled + 1 // 增加调用次数
+            }));
+        }
+    }
     //更新 handleFetchLatestData 以接受搜索字段和搜索查询
     handleFetchLatestData = (field: string, query: string, rangeQueryParams: string) => {
         this.props.fetchLatestData(this.props.apiEndpoint, '', '', '');
@@ -172,10 +172,6 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
     // };
 
 
-    resetDataSourceChanged() {
-        this.setState({ dataSourceChanged: false });
-    }
-
     onSelectChange = (selectedRowKeys: React.Key[]) => {
         this.setState({
             selectedRowKeys,
@@ -185,49 +181,49 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
         }
     };
 
-    handleExport = () => {
-        const { externalDataSource, columns } = this.props;
+    // handleExport = () => {
+    //     const { externalDataSource, columns } = this.props;
 
-        // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
-        if (this.state.selectedRowKeys.length === 0 || externalDataSource.length === 0) {
-            alert('没有可导出的数据');
-            return;
-        }
+    //     // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
+    //     if (this.state.selectedRowKeys.length === 0 || externalDataSource.length === 0) {
+    //         alert('没有可导出的数据');
+    //         return;
+    //     }
 
-        // 筛选出要导出的数据
-        const dataToExport = externalDataSource.filter((item) => this.state.selectedRowKeys.includes(item.id));
+    //     // 筛选出要导出的数据
+    //     const dataToExport = externalDataSource.filter((item) => this.state.selectedRowKeys.includes(item.id));
 
-        // 创建 CSV 字符串
-        let csvContent = '';
+    //     // 创建 CSV 字符串
+    //     let csvContent = '';
 
-        // 添加标题行（从 columns 获取列标题）
-        const headers = columns.map(column => `"${column.title}"`).join(",");
-        csvContent += headers + "\r\n";
+    //     // 添加标题行（从 columns 获取列标题）
+    //     const headers = columns.map(column => `"${column.title}"`).join(",");
+    //     csvContent += headers + "\r\n";
 
-        // 添加数据行（根据 columns 的 dataIndex 来获取值）
-        dataToExport.forEach(item => {
-            const row = columns.map(column => {
-                const value = item[column.dataIndex];
-                return `"${value}"`; // 用引号包裹，以便正确处理包含逗号或换行符的数据
-            }).join(",");
-            csvContent += row + "\r\n";
-        });
+    //     // 添加数据行（根据 columns 的 dataIndex 来获取值）
+    //     dataToExport.forEach(item => {
+    //         const row = columns.map(column => {
+    //             const value = item[column.dataIndex];
+    //             return `"${value}"`; // 用引号包裹，以便正确处理包含逗号或换行符的数据
+    //         }).join(",");
+    //         csvContent += row + "\r\n";
+    //     });
 
-        // UTF-8 编码的字节顺序标记 (BOM)
-        const BOM = "\uFEFF";
+    //     // UTF-8 编码的字节顺序标记 (BOM)
+    //     const BOM = "\uFEFF";
 
-        // 创建 Blob 对象
-        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const href = URL.createObjectURL(blob);
+    //     // 创建 Blob 对象
+    //     const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    //     const href = URL.createObjectURL(blob);
 
-        // 创建下载链接并点击
-        const link = document.createElement('a');
-        link.href = href;
-        link.download = this.props.currentPanel + '_export.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
+    //     // 创建下载链接并点击
+    //     const link = document.createElement('a');
+    //     link.href = href;
+    //     link.download = this.props.currentPanel + '_export.csv';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // };
 
     handleApplicationTypeSelect = (e: any) => {
         const applicationType = e.key;
@@ -241,6 +237,72 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
         );
     };
     //后续为这里的输入参数column添加筛选
+    generate_new_columns = (columns: any[], search_index=['']): any[] => {
+        // 遍历this.props.columns中的每一列
+        return columns.map((column: any) => {
+          // 如果列名在search_index中
+          if (search_index.includes(column.dataIndex)) {
+            // 为这列添加搜索功能
+            return {
+              ...column,
+            //   filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#FF0000' : undefined }} />, // 调整颜色以引人注目
+            
+            filterIcon: (filtered: boolean) => (
+                <div >
+                  {/* 添加动画效果 */}
+                  <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined, transition: 'color 0.3s' }} />
+                  {/* 显示提醒标志 */}
+                  {filtered && <ExclamationCircleOutlined style={{ position: 'absolute', top: -4, right: -4, color: '#FF4500' }} />}
+                  {/* 增加背景色或边框 */}
+                  <div style={{ position: 'absolute', top: -6, right: -6, width: 16, height: 16, backgroundColor: '#FF4500', borderRadius: '50%', display: filtered ? 'block' : 'none' }}></div>
+                </div>
+              ),
+              filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
+                <div style={{ padding: 8 }}>
+                  <Input
+                    autoFocus
+                    placeholder={`搜索${column.title}...`}
+                    value={filterDropdownProps.selectedKeys[0]}
+                    onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => filterDropdownProps.confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                  />
+                  <Button
+                    onClick={() => {
+                        filterDropdownProps.confirm()
+                        this.setState({selectedRowKeys:[]})
+                    }}
+                    size="small"
+                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+                  >
+                    搜索
+                  </Button>
+                  <Button
+                    disabled={filterDropdownProps.clearFilters === undefined}
+                    onClick={() => {
+                        filterDropdownProps.clearFilters?.()
+                        this.setState({selectedRowKeys:[]})
+                    }}
+                    size="small"
+                    style={{ width: 90 }}
+                  >
+                    重置
+                  </Button>
+                </div>
+              ),
+              // 添加onFilter属性，以处理搜索逻辑
+              onFilter: (value: string, record: any) =>
+                record[column.dataIndex]
+                  ? record[column.dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+                  : false,
+            };
+          } else {
+            // 如果不在search_index中，直接返回原列
+            return column;
+          }
+        });
+    }
+      
     // renderSearchFieldDropdown = (columns: any[]) => {
     //     return (
     //         <Row style={{width:'15%', marginLeft: '0px', marginRight: 'auto'}}>
@@ -258,96 +320,86 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
     //         </Row>
     //     );
     // };
+    // generate_new_columns=(columns: any[], search_index=['']): any[] =>{
+    //     // 遍历this.props.columns中的每一列
+    //     return columns.map((column: any) => {
+    //       // 如果列名在search_index中
+    //       if (search_index.includes(column.dataIndex)) {
+    //         // 为这列添加搜索功能
+    //         return {
+    //           ...column,
+    //           filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
+    //             <div style={{ padding: 8 }}>
+    //               <Input
+    //                 autoFocus
+    //                 placeholder={`搜索${column.title}...`}
+    //                 value={filterDropdownProps.selectedKeys[0]}
+    //                 onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    //                 onPressEnter={() => filterDropdownProps.confirm()}
+    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
+    //               />
+    //               <Button
+    //                 onClick={() => {
+    //                     filterDropdownProps.confirm()
+    //                     this.setState({selectedRowKeys:[]})
+    //                 }}
+    //                 size="small"
+    //                 style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+    //               >
+    //                 搜索
+    //               </Button>
+    //               <Button
+    //                 disabled={filterDropdownProps.clearFilters === undefined}
+    //                 onClick={() => {
+    //                     filterDropdownProps.clearFilters?.()
+    //                     this.setState({selectedRowKeys:[]})
+    //                 }}
+    //                 size="small"
+    //                 style={{ width: 90 }}
+    //               >
+    //                 重置
+    //               </Button>
+    //             </div>
+    //           ),
+    //         };
+    //       } else {
+    //         // 如果不在search_index中，直接返回原列
+    //         return column;
+    //       }
+    //     });
+    //   }
 
-    handleDeleteSelected = () => {
-        // 调用父组件的删除方法
-        if (this.props.onDeleteSelected) {
-            this.props.onDeleteSelected(this.state.selectedRowKeys);
-        }
-
-        // 重置选中的行
-        this.setState({ selectedRowKeys: [] });
-    };
     // onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
     //     if (dates) {
     //         const [start, end] = dateStrings;
     //         this.setState({ selectedDateRange: [start, end] });
 
-    //         const { timeColumnIndex } = this.props;
-    //         if (timeColumnIndex) {
+    //         const { timeColumnIndex, externalDataSource } = this.props;
+    //         if (timeColumnIndex && timeColumnIndex.length > 0) {
     //             // 转换日期为 Unix 时间戳（秒）
     //             const startDateTimestamp = moment(start).unix();
     //             const endDateTimestamp = moment(end).unix();
 
-    //             const selectedqueryParams = buildRangeQueryParams(startDateTimestamp.toString(), endDateTimestamp.toString(), timeColumnIndex[0]);
-    //                         this.setState({
-    //             dataSourceChanged: true, // 更新状态以避免重复执行
-    //           });
-    //             this.props.onUpdateRangeField(selectedqueryParams);
+    //             // 筛选 externalDataSource 中符合日期范围的数据
+    //             const filteredData = externalDataSource.filter(item => {
+    //                 const itemTimestamp = item[timeColumnIndex[0]]; // 假设时间戳已经是 Unix 时间戳格式
+    //                 return itemTimestamp >= startDateTimestamp && itemTimestamp <= endDateTimestamp;
+    //             });
 
+    //             // 更新状态以重新渲染表格
     //             this.setState({
-    //                 dataSourceChanged: true, // 更新状态以避免重复执行
-    //               });
-
-    //             this.setState({ selectrangequeryParams: selectedqueryParams }, () => {
-    //                 // 在状态更新后立即触发数据获取
-    //                 this.props.fetchLatestData(this.props.apiEndpoint,'', '', selectedqueryParams);
+    //                 sortedData: filteredData,
     //             });
     //         }
     //     } else {
+    //         // 如果日期范围被清除，显示全部数据
     //         this.setState({
-    //             dataSourceChanged: true, // 更新状态以避免重复执行
-    //           });
-    //         this.setState({ selectedDateRange: [null, null], selectrangequeryParams: '' }, () => {
-    //             // 当日期范围被清空时，重置数据
-    //             this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
+    //             sortedData: this.props.externalDataSource,
+    //             selectedDateRange: [null, null],
     //         });
     //     }
     // };
 
-    onDateRangeChange = (dates: RangeValue<Moment>, dateStrings: [string, string]) => {
-        if (dates) {
-            const [start, end] = dateStrings;
-            this.setState({ selectedDateRange: [start, end] });
-
-            const { timeColumnIndex, externalDataSource } = this.props;
-            if (timeColumnIndex && timeColumnIndex.length > 0) {
-                // 转换日期为 Unix 时间戳（秒）
-                const startDateTimestamp = moment(start).unix();
-                const endDateTimestamp = moment(end).unix();
-
-                // 筛选 externalDataSource 中符合日期范围的数据
-                const filteredData = externalDataSource.filter(item => {
-                    const itemTimestamp = item[timeColumnIndex[0]]; // 假设时间戳已经是 Unix 时间戳格式
-                    return itemTimestamp >= startDateTimestamp && itemTimestamp <= endDateTimestamp;
-                });
-
-                // 更新状态以重新渲染表格
-                this.setState({
-                    sortedData: filteredData,
-                    dataSourceChanged: true, // 标记数据源已更改
-                });
-            }
-        } else {
-            // 如果日期范围被清除，显示全部数据
-            this.setState({
-                sortedData: this.props.externalDataSource,
-                selectedDateRange: [null, null],
-                dataSourceChanged: true,
-            });
-        }
-    };
-
-    handleSearchFieldChange = (selectedField: string) => {
-        this.props.onUpdateSearchField(selectedField);
-        this.setState({ selectedSearchField: selectedField });
-    };
-
-    handleSearch = (query: string) => {
-        this.props.onUpdateSearchQuery(query);
-        // 调用 fetchLatestData 使用最新的搜索字段和查询值
-        this.props.fetchLatestData(this.state.selectedSearchField, query, '');
-    };
 
     showModal = () => {
         this.setState({
@@ -500,9 +552,8 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
 
     render() {
         // 构建无数据时的展示配置
-        const customLocale = {
-            emptyText: '没有数据'
-        };
+        
+        const new_columns = this.generate_new_columns(this.props.columns,this.props.searchColumns);
         const rowSelection = {//checkbox勾选状态独立
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: this.onSelectChange,
@@ -572,19 +623,22 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
                                                     ...selectedcompStyle, marginRight: '10px',
                                                     opacity: isButtonDisabled ? 0.5 : 1
                                                 }}
-                                                onClick={this.handleExport}
+                                                onClick={()=>handleExport(this.props.externalDataSource,
+                                                    this.props.currentPanel,this.state.selectedRowKeys)}
                                                 disabled={isButtonDisabled}
                                             >
                                                 批量导出
                                             </Button>
+
                                             {/* <Button
                                             style={{...selectedcompStyle,
                                                 opacity: isButtonDisabled ? 0.5 : 1 }}
-                                            onClick={this.handleDeleteSelected}
+                                            // onClick={()=>handleDelete(this.props.currentPanel,this.state.selectedRowKeys)}
                                             disabled={isButtonDisabled}
-                                        >
-                                        待定按键
-                                        </Button> */}
+                                            >
+                                            批量删除
+                                            </Button> */}
+
                                             <Button
                                                 style={{ ...selectedcompStyle, }}
                                                 onClick={() => this.handleFetchLatestData('', '', '')}>
@@ -635,7 +689,7 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
                                                     ...selectedcompStyle,
                                                     opacity: isButtonDisabled ? 0.5 : 1
                                                 }}
-                                                onClick={this.handleExport}
+                                                onClick={()=>handleExport(this.props.externalDataSource,this.props.currentPanel,this.state.selectedRowKeys)}
                                                 disabled={isButtonDisabled}
                                             >
                                                 批量导出
@@ -661,21 +715,8 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
                             </Row>
                         </div> */}
 
-                            {/* {externalDataSource.length !== 0 ? (
-                        <Table
-                            className={selectedTableStyle}
-                            rowSelection={rowSelection}
-                            rowKey={this.props.columns[0].key}
-                            dataSource={externalDataSource}
-                            columns={this.props.columns}
-                            locale={this.state.dataSourceChanged && this.props.externalDataSource.length === 0 ? customLocale : undefined}
-                        />
-                        ) : (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-                            <LoadingOutlined style={{ fontSize: '3em' }} />
-                        </div>
-                        )} */}
-                            {externalDataSource.length !== 0 && (
+
+                            {/* {externalDataSource.length !== 0 && (
                                 <Table
                                     className={selectedTableStyle}
                                     rowSelection={rowSelection}
@@ -694,8 +735,17 @@ class ElkeidDisplayTable extends React.Component<CustomDataTableProps, CustomDat
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
                                     <LoadingOutlined style={{ fontSize: '3em' }} />
                                 </div>
-                            )}
-
+                            )} */}
+                                <Table
+                                    className={selectedTableStyle}
+                                    rowSelection={rowSelection}
+                                    rowKey={this.props.columns[this.props.keyIndex || 0].key}//使用第一个字段区分各个row，最好是PK
+                                    dataSource={externalDataSource}//externalDataSource
+                                    columns={new_columns}
+                                    childrenColumnName={this.props.childrenColumnName}
+                                    expandedRowRender={this.props.expandedRowRender}
+                                    //indentSize={this.props.indentSize}
+                                />
                         </Card>
                     </Col>
                 </Row>

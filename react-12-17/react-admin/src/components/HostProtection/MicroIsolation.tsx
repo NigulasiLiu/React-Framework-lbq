@@ -2,6 +2,9 @@ import React from 'react';
 import { Card, Col, Row, Form, Input, Button, message,Modal,Table,Descriptions } from 'antd';
 import axios from 'axios';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import { SearchOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { FilterDropdownProps } from 'antd/lib/table/interface';
 
 
 interface MicroIsolationProps{
@@ -22,7 +25,7 @@ const initialData = [
   {
     key: '1',
     id: 1,
-    agent_ip: '192.168.1.1',
+    uuid: '192.168.1.1',
     encrypt_key: 'some_key_1',
     origin_filename: 'report1.docx',
     origin_file_path: '/path/to/report1.docx',
@@ -32,7 +35,7 @@ const initialData = [
   {
     key: '2',
     id: 2,
-    agent_ip: '192.168.1.2',
+    uuid: '192.168.1.2',
     encrypt_key: 'some_key_2',
     origin_filename: 'report2.docx',
     origin_file_path: '/path/to/report2.docx',
@@ -53,6 +56,49 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           key: 'id',
         },
         {
+          title: "UUID",
+          dataIndex: 'uuid', key: 'uuid',
+          // onFilter: (values: string, record: any) => record.uuid.includes(values),
+          // filterDropdown: ({
+          //     setSelectedKeys,
+          //     selectedKeys,
+          //     confirm,
+          //     clearFilters,
+          // }: FilterDropdownProps) => (
+          //     <div style={{ padding: 8 }}>
+          //         <Input
+          //             autoFocus
+          //             placeholder="搜索..."
+          //             value={selectedKeys[0]}
+          //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          //             onPressEnter={() => confirm()}
+          //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+          //         />
+          //         <Button
+          //             onClick={() => confirm()}
+          //             size="small"
+          //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+          //         >
+          //             搜索
+          //         </Button>
+          //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+          //             重置
+          //         </Button>
+          //     </div>
+          // ),
+          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+  
+          render: (text: string) => (
+              // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+              <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+                  <Button style={{
+                      fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
+                      padding: '0 0'
+                  }}>{text.slice(0, 5)}</Button>
+              </Link>
+          ),
+        },
+        {
           title: '原文件文件名',
           dataIndex: 'origin_filename',
           key: 'origin_filename',
@@ -66,19 +112,62 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           title: '操作',
           key: 'operation',
           render: (text:string, record:any) => (
-            <Button onClick={() => this.showDecryptModal(record)}>隔离</Button>
+            <Button onClick={() => this.showEncryptModal(record)}>隔离</Button>
           ),
         }
         
       ],
-    decryptModalVisible: false,
-    encryptModalVisible: false,
-    currentRecord: {}, // 存储当前选中的行数据
+      decryptModalVisible: false,
+      encryptModalVisible: false,
+      currentRecord: {}, // 存储当前选中的行数据
       columns: [
         {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
+        },
+        {
+          title: "UUID",
+          dataIndex: 'uuid', key: 'uuid',
+          // onFilter: (values: string, record: any) => record.uuid.includes(values),
+          // filterDropdown: ({
+          //     setSelectedKeys,
+          //     selectedKeys,
+          //     confirm,
+          //     clearFilters,
+          // }: FilterDropdownProps) => (
+          //     <div style={{ padding: 8 }}>
+          //         <Input
+          //             autoFocus
+          //             placeholder="搜索..."
+          //             value={selectedKeys[0]}
+          //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          //             onPressEnter={() => confirm()}
+          //             style={{ width: 188, marginBottom: 8, display: 'block' }}
+          //         />
+          //         <Button
+          //             onClick={() => confirm()}
+          //             size="small"
+          //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+          //         >
+          //             搜索
+          //         </Button>
+          //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
+          //             重置
+          //         </Button>
+          //     </div>
+          // ),
+          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+  
+          render: (text: string) => (
+              // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+              <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+                  <Button style={{
+                      fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
+                      padding: '0 0'
+                  }}>{text.slice(0, 5)}</Button>
+              </Link>
+          ),
         },
         {
           title: '加密密钥',
@@ -138,9 +227,11 @@ handleDecryptSubmit = async () => {
   const { currentRecord } = this.state;
   // 构建请求体，这里假设currentRecord中含有需要的所有信息
   const postData = {
-    ip_address: currentRecord.agent_ip, // 假设agent_ip是表格中的一列
+    uuid: currentRecord.uuid, // 假设agent_ip是表格中的一列
     filename: currentRecord.origin_filename,
     filepath: currentRecord.origin_file_path,
+    encryptedfilename: currentRecord.encrypted_filename,
+    encryptedfilepath: currentRecord.encrypted_file_path,
   };
   
   try {
@@ -156,7 +247,31 @@ handleDecryptSubmit = async () => {
   }
   this.hideDecryptModal();
 };
-// 显示解除隔离Modal，并设置当前行数据
+
+renderDecryptModal=()=>{
+  return (
+      <Modal
+      title="取消隔离文件"
+      visible={this.state.decryptModalVisible}
+      onOk={this.handleDecryptSubmit}
+      onCancel={this.hideDecryptModal}
+      okText="确认"
+      cancelText="取消"
+      okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+    >
+        <Descriptions bordered column={1}>
+        <Descriptions.Item label="Agent UUID">{this.state.currentRecord.uuid}</Descriptions.Item>
+        <Descriptions.Item label="原文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
+        <Descriptions.Item label="原文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
+        <Descriptions.Item label="加密文件名称">{this.state.currentRecord.encrypted_filename}</Descriptions.Item>
+        <Descriptions.Item label="加密文件路径">{this.state.currentRecord.encrypted_file_path}</Descriptions.Item>
+      </Descriptions>
+    </Modal>
+  );
+}
+
+
+// 隔离Modal，并设置当前行数据
 showEncryptModal = (record:any) => {
   this.setState({
     encryptModalVisible: true,
@@ -177,7 +292,7 @@ handleEncryptSubmit = async () => {
   const { currentRecord } = this.state;
   // 构建请求体，这里假设currentRecord中含有需要的所有信息
   const postData = {
-    ip_address: currentRecord.agent_ip, // 假设agent_ip是表格中的一列
+    uuid: currentRecord.uuid, // 假设agent_ip是表格中的一列
     filename: currentRecord.origin_filename,
     filepath: currentRecord.origin_file_path,
   };
@@ -195,6 +310,29 @@ handleEncryptSubmit = async () => {
   }
   this.hideEncryptModal();
 };
+
+renderEncryptModal=()=>{
+  return (
+      <Modal
+      title="添加隔离文件"
+      visible={this.state.encryptModalVisible}
+      onOk={this.handleEncryptSubmit}
+      onCancel={this.hideEncryptModal}
+      okText="确认"
+      cancelText="取消"
+      okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+    >
+        <Descriptions bordered column={1}>
+        <Descriptions.Item label="Agent UUID">{this.state.currentRecord.uuid}</Descriptions.Item>
+        <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
+        <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
+      </Descriptions>
+    </Modal>
+  );
+}
+
+
+
 // // 新增 - 提交表单进行文件隔离
 // onEncryptFinish = async (values:any) => {
 //   try {
@@ -236,7 +374,7 @@ handleEncryptSubmit = async () => {
         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
           <Col md={24}>
             <div className="gutter-box">
-              <Modal
+              {/* <Modal
                 title="添加隔离文件"
                 visible={this.state.encryptModalVisible}
                 onOk={this.handleEncryptSubmit}
@@ -250,8 +388,8 @@ handleEncryptSubmit = async () => {
                   <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
                   <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
                 </Descriptions>
-              </Modal>
-
+              </Modal> */}
+              {this.renderEncryptModal()}
               <Card bordered={false}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                   <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
@@ -264,7 +402,7 @@ handleEncryptSubmit = async () => {
                 <Table dataSource={initialData} columns={this.state.spFilesColumns} />
 
               </Card>
-              <Modal
+              {/* <Modal
                 title="解除文件隔离"
                 visible={this.state.decryptModalVisible}
                 onOk={this.handleDecryptSubmit}
@@ -278,7 +416,8 @@ handleEncryptSubmit = async () => {
                   <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
                   <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
                 </Descriptions>
-              </Modal>
+              </Modal> */}
+              {this.renderDecryptModal()}
 
               <Card bordered={false}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>

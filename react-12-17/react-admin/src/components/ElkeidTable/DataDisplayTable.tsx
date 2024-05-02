@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal, message } from 'antd';
 import moment, { Moment } from 'moment';
-import { convertUnixTime, fetchDataFromAPI } from '../ContextAPI/DataService';
-import { simplifiedTablePanel } from '../tableUtils';
+import { convertUnixTime, fetchDataFromAPI, handleExport } from '../ContextAPI/DataService';
+import { FilterDropdownProps, simplifiedTablePanel } from '../tableUtils';
 import { Link } from 'react-router-dom';
-import { LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 
-const { Option } = Select;
 
 interface GenericDataItem {
     [key: string]: any;
 }
 
 interface DataDisplayTableProps {
-    externalDataSource: any[];
-    columns: any[]; // 根据实际列数据结构定义更明确的类型
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
-    // 可以根据需要添加其他 props，比如分页大小等
+    searchColumns?:string[];
     currentPanel: string;
 
+    externalDataSource: any[];
+    columns: any[]; // 根据实际列数据结构定义更明确的类型
     childrenColumnName?: string; // 作为可选属性
-    indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
     expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
+    indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
     apiEndpoint: string;
 
 }
@@ -95,7 +94,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                 // searchQuery: '',
                 // selectrangequeryParams: '',
                 // selectedDateRange: [null, null], // 日期筛选器重置
-                selectedRowKeys: [],
+                selectedRowKeys: [], //切换页面时，重置keys
                 dataSourceChanged: true, // 此状态字段可能需要进一步审查其必要性
                 currentPanelName: this.props.currentPanel,
             }, () => {
@@ -107,6 +106,69 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
         }
     }
+    generate_new_columns = (columns: any[], search_index=['']): any[] => {
+        // 遍历this.props.columns中的每一列
+        return columns.map((column: any) => {
+          // 如果列名在search_index中
+          if (search_index.includes(column.dataIndex)) {
+            // 为这列添加搜索功能
+            return {
+              ...column,
+              filterIcon: (filtered: boolean) => (
+                <div >
+                  {/* 添加动画效果 */}
+                  <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined, transition: 'color 0.3s' }} />
+                  {/* 显示提醒标志 */}
+                  {filtered && <ExclamationCircleOutlined style={{ position: 'absolute', top: -4, right: -4, color: '#FF4500' }} />}
+                  {/* 增加背景色或边框 */}
+                  <div style={{ position: 'absolute', top: -6, right: -6, width: 16, height: 16, backgroundColor: '#FF4500', borderRadius: '50%', display: filtered ? 'block' : 'none' }}></div>
+                </div>
+              ),
+              filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
+                <div style={{ padding: 8 }}>
+                  <Input
+                    autoFocus
+                    placeholder={`搜索${column.title}...`}
+                    value={filterDropdownProps.selectedKeys[0]}
+                    onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => filterDropdownProps.confirm()}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                  />
+                  <Button
+                    onClick={() => {
+                        filterDropdownProps.confirm()
+                        this.setState({selectedRowKeys:[]})
+                    }}
+                    size="small"
+                    style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+                  >
+                    搜索
+                  </Button>
+                  <Button
+                    disabled={filterDropdownProps.clearFilters === undefined}
+                    onClick={() => {
+                        filterDropdownProps.clearFilters?.()
+                        this.setState({selectedRowKeys:[]})
+                    }}
+                    size="small"
+                    style={{ width: 90 }}
+                  >
+                    重置
+                  </Button>
+                </div>
+              ),
+              // 添加onFilter属性，以处理搜索逻辑
+              onFilter: (value: string, record: any) =>
+                record[column.dataIndex]
+                  ? record[column.dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+                  : false,
+            };
+          } else {
+            // 如果不在search_index中，直接返回原列
+            return column;
+          }
+        });
+      }
 
     onSelectChange = (selectedRowKeys: React.Key[], selectedRows: any[]) => {
         // 新的 selectedRowKeys 将基于当前选择的行，同时考虑子行
@@ -122,53 +184,13 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
 
         // 更新状态以反映新的选择
         this.setState({ selectedRowKeys: newSelectedRowKeys });
+        message.info("keys:"+newSelectedRowKeys);
     };
 
-    handleExport = () => {
-        const { data } = this.state;
-        const { columns } = this.props;
-
-        // 如果没有选中的行或者当前面板的 dataSource 为空，则不执行导出
-        if (this.state.selectedRowKeys.length === 0 || data.length === 0) {
-            alert('没有可导出的数据');
-            return;
-        }
-
-        // 筛选出要导出的数据
-        const dataToExport = data.filter((item) => this.state.selectedRowKeys.includes(item.id));
-
-        // 创建 CSV 字符串
-        let csvContent = '';
-
-        // 添加标题行（从 columns 获取列标题）
-        const headers = columns.map(column => `"${column.title}"`).join(",");
-        csvContent += headers + "\r\n";
-
-        // 添加数据行（根据 columns 的 dataIndex 来获取值）
-        dataToExport.forEach(item => {
-            const row = columns.map(column => {
-                const value = item[column.dataIndex];
-                return `"${value}"`; // 用引号包裹，以便正确处理包含逗号或换行符的数据
-            }).join(",");
-            csvContent += row + "\r\n";
-        });
-
-        // UTF-8 编码的字节顺序标记 (BOM)
-        const BOM = "\uFEFF";
-
-        // 创建 Blob 对象
-        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const href = URL.createObjectURL(blob);
-
-        // 创建下载链接并点击
-        const link = document.createElement('a');
-        link.href = href;
-        link.download = this.props.currentPanel + '_export.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
+    
+    // 使用示例，需要传入数据源、当前面板标识和要保存的格式（txt 或 csv）
+    // handleExport(data, 'myPanel', 'csv');
+    
     handleDeleteSelected = () => {
         // 重置选中的行
         this.setState({ selectedRowKeys: [] });
@@ -182,11 +204,12 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: (selectedRowKeys: any, selectedRows: any) => {
                 // 更新 selectedRowKeys 状态以包括父行和子行的键值
-                this.setState({ selectedRowKeys });
+                // this.setState({ selectedRowKeys });
+                this.onSelectChange(selectedRowKeys,selectedRows)
             },
             // 如果需要，可以在这里添加 getCheckboxProps 来定制每一行复选框的行为
         };
-
+        const new_columns = this.generate_new_columns(this.props.columns,this.props.searchColumns);
 
         // const data = this.state.data.map(item => {
         //     // 时间转换
@@ -225,7 +248,12 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const { refreshDataFromAPI } = context;
-
+                    const handleRefresh=(api:string)=>{
+                        refreshDataFromAPI(api)
+                        this.setState({
+                            lastUpdated: new Date().toLocaleString(),
+                        })
+                    }
                     return (//Table的宽度被设置为1330px
                         <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', }}>
                             <Row gutter={[12, 6]} style={{ marginTop: '-10px' }}>
@@ -255,7 +283,8 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                             ...selectedcompStyle, marginRight: '10px',
                                                             opacity: isButtonDisabled ? 0.5 : 1
                                                         }}
-                                                        onClick={this.handleExport}
+                                                        onClick={()=>handleExport(this.props.externalDataSource,
+                                                            this.props.currentPanel,this.state.selectedRowKeys)}
                                                         disabled={isButtonDisabled}
                                                     >
                                                         批量导出
@@ -270,7 +299,9 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                 </Col>
                                                 <Col style={{ textAlign: 'left', marginLeft: 10, marginRight: '0px', }}>
                                                     <Button icon={<ReloadOutlined />}
-                                                        onClick={() => refreshDataFromAPI(this.props.apiEndpoint)} >刷新</Button>
+                                                        // onClick={() => refreshDataFromAPI(this.props.apiEndpoint)}
+                                                        onClick={() => handleRefresh(this.props.apiEndpoint)}
+                                                         >刷新</Button>
                                                 </Col>
                                             </Row>
                                         </div>
@@ -296,7 +327,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                             rowSelection={rowSelection}
                                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
                                             dataSource={data}
-                                            columns={this.props.columns}
+                                            columns={new_columns}
                                             childrenColumnName={this.props.childrenColumnName}
                                             expandedRowRender={this.props.expandedRowRender}
                                         //indentSize={this.props.indentSize}

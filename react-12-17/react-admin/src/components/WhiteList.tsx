@@ -10,12 +10,12 @@ type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
 
 
-type HostInventoryProps = {
+type WhiteListProps = {
     apiEndpoint:string;
     columns:any[];
     currentPanel:string;
 };
-type HostInventoryState = {
+type WhiteListState = {
     dataSource: any[];
     count: number;
     deleteIndex: number | null;
@@ -62,7 +62,7 @@ interface WhiteListColumDataType {
 // };
 
 
-class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> {
+class WhiteList extends React.Component<WhiteListProps, WhiteListState> {
     constructor(props: any) {
         super(props);
         this.columns = [
@@ -263,7 +263,7 @@ class WhiteList extends React.Component<HostInventoryProps, HostInventoryState> 
                                 <FetchDataForElkeidTable
                                     apiEndpoint={this.props.apiEndpoint}
                                     timeColumnIndex={[]}
-                                    columns={this.props.columns}
+                                    columns={this.columns}
                                     currentPanel={this.props.currentPanel}
                                     />
                             </Card>
