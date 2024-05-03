@@ -15,10 +15,10 @@
 }
 .sidebar {
   position: fixed;
-  right: -780px; /* 设置为负值，使侧边栏开始时在屏幕外 */
+  right: -770px; /* 设置为负值，使侧边栏开始时在屏幕外 */
   top: 0;
-  width: 780px; /* 侧边栏的宽度 */
-  height: 100%; /* 侧边栏的高度 */
+  width: 770px; /* 侧边栏的宽度 */
+  height: 110%; /* 侧边栏的高度 */
   background: #f9f9f9; /* 侧边栏的背景颜色 */
   box-shadow: -2px 0 5px rgba(0,0,0,0.5); /* 侧边栏的阴影效果 */
   transition: right 0.3s; /* 平滑过渡效果 */
@@ -29,6 +29,24 @@
 .sidebar.open {
   right: 0; /* 当添加.open类时，将侧边栏移动到视图内 */
 }
+
+.smallsidebar {
+  position: fixed;
+  right: -512px; /* 设置为负值，使侧边栏开始时在屏幕外 */
+  top: 0;
+  width: 512px; /* 侧边栏的宽度 */
+  height: 100%; /* 侧边栏的高度 */
+  background: #f9f9f9; /* 侧边栏的背景颜色 */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.5); /* 侧边栏的阴影效果 */
+  transition: right 0.3s; /* 平滑过渡效果 */
+  overflow: auto; /* 如果内容超出，出现滚动条 */
+  z-index: 1000; /* 确保侧边栏在顶层 */
+}
+
+.smallsidebar.open {
+  right: 0; /* 当添加.open类时，将侧边栏移动到视图内 */
+}
+
 .Largersidebar {
   position: fixed;
   right: -1050px; /* 设置为负值，使侧边栏开始时在屏幕外 */

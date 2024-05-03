@@ -20,10 +20,12 @@ interface DataDisplayTableProps {
 
     externalDataSource: any[];
     columns: any[]; // 根据实际列数据结构定义更明确的类型
+    apiEndpoint: string;
     childrenColumnName?: string; // 作为可选属性
     expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
     indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
-    apiEndpoint: string;
+    additionalButton?:()=>void;
+    additionalButtonTitile?:string;
 
 }
 
@@ -278,6 +280,17 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                                 新增任务
                                                             </Button>
                                                         </Link>)}
+                                                    {(["HoneypotDefenselist","threathuntinglist","UserManagementlist"].includes(this.props.currentPanel)) && (
+                                                            <Button
+                                                                style={{
+                                                                    ...selectedcompStyle,
+                                                                    backgroundColor: '#1664FF', color: 'white', marginRight: '10px',
+                                                                }}
+                                                                onClick={this.props.additionalButton}
+                                                            >
+                                                                {this.props.additionalButtonTitile}
+                                                            </Button>
+                                                        )}
                                                     <Button
                                                         style={{
                                                             ...selectedcompStyle, marginRight: '10px',
@@ -328,6 +341,10 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
                                             dataSource={data}
                                             columns={new_columns}
+                                            pagination={{
+                                                showQuickJumper:true,
+                                                pageSize:(this.props.currentPanel.includes("_details")?5:8)
+                                            }}
                                             childrenColumnName={this.props.childrenColumnName}
                                             expandedRowRender={this.props.expandedRowRender}
                                         //indentSize={this.props.indentSize}

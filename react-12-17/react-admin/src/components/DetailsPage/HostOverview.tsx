@@ -50,6 +50,11 @@ interface HostOverviewState {
 class HostOverview extends React.Component<HostOverviewProps, HostOverviewState> {
     constructor(props: any) {
         super(props);
+        // 创建具有明确类型的 refs
+        this.openPortsRef = React.createRef<HTMLDivElement>();
+        this.fimRef = React.createRef<HTMLDivElement>();
+        this.processRef = React.createRef<HTMLDivElement>();
+        this.assetRef = React.createRef<HTMLDivElement>();
         this.state = {
             activeIndex: [-1], //一个扇形图
             filteredData: [], // 用于存储过滤后的数据
@@ -65,6 +70,10 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
         });
     }
 
+    openPortsRef: React.RefObject<HTMLDivElement>;
+    fimRef: React.RefObject<HTMLDivElement>;
+    processRef: React.RefObject<HTMLDivElement>;
+    assetRef: React.RefObject<HTMLDivElement>;
 
     //扇形图动态效果实现
     handleMouseEnter = (_: any, index: number) => {
@@ -81,56 +90,16 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
             activeIndex: this.state.activeIndex.map(() => -1),
         });
     };
-
+    handleScrollToSection = (sectionRef: React.RefObject<HTMLDivElement>) => {
+        if(sectionRef && sectionRef.current){
+            sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
     // 修改后的函数，使其能够导航到对应的子面板
     goToPanel = (panelName: string) => {
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
     };
-    // renderVulPieChart1 = (OriginData:any) =>{
-    //     if(OriginData!==undefined){
-    //         // 确保OriginData总是作为数组处理
-    //         const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-    //         const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-
-    //         // 确保filteredData不为空再访问它的属性
-    //         if (filteredData.length > 0) {
-    //             //message.info("filteredData.filter:"+(filteredData[0].uuid));
-
-    //             const alertData3_:StatusItem[]=[
-    //                 // 确保使用正确的方法来计数
-    //                 { label: 'Pending', value: filteredData.filter(item => item.status === 'Pending').length, color: '#EA635F' },//RED
-    //                 { label: '通过', value: 99 - filteredData.filter(item => item.status === 'Pending').length, color: '#468DFF' }//蓝
-    //             ];
-    //             return (
-    //               <div>
-    //                 <Row>
-    //                 <Col span={12}>
-    //                     <CustomPieChart
-    //                     data={alertData3_}
-    //                     innerRadius={54}
-    //                     deltaRadius={8}
-    //                     outerRadius={80}
-    //                     cardWidth={200}
-    //                     cardHeight={200}
-    //                     hasDynamicEffect={true}
-    //                     />
-    //                 </Col>
-    //                 <Col span={2}> </Col>
-    //                 <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-    //                     <StatusPanel statusData={alertData3_} orientation="vertical"/>
-    //                 </div>
-    //                 </Row>
-    //               </div>
-    //             );
-    //         }
-    //     }
-    //     return (
-    //         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-    //         <LoadingOutlined style={{ fontSize: '3em' }} />
-    //         </div>
-    //     );
-    // }
     renderVulPieChart = (OriginData: any[], title: string, panelDataTitle1: string, panelDataTitle2: string) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
@@ -395,7 +364,9 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
     };
 
 
-    renderTable = (OriginData: any[], api: string, title: string, timeColumnIndex: string[], column: any[], currentPanel: string) => {
+    renderTable = (OriginData: any[], api: string, title: string, timeColumnIndex: string[], column: any[], currentPanel: string,
+        searchIndex:string[]
+    ) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
@@ -416,6 +387,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                 timeColumnIndex={timeColumnIndex}
                                 columns={column}
                                 currentPanel={currentPanel}
+                                searchColumns={searchIndex}
                             />
                         </Card>
                     </div>
@@ -648,7 +620,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    onClick={() => this.goToPanel('open-ports')}
+                                                                    // onClick={() => this.goToPanel('open-ports')}
+                                                                    onClick={() => this.handleScrollToSection(this.openPortsRef)}
                                                                 />
                                                             </Col>
                                                         </Row>
@@ -681,7 +654,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    onClick={() => this.goToPanel('running-processes')}
+                                                                    // onClick={() => this.goToPanel('running-processes')}
+                                                                    onClick={() => this.handleScrollToSection(this.processRef)}
                                                                 />
                                                             </Col>
                                                         </Row>
@@ -714,7 +688,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    onClick={() => this.goToPanel('system-services')}
+                                                                    // onClick={() => this.goToPanel('system-services')}
+                                                                    onClick={() => this.handleScrollToSection(this.assetRef)}
                                                                 />
                                                             </Col>
                                                         </Row>
@@ -745,13 +720,14 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    onClick={() => this.goToPanel('fim')}
+                                                                    // onClick={() => this.goToPanel('fim')}
+                                                                    onClick={() => this.handleScrollToSection(this.fimRef)}
                                                                 />
                                                             </Col>
                                                         </Row>
                                                     </Card>
                                                 </Col>
-                                                <Col span={2}>
+                                                {/* <Col span={2}>
                                                     <Card
                                                         bordered={false}
                                                         style={{
@@ -778,78 +754,89 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    onClick={() => this.goToPanel('scheduled-tasks')}
+                                                                    // onClick={() => this.goToPanel('scheduled-tasks')}
+                                                                    onClick={() => this.handleScrollToSection(this.openPortsRef)}
                                                                 />
                                                             </Col>
                                                         </Row>
                                                     </Card>
-                                                </Col>
+                                                </Col> */}
                                                 <Col span={2}>
                                                 </Col>
                                             </Row>
                                         </Card>
                                     </Row>
                                     {/* <Row gutter={[8,16]}>
-                                <Card bordered={true}
-                                    style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
-                                    <Row>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>磁盘信息</h2>
-                                        </div>
+                                        <Card bordered={true}
+                                            style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
+                                            <Row>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>磁盘信息</h2>
+                                                </div>
+                                            </Row>
+                                            <FetchDataForElkeidTable
+                                                apiEndpoint="http://localhost:5000/api/files/diskinfo"
+                                                timeColumnIndex={[]}
+                                                columns={diskColumns}
+                                                currentPanel="hostOverviewdiskinfolist"
+                                            />
+                                        </Card>
                                     </Row>
-                                    <FetchDataForElkeidTable
-                                        apiEndpoint="http://localhost:5000/api/files/diskinfo"
-                                        timeColumnIndex={[]}
-                                        columns={diskColumns}
-                                        currentPanel="hostOverviewdiskinfolist"
-                                    />
-                                </Card>
-                            </Row>
-                            <Row gutter={[8,16]}>
-                                <Card bordered={true}
-                                    style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
-                                    <Row>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>网卡信息</h2>
-                                        </div>
+                                    <Row gutter={[8,16]}>
+                                        <Card bordered={true}
+                                            style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
+                                            <Row>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>网卡信息</h2>
+                                                </div>
+                                            </Row>
+                                            <FetchDataForElkeidTable
+                                                apiEndpoint="http://localhost:5000/api/files/netinfo"
+                                                timeColumnIndex={[]}
+                                                columns={netColumns}
+                                                currentPanel="hostOverviewnetinfolist"
+                                            />
+                                        </Card>
                                     </Row>
-                                    <FetchDataForElkeidTable
-                                        apiEndpoint="http://localhost:5000/api/files/netinfo"
-                                        timeColumnIndex={[]}
-                                        columns={netColumns}
-                                        currentPanel="hostOverviewnetinfolist"
-                                    />
-                                </Card>
-                            </Row>
-                            <Row gutter={[8,16]}>
-                                <Card bordered={true}
-                                    style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
-                                    <Row>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                            <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>插件列表</h2>
-                                        </div>
+                                    <Row gutter={[8,16]}>
+                                        <Card bordered={true}
+                                            style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
+                                            <Row>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
+                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>插件列表</h2>
+                                                </div>
+                                            </Row>
+                                            <FetchDataForElkeidTable
+                                                apiEndpoint="http://localhost:5000/api/files/plugininfo"
+                                                timeColumnIndex={[]}
+                                                columns={pluginColumns}
+                                                currentPanel="hostOverviewplugininfolist"
+                                            />
+                                        </Card>
+                                    </Row> */}
+                                    <Row ref={this.openPortsRef} gutter={[8, 16]}>
+                                        {this.renderTable(portOriginData, 'http://localhost:5000/api/portinfo/all', '开放端口', [], openPortsColumns, 'open-ports_' + this.state.host_uuid+"_details",
+                                            ["port_number","port_name"]
+                                        )}
                                     </Row>
-                                    <FetchDataForElkeidTable
-                                        apiEndpoint="http://localhost:5000/api/files/plugininfo"
-                                        timeColumnIndex={[]}
-                                        columns={pluginColumns}
-                                        currentPanel="hostOverviewplugininfolist"
-                                    />
-                                </Card>
-                            </Row> */}
-                                    <Row gutter={[8, 16]}>
-                                        {this.renderTable(portOriginData, 'http://localhost:5000/api/portinfo/all', '开放端口', [], openPortsColumns, 'open-ports_' + this.state.host_uuid)}
+                                    <Row ref={this.fimRef} gutter={[8, 16]}>
+                                        {this.renderTable(fimOriginData, 'http://localhost:5000/api/FileIntegrityInfo/all', '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid+"_details"
+                                            ,["filename",]
+                                        )}
                                     </Row>
-                                    <Row gutter={[8, 16]}>
-                                        {this.renderTable(fimOriginData, 'http://localhost:5000/api/FileIntegrityInfo/all', '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid)}
+                                    <Row ref={this.processRef} gutter={[8, 16]}>
+                                        {this.renderTable(processOriginData, 'http://localhost:5000/api/process/all', '运行进程', ['createTime'], runningProcessesColumns, 'process_' + this.state.host_uuid+"_details"
+                                            ,["pid","name","userName","cmdline"]
+                                        )}
                                     </Row>
-                                    <Row gutter={[8, 16]}>
-                                        {this.renderTable(processOriginData, 'http://localhost:5000/api/process/all', '运行进程', ['createTime'], runningProcessesColumns, 'process_' + this.state.host_uuid)}
+                                    <Row ref={this.assetRef} gutter={[8, 16]}>
+                                        {this.renderTable(assetOriginData, 'http://localhost:5000/api/asset_mapping/all', '系统服务', [], systemServicesColumns, 'services_' + this.state.host_uuid+"_details"
+                                            ,["service","port","ostype"]
+                                        )}
                                     </Row>
-                                    <Row gutter={[8, 16]}>
-
-                                        {this.renderTable(assetOriginData, 'http://localhost:5000/api/asset_mapping/all', '系统服务', [], systemServicesColumns, 'services_' + this.state.host_uuid)}
-                                    </Row>
+                                    {/* <Row ref={this.assetRef} gutter={[8, 16]}>
+                                        {this.renderTable(assetOriginData, 'http://localhost:5000/api/taskdetail/all', '定时任务', [], , 'services_' + this.state.host_uuid+"_details")}
+                                    </Row> */}
                                     <Row gutter={[8, 16]}>
                                         <Card bordered={false}
                                             style={{ fontWeight: 'bolder', width: '100%', minHeight: 100, backgroundColor: '#ffffff' }}>

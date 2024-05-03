@@ -15,12 +15,13 @@ interface HoneypotDefenseStates{
 };
 const columnsHoneypotInfo = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      Maxwidth: '15px',
   },
   {
-    title: '蜜罐设置的端口',
+    title: '蜜罐端口',
     dataIndex: 'honeypot_port',
     key: 'honeypot_port',
   },
@@ -47,9 +48,10 @@ const columnsHoneypotInfo = [
 
 const columnsAttackerInfo = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      Maxwidth: '15px',
   },
   {
     title: '攻击者IP地址',
@@ -74,9 +76,10 @@ const columnsAttackerInfo = [
 ];
 const columnsAttackerInfo2 = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      Maxwidth: '15px',
   },
   {
     title: 'Agent',
@@ -166,41 +169,42 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
   }
 
     render() {
-      return (
-        <DataContext.Consumer>
-            {(context: DataContextType | undefined) => {
-                if (!context) {
-                    return (
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                            <LoadingOutlined style={{ fontSize: '3em' }} />
-                        </div>); // 或者其他的加载状态显示
-                }
-                // 从 context 中解构出 topFiveFimData 和 n
-                const { honeyPotOriginData} = context;
-                // 将函数绑定到类组件的实例上
-  
+          return (
+            <DataContext.Consumer>
+                {(context: DataContextType | undefined) => {
+                    if (!context) {
+                        return (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                                <LoadingOutlined style={{ fontSize: '3em' }} />
+                            </div>); // 或者其他的加载状态显示
+                    }
+                    // 从 context 中解构出 topFiveFimData 和 n
+                    const { honeyPotOriginData} = context;
+                    // 将函数绑定到类组件的实例上
+      
 
-                return (
-                  <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-                  <Button onClick={this.showModal}>添加蜜罐</Button> {/* 临时添加的按钮，用于展示Modal */}
-                  <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                      <Col md={24}>
-                      {constRenderTable(honeyPotOriginData, '蜜罐信息', [], 
-                                columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeyPot/all")}
-                      </Col>
-                  </Row>
-                  <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                      <Col md={24}>
-                      {constRenderTable(honeyPotOriginData, '蜜罐捕获信息', [], 
-                                columnsAttackerInfo2, 'honeyPotCatchlist',"http://localhost:5000/api/honeyPotCatch/all")}
-                      </Col>
-                  </Row>
-                  </div>
-                  );
-            }}
-        </DataContext.Consumer>
-    )
-      }
+                    return (
+                      <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
+                      {/* <Button onClick={this.showModal}>添加蜜罐</Button> */}
+                      {this.renderHoneyPotModal()}
+                      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                          <Col md={24}>
+                          {constRenderTable(honeyPotOriginData, '蜜罐信息', [], 
+                                    columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeyPot/all",[''],this.showModal,"新增蜜罐")}
+                          </Col>
+                      </Row>
+                      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                          <Col md={24}>
+                          {constRenderTable(honeyPotOriginData, '蜜罐捕获信息', [], 
+                                    columnsAttackerInfo2, 'honeyPotCatchlist',"http://localhost:5000/api/honeyPotCatch/all")}
+                          </Col>
+                      </Row>
+                      </div>
+                      );
+                }}
+            </DataContext.Consumer>
+        )
+    }
 }
 
 export default HoneypotDefense;

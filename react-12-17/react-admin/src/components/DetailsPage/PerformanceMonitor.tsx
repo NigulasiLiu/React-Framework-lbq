@@ -4,7 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card } from 'antd';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, } from 'recharts';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { hostperformanceColumns, StatusItem } from '../tableUtils';
 
@@ -63,11 +63,28 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                                 <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>平均使用率 趨勢</h2>
                             </div>
                             <Row gutter={0}>
-                                <ResponsiveContainer width="98%" height={220}>
+                              <ResponsiveContainer width="98%" height={220}>
+                                <AreaChart data={this.alertData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                  <CartesianGrid strokeDasharray="3 3" />
+                                  <XAxis dataKey="time" />
+                                  <YAxis dataKey="percent" />
+                                  {/* <YAxis /> */}
+                                  <Tooltip />
+                                  <Area
+                                    fillOpacity={0.5}
+                                    stroke="#4086FF" // 设置线条颜色为#4086FF
+                                    strokeWidth={2} // 设置线条厚度为3px
+                                    fill="#F1F8FE" // 设置填充颜色为#4086FF
+                                    type="monotone"
+                                    dataKey="percent"
+                                  />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                                {/* <ResponsiveContainer width="98%" height={220}>
                                     <LineChart data={this.alertData}>
                                         <XAxis dataKey="time" />
                                         <YAxis dataKey="percent" />
-                                        <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
+                                        <CartesianGrid strokeDasharray="3 5" horizontal />
                                         <Tooltip />
                                         <Line
                                             type="monotone"
@@ -77,7 +94,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                                             dot={{ r: 1 }} // 设置数据点的大小
                                         />
                                     </LineChart>
-                                </ResponsiveContainer>
+                                </ResponsiveContainer> */}
                             </Row>
                         </Card>
                     </Col>
@@ -87,11 +104,28 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                                 <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>負載最高的主機 使用率趨勢</h2>
                             </div>
                             <Row gutter={0}>
-                                <ResponsiveContainer width="98%" height={220}>
+                              <ResponsiveContainer width="98%" height={220}>
+                                <AreaChart data={this.alertData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                  <CartesianGrid strokeDasharray="3 3" />
+                                  <XAxis dataKey="time" />
+                                  <YAxis dataKey="percent" />
+                                  {/* <YAxis /> */}
+                                  <Tooltip />
+                                  <Area
+                                    fillOpacity={0.5}
+                                    stroke="#4086FF" // 设置线条颜色为#4086FF
+                                    strokeWidth={2} // 设置线条厚度为3px
+                                    fill="#F1F8FE" // 设置填充颜色为#4086FF
+                                    type="monotone"
+                                    dataKey="percent"
+                                  />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                                {/* <ResponsiveContainer width="98%" height={220}>
                                     <LineChart data={this.alertData}>
                                         <XAxis dataKey="time" />
                                         <YAxis dataKey="percent" />
-                                        <CartesianGrid strokeDasharray="3 5" horizontal /> {/* 只显示竖线网格 */}
+                                        <CartesianGrid strokeDasharray="3 5" horizontal />
                                         <Tooltip />
                                         <Line
                                             type="monotone"
@@ -101,7 +135,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                                             dot={{ r: 1 }} // 设置数据点的大小
                                         />
                                     </LineChart>
-                                </ResponsiveContainer>
+                                </ResponsiveContainer> */}
                             </Row>
                         </Card>
                     </Col>

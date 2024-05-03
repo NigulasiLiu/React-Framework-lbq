@@ -680,7 +680,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
       return (
         <div style={{ width: '100%' }}>
           <Col className="gutter-row" md={24} style={{ width: '100%', maxWidth: 2640, border: 'false' }}>
-            <Row gutter={[8, 16]} style={{ marginTop: '-21px', marginLeft: '-8px' }}>
+            <Row gutter={[8, 16]} style={{ marginTop: '0px', marginLeft: '-8px' }}>
               <Col md={24}>
                 <Card bordered={false}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -996,25 +996,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 {this.renderList('http://localhost:5000/api/vulndetetion/query_uuid?uuid=',
                   this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel, '漏洞概览',["port"])}
               </div>
-              // <div style={{ width: '100%' }}>
-              // <Col className="gutter-row" md={24} style={{ width: '100%',maxWidth:2640,border:'false'}}>
-              //     <Row gutter={[8, 16]} style={{ marginTop: '-21px',marginLeft: '-8px' }}>
-              //         <Col md={24}>
-              //                 <Card bordered={false}>
-              //                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-              //                         <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{'漏洞概览'}</h2>
-              //                     </div>
-              //                     <FetchDataForElkeidTable
-              //                     apiEndpoint={'http://localhost:5000/api/vulndetetion/query_uuid?uuid='+this.state.host_uuid}
-              //                     timeColumnIndex={[]}
-              //                     columns={this.state.vulnColumns}
-              //                     currentPanel={currentPanel}
-              //                     />
-              //                 </Card>
-              //         </Col>
-              //     </Row>
-              // </Col>
-              // </div>
             );
           case 'baseLineDetectDetailList':
             return (

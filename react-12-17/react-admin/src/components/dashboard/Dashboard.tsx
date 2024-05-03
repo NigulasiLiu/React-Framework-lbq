@@ -398,7 +398,6 @@ class Dashboard extends React.Component<DashboardProps> {
                                   />
                                 </AreaChart>
                               </ResponsiveContainer>
-
                             </div>
                           </Col>
                           <Col span={6}>

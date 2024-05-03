@@ -98,14 +98,14 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
 
   render() {
     const { isSidebarOpen, toggleSidebar } = this.props;
-    const buttonstyle1 = {
-      width: '400px',
-      height: '35px',
+    const returnButton = {
+      width: '350px',
+      height: '45px',
       color: '#527ED5',
       border: '1px solid #527ED5',
       backgroundColor: 'white',
       // 由于按钮高度较小，可能需要调整字体大小或内边距来改善显示
-      fontSize: '13px', // 根据需要调整字体大小
+      fontSize: '14px', // 根据需要调整字体大小
       lineHeight: '14px', // 根据按钮高度调整行高以垂直居中文本
       padding: '1px 6px', // 根据需要调整内边距以确保文本垂直居中
       // 可能还需要其他样式，如圆角、字体族等
@@ -120,7 +120,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
       <div>
         <Col md={24} style={{ borderTop: '5px solid #4086FF' }}>
           <Card
-            style={{ fontWeight: 'bolder', width: 800, height: 800, border: 'solid 1px black', justifyContent: 'center' }}>
+            style={{ fontWeight: 'bolder', width: 500, height: 680, border: 'solid 1px black', justifyContent: 'center' }}>
             <Row>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2, fontWeight: 'bold' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[0]}</h2>
@@ -128,10 +128,10 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
               <button onClick={this.handleScanButtonClick} className="close-btn">重新扫描</button>
             </Row>
             <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
-              <Col span={6} style={{ paddingTop: '20px', width: '400px', }}>
+              <Col span={6} style={{ paddingTop: '20px', width: '200px', }}>
                 <img src={scanguard} alt="shield icon" className="heartbeat-animation" style={{ width: '75px', height: '75px', marginLeft: '15px', marginTop: '-7px' }} />
               </Col>
-              <Col span={17} style={{ paddingTop: '20px', width: '400px', }}>
+              <Col span={17} style={{ paddingTop: '20px', width: '200px', }}>
                 {this.state.isLoading && (
                   <React.Fragment>
                     <Row>
@@ -154,7 +154,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
                   </div>
                 </Row>
               </Col>
-              <Col span={1} style={{ paddingTop: '10px', width: '400px', }}>
+              <Col span={1} style={{ paddingTop: '10px', width: '200px', }}>
                 <Button onClick={toggleSidebar} style={{
                   border: 'none',
                   backgroundColor: 'transparent',
@@ -178,8 +178,8 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
                   <div>本次检查出 {this.props.riskItemCount} 个风险项</div>
                 </Row>
                 <Row gutter={15} style={{ marginLeft: '6px' }}>
-                  <div style={{ marginTop: '12px', marginBottom: '6px', marginLeft: '15px', alignItems: 'center' }}>
-                    <button style={buttonstyle1} onClick={toggleSidebar}>{this.props.scanInfo[2]}</button>
+                  <div style={{ margin: '12px auto', alignItems: 'center' }}>
+                    <button style={returnButton} onClick={toggleSidebar}>{this.props.scanInfo[2]}</button>
                   </div>
                 </Row>
                 {this.renderStatusList()}

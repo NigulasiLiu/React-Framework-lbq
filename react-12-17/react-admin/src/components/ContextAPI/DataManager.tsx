@@ -41,6 +41,8 @@ export interface DataContextType {
   taskDetailsOriginData: any[];
   memHorseOriginData:any[];
   honeyPotOriginData:any[];
+  ttpsOriginData:any[];
+  usersOriginData:any[];
 
   agentMetaData_status: MetaDataResult;
   fimMetaData_hostname: MetaDataResult;
@@ -114,6 +116,8 @@ const DataManager: React.FC = ({ children }) => {
 
   const [memHorseOriginData, setmemHorseOriginData] = useState<any>([]);
   const [honeyPotOriginData, sethoneyPotOriginData] = useState<any>([]);
+  const [ttpsOriginData, setTTPsOriginData] = useState<any>([]);
+  const [usersOriginData, setUsersOriginData] = useState<any>([]);
   // 数据更新函数映射表
   const setDataFunctions: SetDataFunctions = {
     'http://localhost:5000/api/agent/all': setAgentOriginData,
@@ -127,6 +131,8 @@ const DataManager: React.FC = ({ children }) => {
     'http://localhost:5000/api/taskdetail/all': settaskDetailsOriginData,
     'http://localhost:5000/api/memHorse/all': setmemHorseOriginData,
     'http://localhost:5000/api/honeyPot/all': sethoneyPotOriginData,
+    'http://localhost:5000/api/files/threathunting':setTTPsOriginData,
+    'http://localhost:5000/api/users/all':setUsersOriginData,
     // 添加其他API端点和对应的设置函数
   };
 
@@ -161,6 +167,9 @@ const DataManager: React.FC = ({ children }) => {
     refreshDataFromAPI('http://localhost:5000/api/taskdetail/all');
     refreshDataFromAPI('http://localhost:5000/api/memHorse/all');
     refreshDataFromAPI('http://localhost:5000/api/honeyPot/all');
+    refreshDataFromAPI('http://localhost:5000/api/files/threathunting');
+    refreshDataFromAPI('http://localhost:5000/api/users/all');
+    
     // const fetchData = async () => {
 
     //   try {
@@ -314,7 +323,7 @@ const DataManager: React.FC = ({ children }) => {
 
       agentOriginData, processOriginData, assetOriginData, portOriginData, windowsBaseLineCheckOriginData, linuxBaseLineCheckOriginData, fimOriginData,
       vulnOriginData, taskDetailsOriginData,//taskRecordOriginData,
-      memHorseOriginData,honeyPotOriginData,
+      memHorseOriginData,honeyPotOriginData,ttpsOriginData,usersOriginData,
 
       agentMetaData_status,
       agentOnlineCount,

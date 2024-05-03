@@ -63,11 +63,10 @@ interface ElkeidDisplayTableState {
     sortedData: GenericDataItem[],
     sortConfig: null,
 
-    showModal: boolean;
-    user_character: string;
+    // showModal: boolean;
+    // user_character: string;
     fetchDataCalled:number;
 }
-const { TextArea } = Input;
 
 
 class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, ElkeidDisplayTableState> {
@@ -75,8 +74,8 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
         super(props);
         this.state = {
             newColumns: [],
-            showModal: false,
-            user_character: 'admin',
+            // showModal: false,
+            // user_character: 'admin',
 
             selectedRowKeys: [],
             selectedRows: [],
@@ -401,154 +400,7 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
     // };
 
 
-    showModal = () => {
-        this.setState({
-            showModal: true,
-        });
-    };
-    toggleModal = () => {
-        this.setState(prevState => ({
-            showModal: !prevState.showModal,
-        }));
-    };
 
-    handleFormCharaterFieldChange = (value: string) => {
-        this.setState({
-            user_character: value,
-        });
-    };
-    handleOk = () => {
-        this.setState({
-            showModal: false,
-        });
-        // 这里处理确认操作
-    };
-
-    handleCancel = () => {
-        this.setState({
-            showModal: false,
-        });
-    };
-    formItemLayout = {
-        labelCol: {
-            xs: { span: 24 },
-            sm: { span: 6 },
-        },
-        wrapperCol: {
-            xs: { span: 24 },
-            sm: { span: 14 },
-        },
-    };
-
-
-    renderModal = () => {
-        return (
-            <>
-                {/* <Button type="primary" onClick={this.showModal}>
-              新建 SHA256 任务
-            </Button> */}
-                <Modal
-                    style={{ fontWeight: 'bolder' }}
-                    title="新增用户"
-                    visible={this.state.showModal}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    footer={[
-                        <Button style={{ backgroundColor: 'white', color: 'black' }} key="back" onClick={this.handleCancel}>
-                            取消
-                        </Button>,
-                        <Button style={{ backgroundColor: '#1664FF', color: 'white' }} key="submit" type="primary" onClick={this.handleOk}>
-                            提交任务
-                        </Button>,
-                    ]}
-                >
-                    <Form {...this.formItemLayout}
-                        name="new_user_info"
-                    >
-                        <Form.Item
-                            label="用户名"
-                            name="username"
-                            rules={[{ required: true, message: '用户名支持中英文和数字，不少于四个字符' }]}
-                        >
-                            <Input placeholder="用户名支持中英文和数字，不少于四个字符" />
-                        </Form.Item>
-                        <Form.Item
-                            label="密码"
-                            name="password"
-                            rules={[{ required: true, message: '密码长度不少于4个字符' }]}
-                        >
-                            <Input placeholder="密码长度不少于4个字符" />
-                        </Form.Item>
-                        <Form.Item
-                            label="确认密码"
-                            name="password"
-                            rules={[{ required: true, message: '请再次输入密码' }]}
-                        >
-                            <Input placeholder="请再次输入密码" />
-                        </Form.Item>
-                        <Form.Item
-                            label="用户角色"
-                            name="cycle"
-                            rules={[{ required: true, message: '请选择用户角色' }]}
-                        >
-                            <Select placeholder="用户角色" defaultValue="admin" onChange={this.handleFormCharaterFieldChange}>
-                                <Option value="admin">管理员</Option>
-                                <Option value="user">普通用户</Option>
-                                {/* 更多选项... */}
-                            </Select>
-                        </Form.Item>
-
-                        {this.state.user_character === 'admin' && (
-                            <>
-                                <Form.Item label="说明"
-                                    name="description">
-                                    <p style={{
-                                        margin: '0px auto',
-                                        display: 'flex',
-                                        //justifyContent: 'center', // 水平居中
-                                        alignItems: 'center', // 垂直居中
-                                    }}> 拥有全部功能的读写权限
-                                    </p>
-                                </Form.Item>
-                                <Form.Item label="用户权限"
-                                    name="auth">
-                                    <p style={{
-                                        margin: '0px auto',
-                                        display: 'flex',
-                                        //justifyContent: 'center', // 水平居中
-                                        alignItems: 'center', // 垂直居中
-                                    }}> 读写
-                                    </p>
-                                </Form.Item>
-                            </>)}
-                        {this.state.user_character === 'user' && (
-                            <>
-                                <Form.Item label="说明"
-                                    name="description">
-                                    <p style={{
-                                        margin: '0px auto',
-                                        display: 'flex',
-                                        //justifyContent: 'center', // 水平居中
-                                        alignItems: 'center', // 垂直居中
-                                    }}> 拥有全部功能的只读权限
-                                    </p>
-                                </Form.Item>
-                                <Form.Item label="用户权限"
-                                    name="auth">
-                                    <p style={{
-                                        margin: '0px auto',
-                                        display: 'flex',
-                                        //justifyContent: 'center', // 水平居中
-                                        alignItems: 'center', // 垂直居中
-                                    }}> 只读
-                                    </p>
-                                </Form.Item>
-                            </>)}
-                    </Form>
-                </Modal>
-            </>
-        );
-    };
 
     render() {
         // 构建无数据时的展示配置
@@ -591,12 +443,6 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
             ? 'customTable' : 'customTable';
 
         const fontSizeSmall = this.props.currentPanel?.includes('sidebar') ? '12px' : '14px';
-
-        // 传递 toggleModal 方法给 FetchDataForElkeidTable 组件
-        const dataTableProps = {
-            toggleModal: this.toggleModal,
-            // ...这里添加更多需要传递的props
-        };
 
 
 
@@ -644,23 +490,7 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                                 onClick={() => this.handleFetchLatestData('', '', '')}>
                                                 采集最新数据
                                             </Button>
-                                            {/* {!tableWithoutDirectFetch.includes(this.props.currentPanel) && (
-                                        <div>
-                                        <Button
-                                            style={{...selectedcompStyle,
-                                                opacity: isButtonDisabled ? 0.5 : 1 }}
-                                            onClick={this.handleDeleteSelected}
-                                            disabled={isButtonDisabled}
-                                        >
-                                        待定按键
-                                        </Button>
-                                        <Button 
-                                            style={{...selectedcompStyle,}}
-                                            onClick={() =>this.handleFetchLatestData('','','')}>
-                                        采集最新数据
-                                        </Button>
-                                        </div>
-                                    )} */}
+
                                         </Col>
                                         <Col flex="auto" style={{
                                             textAlign: 'left', marginLeft: isSidebar ? 2 : 10, marginTop: '5px',
@@ -673,10 +503,10 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                     <RangePicker onChange={this.onDateRangeChange}/>
                                 </Col>
                                 )} */}
-
                                     </Row>
-                                </div>)}
-                            {this.props.currentPanel === 'UserManagementlist' && (
+                                </div>
+                            )}
+                            {/* {this.props.currentPanel === 'UserManagementlist' && (
                                 <div style={{ marginBottom: '16px' }}>
                                     <Row gutter={16} >
                                         <Col flex="none">
@@ -694,26 +524,14 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                             >
                                                 批量导出
                                             </Button>
-                                            {/* <Button 
+                                            <Button 
                                     style={{backgroundColor:'white',color:'black'}} 
                                     onClick={this.handleExport}
-                                    disabled={isButtonDisabled}>批量删除</Button> */}
+                                    disabled={isButtonDisabled}>批量删除</Button>
                                         </Col>
                                     </Row>
-                                </div>)}
-                            {/* <div style={{ marginBottom: 16 }}>
-                            <Row>
-                                {this.renderSearchFieldDropdown(this.props.columns)}  
-                                <Row style={{width: isSidebar?'50%':'70%',}}>
-                                <Input.Search
-                                    placeholder="搜索已选字段"
-                                    onSearch={this.handleSearch}
-                                    //style={{ width: isSidebar?300:1000 }}
-                                    style={{width: isSidebar?300:1000, marginLeft: 'auto', marginRight: '0px'}}
-                                />
-                                </Row>
-                            </Row>
-                        </div> */}
+                                </div>)} */}
+
 
 
                             {/* {externalDataSource.length !== 0 && (
@@ -742,6 +560,10 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                     rowKey={this.props.columns[this.props.keyIndex || 0].key}//使用第一个字段区分各个row，最好是PK
                                     dataSource={externalDataSource}//externalDataSource
                                     columns={new_columns}
+                                    pagination={{
+                                        showQuickJumper:true,
+                                        pageSize:(this.props.currentPanel.includes("_details")?5:8)
+                                    }}
                                     childrenColumnName={this.props.childrenColumnName}
                                     expandedRowRender={this.props.expandedRowRender}
                                     //indentSize={this.props.indentSize}
@@ -749,7 +571,6 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                         </Card>
                     </Col>
                 </Row>
-                {this.renderModal()}
             </div>
         );
     }

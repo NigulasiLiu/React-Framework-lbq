@@ -227,12 +227,12 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                               borderRight: '2px solid #E5E6EB'
                             }}>
                               <Row gutter={24}>
-                                <h2 style={{ fontSize: '16px' }}>最近扫描时间（每隔一日自动扫描）</h2>
+                                <h2 style={{ fontSize: '16px' }}>最近扫描时间</h2>
                                 <span className="currentTime" style={{ marginRight: '10px' }}>{currentTime}</span>
                                 <Button style={{ backgroundColor: '#1664FF', color: 'white' }} onClick={this.toggleSidebar}>立即扫描</Button>
                               </Row>
                               <div className={isSidebarOpen ? "overlay open" : "overlay"} onClick={this.closeSidebar} />
-                              <div className={isSidebarOpen ? "sidebar open" : "sidebar"}>
+                              <div className={isSidebarOpen ? "smallsidebar open" : "smallsidebar"}>
                                 <button onClick={this.toggleSidebar} className="close-btn">&times;</button>
                                 <BaseLineDetectScanSidebar
                                   scanInfo={['基线检查', '基线扫描中，请稍后', "返回基线列表，查看详情"]}
