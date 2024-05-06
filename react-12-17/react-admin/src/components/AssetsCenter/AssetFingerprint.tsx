@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Menu, } from 'antd';
+import { Row, Col, Card, Menu } from 'antd';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 
 import OverviewPanel from './OverviewPanel';
@@ -8,8 +8,9 @@ import {
     openPortsColumns,
     runningProcessesColumns, systemServicesColumns,
     GenericDataItem, StatusItem,
-    constRenderTable
-} from '../tableUtils';
+    constRenderTable,
+} from '../Columns';
+import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 
 
 type AssetFingerprintProps = {};
@@ -20,12 +21,12 @@ type AssetFingerprintState = {
 
     activeIndex: any;
 
-
     statusData: StatusItem[]; // 初始状态
     currentPanel: string;
 
 
     sortedData: GenericDataItem[];
+    triggerUpdated:number;
 };
 
 
@@ -35,19 +36,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
         this.columns = [];
         this.state = {
             statusData: [], // 初始状态
-            // topData: {
-            //     fim: [],
-            //     container: [],
-            //     openPorts: [],
-            //     runningProcesses: [],
-            //     systemUsers: [],
-            //     scheduledTasks: [],
-            //     systemServices: [],
-            //     systemSoftware: [],
-            //     kernelModules: [],
-            //     applications: [],
-            //     // 其他panel的初始化
-            // },
             count: 2,
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
@@ -55,8 +43,10 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
             currentPanel: 'overview', // 默认选中的面板
 
             sortedData: [],
+            triggerUpdated:0,
         };
     }
+
     setSortedData = (data: GenericDataItem[]) => {
         this.setState({ sortedData: data });
     };
@@ -65,15 +55,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
         this.setState({ currentPanel: panelName });
     };
 
-    //用于OverviewPanel筛选top5数据
-    // onTopDataChange = (panelName: string, data: GenericDataItem[]) => {
-    //     this.setState((prevState) => ({
-    //         topData: {
-    //             ...prevState.topData,
-    //             [panelName]: data,
-    //         },
-    //     }));
-    // };
 
     columns: any;
     // 点击Menu.Item时调用的函数
@@ -97,7 +78,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     // 渲染当前激活的子面板
     renderCurrentPanel() {
         const { currentPanel } = this.state;
-        console.log('this.state.currentPanel:' + currentPanel)
+        console.log('this.state.currentPanel:' + currentPanel);
         switch (currentPanel) {
             case 'overview':
                 return (
@@ -115,71 +96,76 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         timeColumnIndex={['event_time']}
                         columns={fimColumns}
                         currentPanel={currentPanel}
-                        search={["uuid","filename"]}
+                        search={['uuid', 'filename']}
                     />
+
+                // <DataDisplayTable
+                //     externalDataSource={filteredData}
+                //     apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
+                //     timeColumnIndex={timeColumnIndex}
+                //     columns={column}
+                //     currentPanel={currentPanel}
+                //     expandedRowRender={expandedRowRender}
+                //     indentSize={15} // 设置缩进大小，单位是像素
+                //     childrenColumnName="children" // 指定子数据的属性名称
+                //     searchColumns={["uuid"]}
+                // />
                 );
-            case 'open-ports':
+            case 'open_ports':
                 return (
                     <FetchDataForElkeidTable
                         apiEndpoint="http://localhost:5000/api/portinfo/all"
                         timeColumnIndex={[]}
                         columns={openPortsColumns}
                         currentPanel={currentPanel}
-                        search={["uuid","port_number","port_name"]}
+                        search={['uuid', 'port_number', 'port_name']}
                     />
                 );
-            case 'running-processes':
+            case 'running_processes':
                 return (
                     <FetchDataForElkeidTable
                         apiEndpoint="http://localhost:5000/api/process/all"
                         timeColumnIndex={['createTime']}
                         columns={runningProcessesColumns}
                         currentPanel={currentPanel}
-                        search={["uuid","name"]}
+                        search={['uuid', 'name']}
                     />
                 );
-            case 'system-services':
+            case 'system_services':
                 return (
                     <FetchDataForElkeidTable
                         apiEndpoint="http://localhost:5000/api/asset_mapping/all"
                         timeColumnIndex={[]}
                         columns={systemServicesColumns}
                         currentPanel={currentPanel}
-                        search={["uuid","service","product","ostype",]}
+                        search={['uuid', 'service', 'product', 'ostype']}
                     />
                 );
- 
+
         }
     }
-
-
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState((prevState) => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) =>
-                i === index ? index : val
-            ),
-        }));
-    };
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
 
 
     render() {
 
         return (
-            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+            <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
                 <div>
                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                         <Col md={24}>
                             <div className="gutter-box">
                                 <Card bordered={false}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontWeight: 'bold' }}>
-                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginBottom: 6,
+                                        fontWeight: 'bold',
+                                    }}>
+                                        <h2 style={{
+                                            fontSize: '18px',
+                                            fontWeight: 'bold',
+                                            marginLeft: '0px',
+                                        }}>资产指纹</h2>
                                     </div>
                                     <Menu
                                         onClick={this.handleMenuClick}
@@ -189,9 +175,9 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                     >
                                         <Menu.Item key="overview">总览</Menu.Item>
                                         <Menu.Item key="fim">文件完整性检验</Menu.Item>
-                                        <Menu.Item key="open-ports">开放端口</Menu.Item>
-                                        <Menu.Item key="running-processes">运行进程</Menu.Item>
-                                        <Menu.Item key="system-services">系统服务</Menu.Item>
+                                        <Menu.Item key="open_ports">开放端口</Menu.Item>
+                                        <Menu.Item key="running_processes">运行进程</Menu.Item>
+                                        <Menu.Item key="system_services">系统服务</Menu.Item>
                                         {/* <Menu.Item key="container">容器</Menu.Item> */}
                                         {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
                                         {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>

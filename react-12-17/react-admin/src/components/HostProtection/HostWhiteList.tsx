@@ -1,7 +1,7 @@
 // HostAlertList.tsx
 import React from 'react';
-import WhiteList from '../WhiteList'; // 确保路径正确
-import { whitelistColumns } from '../tableUtils'; // 假设列配置从某个文件导入
+import WhiteList from './WhiteList'; // 确保路径正确
+import { whitelistColumns } from '../Columns'; // 假设列配置从某个文件导入
 
 class HostWhiteList extends React.Component {
     render() {

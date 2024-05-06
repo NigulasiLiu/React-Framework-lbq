@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import { Progress,} from 'antd';
-import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
+import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../Columns';
 
 export const assetCenterPanelName=[
     "overview",
     "fim",
-"system-services",
-"open-ports",
-"running-processes",
+"system_services",
+"open_ports",
+"running_processes",
 ];
 
 const APIList=[
@@ -267,13 +267,13 @@ const generateColumns = (tableName: string, tableName_s: string, tableName_list:
     ];
 };
 export const tbName:GenericDataItem={
-    '开放端口 TOP5':'open-ports',
-    '系统软件 TOP5':'system-software',
-    '系统服务 TOP5':'system-services',
-    '运行进程 TOP5':'running-processes',
+    '开放端口 TOP5':'open_ports',
+    '系统软件 TOP5':'system_software',
+    '系统服务 TOP5':'system_services',
+    '运行进程 TOP5':'running_processes',
     '文件完整性校验-最新变更二进制文件 TOP5':'fim',
     '应用 TOP5':'applications',
-    '内核模块 TOP5':'kernel-modules',
+    '内核模块 TOP5':'kernel_modules',
     '容器运行状态分布':'container',}
 export const tableNames = [
     '开放端口 TOP5',

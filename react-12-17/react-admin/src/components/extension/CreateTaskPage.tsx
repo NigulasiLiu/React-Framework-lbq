@@ -2,7 +2,7 @@ import React, { createRef, useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, TimePicker, Col } from 'antd';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { createNewTaskColumns } from '../tableUtils';
+import { createNewTaskColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
 import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -318,7 +318,20 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                 <Form
                   layout="vertical"
                   style={{ width: '70%', margin: '0px auto' }}
-                  onFinish={this.handleSubmit}>
+                  onFinish={this.handleSubmit}
+                  initialValues={{
+                      job_name: '',
+                      taskDescription: '',
+                      target: '',
+                      args: '',
+                      kwargs: '',
+                      status: 'normal', // 设置任务状态的默认值
+                      description: '', // 如果需要，你也可以设置其他字段的初始值
+                      startTime: moment(), // 设置开始时间的初始值
+                      endTime: moment(), // 设置结束时间的初始值
+                      excuteTime: moment(), // 设置执行时间的初始值
+                  }}
+                >
                   <Row>
                     <Row style={{ width: '100%', paddingBottom: '0px', border: 'solid 0px #E5E8EF' }}>
                       <Form.Item label="将要下发任务的主机"
@@ -383,7 +396,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                     <Row style={{ width: '100%' }}>
                       <Col span={24}>
                         <Form.Item label="执行策略">
-                          <Radio.Group onChange={(e) => this.setState({ selectedTaskType: e.target.value })} defaultValue="interval">
+                          <Radio.Group onChange={(e) => this.setState({ selectedTaskType: e.target.value })} defaultValue={"interval"}>
                             <Radio value="interval" onClick={() => this.setState({ selectedTaskType: 'interval' })}>时间间隔</Radio>
                             <Radio value="cron" onClick={() => this.setState({ selectedTaskType: 'cron' })}>Cron 表达式</Radio>
                             <Radio value="date" onClick={() => this.setState({ selectedTaskType: 'date' })}>指定日期时间</Radio>
@@ -402,14 +415,9 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                         </Col>
                         <Row>
                           <Row style={{ width: '100%' }}>
-                            {/* <Col span={12}>
-                                  <Form.Item label="起止时间" name="startTime" rules={[{ required: true, message: '请选择开始时间' }]}>
-                                    <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={[moment(), moment()]} />
-                                  </Form.Item>
-                                </Col> */}
                             <Col span={11}>
                               <Form.Item label="开始时间" name="startTime" rules={[{ required: true, message: '请选择开始时间' }]}>
-                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} 
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()}
                                   value={this.state.startTime}
                                   onChange={this.handleStartTimeChange}/>
                               </Form.Item>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col,Card,Typography ,} from 'antd';
-import { StatusItem,virusscannigAllTasksColumns } from '../tableUtils';
+import { StatusItem,virusscannigAllTasksColumns } from '../Columns';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 const { Text } = Typography;
 

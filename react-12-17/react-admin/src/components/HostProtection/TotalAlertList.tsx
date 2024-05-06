@@ -5,8 +5,8 @@ import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
-import AlertList from '../AlertList';
-import { hostalertColumns } from '../tableUtils';
+import AlertList from './AlertList';
+import { hostalertColumns } from '../Columns';
 
 
 interface TotalAlertListProps{

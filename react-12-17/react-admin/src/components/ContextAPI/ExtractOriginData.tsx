@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GenericDataItem } from '../tableUtils';
+import { GenericDataItem } from '../Columns';
 // 定义返回的数据结构类型
 export interface MetaDataResult {
   tupleCount: number;

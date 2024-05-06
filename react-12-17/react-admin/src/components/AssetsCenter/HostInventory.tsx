@@ -4,7 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card } from 'antd';
-import { constRenderTable, hostinventoryColumns, StatusItem } from '../tableUtils';
+import { constRenderTable, hostinventoryColumns, StatusItem } from '../Columns';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';

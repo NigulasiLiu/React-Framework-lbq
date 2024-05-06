@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Label, Tooltip } from 'recharts';
-import { StatusItem } from '../tableUtils';
+import { StatusItem } from '../Columns';
 import TooltipForPieChart from './TooltipForPieChart';
 
 interface CustomPieChartProps {

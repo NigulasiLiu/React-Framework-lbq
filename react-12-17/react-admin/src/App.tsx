@@ -4,7 +4,7 @@ import umbrella from 'umbrella-storage';
 import { useAlita } from 'redux-alita';
 import Routes from './routes';
 import SiderCustom from './components/SideMenu/SiderCustom';
-import HeaderCustom from './components/HeaderCustom';
+import HeaderCustom from './components/SideMenu/HeaderCustom';
 import { ThemePicker, Copyright } from './components/widget';
 import { checkLogin } from './utils';
 import { fetchMenu } from './service';

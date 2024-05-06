@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, Dispatch, SetStateAction } f
 import { templateData } from './SeperateData';
 import useSortedData from './TopFiveDataProvider';
 import { convertAndFillData } from './SeperateData';
-import { DataItem,} from '../tableUtils';
+import { DataItem,} from '../Columns';
 import useExtractOrigin, {
   MetaDataResult, getTopFiveTypeCounts,
   getCountPastSevenDays, getPastSevenDaysAlerts,

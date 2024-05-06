@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Row, Col, Card } from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, } from 'recharts';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
-import { hostperformanceColumns, StatusItem } from '../tableUtils';
+import { hostperformanceColumns, StatusItem } from '../Columns';
 
 //const { Search } = Input;
 

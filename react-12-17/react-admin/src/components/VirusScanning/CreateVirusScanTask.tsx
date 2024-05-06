@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Steps, Form, Input,InputNumber,Button,Row, Alert,Radio,Card } from 'antd';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { createNewTaskColumns } from '../tableUtils';
+import { createNewTaskColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
 import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
 

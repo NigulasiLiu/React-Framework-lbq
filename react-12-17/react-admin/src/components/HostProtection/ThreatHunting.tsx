@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Button, Modal, Form, Input, message, Row,Card } from 'antd';
 import axios from 'axios';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
-import { constRenderTable } from '../tableUtils';
+import { constRenderTable } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 

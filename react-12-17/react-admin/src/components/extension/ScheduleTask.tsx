@@ -2,15 +2,11 @@
 
 import React from 'react';
 import { Card, Col, Button, Row, Modal, Form, Input, Badge, message, Tooltip, Menu } from 'antd'
-import { Link } from 'react-router-dom';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
-import { FilterDropdownProps } from 'antd/lib/table/interface';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import moment from 'moment';
 import axios from 'axios';
-import { fetchDataFromAPI } from '../ContextAPI/DataService';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -174,7 +170,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                                 color: '#EA635F', // 设置按钮的颜色
                                 fontSize: '12px', // 设置字体大小为 12 像素
                             }}
-                            disabled={record.status === "waiting"}
+                            //disabled={record.status === "waiting"}
                         >
                             删除
                         </Button>
@@ -327,7 +323,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                                 color: '#EA635F', // 设置按钮的颜色
                                 fontSize: '12px', // 设置字体大小为 12 像素
                             }}
-                            disabled={record.status === "waiting"}
+                            //disabled={record.status === "waiting"}
                         >
                             删除
                         </Button>

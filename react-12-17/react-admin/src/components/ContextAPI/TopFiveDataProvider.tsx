@@ -1,7 +1,7 @@
 // src/hooks/useSortedData.tsx
 import { useState, useEffect } from 'react';
 import { fetchDataFromAPI, processData } from './DataService';
-import { DataItem, GenericDataItem } from '../tableUtils';
+import { DataItem, GenericDataItem } from '../Columns';
 import { templateData } from './SeperateData';
 
 const useSortedData = (columnName:string, sortKey: string, apiEndpoint: string) => {

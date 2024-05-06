@@ -9,7 +9,7 @@ import {
     openPortsColumns,
     runningProcessesColumns, systemServicesColumns,
     GenericDataItem, StatusItem
-} from '../tableUtils';
+} from '../Columns';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
@@ -620,7 +620,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    // onClick={() => this.goToPanel('open-ports')}
                                                                     onClick={() => this.handleScrollToSection(this.openPortsRef)}
                                                                 />
                                                             </Col>
@@ -654,7 +653,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                                     type="link"
                                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                                     icon={<RightOutlined />}
-                                                                    // onClick={() => this.goToPanel('running-processes')}
                                                                     onClick={() => this.handleScrollToSection(this.processRef)}
                                                                 />
                                                             </Col>
@@ -815,7 +813,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Card>
                                     </Row> */}
                                     <Row ref={this.openPortsRef} gutter={[8, 16]}>
-                                        {this.renderTable(portOriginData, 'http://localhost:5000/api/portinfo/all', '开放端口', [], openPortsColumns, 'open-ports_' + this.state.host_uuid+"_details",
+                                        {this.renderTable(portOriginData, 'http://localhost:5000/api/portinfo/all', '开放端口', [], openPortsColumns, 'open_ports_' + this.state.host_uuid+"_details",
                                             ["port_number","port_name"]
                                         )}
                                     </Row>

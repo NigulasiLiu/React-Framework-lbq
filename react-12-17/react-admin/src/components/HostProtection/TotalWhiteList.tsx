@@ -5,8 +5,8 @@ import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
-import WhiteList from '../WhiteList';
-import { hostalertColumns } from '../tableUtils';
+import WhiteList from './WhiteList';
+import { hostalertColumns } from '../Columns';
 
 
 interface TotalWhiteListProps{

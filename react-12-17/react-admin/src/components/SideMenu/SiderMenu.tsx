@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
-import { IFMenu } from '../../routes/config'; // 确保这个路径是正确的
+import { IFMenu } from '../RiskManagement/config'; // 确保这个路径是正确的
 import { MenuProps } from 'antd/lib/menu';
 
 // 渲染单个菜单项

@@ -5,7 +5,7 @@ import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { constRenderTable } from '../tableUtils';
+import { constRenderTable } from '../Columns';
 class MemoryHorseDetection extends React.Component {
   // State 和方法可以根据实际需求定义
   MemoryHorseColumns = [
@@ -97,9 +97,8 @@ class MemoryHorseDetection extends React.Component {
 
               return (
                 <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-                  <span>内存马检测</span>
+                  {/*<span>内存马检测</span>*/}
                   <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-          
                       <Col md={24}>
                       {constRenderTable(memHorseOriginData, '内存马捕获', ['alert_time'], 
                       this.MemoryHorseColumns, 'memHorseList',"http://localhost:5000/api/memHorse/all")}

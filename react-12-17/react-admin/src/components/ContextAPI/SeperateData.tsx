@@ -1,6 +1,6 @@
 
 
-import { DataItem, GenericDataItem, } from '../tableUtils';
+import { DataItem, GenericDataItem, } from '../Columns';
 
 export const templateData: DataItem[] = [
     { key: '1', id: '', value: 0, color: '#F24040' },

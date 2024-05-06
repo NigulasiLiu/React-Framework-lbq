@@ -323,7 +323,7 @@ react-admin
 │  │  │  ├─ HostInventory.tsx
 │  │  │  ├─ MetaDataUtilize.tsx
 │  │  │  ├─ OverviewPanel.tsx
-│  │  │  ├─ tableUtils.tsx
+│  │  │  ├─ Columns.tsx
 │  │  │  └─ TooltipForPieChart.tsx
 │  │  ├─ auth
 │  │  │  ├─ Basic.tsx

@@ -5,10 +5,10 @@ import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 import HostOverview from './HostOverview';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import HostDetailsTable from './HostDetailsTable';
-import VulnerabilityDetailsSidebar from '../HostProtection/VulnerabilityDetailsSidebar';
+import VulnerabilityDetailsSidebar from '../RiskManagement/VulnerabilityDetailsSidebar';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
-import { hostalertColumns, fimColumns, baselineDetectColumns, virusscanningColumns, baselineDetectColumnsType } from '../tableUtils';
-import AlertList from '../AlertList';
+import { hostalertColumns, fimColumns, baselineDetectColumns, virusscanningColumns, baselineDetectColumnsType } from '../Columns';
+import AlertList from '../HostProtection/AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
 import PerformanceMonitor from './PerformanceMonitor';
 import { DataType } from './DetailsTableColumns'
@@ -642,38 +642,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
       activeIndex: this.state.activeIndex.map(() => -1),
     });
   };
-  handleExport = () => {
-    const { dataSource, selectedRowKeys } = this.state;
-
-    // 过滤出已选中的行数据
-    const selectedData = dataSource.filter(row =>
-      selectedRowKeys.includes(row.key)
-    );
-
-    // 检查是否有选中的行
-    if (selectedData.length === 0) {
-      alert('没有选中的行');
-      return;
-    }
-
-    // 假设您希望导出的CSV中包括所有字段
-    const headers = Object.keys(selectedData[0]).join(',');
-    const rows = selectedData.map(row => {
-      const riskValues = Object.values(row.risks).join(',');
-      return `${row.key},${row.host_name},${row.label},${row.group},${row.OStype},${riskValues},${row.status},${row.clientUsage},${row.updateTime}`;
-    });
-    const csvData = [headers, ...rows].join('\n');
-
-    // 触发下载
-    const element = document.createElement('a');
-    element.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvData);
-    element.download = this.state.currentPanel + '_export.csv';
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-
 
   renderList = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string,searchIndex:string[]) => {
     if (uuid !== undefined) {

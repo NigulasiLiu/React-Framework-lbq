@@ -5,7 +5,7 @@ import { Menu, Row, Col, Card, Statistic, Typography, Button, Progress } from 'a
 import { LeftOutlined } from '@ant-design/icons';
 
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import { virusscandetailscolumns } from '../tableUtils'; // 假设列配置从某个文件导入
+import { virusscandetailscolumns } from '../Columns'; // 假设列配置从某个文件导入
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 
 

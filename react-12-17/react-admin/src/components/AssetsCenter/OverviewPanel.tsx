@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../tableUtils';
+import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../Columns';
 import DataCard from '../CustomAntd/DataCard';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager'
 interface OverviewPanelProps extends RouteComponentProps {
@@ -156,13 +156,13 @@ const generateColumns = (divValue: number, tableName: string, tbName_Right: stri
     ];
 };
 const tbName: GenericDataItem = {
-    '开放端口 TOP5': 'open-ports',
-    '系统软件 TOP5': 'system-software',
-    '系统服务 TOP5': 'system-services',
-    '运行进程 TOP5': 'running-processes',
+    '开放端口 TOP5': 'open_ports',
+    '系统软件 TOP5': 'system_software',
+    '系统服务 TOP5': 'system_services',
+    '运行进程 TOP5': 'running_processes',
     '文件完整性校验-最新变更二进制文件 TOP5': 'fim',
     '应用 TOP5': 'applications',
-    '内核模块 TOP5': 'kernel-modules',
+    '内核模块 TOP5': 'kernel_modules',
     '容器运行状态分布': 'container',
 }
 const tbNameList = [
@@ -280,7 +280,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                                     type="link"
                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                     icon={<RightOutlined />}
-                                                    onClick={() => this.goToPanel('open-ports')}
+                                                    onClick={() => this.goToPanel('open_ports')}
                                                 />
                                             </Col>
                                         </Row>
@@ -313,7 +313,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                                     type="link"
                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                     icon={<RightOutlined />}
-                                                    onClick={() => this.goToPanel('running-processes')}
+                                                    onClick={() => this.goToPanel('running_processes')}
                                                 />
                                             </Col>
                                         </Row>
@@ -346,7 +346,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                                     type="link"
                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                     icon={<RightOutlined />}
-                                                    onClick={() => this.goToPanel('system-services')}
+                                                    onClick={() => this.goToPanel('system_services')}
                                                 />
                                             </Col>
                                         </Row>
@@ -379,7 +379,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                                     type="link"
                                                     style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
                                                     icon={<RightOutlined />}
-                                                    onClick={() => this.goToPanel('running-processes')}
+                                                    onClick={() => this.goToPanel('running_processes')}
                                                 />
                                             </Col>
                                         </Row>

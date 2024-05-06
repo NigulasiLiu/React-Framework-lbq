@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
-import { constRenderTable } from '../tableUtils';
+import { constRenderTable } from '../Columns';
 
 
 

@@ -9,7 +9,7 @@ import {
     baseLineDetectHostItemColumns,
     baseLineDetectScanResult1Columns,
     baseLineDetectScanResult2Columns
-} from '../tableUtils'; // 假设列配置从某个文件导入
+} from '../Columns'; // 假设列配置从某个文件导入
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
