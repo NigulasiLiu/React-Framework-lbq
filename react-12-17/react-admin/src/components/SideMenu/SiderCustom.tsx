@@ -124,7 +124,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import routes from '../RiskManagement/config';
+import routes from '../../routes/config';
 import SiderMenu from './SiderMenu';
 import { useAlita } from 'redux-alita';
 import { useSwitch } from '../../utils/hooks';

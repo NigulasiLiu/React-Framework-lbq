@@ -6,7 +6,7 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 import { useAlita } from 'redux-alita';
 import umbrella from 'umbrella-storage';
 import AllComponents from '../components';
-import routesConfig, { IFMenuBase, IFMenu } from '../components/RiskManagement/config';
+import routesConfig, { IFMenuBase, IFMenu } from './config';
 import { checkLogin } from '../utils';
 import RouteWrapper from './RouteWrapper';
 
