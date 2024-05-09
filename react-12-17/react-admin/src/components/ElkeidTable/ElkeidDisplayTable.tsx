@@ -181,16 +181,20 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
         // 在这里输出一下选中的行数据，以确保它们被正确地获取到了
         if(selectedRows){
             console.log('Selected rows:', selectedRows);
-            selectedRows.map(row=>console.log('Selected rows uuid:', row.uuid));
-        }
+            selectedRows.map(row=>console.log('Selected selectedRows uuid:', row.uuid));
 
-        this.setState({
-            selectedRowKeys,
-            selectedRows, // 更新 selectedRows
-        });
+            // 过滤出状态为 'Online' 的行的 keys
+            const onlineSelectedRowKeys = selectedRows.filter(row => row.status === 'Online').map(row => row[this.props.columns[this.props.keyIndex || 0].key]);
 
-        if (this.props.onSelectedRowKeysChange) {
-            this.props.onSelectedRowKeysChange(selectedRowKeys);
+            onlineSelectedRowKeys.map(row=>console.log('Selected onlineSelectedRowKeys uuid:', row.uuid));
+            this.setState({
+                selectedRowKeys,
+                selectedRows, // 更新 selectedRows
+            });
+
+            if (this.props.onSelectedRowKeysChange) {
+                this.props.onSelectedRowKeysChange(onlineSelectedRowKeys);
+            }
         }
     };
 
@@ -418,19 +422,33 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                             >
                                                 批量导出
                                             </Button>
-                                            <Button
-                                                style={{
-                                                    ...selectedcompStyle, backgroundColor: isButtonDisabled?'#f6c6cf':'#fb1440', color: 'white', marginRight: '10px',
-                                                    transition: 'opacity 0.3s', // 添加过渡效果
-                                                    opacity: 1, // 初始透明度
-                                                }}
-                                                onMouseEnter={(e) => { e.currentTarget.style.opacity = 0.7; }} // 鼠标进入时将透明度设置为0.5
-                                                onMouseLeave={(e) => { e.currentTarget.style.opacity = 1; }} // 鼠标离开时恢复透明度为1
-                                                onClick={() => this.toggleModal()}
-                                                disabled={isButtonDisabled}
-                                            >
-                                                批量删除
-                                            </Button>
+                                            {(this.props.currentPanel!=="createnewtask" &&
+                                                <Button
+                                                    style={{
+                                                        ...selectedcompStyle, backgroundColor: isButtonDisabled?'#f6c6cf':'#fb1440', color: 'white', marginRight: '10px',
+                                                        transition: 'opacity 0.3s', // 添加过渡效果
+                                                        opacity: 1, // 初始透明度
+                                                    }}
+                                                    onMouseEnter={(e) => { e.currentTarget.style.opacity = 0.7; }} // 鼠标进入时将透明度设置为0.5
+                                                    onMouseLeave={(e) => { e.currentTarget.style.opacity = 1; }} // 鼠标离开时恢复透明度为1
+                                                    onClick={() => this.toggleModal()}
+                                                    disabled={isButtonDisabled}
+                                                >
+                                                    批量删除
+                                                </Button>)}
+                                            {/*<Button*/}
+                                            {/*    style={{*/}
+                                            {/*        ...selectedcompStyle, backgroundColor: isButtonDisabled?'#f6c6cf':'#fb1440', color: 'white', marginRight: '10px',*/}
+                                            {/*        transition: 'opacity 0.3s', // 添加过渡效果*/}
+                                            {/*        opacity: 1, // 初始透明度*/}
+                                            {/*    }}*/}
+                                            {/*    onMouseEnter={(e) => { e.currentTarget.style.opacity = 0.7; }} // 鼠标进入时将透明度设置为0.5*/}
+                                            {/*    onMouseLeave={(e) => { e.currentTarget.style.opacity = 1; }} // 鼠标离开时恢复透明度为1*/}
+                                            {/*    onClick={() => this.toggleModal()}*/}
+                                            {/*    disabled={isButtonDisabled}*/}
+                                            {/*>*/}
+                                            {/*    批量删除*/}
+                                            {/*</Button>*/}
 
                                             <Button
                                                 style={{

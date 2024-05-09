@@ -175,22 +175,6 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                             删除
                         </Button>
                     </Row>
-                    {/* <Row>
-                        <Button
-                            onClick={() => this.toggleModal(record)}
-                            style={{
-                                fontWeight: 'bold',
-                                padding: '3px 4px', // 设置按钮的内边距
-                                border: 'transparent',
-                                backgroundColor: 'transparent',
-                                color: '#EA635F', // 设置按钮的颜色
-                                fontSize: '12px', // 设置字体大小为 12 像素
-                            }}
-                            disabled={record.status !== "closing"}
-                        >
-                            删除
-                        </Button>
-                    </Row> */}
                 </div>
             )
 

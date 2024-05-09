@@ -30,7 +30,10 @@ export interface DataContextType {
   topFivePortCounts: DataItem[];
 
   agentOriginData: any[];
+
+  monitoredOriginData:any[];
   fimOriginData: any[];
+
   agentSearchResults?: any[];
   portOriginData: any[];
   processOriginData: any[];
@@ -41,8 +44,14 @@ export interface DataContextType {
   taskDetailsOriginData: any[];
   memHorseOriginData:any[];
   honeyPotOriginData:any[];
-  ttpsOriginData:any[];
+
+  bruteforceTTPsOriginData:any[];
+  privilegeescalationTTPsOriginData:any[];
+  defenseavoidanceTTPsOriginData:any[];
+
   usersOriginData:any[];
+  spFilesOriginData:any[];
+  isolationOriginData:any[];
 
   agentMetaData_status: MetaDataResult;
   fimMetaData_hostname: MetaDataResult;
@@ -105,7 +114,9 @@ const DataManager: React.FC = ({ children }) => {
   const [agentOriginData, setAgentOriginData] = useState<any>();
   const [taskDetailsOriginData, settaskDetailsOriginData] = useState<any>({});
 
+  const [monitoredOriginData, setMonitoredOriginData] = useState<any>({});
   const [fimOriginData, setFimOriginData] = useState<any>({});
+
   const [portOriginData, setPortOriginData] = useState<any>({});
   const [processOriginData, setProcessOriginData] = useState<any>({});
   const [assetOriginData, setAssetOriginData] = useState<any>({});
@@ -116,12 +127,21 @@ const DataManager: React.FC = ({ children }) => {
 
   const [memHorseOriginData, setmemHorseOriginData] = useState<any>([]);
   const [honeyPotOriginData, sethoneyPotOriginData] = useState<any>([]);
-  const [ttpsOriginData, setTTPsOriginData] = useState<any>([]);
+
+  const [bruteforceTTPsOriginData, setbruteforceTTPsOriginData] = useState<any>([]);
+  const [privilegeescalationTTPsOriginData, setprivilegeescalationTTPsOriginData] = useState<any>([]);
+  const [defenseavoidanceTTPsOriginData, setdefenseavoidanceTTPsOriginData] = useState<any>([]);
+
   const [usersOriginData, setUsersOriginData] = useState<any>([]);
+  const [spFilesOriginData, setSpFilesOriginData] = useState<any>([]);
+  const [isolationOriginData, setIsolationOriginData] = useState<any>([]);
   // 数据更新函数映射表
   const setDataFunctions: SetDataFunctions = {
     'http://localhost:5000/api/agent/all': setAgentOriginData,
+
+    'http://localhost:5000/api/monitored/all': setMonitoredOriginData,
     'http://localhost:5000/api/FileIntegrityInfo/all': setFimOriginData,
+
     'http://localhost:5000/api/vulndetetion/all': setVulnOriginData,
     'http://localhost:5000/api/portinfo/all': setPortOriginData,
     'http://localhost:5000/api/process/all': setProcessOriginData,
@@ -129,10 +149,17 @@ const DataManager: React.FC = ({ children }) => {
     'http://localhost:5000/api/baseline_check/linux/all': setlinuxBLCheckOriginData,
     'http://localhost:5000/api/baseline_check/windows/all': setwindowsBLCheckOriginData,
     'http://localhost:5000/api/taskdetail/all': settaskDetailsOriginData,
-    'http://localhost:5000/api/memHorse/all': setmemHorseOriginData,
-    'http://localhost:5000/api/honeyPot/all': sethoneyPotOriginData,
-    'http://localhost:5000/api/files/threathunting':setTTPsOriginData,
+    'http://localhost:5000/api/memoryshell/all': setmemHorseOriginData,
+    'http://localhost:5000/api/honeypot/all': sethoneyPotOriginData,
+
+    'http://localhost:5000/api/brute-force/all':setbruteforceTTPsOriginData,
+    'http://localhost:5000/api/privilege-escalation/all':setprivilegeescalationTTPsOriginData,
+    'http://localhost:5000/api/defense-avoidance/all':setdefenseavoidanceTTPsOriginData,
+
     'http://localhost:5000/api/users/all':setUsersOriginData,
+
+    "http://localhost:5000/api/FetchSpFile/all":setSpFilesOriginData,
+    "http://localhost:5000/api/MicroIsolationlist/all":setIsolationOriginData,
     // 添加其他API端点和对应的设置函数
   };
 
@@ -157,7 +184,10 @@ const DataManager: React.FC = ({ children }) => {
   useEffect(() => {
 
     refreshDataFromAPI('http://localhost:5000/api/agent/all');
+
+    refreshDataFromAPI('http://localhost:5000/api/monitored/all');
     refreshDataFromAPI('http://localhost:5000/api/FileIntegrityInfo/all');
+
     refreshDataFromAPI('http://localhost:5000/api/portinfo/all');
     refreshDataFromAPI('http://localhost:5000/api/process/all');
     refreshDataFromAPI('http://localhost:5000/api/asset_mapping/all');
@@ -165,33 +195,33 @@ const DataManager: React.FC = ({ children }) => {
     refreshDataFromAPI('http://localhost:5000/api/baseline_check/windows/all');
     refreshDataFromAPI('http://localhost:5000/api/vulndetetion/all');
     refreshDataFromAPI('http://localhost:5000/api/taskdetail/all');
-    refreshDataFromAPI('http://localhost:5000/api/memHorse/all');
-    refreshDataFromAPI('http://localhost:5000/api/honeyPot/all');
-    refreshDataFromAPI('http://localhost:5000/api/files/threathunting');
+    refreshDataFromAPI('http://localhost:5000/api/memoryshell/all');
+    refreshDataFromAPI('http://localhost:5000/api/honeypot/all');
+
+    refreshDataFromAPI('http://localhost:5000/api/brute-force/all');
+    refreshDataFromAPI('http://localhost:5000/api/privilege-escalation/all');
+    refreshDataFromAPI('http://localhost:5000/api/defense-avoidance/all');
+
+
     refreshDataFromAPI('http://localhost:5000/api/users/all');
+    refreshDataFromAPI("http://localhost:5000/api/FetchSpFile/all");
+    refreshDataFromAPI("http://localhost:5000/api/MicroIsolationlist/all");
+
     
     // const fetchData = async () => {
-
     //   try {
     //     const agentOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/agent/all' });
-
     //     const fimOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/FileIntegrityInfo/all' });
     //     const portOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/portinfo/all' });
     //     const processOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/process/all' });
     //     const assetOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/asset_mapping/all' });
     //     const linuxBaseLineCheckOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/baseline_check/linux/all' });
     //     const windowsBaseLineCheckOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/baseline_check/windows/all' });
-
     //     const vulnOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/vulndetetion/all' });
-
     //     const taskDetailsOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/taskdetail/all' });
-
-
     //     //settaskRecordOriginData(taskRecordOriginData);
     //     settaskDetailsOriginData(taskDetailsOriginData);
-
     //     setAgentOriginData(agentOriginData);
-
     //     setFimOriginData(fimOriginData);
     //     setPortOriginData(portOriginData);
     //     setProcessOriginData(processOriginData);
@@ -199,16 +229,12 @@ const DataManager: React.FC = ({ children }) => {
     //     setlinuxBLCheckOriginData(linuxBaseLineCheckOriginData);
     //     setwindowsBLCheckOriginData(windowsBaseLineCheckOriginData);
     //     setVulnOriginData(vulnOriginData);
-
     //   } catch (error) {
     //     console.error('Failed to fetch initial data:', error);
     //   }
     // };
-
     // fetchData();
-
   }, []);
-  // 定义数据重构函数
 
   const fetchLatestData = async (apiEndpoint: string, searchField = '', searchQuery = '', rangeQuery = '', timeColumnIndex: string[] = []) => {
     try {
@@ -321,9 +347,19 @@ const DataManager: React.FC = ({ children }) => {
       agentMEMuseMetaData,
       agentAVGMEMUse,
 
-      agentOriginData, processOriginData, assetOriginData, portOriginData, windowsBaseLineCheckOriginData, linuxBaseLineCheckOriginData, fimOriginData,
-      vulnOriginData, taskDetailsOriginData,//taskRecordOriginData,
-      memHorseOriginData,honeyPotOriginData,ttpsOriginData,usersOriginData,
+      agentOriginData, processOriginData, assetOriginData, portOriginData,
+      windowsBaseLineCheckOriginData, linuxBaseLineCheckOriginData, fimOriginData,monitoredOriginData,
+      vulnOriginData, taskDetailsOriginData,
+      memHorseOriginData,honeyPotOriginData,
+
+      bruteforceTTPsOriginData,
+      privilegeescalationTTPsOriginData,
+      defenseavoidanceTTPsOriginData,
+
+      usersOriginData,
+      spFilesOriginData,
+      isolationOriginData,
+
 
       agentMetaData_status,
       agentOnlineCount,

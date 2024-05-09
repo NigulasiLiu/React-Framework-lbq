@@ -5,6 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../Columns';
 import DataCard from '../CustomAntd/DataCard';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager'
+import moment from 'moment/moment';
 interface OverviewPanelProps extends RouteComponentProps {
     currentPanel: string;
     statusData: StatusItem[];
@@ -106,8 +107,24 @@ const generateColumns = (divValue: number, tableName: string, tbName_Right: stri
 
     return [
         {
-            title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }}
-                onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
+            // title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }}
+            //     onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
+
+            title: () => <div>
+                <Button
+                    style={{
+                        fontWeight: 'bold', padding: '0 0',
+                        border: 'none',
+                        backgroundColor: 'transparent', // 设置背景为透明
+                        boxShadow: 'none', // 去除阴影
+                        // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                        // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                    }}
+                    onClick={()=>goToPanel(tbName[tableName])}
+                >
+                    {tableName}
+                </Button>
+            </div>,
             key: 'id',
             render: (text: any, record: DataItem, index: number) => {
                 const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色 style={{ cursor: 'pointer' }} onClick={() => goToPanel(record.id)}
@@ -149,7 +166,7 @@ const generateColumns = (divValue: number, tableName: string, tbName_Right: stri
                         </div>
                     );
                 } else {
-                    return <div style={{ textAlign: 'right' }}>{value}</div>;
+                    return <div style={{ textAlign: 'right' }}>{moment.unix(value).format('YYYY-MM-DD HH:mm:ss')}</div>;
                 }
             },
         },

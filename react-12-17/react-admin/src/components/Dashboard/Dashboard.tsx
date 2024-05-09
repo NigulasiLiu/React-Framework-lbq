@@ -673,7 +673,7 @@ class Dashboard extends React.Component<DashboardProps> {
                       <Card bordered={false} /*title="后端服务状态*/
                         style={{ fontWeight: 'bolder', width: '100%', height: 330 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                          <h2 style={{ fontSize: '16px', fontWeight: 'bold', marginLeft: '0px' }}>威胁狩猎</h2>
+                          <h2 style={{ fontSize: '16px', fontWeight: 'bold', marginLeft: '0px' }}>TTPs</h2>
                         </div>
                         <Row gutter={[6, 6]}>
                           <Col className="gutter-row" span={12}>

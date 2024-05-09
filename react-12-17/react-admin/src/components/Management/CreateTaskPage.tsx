@@ -2,7 +2,7 @@ import React, { createRef, useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, TimePicker, Col } from 'antd';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { createNewTaskColumns } from '../Columns';
+import { createNewTaskColumns, fimColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
 import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -204,7 +204,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
       });
 
       // 循环结束后的跳转操作
-      //this.props.history.push('/app/extension/ScheduleTask');
+      //this.props.history.push('/app/Management/ScheduleTask');
     } catch (error) {
       console.error('Network error:', error);
       message.error(`网络错误: ${error}`);
@@ -288,6 +288,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                   columns={createNewTaskColumns}
                   currentPanel={"createnewtask"} // 替换为你的 panel 名称
                   keyIndex={1}
+                  search={[]}
                   onSelectedRowKeysChange={this.handleSelectedRowKeysChange}
                 />
               </Row>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col, Card, Menu } from 'antd';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 
 import OverviewPanel from './OverviewPanel';
 import {
@@ -8,9 +7,11 @@ import {
     openPortsColumns,
     runningProcessesColumns, systemServicesColumns,
     GenericDataItem, StatusItem,
-    constRenderTable,
+    constRenderTable, monitoredColumns,
 } from '../Columns';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager';
+import { LoadingOutlined } from '@ant-design/icons';
 
 
 type AssetFingerprintProps = {};
@@ -76,7 +77,8 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     }
 
     // 渲染当前激活的子面板
-    renderCurrentPanel() {
+    renderCurrentPanel(monitoredOriginData:any[],fimOriginData:any[],assetOriginData:any[],
+                       processOriginData:any[],portOriginData:any[],) {
         const { currentPanel } = this.state;
         console.log('this.state.currentPanel:' + currentPanel);
         switch (currentPanel) {
@@ -91,55 +93,70 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 );
             case 'fim':
                 return (
-                    <FetchDataForElkeidTable
+                    <DataDisplayTable
+                        key={currentPanel}
+                        externalDataSource={fimOriginData}
                         apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
                         timeColumnIndex={['event_time']}
                         columns={fimColumns}
                         currentPanel={currentPanel}
-                        search={['uuid', 'filename']}
+                        searchColumns={['uuid', 'filename']}
                     />
-
-                // <DataDisplayTable
-                //     externalDataSource={filteredData}
-                //     apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
-                //     timeColumnIndex={timeColumnIndex}
-                //     columns={column}
-                //     currentPanel={currentPanel}
-                //     expandedRowRender={expandedRowRender}
-                //     indentSize={15} // 设置缩进大小，单位是像素
-                //     childrenColumnName="children" // 指定子数据的属性名称
-                //     searchColumns={["uuid"]}
-                // />
+                );
+            case 'monitored':
+                return (
+                    <DataDisplayTable
+                        key={currentPanel}
+                        externalDataSource={monitoredOriginData}
+                        apiEndpoint="http://localhost:5000/api/monitored/all"
+                        timeColumnIndex={['timestamp']}
+                        columns={monitoredColumns}
+                        currentPanel={currentPanel}
+                        searchColumns={['uuid', 'file_path']}
+                    />
                 );
             case 'open_ports':
                 return (
-                    <FetchDataForElkeidTable
+                    <DataDisplayTable
+                        key={currentPanel}
+                        externalDataSource={portOriginData}
                         apiEndpoint="http://localhost:5000/api/portinfo/all"
                         timeColumnIndex={[]}
                         columns={openPortsColumns}
                         currentPanel={currentPanel}
-                        search={['uuid', 'port_number', 'port_name']}
+                        searchColumns={['uuid', 'port_number', 'port_name']}
                     />
                 );
             case 'running_processes':
                 return (
-                    <FetchDataForElkeidTable
-                        apiEndpoint="http://localhost:5000/api/process/all"
-                        timeColumnIndex={['createTime']}
-                        columns={runningProcessesColumns}
-                        currentPanel={currentPanel}
-                        search={['uuid', 'name']}
-                    />
+                <DataDisplayTable
+                    key={currentPanel}
+                    externalDataSource={processOriginData}
+                    apiEndpoint="http://localhost:5000/api/process/all"
+                    timeColumnIndex={['createTime']}
+                    columns={runningProcessesColumns}
+                    currentPanel={currentPanel}
+                    searchColumns={['uuid', 'name']}
+                />
                 );
             case 'system_services':
                 return (
-                    <FetchDataForElkeidTable
-                        apiEndpoint="http://localhost:5000/api/asset_mapping/all"
-                        timeColumnIndex={[]}
-                        columns={systemServicesColumns}
-                        currentPanel={currentPanel}
-                        search={['uuid', 'service', 'product', 'ostype']}
-                    />
+                    // <FetchDataForElkeidTable
+                    //     apiEndpoint="http://localhost:5000/api/asset_mapping/all"
+                    //     timeColumnIndex={[]}
+                    //     columns={systemServicesColumns}
+                    //     currentPanel={currentPanel}
+                    //     search={['uuid', 'service', 'product', 'ostype']}
+                    // />
+                <DataDisplayTable
+                    key={currentPanel}
+                    externalDataSource={assetOriginData}
+                    apiEndpoint="http://localhost:5000/api/asset_mapping/all"
+                    timeColumnIndex={[]}
+                    columns={systemServicesColumns}
+                    currentPanel={currentPanel}
+                    searchColumns={['uuid', 'service', 'product', 'ostype']}
+                />
                 );
 
         }
@@ -149,55 +166,75 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
     render() {
 
         return (
-            <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
-                <div>
-                    <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                        <Col md={24}>
-                            <div className="gutter-box">
-                                <Card bordered={false}>
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        marginBottom: 6,
-                                        fontWeight: 'bold',
-                                    }}>
-                                        <h2 style={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            marginLeft: '0px',
-                                        }}>资产指纹</h2>
-                                    </div>
-                                    <Menu
-                                        onClick={this.handleMenuClick}
-                                        selectedKeys={[this.state.currentPanel]}
-                                        mode="horizontal"
-                                        style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
-                                    >
-                                        <Menu.Item key="overview">总览</Menu.Item>
-                                        <Menu.Item key="fim">文件完整性检验</Menu.Item>
-                                        <Menu.Item key="open_ports">开放端口</Menu.Item>
-                                        <Menu.Item key="running_processes">运行进程</Menu.Item>
-                                        <Menu.Item key="system_services">系统服务</Menu.Item>
-                                        {/* <Menu.Item key="container">容器</Menu.Item> */}
-                                        {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
-                                        {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
+            <DataContext.Consumer>
+                {(context: DataContextType | undefined) => {
+                    if (!context) {
+                        return (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                                <LoadingOutlined style={{ fontSize: '3em' }} />
+                            </div>); // 或者其他的加载状态显示
+                    }
+                    // 从 context 中解构出 topFiveFimData 和 n
+                    const { monitoredOriginData,fimOriginData,assetOriginData,
+                        processOriginData,portOriginData } = context;
+                    // 将函数绑定到类组件的实例上
+
+                    return (
+                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                            <div>
+                                <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                                    <Col md={24}>
+                                        <div className="gutter-box">
+                                            <Card bordered={false}>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    marginBottom: 6,
+                                                    fontWeight: 'bold',
+                                                }}>
+                                                    <h2 style={{
+                                                        fontSize: '18px',
+                                                        fontWeight: 'bold',
+                                                        marginLeft: '0px',
+                                                    }}>资产指纹</h2>
+                                                </div>
+                                                <Menu
+                                                    onClick={this.handleMenuClick}
+                                                    selectedKeys={[this.state.currentPanel]}
+                                                    mode="horizontal"
+                                                    style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
+                                                >
+                                                    <Menu.Item key="overview">总览</Menu.Item>
+                                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
+                                                    <Menu.Item key="monitored">文件监控</Menu.Item>
+                                                    <Menu.Item key="open_ports">开放端口</Menu.Item>
+                                                    <Menu.Item key="running_processes">运行进程</Menu.Item>
+                                                    <Menu.Item key="system_services">系统服务</Menu.Item>
+                                                    {/* <Menu.Item key="container">容器</Menu.Item> */}
+                                                    {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
+                                                    {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>
                                     <Menu.Item key="system-software">系统软件</Menu.Item>
                                     <Menu.Item key="applications">应用</Menu.Item> */}
-                                        {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
-                                        {/* 可以根据需要添加更多的Menu.Item */}
-                                        {/* 使用透明div作为flex占位符 */}
-                                        <div style={{ flexGrow: 1 }}></div>
+                                                    {/* <Menu.Item key="kernel-modules">内核模块</Menu.Item> */}
+                                                    {/* 可以根据需要添加更多的Menu.Item */}
+                                                    {/* 使用透明div作为flex占位符 */}
+                                                    <div style={{ flexGrow: 1 }}></div>
 
-                                    </Menu>
-                                    {/* 渲染当前激活的子面板 */}
-                                    <Card bordered={false}>{this.renderCurrentPanel()}</Card>
-                                </Card>
+                                                </Menu>
+                                                    <Card bordered={false}>{
+                                                        this.renderCurrentPanel(monitoredOriginData,fimOriginData,assetOriginData,
+                                                        processOriginData,portOriginData)}
+                                                    </Card>
+                                                </Card>
+                                        </div>
+                                    </Col>
+                                </Row>
                             </div>
-                        </Col>
-                    </Row>
-                </div>
-            </div>
-        );
+                        </div>
+                    );
+                }}
+            </DataContext.Consumer>
+        )
     }
 }
 

@@ -15,16 +15,16 @@ import VirusScanning from './VirusScanning/VirusScanning';
 import VirusScanningWhiteList from './VirusScanning/VirusScanningWhiteList';
 import Env from './env';
 import DetailsPage from './DetailsPage/DetailsPage';
-import CreateAgentTaskPage from './extension/CreateTaskPage'
+import CreateAgentTaskPage from './Management/CreateTaskPage'
 import CreateVirusScanTaskPage from './VirusScanning/CreateVirusScanTask';
 import BaseLineDetectDetailsPage from './DetailsPage/BaseLineDetectDetailsPage';
 import VirusScanDetailsPage from './DetailsPage/VirusScanDetailsPage';
-import UserManagement from './extension/UserManagement';
+import UserManagement from './Management/UserManagement';
 import HoneypotDefense from './RiskManagement/HoneypotDefense';
-import MemoryHorseDetection from './HostProtection/MemoryHorseDetection';
+import MemoryShell from './HostProtection/MemoryShell';
 import ThreatHunting from './HostProtection/ThreatHunting';
 import MicroIsolation from './HostProtection/MicroIsolation';
-import ScheduleTask from './extension/ScheduleTask';
+import ScheduleTask from './Management/ScheduleTask';
 import TotalAlertList from './HostProtection/TotalAlertList';
 import TotalWhiteList from './HostProtection/TotalWhiteList';
 
@@ -57,7 +57,7 @@ export default {
     BaseLineDetectDetailsPage,
     VirusScanDetailsPage,
     HoneypotDefense,
-    MemoryHorseDetection,
+    MemoryHorseDetection: MemoryShell,
     ThreatHunting,
     MicroIsolation,
     ScheduleTask,

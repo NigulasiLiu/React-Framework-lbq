@@ -3,7 +3,6 @@ import { Row, Col, Card, Statistic, Typography, Button, Badge } from 'antd';
 import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import { diskColumns, netColumns, pluginColumns } from './DetailsTableColumns';
 import {
     fimColumns,
     openPortsColumns,
@@ -11,7 +10,6 @@ import {
     GenericDataItem, StatusItem
 } from '../Columns';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { convertUnixTime } from '../ContextAPI/DataService';

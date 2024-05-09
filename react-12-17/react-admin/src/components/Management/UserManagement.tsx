@@ -120,7 +120,7 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
                             取消
                         </Button>,
                         <Button style={{ backgroundColor: '#1664FF', color: 'white' }} key="submit" type="primary" onClick={this.handleOk}>
-                            提交任务
+                            确认
                         </Button>,
                     ]}
                 >

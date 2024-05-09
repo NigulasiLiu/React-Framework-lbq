@@ -199,7 +199,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         // 更新状态以反映新的选择
         this.setState({ selectedRowKeys: newSelectedRowKeys });
         this.setState({ selectedDeletedRows: selectedRows });
-        message.info('keys:' + newSelectedRowKeys);
+        // message.info('keys:' + newSelectedRowKeys);
 
         // 使用选中行的键值获取对应的行数据，存储到 selectedRows 中
         // const selectedDeletedRows = selectedRowKeys.map(key => {
@@ -349,7 +349,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                                 新增任务
                                                             </Button>
                                                         </Link>)}
-                                                    {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist'].includes(this.props.currentPanel)) && (
+                                                    {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist','memHorseList'].includes(this.props.currentPanel)) && (
                                                         <Button
                                                             style={{
                                                                 backgroundColor: '#1664FF',
@@ -380,7 +380,8 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                     >
                                                         批量导出
                                                     </Button>
-                                                    <Button
+                                                    {!["TaskDetail","TaskRecord",'memHorseList'].includes(this.props.currentPanel)&&(
+                                                        <Button
                                                         style={{
                                                             backgroundColor: isButtonDisabled ? '#f6c6cf' : '#fb1440',
                                                             color: 'white',
@@ -398,11 +399,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                         disabled={isButtonDisabled}
                                                     >
                                                         批量删除
-                                                    </Button>
-                                                    {/* <Button 
-                                        style={{...selectedcompStyle,}}>
-                                    采集最新数据
-                                    </Button> */}
+                                                    </Button>)}
                                                 </Col>
                                                 <Col flex="auto"
                                                      style={{ textAlign: 'left', marginLeft: 10, marginTop: '5px' }}>

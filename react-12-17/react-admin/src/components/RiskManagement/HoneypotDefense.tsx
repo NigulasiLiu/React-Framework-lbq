@@ -1,9 +1,11 @@
 import React, { createRef } from 'react';
-import { Card, Col, Row, Modal, Form, Input, Button,message } from 'antd';
+import { Card, Col, Row, Modal, Form, Input, Button, message, Tooltip } from 'antd';
 import axios from 'axios';
-import { constRenderTable } from '../Columns';
+import { constRenderTable, hostinventoryColumnsType } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import moment from 'moment/moment';
 
 interface HoneypotDefenseProps{
 
@@ -13,7 +15,7 @@ interface HoneypotDefenseStates{
   modalVisible: boolean,
   columns:any[];
 };
-const columnsHoneypotInfo = [
+const columnsHoneypotInfo1 = [
   {
       title: 'ID',
       dataIndex: 'id',
@@ -45,6 +47,64 @@ const columnsHoneypotInfo = [
     key: 'honeypot_status',
   },
 ];
+
+const columnsHoneypotInfo = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    Maxwidth: '15px',
+  },
+  {
+    title: '主机名',
+    dataIndex: 'uuid',
+    key: 'uuid',
+    render: (text: string, record: any) => (
+        <div>
+          <div>
+            <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+              <Button style={{
+                fontWeight: 'bold',
+                border: 'transparent',
+                backgroundColor: 'transparent',
+                color: '#4086FF',
+                padding: '0 0',
+              }}>
+                <Tooltip title={record.uuid}>
+                  <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                    {record.uuid || '-'}
+                  </div>
+                </Tooltip>
+              </Button>
+            </Link>
+          </div>
+          <div style={{
+            fontSize: 'small', // 字体更小
+            background: '#f0f0f0', // 灰色背景
+            padding: '2px 4px', // 轻微内边距
+            borderRadius: '2px', // 圆角边框
+            display: 'inline-block', // 使得背景色仅围绕文本
+            marginTop: '4px', // 上边距
+          }}>
+            <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agent_ip}
+          </div>
+        </div>
+    ),
+  },
+  {
+    title: '蜜罐IP',
+    dataIndex: 'agent_ip',
+    key: 'agent_ip',
+  },
+  {
+    title: '攻击时刻',
+    dataIndex: 'atk_time',
+    key: 'atk_time',
+    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+    sorter: (a: any, b: any) => parseFloat(b.atk_time) - parseFloat(a.atk_time),
+  },
+];
+
 
 const columnsAttackerInfo = [
   {
@@ -185,20 +245,13 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
 
                     return (
                       <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-                      {/* <Button onClick={this.showModal}>添加蜜罐</Button> */}
-                      {this.renderHoneyPotModal()}
-                      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                          <Col md={24}>
-                          {constRenderTable(honeyPotOriginData, '蜜罐信息', [], 
-                                    columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeyPot/all",[''],this.showModal,"新增蜜罐")}
-                          </Col>
-                      </Row>
-                      <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                          <Col md={24}>
-                          {constRenderTable(honeyPotOriginData, '蜜罐捕获信息', [], 
-                                    columnsAttackerInfo2, 'honeyPotCatchlist',"http://localhost:5000/api/honeyPotCatch/all")}
-                          </Col>
-                      </Row>
+                        {this.renderHoneyPotModal()}
+                        <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                            <Col md={24}>
+                            {constRenderTable(honeyPotOriginData, '蜜罐信息', [],
+                                      columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeypot/all",['uuid'],this.showModal,"新增蜜罐")}
+                            </Col>
+                        </Row>
                       </div>
                       );
                 }}

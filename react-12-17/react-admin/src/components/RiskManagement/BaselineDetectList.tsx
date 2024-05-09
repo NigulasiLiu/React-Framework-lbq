@@ -4,8 +4,10 @@ import React from 'react';
 import { Row, Col, Card, Input, Button, DatePicker, Statistic, Menu } from 'antd';
 import BaseLineDetectScanSidebar from './ScanProcessSidebar';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
-import { baselineDetectColumns, BaseLineDataType, StatusItem } from '../Columns';
+import { baselineDetectColumns, BaseLineDataType, StatusItem, fimColumns } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
+import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
@@ -134,55 +136,102 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         });
     };
 
-    renderCurrentPanel() {
-        const { currentPanel } = this.state;
-        return (
-            <Row style={{ width: '100%' }}>
-                <FetchDataForElkeidTable
-                    apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}
-                    timeColumnIndex={['last_checked']}
-                    columns={baselineDetectColumns}
-                    currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}
-                    search={['uuid', 'check_name']}
-                />
-            </Row>
-        );
+    renderCurrentPanel(linuxBaseLineCheckOriginData: any[], windowsBaseLineCheckOriginData: any[]) {
+        if(linuxBaseLineCheckOriginData===undefined||windowsBaseLineCheckOriginData===undefined){
+            return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <LoadingOutlined style={{ fontSize: '3em' }} />
+            </div>
+            );
+        }
+        else{
+            const { currentPanel } = this.state;
+            return (
+                <Row style={{ width: '100%' }}>
+                    <FetchDataForElkeidTable
+                        key={currentPanel}
+                        apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}
+                        timeColumnIndex={['last_checked']}
+                        columns={baselineDetectColumns}
+                        currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}
+                        search={['uuid', 'check_name']}
+                    />
+                    {/*<DataDisplayTable*/}
+                    {/*    key={currentPanel}*/}
+                    {/*    externalDataSource={currentPanel==="windows"?windowsBaseLineCheckOriginData:linuxBaseLineCheckOriginData}*/}
+                    {/*    apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}*/}
+                    {/*    timeColumnIndex={['last_checked']}*/}
+                    {/*    columns={baselineDetectColumns}*/}
+                    {/*    currentPanel={currentPanel}*/}
+                    {/*    searchColumns={['uuid', 'check_name']}*/}
+                    {/*/>*/}
+                </Row>
+            );
+        }
         // switch (currentPanel) {
-        //   case 'windowsBaseLineCheck':
-        //     return (
-        //       <Row style={{ width: '100%', }}>
-        //         <FetchDataForElkeidTable
-        //           apiEndpoint="http://localhost:5000/api/baseline_check/windows/all"
-        //           timeColumnIndex={['last_checked']}
-        //           columns={baselineDetectColumns}
-        //           currentPanel="baseLine_check_windows"
-        //           search={["uuid","check_name"]}
-        //         />
-        //       </Row>
-        //     );
-        //   case 'linuxBaseLineCheck':
-        //     return (
-        //       <Row style={{ width: '100%', }}>
-        //         <FetchDataForElkeidTable
-        //           apiEndpoint="http://localhost:5000/api/baseline_check/linux/all"
-        //           timeColumnIndex={['last_checked']}
-        //           columns={baselineDetectColumns}
-        //           currentPanel="baseLine_check_linux"
-        //           search={["uuid","check_name"]}
-        //         />
-        //       </Row>
-        //     );
-        //   default:
-        //     return (
-        //       <Row style={{ width: '100%', margin: '0 auto' }}>
-        //         <FetchDataForElkeidTable
-        //           apiEndpoint="http://localhost:5000/api/baseline_check/linux"
-        //           timeColumnIndex={['last_checked']}
-        //           columns={baselineDetectColumns}
-        //           currentPanel="baseline_check_linux"
-        //         />
-        //       </Row>
-        //     );
+        //     case 'windows':
+        //         return (
+        //             <Row style={{ width: '100%' }}>
+        //                 <FetchDataForElkeidTable
+        //                     apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}
+        //                     timeColumnIndex={['last_checked']}
+        //                     columns={baselineDetectColumns}
+        //                     currentPanel={'windows'}
+        //                     search={['uuid', 'check_name']}
+        //                 />
+        //                 {/*<DataDisplayTable*/}
+        //                 {/*    key={currentPanel}*/}
+        //                 {/*    externalDataSource={windowsBaseLineCheckOriginData}*/}
+        //                 {/*    apiEndpoint="http://localhost:5000/api/baseline_check/windows/all"*/}
+        //                 {/*    timeColumnIndex={['last_checked']}*/}
+        //                 {/*    columns={baselineDetectColumns}*/}
+        //                 {/*    currentPanel={currentPanel}*/}
+        //                 {/*    searchColumns={['uuid', 'check_name']}*/}
+        //                 {/*/>*/}
+        //             </Row>
+        //         );
+        //     case 'linux':
+        //         return (
+        //             <Row style={{ width: '100%' }}>
+        //                 <FetchDataForElkeidTable
+        //                     apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}
+        //                     timeColumnIndex={['last_checked']}
+        //                     columns={baselineDetectColumns}
+        //                     currentPanel={'linux'}
+        //                     search={['uuid', 'check_name']}
+        //                 />
+        //                 {/*<DataDisplayTable*/}
+        //                 {/*    key={currentPanel}*/}
+        //                 {/*    externalDataSource={linuxBaseLineCheckOriginData}*/}
+        //                 {/*    apiEndpoint="http://localhost:5000/api/baseline_check/linux/all"*/}
+        //                 {/*    timeColumnIndex={['last_checked']}*/}
+        //                 {/*    columns={baselineDetectColumns}*/}
+        //                 {/*    currentPanel={currentPanel}*/}
+        //                 {/*    searchColumns={['uuid', 'check_name']}*/}
+        //                 {/*/>*/}
+        //             </Row>
+        //         );
+        //     default:
+        //         return (
+        //             <Row style={{ width: '100%', margin: '0 auto' }}>
+        //                 <FetchDataForElkeidTable
+        //                     apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}
+        //                     timeColumnIndex={['last_checked']}
+        //                     columns={baselineDetectColumns}
+        //                     currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}
+        //                     search={['uuid', 'check_name']}
+        //                 />
+        //                 {/*<DataDisplayTable*/}
+        //                 {/*    key={currentPanel}*/}
+        //                 {/*    externalDataSource={linuxBaseLineCheckOriginData}*/}
+        //                 {/*    apiEndpoint="http://localhost:5000/api/baseline_check/linux/all"*/}
+        //                 {/*    timeColumnIndex={['last_checked']}*/}
+        //                 {/*    columns={baselineDetectColumns}*/}
+        //                 {/*    currentPanel={currentPanel}*/}
+        //                 {/*    searchColumns={['uuid', 'check_name']}*/}
+        //                 {/*/>*/}
+        //             </Row>
+        //         );
         // }
     }
 
@@ -206,6 +255,8 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
+                        linuxBaseLineCheckOriginData,
+                        windowsBaseLineCheckOriginData,
                         linuxBaseLineCheckMetaData_uuid,
                         linuxBaseLineCheckMetaData_status,
                         windowsBaseLineCheckMetaData_uuid,
@@ -224,7 +275,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                     return (
                         <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>
-
                                 <Col className="gutter-row" md={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
@@ -385,15 +435,12 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                 <div style={{ flexGrow: 1 }}></div>
 
                                             </Menu>
+                                            {/*<Card bordered={false}>*/}
+                                            {/*    {this.renderCurrentPanel(linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData)}*/}
+                                            {/*</Card>*/}
                                             <div style={{ marginTop: '20px' }}>
-                                                {this.renderCurrentPanel()}
+                                                {this.renderCurrentPanel(linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData)}
                                             </div>
-                                            {/* <FetchDataForElkeidTable
-                          apiEndpoint="http://localhost:5000/api/baseline_check/linux"
-                          timeColumnIndex={['last_checked']}
-                          columns={baselineDetectColumns}
-                          currentPanel="baseline_check_linux"
-                          /> */}
                                         </Card>
                                     </div>
                                 </Col>

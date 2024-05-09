@@ -99,19 +99,19 @@ const menus: {
         },
         
         // { key: '/app/honeypot', title: '蜜罐防御', component: 'HoneypotDefense' },
-        { key: '/app/threat-hunting', title: '威胁狩獵', component: 'ThreatHunting' },
+        { key: '/app/threat-hunting', title: 'TTPs', component: 'ThreatHunting' },
         {
-            key: '/app/extension',
+            key: '/app/Management',
             title: '系统管理',
             icon: 'bars',
             subs: [
                 {
-                    key: '/app/extension/UserManagement',
+                    key: '/app/Management/UserManagement',
                     title: '用户管理',
                     component: 'UserManagement',
                 },
                 {
-                    key: '/app/extension/ScheduleTask',
+                    key: '/app/Management/ScheduleTask',
                     title: '定时任务',
                     component: 'ScheduleTask',
                 },
@@ -199,27 +199,27 @@ const menus: {
 
 export default menus;
 
-                //     key: '/app/extension/queryParams',
+                //     key: '/app/Management/queryParams',
                 //     title: '问号形式参数',
                 //     component: 'QueryParams',
                 //     query: '?param1=1&param2=2',
                 // },
                 // {
-                //     key: '/app/extension/visitor',
+                //     key: '/app/Management/visitor',
                 //     title: '访客模式',
                 //     component: 'Visitor',
                 //     login: true,
                 // },
                 // {
-                //     key: '/app/extension/multiple',
+                //     key: '/app/Management/multiple',
                 //     title: '多级菜单',
                 //     subs: [
                 //         {
-                //             key: '/app/extension/multiple/child',
+                //             key: '/app/Management/multiple/child',
                 //             title: '多级菜单子菜单',
                 //             subs: [
                 //                 {
-                //                     key: '/app/extension/multiple/child/child',
+                //                     key: '/app/Management/multiple/child/child',
                 //                     title: '多级菜单子子菜单',
                 //                     component: 'MultipleMenu',
                 //                 },
@@ -228,7 +228,7 @@ export default menus;
                 //     ],
                 // },
                 // {
-                //     key: '/app/extension/env',
+                //     key: '/app/Management/env',
                 //     title: '环境配置',
                 //     component: 'Env',
                 // },

@@ -47,7 +47,7 @@ export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
 
   useEffect(() => {
     // 清空数据
-    setData([]);
+    // setData([]);
     const fetchData = async () => {
       const result = await context!.fetchLatestData(apiEndpoint, '', '', '', timeColumnIndex);
       setData(result);
@@ -60,6 +60,7 @@ export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
   return (
     <div style={{ width: '100%', margin: '0px auto' }}>
       <ElkeidDisplayTable
+        // key={currentPanel}
         apiEndpoint={apiEndpoint}
         externalDataSource={data}
         columns={columns}

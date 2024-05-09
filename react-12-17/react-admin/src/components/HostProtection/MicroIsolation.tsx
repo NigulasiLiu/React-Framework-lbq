@@ -2,9 +2,12 @@ import React from 'react';
 import { Card, Col, Row, Form, Input, Button, message,Modal,Table,Descriptions } from 'antd';
 import axios from 'axios';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
-import { SearchOutlined } from '@ant-design/icons';
+import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
+import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import { fimColumns } from '../Columns';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 
 
 interface MicroIsolationProps{
@@ -86,7 +89,7 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           //         </Button>
           //     </div>
           // ),
-          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+          // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
   
           render: (text: string) => (
               // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
@@ -157,7 +160,7 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           //         </Button>
           //     </div>
           // ),
-          filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+          // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
   
           render: (text: string) => (
               // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
@@ -368,75 +371,80 @@ renderEncryptModal=()=>{
 //     message.error('文件解除隔离请求发送失败');
 //   }
 // };
+
   render() {
     return (
-      <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
-        <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-          <Col md={24}>
-            <div className="gutter-box">
-              {/* <Modal
-                title="添加隔离文件"
-                visible={this.state.encryptModalVisible}
-                onOk={this.handleEncryptSubmit}
-                onCancel={this.hideEncryptModal}
-                okText="确认"
-                cancelText="取消"
-                okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
-              >
-                  <Descriptions bordered column={1}>
-                  <Descriptions.Item label="Agent IP地址">{this.state.currentRecord.agent_ip}</Descriptions.Item>
-                  <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
-                  <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
-                </Descriptions>
-              </Modal> */}
-              {this.renderEncryptModal()}
-              <Card bordered={false}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                  <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
+        <DataContext.Consumer>
+          {(context: DataContextType | undefined) => {
+            if (!context) {
+              return (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                    <LoadingOutlined style={{ fontSize: '3em' }} />
+                  </div>); // 或者其他的加载状态显示
+            }
+            // 从 context 中解构出 topFiveFimData 和 n
+            const {
+              spFilesOriginData,
+              isolationOriginData,} = context;
+
+            return (
+                <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                  <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
+                    <Col md={24}>
+                      <div className="gutter-box">
+                        {this.renderEncryptModal()}
+                        <Card bordered={false}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
+                            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
+                          </div>
+                          <DataDisplayTable
+                              key={"spFileslist"}
+                              externalDataSource={spFilesOriginData}
+                              apiEndpoint="http://localhost:5000/api/FetchSpFile/all"
+                              timeColumnIndex={[]}
+                              columns={this.state.spFilesColumns}
+                              currentPanel={"spFileslist"}
+                              searchColumns={['uuid', 'origin_filename']}
+                          />
+                          {/*<FetchDataForElkeidTable */}
+                          {/*apiEndpoint="http://localhost:5000/api/FetchSpFile" */}
+                          {/*columns={this.state.spFilesColumns} */}
+                          {/*timeColumnIndex={[]}*/}
+                          {/*currentPanel={"spFileslist"} />*/}
+                          <Table dataSource={initialData} columns={this.state.spFilesColumns} />
+
+                        </Card>
+                        {this.renderDecryptModal()}
+                        <Card bordered={false}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
+                            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>隔离文件列表</h2>
+                          </div>
+                          <DataDisplayTable
+                              key={"MicroIsolationlist"}
+                              externalDataSource={isolationOriginData}
+                              apiEndpoint="http://localhost:5000/api/MicroIsolationlist/all"
+                              timeColumnIndex={[]}
+                              columns={this.state.columns}
+                              currentPanel={"MicroIsolationlist"}
+                              searchColumns={['uuid', 'encrypted_filename']}
+                          />
+                          {/*<FetchDataForElkeidTable */}
+                          {/*apiEndpoint="http://localhost:5000/api/MicroIsolationlist" */}
+                          {/*columns={this.state.columns} */}
+                          {/*timeColumnIndex={[]}*/}
+                          {/*currentPanel={"MicroIsolationlist"} />*/}
+                          <Table dataSource={initialData} columns={this.state.columns} />
+
+                        </Card>
+
+                      </div>
+                    </Col>
+                  </Row>
                 </div>
-                <FetchDataForElkeidTable 
-                apiEndpoint="http://localhost:5000/api/FetchSpFile" 
-                columns={this.state.spFilesColumns} 
-                timeColumnIndex={[]}
-                currentPanel={"spFileslist"} />
-                <Table dataSource={initialData} columns={this.state.spFilesColumns} />
-
-              </Card>
-              {/* <Modal
-                title="解除文件隔离"
-                visible={this.state.decryptModalVisible}
-                onOk={this.handleDecryptSubmit}
-                onCancel={this.hideDecryptModal}
-                okText="确认"
-                cancelText="取消"
-                okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
-              >
-                  <Descriptions bordered column={1}>
-                  <Descriptions.Item label="Agent IP地址">{this.state.currentRecord.agent_ip}</Descriptions.Item>
-                  <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
-                  <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
-                </Descriptions>
-              </Modal> */}
-              {this.renderDecryptModal()}
-
-              <Card bordered={false}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                  <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>隔离文件列表</h2>
-                </div>
-                <FetchDataForElkeidTable 
-                apiEndpoint="http://localhost:5000/api/MicroIsolationlist" 
-                columns={this.state.columns} 
-                timeColumnIndex={[]}
-                currentPanel={"MicroIsolationlist"} />
-                <Table dataSource={initialData} columns={this.state.columns} />
-
-              </Card>
-
-            </div>
-          </Col>
-        </Row>
-      </div>
-    );
+            );
+          }}
+        </DataContext.Consumer>
+    )
   }
 }
 

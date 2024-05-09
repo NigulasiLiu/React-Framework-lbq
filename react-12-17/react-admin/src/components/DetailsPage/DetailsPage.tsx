@@ -205,9 +205,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         },
         {
           title: '扫描时刻',
-          dataIndex: 'scan_time',
+          dataIndex: 'scanTime',
           render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-          sorter: (a: any, b: any) => parseFloat(a.scan_time) - parseFloat(b.scan_time),
+          sorter: (a: any, b: any) => parseFloat(a.scanTime) - parseFloat(b.scanTime),
         },
         {
           title: '扫描类型',
@@ -285,6 +285,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         {
           title: "调整建议",
           dataIndex: 'adjustment_requirement',
+          filters: [{ text: '建议调整', value: '建议调整' }, { text: '自行判断', value: '自行判断' },
+          ],
+          onFilter: (value: string | number | boolean, record: any) => record.adjustment_requirement.includes(value as string),
+
           render: (text: string, record: baselineDetectColumnsType) => (
             <Tooltip title={record.instruction}>
               {text}
