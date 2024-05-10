@@ -70,7 +70,9 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
             ))}
             {title && (
               <Label
-                value={`${title}:${Math.round((data[1].value / (data[0].value + data[1].value)) * 100)}%`}
+                value={`${title}:${Math.round(
+                    (1-data[0].value / data.reduce((acc, cur) => acc + cur.value, 0)) * 100
+                )}%`}
                 position="center"
                 style={{ fontSize: '14px' }}
               />

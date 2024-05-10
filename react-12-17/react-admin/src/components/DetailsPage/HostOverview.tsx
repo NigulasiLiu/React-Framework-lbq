@@ -104,11 +104,15 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            const filteredvulData = originDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+            if (!filteredvulData) {
+                return <div>没有该主机漏洞的信息</div>;
+            }
             let totalExpResultCount = 0;
-            originDataArray.forEach(item => {
+            filteredvulData.forEach(item => {
                 totalExpResultCount += item.vul_detection_exp_result.length;
             });
-            const scanPanelData: StatusItem[] = [
+            const vulPieChartData: StatusItem[] = [
                 { color: '#E63F3F', label: panelDataTitle1, value: totalExpResultCount },
                 { color: '#468DFF', label: panelDataTitle2, value: 99 },];
             return (
@@ -116,7 +120,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     <Row>
                         <Col span={12}>
                             <CustomPieChart
-                                data={scanPanelData}
+                                data={vulPieChartData}
                                 innerRadius={54}
                                 deltaRadius={8}
                                 outerRadius={80}
@@ -127,7 +131,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         </Col>
                         <Col span={2}> </Col>
                         <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                            <StatusPanel statusData={scanPanelData} orientation="vertical" />
+                            <StatusPanel statusData={vulPieChartData} orientation="vertical" />
                         </div>
                     </Row>
                 </div>
@@ -551,7 +555,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                 </Row>
 
                                                 <Row gutter={0}>
-                                                    {/* {this.renderVulPieChart(vulnOriginData)} */}
                                                     {this.renderVulPieChart(vulnOriginData, '待处理高可利用漏洞', '风险项', '通过项')}
 
                                                 </Row>
@@ -577,7 +580,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                 <Row gutter={0}>
                                                     {this.renderPieCharBaseLineChart(agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData)}
 
-                                                    {/* {this.renderVulPieChart(vulnOriginData)} */}
                                                 </Row>
                                             </Card>
                                         </Col>

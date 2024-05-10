@@ -242,7 +242,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
             return (
                 <Row style={{ width: '100%', marginTop: '20px', paddingRight: '10px' }}>
                     <Col span={7} style={{ paddingTop: '20px', width: '400px', height: '90px', marginLeft: '20px' }}>
-                        <Statistic title={title} value={totalExpResultCount} />
+                        <Statistic title={<span style={{ fontSize: '16px' }}>{title}</span>}
+                                   value={totalExpResultCount} />
                     </Col>
                     <Col span={5} style={{ width: '300px', marginTop: '10px' }}>
                         <CustomPieChart
@@ -313,7 +314,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
-                                                    }}>威胁狩猎概览</h2>
+                                                    }}>威胁捕获概览</h2>
                                                 </div>
                                                 <Row>
                                                     <Col span={9} style={{ marginLeft: '10px' }}>
@@ -329,7 +330,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                                 backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                                             }}
                                                         >
-                                                            {this.renderPanelAndPieChart(vulnOriginData, '已狩猎威胁',
+                                                            {this.renderPanelAndPieChart(vulnOriginData, '已捕获威胁',
                                                                 '风险等级1', '风险等级2', '风险等级3')}
                                                         </Card>
                                                     </Col>
@@ -348,7 +349,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span>暴力破解</span>}
+                                                                    <Statistic title={<span style={{fontSize:'16px'}}>暴力破解</span>}
                                                                                value={brutCount}
                                                                     />
                                                                 </Col>
@@ -371,7 +372,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span>权限提升</span>}
+                                                                    <Statistic title={<span style={{fontSize:'16px'}}>权限提升</span>}
                                                                                value={privCount} />
                                                                 </Col>
 
@@ -393,7 +394,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span>防御规避</span>}
+                                                                    <Statistic title={<span style={{fontSize:'16px'}}>防御规避</span>}
                                                                                value={defensCount} />
                                                                 </Col>
 

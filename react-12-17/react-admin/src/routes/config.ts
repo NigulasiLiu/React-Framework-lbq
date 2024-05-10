@@ -99,7 +99,7 @@ const menus: {
         },
         
         // { key: '/app/honeypot', title: '蜜罐防御', component: 'HoneypotDefense' },
-        { key: '/app/threat-hunting', title: 'TTPs', component: 'ThreatHunting' },
+        { key: '/app/threat-hunting', title: '威胁狩猎', component: 'ThreatHunting' },
         {
             key: '/app/Management',
             title: '系统管理',

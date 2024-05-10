@@ -118,14 +118,14 @@ const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
                 return acc;
             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
 
-            const alertData3_: StatusItem[] = [
+            const baselineAlertData: StatusItem[] = [
                 // 确保使用正确的方法来计数
                 { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
                 { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' },//BLUE
             ];
             return (
                 <CustomPieChart
-                    data={alertData3_}
+                    data={baselineAlertData}
                     title={'基线'}
                     innerRadius={34}
                     deltaRadius={5}
@@ -223,8 +223,10 @@ class Dashboard extends React.Component<DashboardProps> {
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
-                        honeyPotOriginData,
+                        honeyPotOriginData,HoneyPotHostCount,
                         bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData,
+                        TTPsHostCount,
+                        virusOriginData,VirusHostCount,
                         last7defenceForceValue,last7brutForceValue,last7privValue,
                         last7VirusValue,last7HoneyPotValue,
 
@@ -297,16 +299,18 @@ class Dashboard extends React.Component<DashboardProps> {
                     });
 
 
-
-                    // 第二类告警的数据集
-                    const alertDataTwo = [
-                        { label: '待处理告警', value: 1, color: '#FFBB28' },
-                        { label: '已处理告警', value: 1, color: '#E5E8EF' },
+                    const noAlertHostCount =40+hostCount-HoneyPotHostCount-TTPsHostCount-VirusHostCount;
+                    // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
+                    const alertHostPieChartData = [
+                        { label: '无告警主机', value: noAlertHostCount>0?noAlertHostCount:0, color: '#E5E8EF' },
+                        { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:-1, color: '#FFBB28' },
+                        { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:-1, color: '#468DFF' },
+                        { label: '病毒扫描告警', value: VirusHostCount===0?40:VirusHostCount, color: '#846CCE' },
                     ];
 
 
                     //漏洞检测
-                    const alertDataThree = [
+                    const vulAlertPieChartData = [
                         { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
                         { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
                     ];
@@ -315,7 +319,7 @@ class Dashboard extends React.Component<DashboardProps> {
 
 
                     //基线检查，进度条型展示时，使用一个各项值为1的panel
-                    const riskData: StatusItem[] = [
+                    const baselineLineChartLabelUseData: StatusItem[] = [
                         { color: '#faad14', label: '建议调整 ', value: 1 },//蓝色E53F3F
                         { color: '#52c41a', label: '自行判断 ', value: 1 },
                         // { color: '#468DFF', label: '低风险 ', value: 2 },
@@ -728,7 +732,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         marginLeft: '0px',
                                                         marginBottom: '10px',
                                                     }}>基线风险</h2>
-                                                    <StatusPanel statusData={riskData} orientation="horizontal" />
+                                                    <StatusPanel statusData={baselineLineChartLabelUseData} orientation="horizontal" />
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={24}>
@@ -868,7 +872,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                 <Row style={{ marginTop: '-25px' }} gutter={[6, 6]}>
                                                     <Col span={8}>
                                                         <CustomPieChart
-                                                            data={alertDataTwo}
+                                                            data={alertHostPieChartData}
                                                             title={'告警'}
                                                             innerRadius={34}
                                                             deltaRadius={5}
@@ -879,7 +883,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     </Col>
                                                     <Col span={8}>
                                                         <CustomPieChart
-                                                            data={alertDataThree}
+                                                            data={vulAlertPieChartData}
                                                             title={'漏洞'}
                                                             innerRadius={34}
                                                             deltaRadius={5}

@@ -45,40 +45,6 @@ export const getCountPastSevenDays = (result: MetaDataResult, columnName: string
 
   return count;
 };
-// export const getPastSevenDaysAlerts = (result: MetaDataResult): number[] => {
-//   const now = new Date();
-//   now.setHours(23, 59, 59, 999); // 设置为当天的最后一刻
-//   const sevenDaysAgo = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000); // 7天前的时间（包括今天）
-//   sevenDaysAgo.setHours(0, 0, 0, 0); // 设置为那天的第一刻
-
-//   // 初始化过去7天每天的告警数量数组，所有值均为0
-//   const alertsCountPerDay = new Array(7).fill(0);
-
-//   result.typeCount.forEach((count, dateString) => {
-//     let date;
-
-//     // 尝试将字符串作为UNIX时间戳（毫秒）解析
-//     const timestamp = Number(dateString);
-//     if (!isNaN(timestamp)) {
-//       date = new Date(timestamp);
-//     } else {
-//       // 尝试直接将字符串解析为日期
-//       date = new Date(dateString);
-//     }
-
-//     // 确保解析后的日期有效
-//     if (date >= sevenDaysAgo && date <= now) {
-//       // 计算这个日期是过去第几天
-//       const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-//       // 根据日期差异更新对应天的告警数量，数组从0开始索引，0代表最近一天
-//       if (diffDays < 7) {
-//         alertsCountPerDay[6 - diffDays] += count;
-//       }
-//     }
-//   });
-
-//   return alertsCountPerDay;
-// };
 export const getPastSevenDaysAlerts = (result: MetaDataResult): number[] => {
   const now = new Date();
   now.setHours(23, 59, 59, 999); // 设置为当天的最后一刻

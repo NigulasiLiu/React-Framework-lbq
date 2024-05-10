@@ -357,7 +357,7 @@ renderEncryptModal=()=>{
             }
             // 从 context 中解构出 topFiveFimData 和 n
             const {
-              spFilesOriginData,
+              virusOriginData,
               isolationOriginData,} = context;
 
             return (
@@ -372,7 +372,7 @@ renderEncryptModal=()=>{
                           </div>
                           <DataDisplayTable
                               key={"spFileslist"}
-                              externalDataSource={spFilesOriginData}
+                              externalDataSource={virusOriginData}
                               apiEndpoint="http://localhost:5000/api/FetchSpFile/all"
                               timeColumnIndex={[]}
                               columns={this.state.spFilesColumns}

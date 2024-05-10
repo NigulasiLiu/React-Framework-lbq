@@ -114,26 +114,21 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
     componentDidMount() {
         const queryParams = new URLSearchParams(this.props.location.search);
         const host_uuid = queryParams.get('uuid');
-        this.setState({
-            host_uuid: host_uuid ? host_uuid : 'default',
-        });
+        if(host_uuid){
+            this.setState({
+                host_uuid: host_uuid,
+            });
+        }
+        else{
+            this.setState({
+                host_uuid: 'default',
+            });
+        }
     }
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState(prevState => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) => (i === index ? index : val)),
-        }));
-    };
 
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
     // 渲染当前激活的子面板
     renderCurrentPanel() {
         const { currentPanel } = this.state;
@@ -144,12 +139,12 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card >
-                                    <FetchDataForElkeidTable
-                                        timeColumnIndex={[]}
-                                        apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
-                                        columns={baseLineDetectCheckedItemColumns}
-                                        currentPanel='baseLineDetectDetailsCheckedItem'
-                                    />
+                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*    timeColumnIndex={[]}*/}
+                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
+                                    {/*    columns={baseLineDetectCheckedItemColumns}*/}
+                                    {/*    currentPanel='baseLineDetectDetailsCheckedItem'*/}
+                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>
@@ -201,13 +196,12 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card bordered={false}>
-
-                                    <FetchDataForElkeidTable
-                                        apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
-                                        timeColumnIndex={[]}
-                                        columns={baseLineDetectHostItemColumns}
-                                        currentPanel='baseLinedetectdetailsHostItem'
-                                    />
+                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
+                                    {/*    timeColumnIndex={[]}*/}
+                                    {/*    columns={baseLineDetectHostItemColumns}*/}
+                                    {/*    currentPanel='baseLinedetectdetailsHostItem'*/}
+                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>
@@ -217,12 +211,12 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontWeight: 'bold' }}>
                                         <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>检查结果</h2>
                                     </div>
-                                    <FetchDataForElkeidTable
-                                        timeColumnIndex={[]}
-                                        apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
-                                        columns={baseLineDetectScanResult2Columns}
-                                        currentPanel='baseLineDetectScanResult2'
-                                    />
+                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*    timeColumnIndex={[]}*/}
+                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
+                                    {/*    columns={baseLineDetectScanResult2Columns}*/}
+                                    {/*    currentPanel='baseLineDetectScanResult2'*/}
+                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>
@@ -234,12 +228,12 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card >
-                                    <FetchDataForElkeidTable
-                                        timeColumnIndex={[]}
-                                        apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"
-                                        columns={baseLineDetectCheckedItemColumns}
-                                        currentPanel='baseLinedetectdetailsCheckedItem'
-                                    />
+                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*    timeColumnIndex={[]}*/}
+                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
+                                    {/*    columns={baseLineDetectCheckedItemColumns}*/}
+                                    {/*    currentPanel='baseLinedetectdetailsCheckedItem'*/}
+                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>
@@ -344,10 +338,8 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         return <div>Loading...</div>; // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const { linuxBaseLineCheckMetaData_uuid,
-                        linuxBaseLineCheckMetaData_status,
-                        windowsBaseLineCheckMetaData_uuid,
-                        blLinuxHostCount, blWindowsHostCount, blLinuxNeedAdjustmentItemCount, blWindowsNeedAdjustmentItemCount,
+                    const { linuxBaseLineCheckMetaData_uuid, blLinuxNeedAdjustmentItemCount,
+                        blWindowsNeedAdjustmentItemCount,
                         blWindowsCheckNameCount, blLinuxCheckNameCount } = context;
 
 

@@ -104,9 +104,10 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                 // 如果有需要，可以在状态更新后获取数据
                 // this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
             });
-        } else {
-            console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
         }
+        // else {
+        //     console.log('Panel did not change, from ' + prevProps.currentPanel + ' to ' + this.props.currentPanel);
+        // }
     }
 
     generate_new_columns = (columns: any[], search_index = ['']): any[] => {
