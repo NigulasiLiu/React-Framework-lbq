@@ -1,12 +1,11 @@
 import React from 'react';
-import { Tooltip, Button, Select, Tag, Badge, Input, Space, Card, Row } from 'antd';
-import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { Tooltip, Button, Badge, Input, Space, Card, Row } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import buttonStyles from '../style/button.module.css';
 import '../Style.css';
 import moment from 'moment';
 import DataDisplayTable from './ElkeidTable/DataDisplayTable';
+
 
 
 export const ServerPort = 'http://localhost:5000';
@@ -121,7 +120,14 @@ export const baseLineDetectScanResult1Columns = [
         render: (text: string, record: any) => (
             // 在 render 方法中返回包含按钮的元素
             <Link to="/app/create_agent_task" target="_blank">
-                <Button type="link" style={{ color: '#4086f4' }}>加白名单</Button>
+                <Button
+                    style={{
+                        fontWeight: 'bold', padding: '0 0',
+                        border: 'transparent',
+                        backgroundColor: 'transparent',
+                        // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                        // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                    }}>加白名单</Button>
             </Link>
         ),
     },
@@ -606,7 +612,6 @@ export const hostinventoryColumns = [
         dataIndex: 'cpu_use',
         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
     },
-    // 操作 列，根据状态禁用按钮style={{ color: record.status === 'Online' ? '#4086f4' : '#d9d9d9' }}
     {
         title: '操作',
         dataIndex: 'operation',
@@ -1877,7 +1882,7 @@ export const threatHuntingColumns = [
     {
         title: '攻击者IP',
         dataIndex: 'atk_ip',
-        key: 'tactic',
+        key: 'atk_ip',
     },
     {
         title: '扫描时刻',
@@ -1885,6 +1890,69 @@ export const threatHuntingColumns = [
         key: 'scan_time',
         render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
         sorter: (a: any, b: any) => parseFloat(b.scan_time) - parseFloat(a.scan_time),
+    },
+    {
+        title: '告警类型',
+        dataIndex: 'atk_type',
+        key: 'atk_type',
+    },
+    // 其他需要的列
+];
+
+export const threatHuntingColumns_2 = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        Maxwidth: '15px',
+    },
+    {
+        title: '主机名',
+        dataIndex: 'uuid',
+        key: 'uuid',
+        render: (text: string, record: any) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{
+                            fontWeight: 'bold',
+                            border: 'transparent',
+                            backgroundColor: 'transparent',
+                            color: '#4086FF',
+                            padding: '0 0',
+                        }}>
+                            <Tooltip title={record.uuid}>
+                                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                                    {record.uuid || '-'}
+                                </div>
+                            </Tooltip>
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agent_ip}
+                </div>
+            </div>
+        ),
+    },
+    {
+        title: '攻击者IP',
+        dataIndex: 'atk_ip',
+        key: 'atk_ip',
+    },
+    {
+        title: '攻击时刻',
+        dataIndex: 'atk_time',
+        key: 'atk_time',
+        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+        sorter: (a: any, b: any) => parseFloat(b.atk_time) - parseFloat(a.atk_time),
     },
     {
         title: '告警类型',

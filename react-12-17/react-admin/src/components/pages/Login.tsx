@@ -34,19 +34,35 @@ class Login extends React.Component<LoginProps> {
 
         try {
             const response = await axios.post('http://localhost:5000/login', requestBody);
-                // 检查 response.data 是否符合预期格式和内容
-            if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
-                // 更新状态和本地存储
+            // 检查 response.data 是否符合预期格式和内容
+            // if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
+            //     // 更新状态和本地存储
+            //     this.props.setAlitaState({
+            //         //funcName: 'login',
+            //         stateName: 'auth',
+            //         data: response.data,
+            //     });
+            //     localStorage.setItem("user", JSON.stringify(response.data));
+            //     //this.props.history.push("/");
+            //     this.props.history.push('/app/Dashboard');
+            // } else {
+            //     // 处理意外的响应或显示错误消息
+            // }
+            if (response.data && response.data.access_token) {
+                // 存储JWT到localStorage
+                localStorage.setItem("jwt_token", response.data.access_token);
+
+                // 更新redux状态
                 this.props.setAlitaState({
-                    //funcName: 'login',
                     stateName: 'auth',
-                    data: response.data,
+                    data: { uid: response.data.access_token }, // 或其他你需要存储的用户信息
                 });
-                localStorage.setItem("user", JSON.stringify(response.data));
-                //this.props.history.push("/");
+
+                // 跳转到主页或其他适当页面
                 this.props.history.push('/app/Dashboard');
             } else {
-                // 处理意外的响应或显示错误消息
+                // 处理错误情况
+                console.error('Error: Unexpected response data');
             }
         } catch (error) {
             this.props.history.push('/app/Dashboard');

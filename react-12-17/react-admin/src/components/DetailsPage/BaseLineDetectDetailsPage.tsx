@@ -182,12 +182,12 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                             </Text>
                                         </Row>
                                         <Row style={{ width: '100%', margin: '0 auto' }}>
-                                            <FetchDataForElkeidTable
-                                                apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"
-                                                timeColumnIndex={[]}
-                                                columns={baseLineDetectScanResult1Columns}
-                                                currentPanel="baseLineDetectScanResult1"
-                                            />
+                                            {/*<FetchDataForElkeidTable*/}
+                                            {/*    apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"*/}
+                                            {/*    timeColumnIndex={[]}*/}
+                                            {/*    columns={baseLineDetectScanResult1Columns}*/}
+                                            {/*    currentPanel="baseLineDetectScanResult1"*/}
+                                            {/*/>*/}
                                         </Row>
                                     </Row>
                                 </Card>
@@ -272,12 +272,12 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                             </Text>
                                         </Row>
                                         <Row style={{ width: '100%', margin: '0 auto' }}>
-                                            <FetchDataForElkeidTable
-                                                apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"
-                                                timeColumnIndex={[]}
-                                                columns={baseLineDetectScanResult1Columns}
-                                                currentPanel="baseLineDetectScanResult1"
-                                            />
+                                            {/*<FetchDataForElkeidTable*/}
+                                            {/*    apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"*/}
+                                            {/*    timeColumnIndex={[]}*/}
+                                            {/*    columns={baseLineDetectScanResult1Columns}*/}
+                                            {/*    currentPanel="baseLineDetectScanResult1"*/}
+                                            {/*/>*/}
                                         </Row>
                                     </Row>
                                 </Card>

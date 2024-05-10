@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Button, Modal, Form, Input, message, Row, Card, Tooltip, Menu, Statistic } from 'antd';
 import axios from 'axios';
 import {
-    StatusItem, threatHuntingColumns,
+    StatusItem, threatHuntingColumns, threatHuntingColumns_2,
 } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -202,7 +202,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         externalDataSource={privilegeescalationTTPsOriginData}
                         apiEndpoint="http://localhost:5000/api/privilege-escalation/all"
                         timeColumnIndex={[]}
-                        columns={threatHuntingColumns}
+                        columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
                         additionalButton={this.openModal}
@@ -216,7 +216,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         externalDataSource={defenseavoidanceTTPsOriginData}
                         apiEndpoint="http://localhost:5000/api/defense-avoidance/all"
                         timeColumnIndex={[]}
-                        columns={threatHuntingColumns}
+                        columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
                         additionalButton={this.openModal}

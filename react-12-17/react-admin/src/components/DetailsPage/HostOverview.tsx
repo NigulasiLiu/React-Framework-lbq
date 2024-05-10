@@ -7,7 +7,7 @@ import {
     fimColumns,
     openPortsColumns,
     runningProcessesColumns, systemServicesColumns,
-    GenericDataItem, StatusItem
+    GenericDataItem, StatusItem, monitoredColumns,
 } from '../Columns';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
@@ -51,6 +51,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
         // 创建具有明确类型的 refs
         this.openPortsRef = React.createRef<HTMLDivElement>();
         this.fimRef = React.createRef<HTMLDivElement>();
+        this.MonitorRef = React.createRef<HTMLDivElement>();
         this.processRef = React.createRef<HTMLDivElement>();
         this.assetRef = React.createRef<HTMLDivElement>();
         this.state = {
@@ -70,6 +71,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
 
     openPortsRef: React.RefObject<HTMLDivElement>;
     fimRef: React.RefObject<HTMLDivElement>;
+    MonitorRef: React.RefObject<HTMLDivElement>;
     processRef: React.RefObject<HTMLDivElement>;
     assetRef: React.RefObject<HTMLDivElement>;
 
@@ -316,8 +318,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                 }
                 // 将filteredData转换为所需的data结构
                 const data = {
+                    'UUID': filteredData.uuid,
                     '主机名称': filteredData.host_name,
-                    '主机ID': filteredData.uuid,
                     '操作系统': filteredData.os_version,
                     '在线状态': filteredData.status,
                     '最后一次上线': convertUnixTime(filteredData.last_seen),
@@ -437,7 +439,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const { linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                        vulnOriginData, portOriginData, assetOriginData, processOriginData, fimOriginData,
+                        vulnOriginData, portOriginData, assetOriginData, processOriginData, fimOriginData,monitoredOriginData,
                         agentOriginData, } = context;
                     const data = {
                         '主机名称': this.state.host_uuid,
@@ -691,6 +693,40 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                         </Row>
                                                     </Card>
                                                 </Col>
+                                                <Col span={2}>
+                                                    <Card
+                                                        bordered={false}
+                                                        style={{
+                                                            height: '75px',
+                                                            width: '140px',
+                                                            minWidth: 110, // 最小宽度100px
+                                                            maxWidth: 200, // 最大宽度200px
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
+                                                        }}
+                                                    >
+                                                        <Row>
+                                                            <Col pull={2} span={22}>
+                                                                {this.renderDataCard(monitoredOriginData, '文件监控')}
+                                                            </Col>
+                                                            <Col
+                                                                pull={0}
+                                                                span={2}
+                                                                style={{ position: 'relative', top: '-3.5px' }}
+                                                            >
+                                                                <Button
+                                                                    type="link"
+                                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                                                                    icon={<RightOutlined />}
+                                                                    // onClick={() => this.goToPanel('system-services')}
+                                                                    onClick={() => this.handleScrollToSection(this.MonitorRef)}
+                                                                />
+                                                            </Col>
+                                                        </Row>
+                                                    </Card>
+                                                </Col>
                                                 <Col span={3}>
                                                     <Card
                                                         bordered={false}
@@ -723,101 +759,14 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                         </Row>
                                                     </Card>
                                                 </Col>
-                                                {/* <Col span={2}>
-                                                    <Card
-                                                        bordered={false}
-                                                        style={{
-                                                            height: '75px',
-                                                            width: '140px',
-                                                            minWidth: 110, // 最小宽度100px
-                                                            maxWidth: 200, // 最大宽度200px
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                        }}
-                                                    >
-                                                        <Row>
-                                                            <Col pull={2} span={22}>
-                                                                <Statistic title={<span>定时任务</span>} value={99} />
-                                                            </Col>
-                                                            <Col
-                                                                pull={0}
-                                                                span={2}
-                                                                style={{ position: 'relative', top: '-3.5px' }}
-                                                            >
-                                                                <Button
-                                                                    type="link"
-                                                                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
-                                                                    icon={<RightOutlined />}
-                                                                    // onClick={() => this.goToPanel('scheduled-tasks')}
-                                                                    onClick={() => this.handleScrollToSection(this.openPortsRef)}
-                                                                />
-                                                            </Col>
-                                                        </Row>
-                                                    </Card>
-                                                </Col> */}
                                                 <Col span={2}>
                                                 </Col>
                                             </Row>
                                         </Card>
                                     </Row>
-                                    {/* <Row gutter={[8,16]}>
-                                        <Card bordered={true}
-                                            style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
-                                            <Row>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>磁盘信息</h2>
-                                                </div>
-                                            </Row>
-                                            <FetchDataForElkeidTable
-                                                apiEndpoint="http://localhost:5000/api/files/diskinfo"
-                                                timeColumnIndex={[]}
-                                                columns={diskColumns}
-                                                currentPanel="hostOverviewdiskinfolist"
-                                            />
-                                        </Card>
-                                    </Row>
-                                    <Row gutter={[8,16]}>
-                                        <Card bordered={true}
-                                            style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
-                                            <Row>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>网卡信息</h2>
-                                                </div>
-                                            </Row>
-                                            <FetchDataForElkeidTable
-                                                apiEndpoint="http://localhost:5000/api/files/netinfo"
-                                                timeColumnIndex={[]}
-                                                columns={netColumns}
-                                                currentPanel="hostOverviewnetinfolist"
-                                            />
-                                        </Card>
-                                    </Row>
-                                    <Row gutter={[8,16]}>
-                                        <Card bordered={true}
-                                            style={{fontWeight: 'bolder', width: '100%', backgroundColor: '#ffffff' }}>
-                                            <Row>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold'}}>
-                                                    <h2 style={{ fontSize:'18px',fontWeight: 'bold', marginLeft: '0px' }}>插件列表</h2>
-                                                </div>
-                                            </Row>
-                                            <FetchDataForElkeidTable
-                                                apiEndpoint="http://localhost:5000/api/files/plugininfo"
-                                                timeColumnIndex={[]}
-                                                columns={pluginColumns}
-                                                currentPanel="hostOverviewplugininfolist"
-                                            />
-                                        </Card>
-                                    </Row> */}
                                     <Row ref={this.openPortsRef} gutter={[8, 16]}>
                                         {this.renderTable(portOriginData, 'http://localhost:5000/api/portinfo/all', '开放端口', [], openPortsColumns, 'open_ports_' + this.state.host_uuid+"_details",
                                             ["port_number","port_name"]
-                                        )}
-                                    </Row>
-                                    <Row ref={this.fimRef} gutter={[8, 16]}>
-                                        {this.renderTable(fimOriginData, 'http://localhost:5000/api/FileIntegrityInfo/all', '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid+"_details"
-                                            ,["filename",]
                                         )}
                                     </Row>
                                     <Row ref={this.processRef} gutter={[8, 16]}>
@@ -830,9 +779,16 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                             ,["service","port","ostype"]
                                         )}
                                     </Row>
-                                    {/* <Row ref={this.assetRef} gutter={[8, 16]}>
-                                        {this.renderTable(assetOriginData, 'http://localhost:5000/api/taskdetail/all', '定时任务', [], , 'services_' + this.state.host_uuid+"_details")}
-                                    </Row> */}
+                                    <Row ref={this.MonitorRef} gutter={[8, 16]}>
+                                        {this.renderTable(monitoredOriginData, 'http://localhost:5000/api/monitored/all', '文件监控', ['timestamp'], monitoredColumns, 'monitored_' + this.state.host_uuid+"_details"
+                                            ,["file_path",]
+                                        )}
+                                    </Row>
+                                    <Row ref={this.fimRef} gutter={[8, 16]}>
+                                        {this.renderTable(fimOriginData, 'http://localhost:5000/api/FileIntegrityInfo/all', '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid+"_details"
+                                            ,["filename",]
+                                        )}
+                                    </Row>
                                     <Row gutter={[8, 16]}>
                                         <Card bordered={false}
                                             style={{ fontWeight: 'bolder', width: '100%', minHeight: 100, backgroundColor: '#ffffff' }}>

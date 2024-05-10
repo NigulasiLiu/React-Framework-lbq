@@ -1,14 +1,12 @@
 /*
  * File: RouteWrapper.tsx
- * Desc: 描述
- * File Created: 2020-05-19 11:32:58
- * Author: chenghao at <hao.cheng@karakal.com.cn>
- * ------
- * Copyright 2020 - present, karakal
+ *
  */
 import React, { useMemo } from 'react';
 import DocumentTitle from 'react-document-title';
+import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
+import { checkLogin } from '../utils';
 
 const RouteWrapper = (props: any) => {
     let { Comp, route, ...restProps } = props;
@@ -21,6 +19,12 @@ const RouteWrapper = (props: any) => {
         };
         return queryString.parse(matchQuery(queryReg));
     }, [restProps.location.search]);
+
+
+    if (!checkLogin()) {
+        // 用户未登录，重定向到登录页面
+        return <Redirect to="/login" />;
+    }
     const mergeQueryToProps = () => {
         const queryReg = /\?\S*/g;
         const removeQueryInRouter = (restProps: any, reg: RegExp) => {

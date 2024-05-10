@@ -205,11 +205,11 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                                     style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                                                 >
                                                     <Menu.Item key="overview">总览</Menu.Item>
-                                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
-                                                    <Menu.Item key="monitored">文件监控</Menu.Item>
                                                     <Menu.Item key="open_ports">开放端口</Menu.Item>
                                                     <Menu.Item key="running_processes">运行进程</Menu.Item>
                                                     <Menu.Item key="system_services">系统服务</Menu.Item>
+                                                    <Menu.Item key="fim">文件完整性检验</Menu.Item>
+                                                    <Menu.Item key="monitored">文件监控</Menu.Item>
                                                     {/* <Menu.Item key="container">容器</Menu.Item> */}
                                                     {/* <Menu.Item key="system-users">系统用户</Menu.Item> */}
                                                     {/* <Menu.Item key="scheduled-tasks">定时任务</Menu.Item>

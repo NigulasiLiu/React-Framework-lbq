@@ -1,12 +1,9 @@
 import React from 'react';
-import { Card, Col, Row, Form, Input, Button, message,Modal,Table,Descriptions } from 'antd';
+import { Card, Col, Row, Button, message, Modal, Table, Descriptions, Tooltip } from 'antd';
 import axios from 'axios';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
-import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { LoadingOutlined,  } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { FilterDropdownProps } from 'antd/lib/table/interface';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
-import { fimColumns } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 
 
@@ -16,7 +13,7 @@ interface MicroIsolationProps{
 
 interface MicroIsolationStates{
   spFilesColumns:any[]
-  columns:any[];
+  EncryptedFilesColumns:any[];
   encryptModalVisible: boolean,
   decryptModalVisible: boolean,
   currentRecord: any; // 存储当前选中的行数据
@@ -61,35 +58,6 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
         {
           title: "UUID",
           dataIndex: 'uuid', key: 'uuid',
-          // onFilter: (values: string, record: any) => record.uuid.includes(values),
-          // filterDropdown: ({
-          //     setSelectedKeys,
-          //     selectedKeys,
-          //     confirm,
-          //     clearFilters,
-          // }: FilterDropdownProps) => (
-          //     <div style={{ padding: 8 }}>
-          //         <Input
-          //             autoFocus
-          //             placeholder="搜索..."
-          //             value={selectedKeys[0]}
-          //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          //             onPressEnter={() => confirm()}
-          //             style={{ width: 188, marginBottom: 8, display: 'block' }}
-          //         />
-          //         <Button
-          //             onClick={() => confirm()}
-          //             size="small"
-          //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-          //         >
-          //             搜索
-          //         </Button>
-          //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-          //             重置
-          //         </Button>
-          //     </div>
-          // ),
-          // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
   
           render: (text: string) => (
               // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
@@ -115,7 +83,13 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           title: '操作',
           key: 'operation',
           render: (text:string, record:any) => (
-            <Button onClick={() => this.showEncryptModal(record)}>隔离</Button>
+            <Button
+                style={{
+                  fontWeight: 'bold', padding: '0 0',
+                  border: 'transparent',
+                  backgroundColor: 'transparent',
+                }}
+                onClick={() => this.showEncryptModal(record)}>隔离</Button>
           ),
         }
         
@@ -123,7 +97,7 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
       decryptModalVisible: false,
       encryptModalVisible: false,
       currentRecord: {}, // 存储当前选中的行数据
-      columns: [
+      EncryptedFilesColumns: [
         {
           title: 'ID',
           dataIndex: 'id',
@@ -132,50 +106,42 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
         {
           title: "UUID",
           dataIndex: 'uuid', key: 'uuid',
-          // onFilter: (values: string, record: any) => record.uuid.includes(values),
-          // filterDropdown: ({
-          //     setSelectedKeys,
-          //     selectedKeys,
-          //     confirm,
-          //     clearFilters,
-          // }: FilterDropdownProps) => (
-          //     <div style={{ padding: 8 }}>
-          //         <Input
-          //             autoFocus
-          //             placeholder="搜索..."
-          //             value={selectedKeys[0]}
-          //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          //             onPressEnter={() => confirm()}
-          //             style={{ width: 188, marginBottom: 8, display: 'block' }}
-          //         />
-          //         <Button
-          //             onClick={() => confirm()}
-          //             size="small"
-          //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-          //         >
-          //             搜索
-          //         </Button>
-          //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-          //             重置
-          //         </Button>
-          //     </div>
-          // ),
-          // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-  
-          render: (text: string) => (
-              // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-              <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-                  <Button style={{
-                      fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-                      padding: '0 0'
-                  }}>{text.slice(0, 5)}</Button>
-              </Link>
+          render: (text: string, record: any) => (
+              <div>
+                <div>
+                  <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Button style={{
+                      fontWeight: 'bold',
+                      border: 'transparent',
+                      backgroundColor: 'transparent',
+                      color: '#4086FF',
+                      padding: '0 0',
+                    }}>
+                      <Tooltip title={record.uuid}>
+                        <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                          {record.uuid || '-'}
+                        </div>
+                      </Tooltip>
+                    </Button>
+                  </Link>
+                </div>
+                <div style={{
+                  fontSize: 'small', // 字体更小
+                  background: '#f0f0f0', // 灰色背景
+                  padding: '2px 4px', // 轻微内边距
+                  borderRadius: '2px', // 圆角边框
+                  display: 'inline-block', // 使得背景色仅围绕文本
+                  marginTop: '4px', // 上边距
+                }}>
+                  <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agent_ip}
+                </div>
+              </div>
           ),
         },
         {
           title: '加密密钥',
-          dataIndex: 'encrypt_key',
-          key: 'encrypt_key',
+          dataIndex: 'aes_key',
+          key: 'aes_key',
         },
         {
           title: '原文件文件名',
@@ -184,8 +150,8 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
         },
         {
           title: '原文件文件路径',
-          dataIndex: 'origin_file_path',
-          key: 'origin_file_path',
+          dataIndex: 'origin_filepath',
+          key: 'origin_filepath',
         },
         {
           title: '加密文件的文件名',
@@ -194,14 +160,22 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
         },
         {
           title: '加密文件的文件路径',
-          dataIndex: 'encrypted_file_path',
-          key: 'encrypted_file_path',
+          dataIndex: 'encrypted_filepath',
+          key: 'encrypted_filepath',
         },
         {
           title: '操作',
           key: 'operation',
           render: (text:string, record:any) => (
-            <Button onClick={() => this.showDecryptModal(record)}>解除隔离</Button>
+            <Button
+                style={{
+                  fontWeight: 'bold', padding: '0 0',
+                  border: 'transparent',
+                  backgroundColor: 'transparent',
+                  // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                  // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                }}
+                onClick={() => this.showDecryptModal(record)}>解除隔离</Button>
           ),
         }
         
@@ -335,7 +309,6 @@ renderEncryptModal=()=>{
 }
 
 
-
 // // 新增 - 提交表单进行文件隔离
 // onEncryptFinish = async (values:any) => {
 //   try {
@@ -406,11 +379,6 @@ renderEncryptModal=()=>{
                               currentPanel={"spFileslist"}
                               searchColumns={['uuid', 'origin_filename']}
                           />
-                          {/*<FetchDataForElkeidTable */}
-                          {/*apiEndpoint="http://localhost:5000/api/FetchSpFile" */}
-                          {/*columns={this.state.spFilesColumns} */}
-                          {/*timeColumnIndex={[]}*/}
-                          {/*currentPanel={"spFileslist"} />*/}
                           <Table dataSource={initialData} columns={this.state.spFilesColumns} />
 
                         </Card>
@@ -420,20 +388,15 @@ renderEncryptModal=()=>{
                             <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>隔离文件列表</h2>
                           </div>
                           <DataDisplayTable
-                              key={"MicroIsolationlist"}
+                              key={"isolate"}
                               externalDataSource={isolationOriginData}
-                              apiEndpoint="http://localhost:5000/api/MicroIsolationlist/all"
+                              apiEndpoint="http://localhost:5000/api/isolate/all"
                               timeColumnIndex={[]}
-                              columns={this.state.columns}
-                              currentPanel={"MicroIsolationlist"}
+                              columns={this.state.EncryptedFilesColumns}
+                              currentPanel={"isolate"}
                               searchColumns={['uuid', 'encrypted_filename']}
                           />
-                          {/*<FetchDataForElkeidTable */}
-                          {/*apiEndpoint="http://localhost:5000/api/MicroIsolationlist" */}
-                          {/*columns={this.state.columns} */}
-                          {/*timeColumnIndex={[]}*/}
-                          {/*currentPanel={"MicroIsolationlist"} />*/}
-                          <Table dataSource={initialData} columns={this.state.columns} />
+                          {/*<Table dataSource={initialData} columns={this.state.EncryptedFilesColumns} />*/}
 
                         </Card>
 

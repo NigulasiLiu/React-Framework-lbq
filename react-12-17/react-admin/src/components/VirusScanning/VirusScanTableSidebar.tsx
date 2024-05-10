@@ -91,12 +91,12 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps,V
                             <h2 style={{ fontSize:'16px',fontWeight: 'bold', marginLeft: '0px'}}>全部扫描任务</h2>
                         </div>
                         <div style={{ maxWidth: sidebartablewidth, width: '100%', margin: '0 auto'}}>
-                            <FetchDataForElkeidTable
-                                apiEndpoint="http://localhost:5000/api/vulnerdetailpage"
-                                timeColumnIndex={['foundtime']}
-                                columns={virusscannigAllTasksColumns}
-                                currentPanel="virusscanninglargesidebar"
-                            />
+                            {/*<FetchDataForElkeidTable*/}
+                            {/*    apiEndpoint="http://localhost:5000/api/vulnerdetailpage"*/}
+                            {/*    timeColumnIndex={['foundtime']}*/}
+                            {/*    columns={virusscannigAllTasksColumns}*/}
+                            {/*    currentPanel="virusscanninglargesidebar"*/}
+                            {/*/>*/}
                         </div>
                     </Row>
                 </Card>

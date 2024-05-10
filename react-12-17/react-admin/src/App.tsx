@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, notification } from 'antd';
+import {SmileOutlined} from '@ant-design/icons';
 import umbrella from 'umbrella-storage';
 import { useAlita } from 'redux-alita';
 import Routes from './routes';
@@ -38,59 +39,44 @@ function handleResize(handler: (isMobile: boolean) => void) {
 }
 
 function openFNotification() {
-    // const openNotification = () => {
-    //     notification.open({
-    //         message: '博主-yezihaohao',
-    //         description: (
-    //             <div>
-    //                 <p>
-    //                     GitHub地址：
-    //                     <a
-    //                         href="https://github.com/yezihaohao"
-    //                         target="_blank"
-    //                         rel="noopener noreferrer"
-    //                     >
-    //                         https://github.com/yezihaohao
-    //                     </a>
-    //                 </p>
-    //                 <p>
-    //                     博客地址：
-    //                     <a
-    //                         href="https://yezihaohao.github.io/"
-    //                         target="_blank"
-    //                         rel="noopener noreferrer"
-    //                     >
-    //                         https://yezihaohao.github.io/
-    //                     </a>
-    //                 </p>
-    //             </div>
-    //         ),
-    //         icon: <SmileOutlined style={{ color: 'red' }} />,
-    //         duration: 0,
-    //     });
-    //     umbrella.setLocalStorage('hideBlog', true);
-    // };
-    // const storageFirst = umbrella.getLocalStorage('hideBlog');
-    // if (!storageFirst) {
-    //     openNotification();
-    // }
+    const openNotification = () => {
+        notification.open({
+            message: '博主-yezihaohao',
+            description: (
+                <div>
+                    <p>
+                        GitHub地址：
+                        <a
+                            href="https://github.com/yezihaohao"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            https://github.com/yezihaohao
+                        </a>
+                    </p>
+                    <p>
+                        博客地址：
+                        <a
+                            href="https://yezihaohao.github.io/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            https://yezihaohao.github.io/
+                        </a>
+                    </p>
+                </div>
+            ),
+            icon: <SmileOutlined style={{ color: 'red' }} />,
+            duration: 0,
+        });
+        umbrella.setLocalStorage('hideBlog', true);
+    };
+    const storageFirst = umbrella.getLocalStorage('hideBlog');
+    if (!storageFirst) {
+        openNotification();
+    }
 }
 
-/**
- * 获取服务端异步菜单
- * @param handler 执行回调
- */
-// function fetchSmenu(handler: any) {
-//     const setAlitaMenu = (menus: any) => {
-//         handler(menus);
-//         // this.props.setAlitaState({ stateName: 'smenus', data: menus });
-//     };
-//     setAlitaMenu(umbrella.getLocalStorage('smenus') || []);
-//     fetchMenu().then((smenus) => {
-//         setAlitaMenu(smenus);
-//         umbrella.setLocalStorage('smenus', smenus);
-//     });
-// }
 
 function App(props: AppProps){
     const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -106,17 +92,18 @@ function App(props: AppProps){
         setAlita('responsive', { isMobile: checkIsMobile() });
 
         handleResize((isMobile: boolean) => setAlita('responsive', { isMobile }));
-        openFNotification();
+        // openFNotification();
         //fetchSmenu((smenus: any[]) => setAlita('smenus', smenus));去除异步菜单
     }, [setAlita]);
 
     function toggle() {
         setCollapsed(!collapsed);
     }
+    const isLogged = checkLogin(); // 直接检查登录状态
     return (
         <DataManager>
         <Layout>
-            {!responsive.isMobile && checkLogin(auth.permissions) && (
+            {!responsive.isMobile && isLogged && (
                 <SiderCustom collapsed={collapsed} />
             )}
             {/* <ThemePicker /> */}

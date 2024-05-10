@@ -366,48 +366,6 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                       hostCount, vulnHostCount,
                       '无风险主机', '存在高危基线主机', blLinuxHostCount + blWindowsHostCount,
                       blLinuxHostCount, blWindowsHostCount)}
-
-                    {/* <Row gutter={0}>
-                              <Col span={5}>
-                              <CustomPieChart
-                              data={alertDataTwo}
-                              innerRadius={54}
-                              deltaRadius={8}
-                              outerRadius={80}
-                              cardWidth={200}
-                              cardHeight={200}
-                              hasDynamicEffect={true}
-                              />
-                              </Col>
-                              <Col span={5}>
-                              <CustomPieChart
-                              data={alertDataThree}
-                              innerRadius={54}
-                              deltaRadius={8}
-                              outerRadius={80}
-                              cardWidth={200}
-                              cardHeight={200}
-                              hasDynamicEffect={true}
-                              />
-                              </Col>
-                              <Col span={5}>
-                               <CustomPieChart
-                              data={alertDataFour}
-                              innerRadius={54}
-                              deltaRadius={8}
-                              outerRadius={80}
-                              cardWidth={200}
-                              cardHeight={200}
-                              hasDynamicEffect={true}
-                              />
-                              </Col>
-                              <Col span={2} > </Col>
-                              <Col span={6} >
-                              <div style={{ transform: 'translateY(40px)' }}>
-                                  <StatusPanel statusData={riskDta} orientation="vertical"/>
-                              </div>
-                              </Col>
-                              </Row> */}
                   </Card>
                 </Col>
               </Row>

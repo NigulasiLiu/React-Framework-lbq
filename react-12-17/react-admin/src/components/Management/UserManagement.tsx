@@ -58,7 +58,14 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
             render: (text: string, record: any) => (
                 // 在 render 方法中返回包含按钮的元素
                 <Link to="/app/detailspage" target="_blank">
-                    <Button type="link" className='custom-link-button'>{text}</Button>
+                    <Button
+                        style={{
+                            fontWeight: 'bold', padding: '0 0',
+                            border: 'transparent',
+                            backgroundColor: 'transparent',
+                            // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                            // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                        }}>{text}</Button>
                 </Link>)
         }
     ];

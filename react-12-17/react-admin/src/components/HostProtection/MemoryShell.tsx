@@ -286,7 +286,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                 <Col md={24}>
                                     {constRenderTable(memHorseOriginData, '内存马捕获', ['alert_time'],
-                                        this.MemoryHorseColumns, 'memHorseList', 'http://localhost:5000/api/memoryshell/all', ['uuid'], this.showModal, 'POC检测')}
+                                        this.MemoryHorseColumns, 'memHorseList', 'http://localhost:5000/api/memoryshell/all', ['uuid'], this.showModal, '内存马检测')}
                                 </Col>
                             </Row>
                         </div>

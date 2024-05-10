@@ -75,17 +75,29 @@ export interface DataContextType {
 
   vulnMetaData_uuid: MetaDataResult;
   last7VulValue: number[];
+
+  last7brutForceValue:number[];
+  last7privValue:number[];
+  last7defenceForceValue:number[];
+
+  last7VirusValue:number[];
+
+  last7HoneyPotValue:number[];
+
   //vulnFilteredData: Map<string, FilteredDataResult_new[]>;
   transformedData: FilteredDataResult_new[],
-
-
-
 
 
   hostCount: number;
   vulnHostCount: number;
   blLinuxHostCount: number;
   blWindowsHostCount: number;
+
+  TTPsHostCount: number;
+  VirusHostCount: number;
+  HoneyPotHostCount: number;
+
+
 
   blLinuxCheckNameCount: number;
   blWindowsCheckNameCount: number;
@@ -158,8 +170,8 @@ const DataManager: React.FC = ({ children }) => {
 
     'http://localhost:5000/api/users/all':setUsersOriginData,
 
-    "http://localhost:5000/api/FetchSpFile/all":setSpFilesOriginData,
-    "http://localhost:5000/api/MicroIsolationlist/all":setIsolationOriginData,
+    "http://localhost:5000/api/virus/all":setSpFilesOriginData,
+    "http://localhost:5000/api/isolate/all":setIsolationOriginData,
     // 添加其他API端点和对应的设置函数
   };
 
@@ -204,8 +216,9 @@ const DataManager: React.FC = ({ children }) => {
 
 
     refreshDataFromAPI('http://localhost:5000/api/users/all');
-    refreshDataFromAPI("http://localhost:5000/api/FetchSpFile/all");
-    refreshDataFromAPI("http://localhost:5000/api/MicroIsolationlist/all");
+    refreshDataFromAPI("http://localhost:5000/api/isolate/all");
+
+    refreshDataFromAPI("http://localhost:5000/api/virus/all");
 
     
     // const fetchData = async () => {
@@ -310,19 +323,40 @@ const DataManager: React.FC = ({ children }) => {
   const blWindowsNeedAdjustmentItemCount_pass = windowsBaseLineCheckMetaData_adjustment_requirement.tupleCount;
 
 
-
-
   //漏洞 信息
   const vulnMetaData_uuid = useExtractOrigin('uuid', vulnOriginData);
   const vulnMetaData_scanTime = useExtractOrigin('scanTime', vulnOriginData);
-  const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime)
   const transformedData = useTransformedData(vulnOriginData);
   //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
   //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
+  //last7信息
+  const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime)
+  const brutForce_scan_time = useExtractOrigin('scan_time', bruteforceTTPsOriginData);
+  const priv_atk_Time = useExtractOrigin('atk_time', privilegeescalationTTPsOriginData);
+  const defence_atk_Time = useExtractOrigin('atk_time', defenseavoidanceTTPsOriginData);
+  const last7brutForceValue = getPastSevenDaysAlerts(brutForce_scan_time);
+  const last7privValue = getPastSevenDaysAlerts(priv_atk_Time);
+  const last7defenceForceValue = getPastSevenDaysAlerts(defence_atk_Time);
 
-  const hostCount = agentMetaData_status.tupleCount;
+  const honeypot_atk_Time = useExtractOrigin('atk_time', honeyPotOriginData);
+  const last7HoneyPotValue = getPastSevenDaysAlerts(honeypot_atk_Time);
+
+  const last7VirusValue = [1];
+  //主机数量
+  const hostCount = agentOriginData?.flat().length;
   const vulnHostCount = vulnMetaData_uuid.typeCount.size;
+
+  //告警相关，首先计算各类告警涉及到的主机数量
+  const TTPsMetaData_uuid = useExtractOrigin('uuid',
+      bruteforceTTPsOriginData.concat(privilegeescalationTTPsOriginData).concat(defenseavoidanceTTPsOriginData));
+
+  const VirusMetaData_uuid = useExtractOrigin('uuid', vulnOriginData);
+  const HoneyPotMetaData_uuid = useExtractOrigin('uuid', honeyPotOriginData);
+
+  const TTPsHostCount = TTPsMetaData_uuid.typeCount.size;
+  const VirusHostCount = VirusMetaData_uuid.typeCount.size;
+  const HoneyPotHostCount = HoneyPotMetaData_uuid.typeCount.size;
 
 
   //top5表单
@@ -331,9 +365,6 @@ const DataManager: React.FC = ({ children }) => {
   const topFiveProductCounts = convertAndFillData(topFiveProductCountsArray, templateData);
   const topFiveUserCounts = convertAndFillData(topFiveUserCountsArray, templateData);
   const topFiveProcessCounts = convertAndFillData(topFiveProcessCountsArray, templateData);
-
-
-
 
 
 
@@ -371,13 +402,25 @@ const DataManager: React.FC = ({ children }) => {
 
       //vulnOriginDataReconstruct,
       vulnMetaData_uuid,//vulnFilteredData,
+
       last7VulValue,
+      last7brutForceValue,
+      last7privValue,
+      last7defenceForceValue,
+      last7VirusValue,
+      last7HoneyPotValue,
+
       transformedData,
 
       hostCount,
       vulnHostCount,
       blLinuxHostCount,
       blWindowsHostCount,
+
+      TTPsHostCount,
+      VirusHostCount,
+      HoneyPotHostCount,
+
       blLinuxNeedAdjustmentItemCount,
       blWindowsNeedAdjustmentItemCount,
       blLinuxNeedAdjustmentItemCount_pass,
