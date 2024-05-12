@@ -110,6 +110,12 @@ export interface DataContextType {
     agentMEMuseMetaData: MetaDataResult;
     agentAVGMEMUse: string;
 
+    bruteforceTTPsMetaData_uuid:MetaDataResult;
+    privilegeescalationTTPsMetaData_uuid:MetaDataResult;
+    defenseavoidanceTTPsMetaData_uuid:MetaDataResult;
+    VirusMetaData_uuid:MetaDataResult;
+    HoneyPotMetaData_uuid:MetaDataResult;
+
     //agentOriginData_2:Map<string, AgentInfoType>|undefined;
 };
 export const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -180,7 +186,7 @@ const DataManager: React.FC = ({ children }) => {
             const setDataFunction = setDataFunctions[apiEndpoint];
             if (setDataFunction) {
                 setDataFunction(data); // 更新状态
-                message.success(apiEndpoint + ' Data refreshed successfully');
+                // message.success(apiEndpoint + ' Data refreshed successfully');
             } else {
                 console.error('No matching function found for the API endpoint');
             }
@@ -326,6 +332,9 @@ const DataManager: React.FC = ({ children }) => {
     //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
     //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
+    //病毒扫描
+    const virusScanMetaData_uuid = useExtractOrigin('uuid', virusOriginData);
+
     //last7信息
     const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime);
     const brutForce_scan_time = useExtractOrigin('scan_time', bruteforceTTPsOriginData);
@@ -350,7 +359,7 @@ const DataManager: React.FC = ({ children }) => {
     const privilegeescalationTTPsMetaData_uuid = useExtractOrigin('uuid', privilegeescalationTTPsOriginData);
     const defenseavoidanceTTPsMetaData_uuid = useExtractOrigin('uuid', defenseavoidanceTTPsOriginData);
 
-    const VirusMetaData_uuid = useExtractOrigin('uuid', vulnOriginData);
+    const VirusMetaData_uuid = useExtractOrigin('uuid', virusOriginData);
     const HoneyPotMetaData_uuid = useExtractOrigin('uuid', honeyPotOriginData);
 
     const VirusHostCount = VirusMetaData_uuid.typeCount.size;
@@ -452,6 +461,13 @@ const DataManager: React.FC = ({ children }) => {
 
             blLinuxCheckNameCount,
             blWindowsCheckNameCount,
+
+            bruteforceTTPsMetaData_uuid,
+            privilegeescalationTTPsMetaData_uuid,
+            defenseavoidanceTTPsMetaData_uuid,
+            VirusMetaData_uuid,
+            HoneyPotMetaData_uuid,
+
         }}>
             {children}
         </DataContext.Provider>

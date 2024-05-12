@@ -1,6 +1,3 @@
-/**
- * Created by hao.cheng on 2017/4/16.
- */
 import axios from 'axios';
 import { get, post } from './tools';
 import * as config from './config';

@@ -2,42 +2,78 @@
 import axios from 'axios';
 import { GenericDataItem, AgentInfoType } from '../Columns'
 import { message, } from 'antd'
+import umbrella from 'umbrella-storage';
 
 interface FetchDataParams {
   apiEndpoint: string;
-  // sqlTableName: string;
-  // fields?: string[];
+  requestType?: 'get' | 'post' | 'delete'; // 可选请求类型为 get、post 和 delete
+  requestParams?: any;
 }
 
-export const fetchDataFromAPI = async ({ apiEndpoint }: FetchDataParams): Promise<any[]> => {
-  //let fieldsQuery = fields && fields.length > 0 ? fields.join(',') : '*';
-  let endpoint = `${apiEndpoint}`;//?table=${sqlTableName}&fields=${fieldsQuery}
+export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', requestParams }: FetchDataParams): Promise<any[]> => {
+  let endpoint = `${apiEndpoint}`;
 
-  // const response = await axios.get(endpoint, {
-  //     headers: {
-  //         Authorization: `aa.bb.cc` // 示例 JWT 令牌
-  //     }
-  // });
-  const response = await axios.get(endpoint);
-  if (response.data) {//&& response.data.status === 200，注意，当response包含message和status两个字段时，不能够用 && response.data.length > 0 判断，因为length属性以及不存在了
-    //const messageJsonString = JSON.stringify(response.data.message, null, 2);
-    //console.log("Received message"+endpoint+":", messageJsonString);
-    //message.info('data source:'+endpoint+' received successfully');
-    return response.data.message;
-    // const messageJsonString = JSON.stringify(response.data, null, 2);
-    // console.log("Received message:", messageJsonString);
-    // return response.data;
-  } else {
-    message.error('采集失败: ' + response.data.message);
+  // 从localStorage获取JWT
+  // const token1 = localStorage.getItem('jwt_token'); // 假设JWT存储在localStorage的'jwtToken'键下
+  const token = umbrella.getLocalStorage('jwt_token');
+  // 配置axios请求头部，包括JWT
+  const config = {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+    }
+  };
+  // try {
+  //   let response;
+  //   switch (requestType) {
+  //     case 'get':
+  //       // 发送 GET 请求
+  //       response = await axios.get(endpoint, config);
+  //       break;
+  //     case 'post':
+  //       // 发送 POST 请求
+  //       response = await axios.post(endpoint, requestParams, config);
+  //       break;
+  //     case 'delete':
+  //       // 发送 DELETE 请求
+  //       response = await axios.delete(endpoint, config);
+  //       break;
+  //     default:
+  //       throw new Error('Unsupported request type');
+  //   }
+  //
+  //   if (response.data && response.data.message) {
+  //     // 处理响应数据
+  //     return response.data.message;
+  //   } else {
+  //     // 处理无数据响应
+  //     message.error('采集失败: ' + (response.data.message || '未知错误'));
+  //   }
+  // } catch (error) {
+  //   // 处理请求错误
+  //   console.error('Request failed:', error);
+  //   message.error('请求错误: ' + error.message);
+  //   throw error;
+  // }
+
+  try {
+    const response = await axios.get(endpoint, config);
+    if (response.data && response.data.message) {
+      // 处理响应数据
+      return response.data.message;
+    } else {
+      // 处理无数据响应
+      message.error('采集失败: ' + (response.data.message || '未知错误'));
+    }
+  } catch (error) {
+    // 处理请求错误
+    console.error('Request failed:', error);
+    message.error('请求错误: ' + error.message);
+    throw error;
   }
 
   throw new Error('No data received from endpoint');
 };
 
-export const buildRangeQueryParams = (startDate: string, endDate: string, timeColumnDataIndex: string) => {
-  // 构建查询字符串或参数对象
-  return `/query_time?field=${timeColumnDataIndex}&start_time=${startDate}&end_time=${endDate}`;
-};
 // processData 函数
 export const processData = (data: GenericDataItem[], timeColumnIndex?: string[]): GenericDataItem[] => {
   return data.map(item => {
@@ -80,50 +116,7 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
   });
 };
 
-export const processVulnData = (data: GenericDataItem[]): GenericDataItem[] => {
-  return data.map(item => {
-    // 处理嵌套的JSON数据
-    if (item.vul_detection_exp_result) {
-      item.vul_detection_exp_result = item.vul_detection_exp_result.map((expItem: any) => {
-        return {
-          ...expItem,
-          bug_exp: expItem.bug_exp,
-        };
-      });
-    }
 
-    if (item.vul_detection_finger_result) {
-      item.vul_detection_finger_result = item.vul_detection_finger_result.map((fingerItem: any) => {
-        return {
-          ...fingerItem,
-          finger: fingerItem.finger,
-        };
-      });
-    }
-
-    if (item.vul_detection_poc_result) {
-      item.vul_detection_poc_result = item.vul_detection_poc_result.map((pocItem: any) => {
-        return {
-          ...pocItem,
-          bug_poc: pocItem.bug_poc,
-        };
-      });
-    }
-    return item;
-  });
-};
-
-export const filterDataByTimeRange = (
-  processedData: GenericDataItem[],
-  timeColumnIndex: string,
-  start_time: number,
-  end_time: number
-): GenericDataItem[] => {
-  return processedData.filter(item => {
-    const itemTime = parseFloat(item[timeColumnIndex]);
-    return itemTime >= start_time && itemTime <= end_time;
-  });
-};
 
 
 export const handleExport = (externalDataSource: any[], currentPanel: any,selectedRowKeys: string | any[]) => {
@@ -195,11 +188,20 @@ export const handleDelete = (currentPanel: string, selectedRowKeys: any[]) => {
   };
 
   const apiUrl = panel_to_delete_api[currentPanel]; // 获取对应面板的 API 地址
-
+  const token = umbrella.getLocalStorage('jwt_token');
+  // 配置axios请求头部，包括JWT
+  const config = {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+    }
+  };
   // 构造 DELETE 请求
   const deleteRequests = selectedRowKeys.map((key: string) => {
     const url = `${apiUrl}?uuid=${key}`; // 构造完整的 URL，包括选定行的键值
-    return axios.delete(url)
+    return axios.delete(url,config)
+        .then(() => {
+          message.success(`成功删除条目: ${key}`); // 输出成功删除的消息
+        })
         .catch(error => {
           message.error(`Failed to delete item ${key}: ${error.message}`); // 输出错误信息
           return Promise.reject(error); // 将错误继续传递给 Promise 链
@@ -222,3 +224,40 @@ export const convertUnixTime = (timestamp: number): string => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
+export const processVulnData = (data: GenericDataItem[]): GenericDataItem[] => {
+  return data.map(item => {
+    // 处理嵌套的JSON数据
+    if (item.vul_detection_exp_result) {
+      item.vul_detection_exp_result = item.vul_detection_exp_result.map((expItem: any) => {
+        return {
+          ...expItem,
+          bug_exp: expItem.bug_exp,
+        };
+      });
+    }
+
+    if (item.vul_detection_finger_result) {
+      item.vul_detection_finger_result = item.vul_detection_finger_result.map((fingerItem: any) => {
+        return {
+          ...fingerItem,
+          finger: fingerItem.finger,
+        };
+      });
+    }
+
+    if (item.vul_detection_poc_result) {
+      item.vul_detection_poc_result = item.vul_detection_poc_result.map((pocItem: any) => {
+        return {
+          ...pocItem,
+          bug_poc: pocItem.bug_poc,
+        };
+      });
+    }
+    return item;
+  });
+};
+
+export const buildRangeQueryParams = (startDate: string, endDate: string, timeColumnDataIndex: string) => {
+  // 构建查询字符串或参数对象
+  return `/query_time?field=${timeColumnDataIndex}&start_time=${startDate}&end_time=${endDate}`;
+};

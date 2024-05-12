@@ -119,7 +119,7 @@ class DataCard extends React.Component<DataCardProps> { // Use the interface her
     const cardStyle = {
       height: height || '75px',
       width: width || '110px',
-      minWidth: 110,
+      minWidth: width,
       maxWidth: width,
       minHeight: 75,
       maxHeight: height,
@@ -132,23 +132,24 @@ class DataCard extends React.Component<DataCardProps> { // Use the interface her
       ...borderStyle, // 添加边缘线样式
     };
     return (
-      <Card bordered={false} style={cardStyle}>
-        <Row>
-          <Col pull={2} span={22}>
+      <Card style={cardStyle}>
+        <Row justify="space-between" align="middle">
+          <Col span={navigate?22:24} style={{marginLeft:'0px',textAlign: 'left',}}>
             <CustomValueStatistic
               title={title}
               value={value}
               values={valueItem || []}
             />
           </Col>
-          <Col pull={0} span={2} style={{ position: 'relative', top: '-3.5px', left: '-12px' }}>
-            <Button
-              //type="link"
-              style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
-              icon={<RightOutlined />}
-              onClick={() => navigate ? this.handlePanelClick(panelId) : this.goToPanel(panelId)}
-            />
-            {/* <div style={{ display: 'flex' }}>
+          <Col span={navigate?1:0}/>
+          {navigate&&(
+              <Col span={1} style={{ marginRight:'0px',textAlign: 'right',position: 'relative', top: '-20px', left: '-5px', }}>
+                <Button
+                    style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#88878C' }}
+                    icon={<RightOutlined />}
+                    onClick={() => navigate ? this.handlePanelClick(panelId) : this.goToPanel(panelId)}
+                />
+                {/* <div style={{ display: 'flex' }}>
               {additionalStatistics && additionalStatistics.map((item, index) => (
                 <div key={index} style={{
                   backgroundColor: item.backgroundColor,
@@ -165,7 +166,7 @@ class DataCard extends React.Component<DataCardProps> { // Use the interface her
                 </div>
               ))}
             </div> */}
-          </Col>
+              </Col>)}
         </Row>
       </Card>
     );

@@ -42,6 +42,7 @@ interface ElkeidDisplayTableProps {
     expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
     keyIndex?: number;
 
+    handleReload?: () => void;
 }
 
 interface ElkeidDisplayTableState {
@@ -456,11 +457,7 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                                 }}
                                                 // onClick={() => this.handleFetchLatestData('', '', '')}>
 
-                                                onClick={() => {
-                                                    // 执行一些操作，例如更新状态
-                                                    console.log("trigger:"+this.state.triggerUpdate)
-                                                    this.setState({ triggerUpdate: this.state.triggerUpdate+1 })
-                                                }}>
+                                                onClick={this.props.handleReload}>
                                                 采集最新数据
                                             </Button>
 

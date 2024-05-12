@@ -1,6 +1,5 @@
 import React from 'react';
 import { Statistic, Row, Col, Card, Button, Menu } from 'antd';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 type AlertListProps = {
@@ -89,57 +88,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
         };
     }
     columns: any;
-    onSelectChange = (selectedRowKeys: React.Key[]) => {
-        this.setState({
-            selectedRowKeys,
-            areRowsSelected: selectedRowKeys.length > 0,
-        });
-    };
-
-
-    renderRowSelection = () => {
-        return {
-            selectedRowKeys: this.state.selectedRowKeys,
-            onChange: (selectedRowKeys: React.Key[]) => {
-                this.setState({ selectedRowKeys });
-            },
-            // Add other rowSelection properties and methods as needed
-        };
-    };
-    onDelete = (record: any, index: number) => {
-        const dataSource = [...this.state.dataSource];
-        dataSource.splice(index, 1);
-        this.setState({ deleteIndex: record.key });
-        setTimeout(() => {
-            this.setState({ dataSource });
-        }, 500);
-    };
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: '1',
-            alarmName: '网络连接失败',
-            affectedAsset: '路由器X',
-            alarmType: '恶意破坏',
-            level: '高风险',
-            status: '未处理',
-            occurrenceTime: '2023-12-28 08:00:00',
-            action: '查看详情'
-        };
-        this.setState({
-            dataSource: [newData, ...dataSource],
-            count: count + 1,
-        });
-    };
-
-
     render() {
-        // const statusData: StatusItem[] = [
-        // { color: '#EA635F', label: '紧急 ', value: 7 },
-        // { color: '#FEC746', label: '中风险 ', value: 2 },
-        // { color: '#846CCE', label: '高风险 ', value: 5 },
-        // { color: '#468DFF', label: '低风险 ', value: 1 },
-        // ];
         return (
             <DataContext.Consumer>
                 {(context: DataContextType | undefined) => {
@@ -154,13 +103,14 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                         hostCount,
                         HoneyPotHostCount,
                         TTPsHostCount, vulnOriginData,
+                        VirusHostCount,
                     } = context;
 
                     // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
                     const alertHostPieChartData = [
                         { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: 40, color: '#846CCE' },
+                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 40 : VirusHostCount, color: '#846CCE' },
                     ];
                     return (
                         <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>

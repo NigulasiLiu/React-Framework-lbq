@@ -23,13 +23,15 @@ interface FetchAPIDataTableProps {
   onSelectedRowKeysChange?: (selectedRowKeys: React.Key[]) => void;
   keyIndex?: number;
   search?:string[];
+
+  handleReload?: () => void;
 }
 
 
 export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
   table_type, 
   apiEndpoint, columns, timeColumnIndex, currentPanel, childrenColumnName, indentSize, expandedRowRender, 
-  onSelectedRowKeysChange, keyIndex, search, ...otherProps }) => {
+  onSelectedRowKeysChange, keyIndex, search, handleReload,...otherProps }) => {
 
   const context = useContext(DataContext);
   const [data, setData] = useState<any[]>([]);
@@ -79,6 +81,7 @@ export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
         childrenColumnName={childrenColumnName}
         expandedRowRender={expandedRowRender}
       //indentSize={indentSize}
+        handleReload={handleReload}
       />
     </div>
   );

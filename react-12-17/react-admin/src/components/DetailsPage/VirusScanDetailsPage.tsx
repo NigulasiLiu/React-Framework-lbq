@@ -1,12 +1,10 @@
 // HostAlertList.tsx
 import React from 'react';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { Menu, Row, Col, Card, Statistic, Typography, Button, Progress } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
 
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import { virusscandetailscolumns } from '../Columns'; // 假设列配置从某个文件导入
-import CustomPieChart from '../CustomAntd/CustomPieChart';
+import { baselineDetectColumns, virusscandetailscolumns } from '../Columns';
+import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 
 
 const { Text } = Typography;
@@ -190,11 +188,20 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
               <Col md={2} />
             </Row>
             <Row style={{ marginTop: '20px' }}>
-              <FetchDataForElkeidTable
-                apiEndpoint="http://localhost:5000/api/files/diskinfo"
-                timeColumnIndex={[]}
-                columns={virusscandetailscolumns}
-                currentPanel="hostOverviewdiskinfolist"
+              {/*<FetchDataForElkeidTable*/}
+              {/*  apiEndpoint="http://localhost:5000/api/files/diskinfo"*/}
+              {/*  timeColumnIndex={[]}*/}
+              {/*  columns={virusscandetailscolumns}*/}
+              {/*  currentPanel="hostOverviewdiskinfolist"*/}
+              {/*/>*/}
+              <DataDisplayTable
+                  key={'hostOverviewdiskinfolist'}
+                  apiEndpoint={'http://localhost:5000/api/files/diskinfo'}
+                  externalDataSource={[]}
+                  timeColumnIndex={[]}
+                  columns={virusscandetailscolumns}
+                  currentPanel={"hostOverviewdiskinfolist"}
+                  searchColumns={['uuid', 'check_name']}
               />
             </Row>
           </Card>

@@ -335,10 +335,10 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                 >
                   <Row>
                     <Row style={{ width: '100%', paddingBottom: '0px', border: 'solid 0px #E5E8EF' }}>
-                      <Form.Item label="将要下发任务的主机"
+                      <Form.Item label={<span style={{fontSize:'18px'}}>将要下发任务的主机</span>}
                         name="description">
                         <p style={{
-                          margin: '0px auto',
+                          margin: '0px auto',fontSize:'18px',
                           display: 'flex',
                           //justifyContent: 'center', // 水平居中
                           alignItems: 'center', // 垂直居中

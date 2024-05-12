@@ -168,7 +168,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         ]}
                         panelId="/app/RiskManagement/VulnerabilityList"
                         height="75px"
-                        width="210px"
+                        width={"220px"}
                         backgroundColor="#ffffff"
                         navigate={true}
                         showTopBorder={false}
@@ -556,10 +556,16 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                     fontSize: '14px',
                                                                     color: 'white',
                                                                 },
+                                                                {
+                                                                    value: 0,
+                                                                    backgroundColor: '#fff',
+                                                                    fontSize: '14px',
+                                                                    color: 'white',
+                                                                },
                                                             ]}
                                                             panelId="/app/threat-hunting"
                                                             height="75px"
-                                                            width="210px"
+                                                            width={"220px"}
                                                             backgroundColor="#ffffff"
                                                             navigate={true}
                                                             showTopBorder={false}
@@ -598,7 +604,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             ]}
                                                             panelId="/app/VirusScanning/VirusScanning"
                                                             height="75px"
-                                                            width="210px"
+                                                            width={"220px"}
                                                             backgroundColor="#ffffff"
                                                             navigate={true}
                                                             showTopBorder={false}
@@ -611,33 +617,33 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             value={honeyPotOriginData.flat().length}
                                                             valueItem={[
                                                                 {
-                                                                    value: '0',
-                                                                    backgroundColor: '#E53F3F',
+                                                                    value: 0,
+                                                                    backgroundColor: '#fff',
                                                                     fontSize: '14px',
                                                                     color: 'white',
                                                                 },
                                                                 {
                                                                     value: '0',
-                                                                    backgroundColor: '#846CCE',
+                                                                    backgroundColor: '#fff',
                                                                     fontSize: '14px',
                                                                     color: 'white',
                                                                 },
                                                                 {
                                                                     value: '0',
-                                                                    backgroundColor: '#FEC746',
+                                                                    backgroundColor: '#fff',
                                                                     fontSize: '14px',
                                                                     color: 'white',
                                                                 },
                                                                 {
                                                                     value: '0',
-                                                                    backgroundColor: '#468DFF',
+                                                                    backgroundColor: '#fff',
                                                                     fontSize: '14px',
                                                                     color: 'white',
                                                                 },
                                                             ]}
                                                             panelId="/app/RiskManagement/honeypot"
                                                             height="75px"
-                                                            width="210px"
+                                                            width={"220px"}
                                                             backgroundColor="#ffffff"
                                                             navigate={true}
                                                             showTopBorder={false}
@@ -927,7 +933,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 height="100px"
                                                                 width="155px"
                                                                 backgroundColor="#F6F7FB"
-                                                                navigate={true}
+                                                                navigate={false}
                                                                 showTopBorder={false}
                                                                 showBottomBorder={false}
                                                                 showLeftBorder={false}
@@ -942,7 +948,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             height="100px"
                                                             width="155px"
                                                             backgroundColor="#F6F7FB"
-                                                            navigate={true}
+                                                            navigate={false}
                                                             showTopBorder={false}
                                                             showBottomBorder={false}
                                                             showLeftBorder={false}
@@ -958,7 +964,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 height="100px"
                                                                 width="155px"
                                                                 backgroundColor="#F6F7FB"
-                                                                navigate={true}
+                                                                navigate={false}
                                                                 showTopBorder={false}
                                                                 showBottomBorder={false}
                                                                 showLeftBorder={false}
@@ -972,7 +978,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             height="100px"
                                                             width="155px"
                                                             backgroundColor="#F6F7FB"
-                                                            navigate={true}
+                                                            navigate={false}
                                                             showTopBorder={false}
                                                             showBottomBorder={false}
                                                             showLeftBorder={false}
@@ -985,7 +991,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                     </Row>
                                     <Row gutter={[12, 6]} style={{ marginTop: '9px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false} /*title="后端服务状态*/
+                                            <Card bordered={false}
                                                   style={{ fontWeight: 'bolder', width: '100%', height: 350 }}>
                                                 <div style={{
                                                     display: 'flex',

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { PwaInstaller } from '../widget';
 import { connectAlita } from 'redux-alita';
 import axios from 'axios';
 import { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router';
+import umbrella from 'umbrella-storage';
 
 const FormItem = Form.Item;
 
@@ -22,13 +23,10 @@ class Login extends React.Component<LoginProps> {
         const { auth, history } = this.props;
         // 检查auth.data是否存在，并且确保uid在更新后与之前不同
         if (auth.data && auth.data.uid && (!prevProps.auth.data || prevProps.auth.data.uid !== auth.data.uid)) {
-            localStorage.setItem('user', JSON.stringify(auth.data));
+            // localStorage.setItem('user', JSON.stringify(auth.data));
+            // umbrella.setLocalStorage('user',JSON.stringify(auth.data))
             history.push('/');
         }
-        // if (auth.data && auth.data.uid) {
-        //     localStorage.setItem('user', JSON.stringify(auth.data));
-        //     history.push('/');
-        // }
     }
 
     handleSubmit = async (values: any) => {
@@ -37,8 +35,13 @@ class Login extends React.Component<LoginProps> {
             password: values.password,
         };
 
+        const userInfo = requestBody.username;  // 假设用户信息在response.data.user中
+        // localStorage.setItem("user", userInfo);  // 存储用户信息到LocalStorage
+        umbrella.setLocalStorage("user", userInfo);
+        message.info("username:"+umbrella.getLocalStorage("user"));
         try {
-            const response = await axios.post('http://localhost:5000/login', requestBody);
+            const response = await axios.post('http://localhost:5000/api/login', requestBody);
+
             // 检查 response.data 是否符合预期格式和内容
             // if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
             //     // 更新状态和本地存储
@@ -54,9 +57,10 @@ class Login extends React.Component<LoginProps> {
             //     // 处理意外的响应或显示错误消息
             // }
             if (response.data && response.data.access_token) {
+                console.log("Received JWT:", response.data.access_token); // 输出接收到的JWT
                 // 存储JWT到localStorage
-                localStorage.setItem("jwt_token", response.data.access_token);
-
+                // localStorage.setItem("jwt_token", response.data.access_token);
+                umbrella.setLocalStorage("jwt_token", response.data.access_token)
                 // 更新redux状态
                 this.props.setAlitaState({
                     stateName: 'auth',
@@ -66,12 +70,13 @@ class Login extends React.Component<LoginProps> {
                 // 跳转到主页或其他适当页面
                 this.props.history.push('/app/Dashboard');
             } else {
-                // 处理错误情况
-                console.error('Error: Unexpected response data');
+                console.error('Error: Login unsuccessful', response.data.message);
+                message.error('登录失败: ' + response.data.message);
             }
         } catch (error) {
-            this.props.history.push('/app/Dashboard');
-            console.error('登录失败!--front', error);
+            console.error('登录请求失败', error);
+            message.error('登录请求异常: ' + error.message);
+            this.props.history.push('/login'); // 确保登录失败时用户留在登录页面
         }
     };
 

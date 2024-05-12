@@ -5,7 +5,6 @@ import VirusScanningTaskSidebar from './VirusScanTableSidebar';
 import VirusScanProcessSidebar from '../RiskManagement/ScanProcessSidebar';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { fimColumns, StatusItem, virusscanningColumns } from '../Columns';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -162,7 +161,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                 <LoadingOutlined style={{ fontSize: '3em' }} />
                             </div>); // 或者其他的加载状态显示
                     }
-                    const { virusOriginData } = context;
+                    const { virusOriginData,VirusHostCount } = context;
                     // this.props.pageWidth ? this.props.pageWidth : '1320'
                     return (
                         <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold', width: '100%' }}>
@@ -195,23 +194,23 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                     marginRight: '10px',
                                                                     marginBottom: '8px',
                                                                 }}>{currentTime}</span>
-                                                                <Link to="/app/create_virusscan_task" target="_blank">
-                                                                    <Button type="link"
-                                                                            style={{
-                                                                                backgroundColor: '#1664FF',
-                                                                                color: 'white',
-                                                                                marginRight: '10px',
-                                                                                transition: 'opacity 0.3s', // 添加过渡效果
-                                                                                opacity: 1, // 初始透明度
-                                                                            }}
-                                                                            onMouseEnter={(e) => {
-                                                                                e.currentTarget.style.opacity = 0.7;
-                                                                            }} // 鼠标进入时将透明度设置为0.5
-                                                                            onMouseLeave={(e) => {
-                                                                                e.currentTarget.style.opacity = 1;
-                                                                            }} // 鼠标离开时恢复透明度为1
-                                                                    >立即扫描</Button>
-                                                                </Link>
+                                                                {/*<Link to="/app/create_virusscan_task" target="_blank">*/}
+                                                                {/*    <Button type="link"*/}
+                                                                {/*            style={{*/}
+                                                                {/*                backgroundColor: '#1664FF',*/}
+                                                                {/*                color: 'white',*/}
+                                                                {/*                marginRight: '10px',*/}
+                                                                {/*                transition: 'opacity 0.3s', // 添加过渡效果*/}
+                                                                {/*                opacity: 1, // 初始透明度*/}
+                                                                {/*            }}*/}
+                                                                {/*            onMouseEnter={(e) => {*/}
+                                                                {/*                e.currentTarget.style.opacity = 0.7;*/}
+                                                                {/*            }} // 鼠标进入时将透明度设置为0.5*/}
+                                                                {/*            onMouseLeave={(e) => {*/}
+                                                                {/*                e.currentTarget.style.opacity = 1;*/}
+                                                                {/*            }} // 鼠标离开时恢复透明度为1*/}
+                                                                {/*    >创建病毒扫描任务</Button>*/}
+                                                                {/*</Link>*/}
                                                                 <Button
                                                                     style={{
                                                                         backgroundColor: '#1664FF',
@@ -227,22 +226,23 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                         e.currentTarget.style.opacity = 1;
                                                                     }} // 鼠标离开时恢复透明度为1
                                                                     onClick={this.toggleProcessSidebar}>扫描进度</Button>
-                                                                <Button style={{ marginLeft: '10px' }}
+                                                                <Button style={{ marginLeft: '0px' }}
                                                                         onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
                                                             </Row>
                                                             <div
                                                                 className={isScanningProcessSidebarOpen ? 'overlay open' : 'overlay'}
                                                                 onClick={this.closeProcessSidebar}></div>
                                                             <div
-                                                                className={isScanningProcessSidebarOpen ? 'sidebar open' : 'sidebar'}>
+                                                                className={isScanningProcessSidebarOpen ? 'smallsidebar open' : 'smallsidebar'}>
                                                                 <button onClick={this.toggleProcessSidebar}
                                                                         className="close-btn">&times;</button>
                                                                 <VirusScanProcessSidebar
                                                                     scanInfo={['病毒扫描', '病毒扫描中，请稍后', '查看详情']}
                                                                     statusData={virusstatusData}
+                                                                    hostCount={VirusHostCount}
+                                                                    riskItemCount={this.state.riskItemCount} // 传递风险项的数量
                                                                     isSidebarOpen={this.state.isScanningProcessSidebarOpen}
                                                                     toggleSidebar={this.toggleProcessSidebar}
-                                                                    riskItemCount={this.state.riskItemCount} // 传递风险项的数量
                                                                 />
                                                             </div>
                                                             <div className={isSidebarOpen ? 'overlay open' : 'overlay'}

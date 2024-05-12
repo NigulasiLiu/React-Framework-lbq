@@ -1,5 +1,6 @@
 import queryString from 'query-string';
 import jwtDecode from 'jwt-decode';
+import umbrella from 'umbrella-storage';
 
 /**
  * 验证JWT的有效性，包括检查是否过期
@@ -35,7 +36,8 @@ export const checkLogin = (): boolean => {
         return true;
     }
 
-    const token = localStorage.getItem('jwt_token');
+    // const token1 = localStorage.getItem('jwt_token');
+    const token = umbrella.getLocalStorage('jwt_token');
     // 假设你有一个函数来验证JWT的有效性
     return !!token && verifyJWT(token);
     // return !!token;

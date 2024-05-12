@@ -104,7 +104,7 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           key: 'id',
         },
         {
-          title: "UUID",
+          title: "主机名称",
           dataIndex: 'uuid', key: 'uuid',
           render: (text: string, record: any) => (
               <div>
@@ -139,27 +139,27 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           ),
         },
         {
+          title: '可疑文件名称',
+          dataIndex: 'origin_filename',
+          key: 'origin_filename',
+        },
+        {
+          title: '可疑文件路径',
+          dataIndex: 'origin_filepath',
+          key: 'origin_filepath',
+        },
+        {
           title: '加密密钥',
           dataIndex: 'aes_key',
           key: 'aes_key',
         },
         {
-          title: '原文件文件名',
-          dataIndex: 'origin_filename',
-          key: 'origin_filename',
-        },
-        {
-          title: '原文件文件路径',
-          dataIndex: 'origin_filepath',
-          key: 'origin_filepath',
-        },
-        {
-          title: '加密文件的文件名',
+          title: '隔离文件名',
           dataIndex: 'encrypted_filename',
           key: 'encrypted_filename',
         },
         {
-          title: '加密文件的文件路径',
+          title: '隔离文件路径',
           dataIndex: 'encrypted_filepath',
           key: 'encrypted_filepath',
         },

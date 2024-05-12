@@ -17,14 +17,11 @@ interface ScanProcessSidebarState {
 // 定义 ScanProcessSidebar 组件的 Props 类型
 interface ScanProcessSidebarProps {
   riskItemCount: number; // 添加风险项数量的prop类型声明
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
+  hostCount:number;
   statusData: StatusItem[];
 
-  currenthostnums?: number;
-
-  hostlist?: string[];
-
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
   scanInfo: string[];
 
 }
@@ -57,24 +54,61 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
       this.handleScanButtonClick();
     }
   }
+  // handleScanButtonClick = () => {
+  //   // 开始扫描，设置 isLoading 为 true，scanProgress 为 0
+  //   this.setState({ isLoading: true, scanProgress: 0 });
+  //   const randomInterval = Math.floor(Math.random()) + 150; // 生成 500 到 1000 之间的随机时间间隔
+  //
+  //   // 模拟扫描进度增加
+  //   const progressInterval = setInterval(() => {
+  //     if (this.state.scanProgress < 100) {
+  //       // 平滑递增，每次增加0.5到2之间的随机值
+  //       const randomIncrement = Math.random() * 1.5 + 0.5;
+  //       this.setState((prevState) => ({
+  //         scanProgress: Math.min(prevState.scanProgress + randomIncrement, 100),
+  //       }));
+  //     } else {
+  //       // 扫描完成，清除定时器，更新状态
+  //       clearInterval(progressInterval);
+  //       this.setState({ isLoading: false });
+  //     }
+  //   }, randomInterval);
+  //
+  // };
   handleScanButtonClick = () => {
     // 开始扫描，设置 isLoading 为 true，scanProgress 为 0
     this.setState({ isLoading: true, scanProgress: 0 });
+    const randomInterval = Math.floor(Math.random()) + 150; // 生成 150 到 151 之间的随机时间间隔
 
     // 模拟扫描进度增加
-    const interval = setInterval(() => {
+    const progressInterval = setInterval(() => {
       if (this.state.scanProgress < 100) {
-        // 逐步增加 scanProgress
-        this.setState((prevState) => ({
-          scanProgress: prevState.scanProgress + 10,
-        }));
+        // 平滑递增，每次增加0.5到2之间的随机值
+        const randomIncrement = Math.random() * 1.5 + 0.5;
+
+        // 有一定概率触发大跳变
+        const shouldJump = Math.random() < 0.2; // 20% 的概率触发大跳变
+        const bigJump = Math.random() * 10 + 15; // 大跳变的增量在 5 到 15 之间
+
+        if (shouldJump) {
+          this.setState((prevState) => ({
+            scanProgress: Math.min(prevState.scanProgress + bigJump, 100), // 触发大跳变
+          }));
+        } else {
+          this.setState((prevState) => ({
+            scanProgress: Math.min(prevState.scanProgress + randomIncrement, 100), // 正常增加进度
+          }));
+        }
       } else {
-        // 扫描完成，清除定时器，设置 isLoading 为 false
-        clearInterval(interval);
+        // 扫描完成，清除定时器，更新状态
+        clearInterval(progressInterval);
         this.setState({ isLoading: false });
       }
-    }, 500); // 每秒增加一次进度
+    }, randomInterval);
+    // 清理资源
+    return () => clearInterval(progressInterval);
   };
+
   toggleSidebar = () => {
     this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
   };
@@ -123,9 +157,11 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
             style={{ fontWeight: 'bolder', width: 500, height: 680, border: 'solid 1px black', justifyContent: 'center' }}>
             <Row>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2, fontWeight: 'bold' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[0]}</h2>
+                <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[0]}</h2>
               </div>
+              {!this.state.isLoading && (
               <button onClick={this.handleScanButtonClick} className="close-btn">重新扫描</button>
+                  )}
             </Row>
             <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
               <Col span={6} style={{ paddingTop: '20px', width: '200px', }}>
@@ -136,7 +172,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
                   <React.Fragment>
                     <Row>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontWeight: 'bold' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[1]}</h2>
+                        <h2 style={{ fontSize: '17px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[1]}</h2>
                       </div>
                     </Row>
                   </React.Fragment>)}
@@ -144,13 +180,15 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
                   <React.Fragment>
                     <Row>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontWeight: 'bold' }}>
-                        <h2 style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '0px' }}>检查完成</h2>
+                        <h2 style={{ fontSize: '17px', fontWeight: 'bold', marginLeft: '0px' }}>检查完成</h2>
                       </div>
                     </Row>
                   </React.Fragment>)}
                 <Row>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontWeight: 'bold' }}>
-                    <h2 style={{ color: 'grey', fontSize: '12px', fontWeight: 'bold', marginLeft: '0px' }}>进度:{this.state.scanProgress}%</h2>
+                    <h2 style={{ color: 'grey', fontSize: '15px', fontWeight: 'bold', marginLeft: '0px' }}>
+                      进度:{this.state.scanProgress === 100 ? '100' : (this.state.scanProgress.toString()[1] === '.' ? this.state.scanProgress.toString().slice(0, 1) : this.state.scanProgress.toString().slice(0, 2))}%
+                    </h2>
                   </div>
                 </Row>
               </Col>
@@ -175,7 +213,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
             {!this.state.isLoading && (
               <React.Fragment>
                 <Row gutter={15} style={{ marginLeft: '6px' }}>
-                  <div>本次检查出 {this.props.riskItemCount} 个风险项</div>
+                  <div>本次共检查 {this.props.hostCount} 个主机,共 {this.props.riskItemCount} 个风险项</div>
                 </Row>
                 <Row gutter={15} style={{ marginLeft: '6px' }}>
                   <div style={{ margin: '12px auto', alignItems: 'center' }}>

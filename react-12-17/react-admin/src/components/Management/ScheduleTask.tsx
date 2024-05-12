@@ -7,6 +7,7 @@ import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import moment from 'moment';
 import axios from 'axios';
+import umbrella from 'umbrella-storage';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -26,6 +27,14 @@ interface ScheduleTaskState {
     
 }
 
+
+const token = umbrella.getLocalStorage('jwt_token');
+// 配置axios请求头部，包括JWT
+const config = {
+    headers: {
+        Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+    }
+};
 
 class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState> {
     constructor(props: any) {
@@ -348,7 +357,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
       };
 
     handleDelete = (job_id: string) => {
-        axios.delete(`http://localhost:5000/api/delete_task?job_id=${job_id}`)
+        axios.delete(`http://localhost:5000/api/delete_task?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务删除成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -360,7 +369,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handlePause = (job_id: string) => {
-        axios.post(`http://localhost:5000/api/pause_task?job_id=${job_id}`)
+        axios.post(`http://localhost:5000/api/pause_task?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -372,7 +381,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handleResume = (job_id: string) => {
-        axios.post(`http://localhost:5000/api/resume_task?job_id=${job_id}`)
+        axios.post(`http://localhost:5000/api/resume_task?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据

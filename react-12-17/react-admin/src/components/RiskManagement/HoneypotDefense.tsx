@@ -249,7 +249,8 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                             <Col md={24}>
                             {constRenderTable(honeyPotOriginData, '蜜罐信息', [],
-                                      columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeypot/all",['uuid'],this.showModal,"新增蜜罐")}
+                                      columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeypot/all",['uuid'],
+                                this.showModal,"新增蜜罐")}
                             </Col>
                         </Row>
                       </div>

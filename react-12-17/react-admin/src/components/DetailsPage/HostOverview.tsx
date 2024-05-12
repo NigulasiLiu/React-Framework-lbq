@@ -130,7 +130,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                             />
                         </Col>
                         <Col span={2}> </Col>
-                        <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
+                        <div style={{ transform: 'translateX(40px) translateY(50px)' }}>
                             <StatusPanel statusData={vulPieChartData} orientation="vertical" />
                         </div>
                     </Row>
@@ -180,14 +180,14 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     return acc;
                 }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
 
-                const alertData3_: StatusItem[] = [
+                const baselineAlertData: StatusItem[] = [
                     // 确保使用正确的方法来计数
                     { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#EA635F' },//RED
                     { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#468DFF' }//蓝
                 ];
                 return (
                     <CustomPieChart
-                        data={alertData3_}
+                        data={baselineAlertData}
                         innerRadius={34}
                         deltaRadius={5}
                         outerRadius={50}
@@ -220,7 +220,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         const linuxData = array.filter(item => item.uuid === this.state.host_uuid);
                         const needAdjItemCounts = linuxData.filter(item => item.adjustment_requirement === '建议调整').length;
                         if (linuxData.length > 0) {
-                            const alertData3_: StatusItem[] = [
+                            const baselineAlertData: StatusItem[] = [
                                 // 确保使用正确的方法来计数
                                 { label: '建议调整项', value: needAdjItemCounts, color: '#EA635F' },//RED
                                 { label: '自行判断项', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
@@ -230,7 +230,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                     <Row>
                                         <Col span={12}>
                                             <CustomPieChart
-                                                data={alertData3_}
+                                                data={baselineAlertData}
                                                 innerRadius={54}
                                                 deltaRadius={8}
                                                 outerRadius={80}
@@ -241,7 +241,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Col>
                                         <Col span={2}> </Col>
                                         <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
-                                            <StatusPanel statusData={alertData3_} orientation="vertical" />
+                                            <StatusPanel statusData={baselineAlertData} orientation="vertical" />
                                         </div>
                                     </Row>
                                 </div>
@@ -263,7 +263,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         const linuxData = array.filter(item => item.uuid === this.state.host_uuid);
                         const needAdjItemCounts = linuxData.filter(item => item.adjustment_requirement === '建议调整').length;
                         if (linuxData.length > 0) {
-                            const alertData3_: StatusItem[] = [
+                            const baselineAlertData: StatusItem[] = [
                                 // 确保使用正确的方法来计数
                                 { label: '建议调整项', value: needAdjItemCounts, color: '#EA635F' },//RED
                                 { label: '自行判断项', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
@@ -273,7 +273,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                     <Row>
                                         <Col span={12}>
                                             <CustomPieChart
-                                                data={alertData3_}
+                                                data={baselineAlertData}
                                                 innerRadius={54}
                                                 deltaRadius={8}
                                                 outerRadius={80}
@@ -284,7 +284,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Col>
                                         <Col span={2}> </Col>
                                         <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
-                                            <StatusPanel statusData={alertData3_} orientation="vertical" />
+                                            <StatusPanel statusData={baselineAlertData} orientation="vertical" />
                                         </div>
                                     </Row>
                                 </div>
@@ -443,48 +443,66 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const { linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                        vulnOriginData, portOriginData, assetOriginData, processOriginData, fimOriginData,monitoredOriginData,
-                        agentOriginData, } = context;
-                    const data = {
-                        '主机名称': this.state.host_uuid,
-                        '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
-                        '操作系统': '',
-                        '主机标签': '-',
-                        '设备型号': 'VMware, Inc.',
-                        '生产商': '-',
-                        '系统负载': '1.03/1.13',
-                        '公网IPv4': '-',
-                        '公网IPv6': '-',
-                        '私网IPv4': '172.17.0.2',
-                        '私网IPv6': '-',
-                        '网络区域': 'private',
-                        '操作系统版本': '3.10.0-1160.el7.x86_64',
-                        '容器平台': 'VMware Virtual Platform',
-                        'CPU信息': '12th Gen Intel(R) Core(TM) i7...',
-                        'CPU使用率': '2.69%',
-                        '内存大小': '3.68 GB',
-                        '内存使用率': '83%',
-                        '默认网关': '172.17.0.1',
-                        '地域': 'default',
-                        '内存占用率': '84.24%',
-                        '磁盘占用': '0.82/0.56/0.5',
-                        '网卡序列': 'F0684D56-4A26-C1B9-CE...',
-                        '注册时间': '2023-12-27 04:08:53',
-                        '最近活跃时间': '2024-01-12 17:46:01',
-                        '更新时间': '2023-12-13 23:18:24',
-                        '探测时间': '2023-12-27 04:09:03',
-                        'DNS服务器': '192.168.218.2',
-                        // ... any other data fields
-                    };
-                    //const result: GenericDataItem[] = agentOriginData.filter(item => item['host_name'] === this.state.host_uuid);
+                        vulnOriginData, portOriginData, assetOriginData, processOriginData,
+                        fimOriginData,monitoredOriginData,
+                        agentOriginData,
 
-                    const alertData2_: StatusItem[] = [
-                        { label: '紧急', value: 5, color: '#EA635F' },//RED
-                        { label: '高风险', value: 1, color: '#846CCE' },//紫
-                        { label: '中风险', value: 1, color: '#FBB12E' },//ORANGE
-                        { label: '低风险', value: 1, color: '#468DFF' }//蓝
+                        bruteforceTTPsMetaData_uuid,
+                        privilegeescalationTTPsMetaData_uuid,
+                        defenseavoidanceTTPsMetaData_uuid,
+                        VirusMetaData_uuid,
+                        HoneyPotMetaData_uuid,
+                    } = context;
+                    // const data = {
+                    //     '主机名称': this.state.host_uuid,
+                    //     '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
+                    //     '操作系统': '',
+                    //     '主机标签': '-',
+                    //     '设备型号': 'VMware, Inc.',
+                    //     '生产商': '-',
+                    //     '系统负载': '1.03/1.13',
+                    //     '公网IPv4': '-',
+                    //     '公网IPv6': '-',
+                    //     '私网IPv4': '172.17.0.2',
+                    //     '私网IPv6': '-',
+                    //     '网络区域': 'private',
+                    //     '操作系统版本': '3.10.0-1160.el7.x86_64',
+                    //     '容器平台': 'VMware Virtual Platform',
+                    //     'CPU信息': '12th Gen Intel(R) Core(TM) i7...',
+                    //     'CPU使用率': '2.69%',
+                    //     '内存大小': '3.68 GB',
+                    //     '内存使用率': '83%',
+                    //     '默认网关': '172.17.0.1',
+                    //     '地域': 'default',
+                    //     '内存占用率': '84.24%',
+                    //     '磁盘占用': '0.82/0.56/0.5',
+                    //     '网卡序列': 'F0684D56-4A26-C1B9-CE...',
+                    //     '注册时间': '2023-12-27 04:08:53',
+                    //     '最近活跃时间': '2024-01-12 17:46:01',
+                    //     '更新时间': '2023-12-13 23:18:24',
+                    //     '探测时间': '2023-12-27 04:09:03',
+                    //     'DNS服务器': '192.168.218.2',
+                    //     // ... any other data fields
+                    // };
+                    const HoneyPotHostCount = (HoneyPotMetaData_uuid && HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
+                    const bruteforceTTPsHostCount = (
+                        (bruteforceTTPsMetaData_uuid && bruteforceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
+                    );
+                    const privilegeEscalationTTPsHostCount = (
+                        (privilegeescalationTTPsMetaData_uuid && privilegeescalationTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
+                    );
+                    const defenseAvoidanceTTPsHostCount = (
+                        (defenseavoidanceTTPsMetaData_uuid && defenseavoidanceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
+                    );
+                    const TTPsHostCount = bruteforceTTPsHostCount + privilegeEscalationTTPsHostCount + defenseAvoidanceTTPsHostCount;
+                    const VirusHostCount = (VirusMetaData_uuid && VirusMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
+
+
+                    const AlertData_uuid = [
+                        { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
+                        { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
+                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 40 : VirusHostCount, color: '#846CCE' },
                     ];
-
                     const agentversion = '1.7.0.24';
 
                     return (
@@ -505,7 +523,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                     <Row gutter={[8, 16]}>
                                         <Col md={8}>
                                             <Card bordered={false}
-                                                style={{ fontWeight: 'bolder', width: '100%', minHeight: 200, backgroundColor: '#ffffff' }}>
+                                                style={{ fontWeight: 'bolder', width: '100%', maxHeight: 280, backgroundColor: '#ffffff' }}>
                                                 <Row>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
                                                         <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>安全告警</h2>
@@ -513,15 +531,16 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                     <Button
                                                         type="link"
                                                         style={{
-                                                            fontWeight: 'bold', border: 'transparent',
-                                                            backgroundColor: 'transparent', color: '#686E7A', marginLeft: 'auto', marginRight: '0',
+                                                            fontWeight: 'bold', padding: '0 0',
+                                                            border: 'transparent',
+                                                            backgroundColor: 'transparent',marginLeft: 'auto', marginRight: '0',
                                                         }}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
                                                         onClick={() => this.goToPanel('hostalertlist')}>详情</Button>
                                                 </Row>
-                                                <Row gutter={0}>
+                                                <Row >
                                                     <Col span={12}>
                                                         <CustomPieChart
-                                                            data={alertData2_}
+                                                            data={AlertData_uuid}
                                                             innerRadius={54}
                                                             deltaRadius={8}
                                                             outerRadius={80}
@@ -531,15 +550,18 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                         />
                                                     </Col>
                                                     <Col span={2}> </Col>
-                                                    <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                                        <StatusPanel statusData={alertData2_} orientation="vertical" />
+                                                    <div style={{ transform: 'translateX(220px) translateY(-160px)',}}>
+                                                        <StatusPanel statusData={AlertData_uuid}
+                                                                     orientation="vertical" />
                                                     </div>
                                                 </Row>
                                             </Card>
                                         </Col>
                                         <Col md={8}>
                                             <Card bordered={false}
-                                                style={{ fontWeight: 'bolder', width: '100%', minHeight: 200, backgroundColor: '#ffffff' }}>
+                                                  style={{
+                                                      fontWeight: 'bolder',
+                                                      width: '100%', maxHeight: 280, backgroundColor: '#ffffff' }}>
 
                                                 <Row>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
@@ -563,7 +585,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Col>
                                         <Col md={8} style={{ width: '33%', marginLeft: 'auto', marginRight: '0' }}>
                                             <Card bordered={false}
-                                                style={{ fontWeight: 'bolder', width: '100%', minHeight: 200, backgroundColor: '#ffffff' }}>
+                                                style={{ fontWeight: 'bolder', width: '100%', maxHeight: 280, backgroundColor: '#ffffff' }}>
 
                                                 <Row>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>

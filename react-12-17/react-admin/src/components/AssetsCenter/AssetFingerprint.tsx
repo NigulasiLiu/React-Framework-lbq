@@ -141,13 +141,6 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 );
             case 'system_services':
                 return (
-                    // <FetchDataForElkeidTable
-                    //     apiEndpoint="http://localhost:5000/api/asset_mapping/all"
-                    //     timeColumnIndex={[]}
-                    //     columns={systemServicesColumns}
-                    //     currentPanel={currentPanel}
-                    //     search={['uuid', 'service', 'product', 'ostype']}
-                    // />
                 <DataDisplayTable
                     key={currentPanel}
                     externalDataSource={assetOriginData}

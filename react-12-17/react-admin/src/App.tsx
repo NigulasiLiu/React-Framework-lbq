@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, notification } from 'antd';
-import {SmileOutlined} from '@ant-design/icons';
+import { Layout, notification, ConfigProvider, message } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
 import umbrella from 'umbrella-storage';
 import { useAlita } from 'redux-alita';
 import Routes from './routes';
@@ -11,6 +11,7 @@ import { checkLogin } from './utils';
 import { fetchMenu } from './service';
 import DataManager from './components/ContextAPI/DataManager';
 import classNames from 'classnames';
+import zhCN from 'antd/es/locale/zh_CN';
 
 
 const { Content, Footer } = Layout;
@@ -23,6 +24,7 @@ function checkIsMobile() {
 }
 
 let _resizeThrottled = false;
+
 function resizeListener(handler: (isMobile: boolean) => void) {
     const delay = 250;
     if (!_resizeThrottled) {
@@ -34,6 +36,7 @@ function resizeListener(handler: (isMobile: boolean) => void) {
         }, delay);
     }
 }
+
 function handleResize(handler: (isMobile: boolean) => void) {
     window.addEventListener('resize', resizeListener.bind(null, handler));
 }
@@ -78,17 +81,26 @@ function openFNotification() {
 }
 
 
-function App(props: AppProps){
+function App(props: AppProps) {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [auth, responsive, setAlita] = useAlita(
         { auth: { permissions: null } },
         { responsive: { isMobile: false } },
-        { light: true }
+        { light: true },
     );
 
     useEffect(() => {
-        let user = umbrella.getLocalStorage('user');
-        user && setAlita('auth', user);
+        let user = umbrella.getLocalStorage('user');  // 这应该返回一个字符串化的JSON对象
+        // let user = localStorage.getItem("user")
+        if (user) {
+            // const userData = JSON.parse(user);  // 将字符串解析回对象
+            const userData = user;
+            setAlita('auth', userData);
+            message.info(`User Info: ${user}`); // 显示用户信息
+        }
+        else{
+            message.info(`No User Info!`); // 显示用户信息
+        }
         setAlita('responsive', { isMobile: checkIsMobile() });
 
         handleResize((isMobile: boolean) => setAlita('responsive', { isMobile }));
@@ -99,26 +111,30 @@ function App(props: AppProps){
     function toggle() {
         setCollapsed(!collapsed);
     }
+
     const isLogged = checkLogin(); // 直接检查登录状态
     return (
-        <DataManager>
-        <Layout>
-            {!responsive.isMobile && isLogged && (
-                <SiderCustom collapsed={collapsed} />
-            )}
-            {/* <ThemePicker /> */}
-            <Layout
-                className={classNames('app_layout', { 'app_layout-mobile': responsive.isMobile })}
-            >
-                <HeaderCustom toggle={toggle} collapsed={collapsed} user={auth || {}} />
-                <Content className="app_layout_content">
-                    <Routes auth={auth} />
-                </Content>
-                <Footer className="app_layout_foot">
-                    <Copyright />
-                </Footer>
-            </Layout>
-        </Layout></DataManager>
+        <ConfigProvider locale={zhCN}>
+            <DataManager>
+                <Layout>
+                    {!responsive.isMobile && isLogged && (
+                        <SiderCustom collapsed={collapsed} />
+                    )}
+                    {/* <ThemePicker /> */}
+                    <Layout
+                        className={classNames('app_layout', { 'app_layout-mobile': responsive.isMobile })}
+                    >
+                        <HeaderCustom toggle={toggle} collapsed={collapsed} user={auth || {}} userName={auth?auth.toString():''}/>
+                        <Content className="app_layout_content">
+                            <Routes auth={auth} />
+                        </Content>
+                        <Footer className="app_layout_foot">
+                            <Copyright />
+                        </Footer>
+                    </Layout>
+                </Layout>
+            </DataManager>
+        </ConfigProvider>
     );
 };
 

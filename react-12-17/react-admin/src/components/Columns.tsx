@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Button, Badge, Input, Space, Card, Row } from 'antd';
+import { Tooltip, Button, Badge, Input, Menu, Card, Row } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import '../Style.css';
@@ -104,135 +104,6 @@ export interface StatusItem {
     value: number;
 }
 
-export const baseLineDetectScanResult1Columns = [
-    { title: '影响主机', dataIndex: 'influencehost', key: 'influencehost' },
-    {
-        title: '标签', dataIndex: 'label',
-        //sorter: (a: any, b: any) => Date.parse(b.foundtime) - Date.parse(a.foundtime), 
-    },
-    {
-        title: '检查结果', dataIndex: 'status',
-        filters: [],
-        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
-    },
-    {
-        title: '操作', dataIndex: 'operation',
-        render: (text: string, record: any) => (
-            // 在 render 方法中返回包含按钮的元素
-            <Link to="/app/create_agent_task" target="_blank">
-                <Button
-                    style={{
-                        fontWeight: 'bold', padding: '0 0',
-                        border: 'transparent',
-                        backgroundColor: 'transparent',
-                        // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
-                        // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
-                    }}>加白名单</Button>
-            </Link>
-        ),
-    },
-];
-export const baseLineDetectCheckedItemColumns = [
-    {
-        title: '检查项',
-        dataIndex: 'checkName',
-        key: 'host_name',
-        onHeaderCell: () => ({
-            style: {
-                maxWidth: 200, // 最大宽度200px
-            },
-        }),
-    },
-    {
-        title: '级别',
-        dataIndex: 'level',
-
-        onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
-    },
-    {
-        title: '通过率',
-        dataIndex: 'passRate',
-        sorter: (a: any, b: any) => Date.parse(b.passRate) - Date.parse(a.passRate),
-    },
-
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        render: (text: string, record: any) => (
-            // 在 render 方法中返回包含按钮的元素
-            <Link to="/app/create_agent_task" target="_blank">
-                <Button type="link" style={{ color: '#4086f4' }}>重新检查</Button>
-            </Link>
-        ),
-    },
-];
-export const baseLineDetectHostItemColumns = [
-    {
-        title: '影响主机',
-        dataIndex: 'influencedHost',
-        key: 'influencedHost',
-        onHeaderCell: () => ({
-            style: {
-                maxWidth: 200, // 最大宽度200px
-            },
-        }),
-    },
-    {
-        title: '风险项',
-        dataIndex: 'riskItem',
-        sorter: (a: any, b: any) => Date.parse(b.riskItem) - Date.parse(a.riskItem),
-    },
-    {
-        title: '通过项',
-        dataIndex: 'passItem',
-        // 
-        // onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
-    },
-
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        render: (text: string, record: any) => (
-            // 在 render 方法中返回包含按钮的元素
-            <Link to="/app/create_agent_task" target="_blank">
-                <Button type="link" style={{ color: '#4086f4' }}>重新检查</Button>
-            </Link>
-        ),
-    },
-];
-export const baseLineDetectScanResult2Columns = [
-    {
-        title: '影响主机',
-        dataIndex: 'influencedHost',
-        key: 'influencedHost',
-        onHeaderCell: () => ({
-            style: {
-                maxWidth: 200, // 最大宽度200px
-            },
-        }),
-    },
-    {
-        title: '标签',
-        dataIndex: 'label',
-    },
-    {
-        title: '扫描结果',
-        dataIndex: 'scanResult',
-
-        //onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.scanResult.includes(value as string),
-    },
-
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        render: (text: string, record: any) => (
-            // 在 render 方法中返回包含按钮的元素
-            <Link to="/app/create_agent_task" target="_blank">
-                <Button type="link" style={{ color: '#4086f4' }}>加白名单</Button>
-            </Link>
-        ),
-    },
-];
 export const virusscandetailscolumns = [
     {
         title: '主机名', dataIndex: 'host_name', key: 'host_name',
@@ -272,53 +143,61 @@ export const createNewTaskColumns = [
         key: 'id',
         //width: '13%',
     },
+    // {
+    //     title: 'UUID',
+    //     dataIndex: 'uuid', key: 'uuid',
+    //
+    //     render: (text: string) => (
+    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+    //             <Button style={{
+    //                 fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
+    //                 padding: '0 0',
+    //             }}>{text.slice(0, 5)}</Button>
+    //         </Link>
+    //     ),
+    // },
     {
-        title: 'UUID',
-        dataIndex: 'uuid', key: 'uuid',
-        // onFilter: (values: string, record: CreateTaskDataType) => record.uuid.includes(values),
-        // filterDropdown: ({
-        //     setSelectedKeys,
-        //     selectedKeys,
-        //     confirm,
-        //     clearFilters,
-        // }: FilterDropdownProps) => (
-        //     <div style={{ padding: 8 }}>
-        //         <Input
-        //             autoFocus
-        //             placeholder="搜索..."
-        //             value={selectedKeys[0]}
-        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-        //             onPressEnter={() => confirm()}
-        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
-        //         />
-        //         <Button
-        //             onClick={() => confirm()}
-        //             size="small"
-        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-        //         >
-        //             搜索
-        //         </Button>
-        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-        //             重置
-        //         </Button>
-        //     </div>
-        // ),
-        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-
-        render: (text: string) => (
-            // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-                <Button style={{
-                    fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-                    padding: '0 0',
-                }}>{text.slice(0, 5)}</Button>
-            </Link>
+        title: '主机名',
+        dataIndex: 'uuid',
+        key: 'uuid',
+        render: (text: string, record: any) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                        <Button style={{
+                            fontWeight: 'bold',
+                            border: 'transparent',
+                            backgroundColor: 'transparent',
+                            color: '#4086FF',
+                            padding: '0 0',
+                        }}>
+                            <Tooltip title={record.uuid}>
+                                <div style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '80px',
+                                }}>
+                                    {record.uuid || '-'}
+                                </div>
+                            </Tooltip>
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip_address}
+                </div>
+            </div>
         ),
     },
-    // {
-    //     title: "主机名",
-    //     dataIndex: 'host_name',
-    // },
     {
         title: '主机IP',
         dataIndex: 'ip_address',
@@ -326,35 +205,6 @@ export const createNewTaskColumns = [
     {
         title: '操作系统',
         dataIndex: 'os_version',
-        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        // filterDropdown: ({
-        //     setSelectedKeys,
-        //     selectedKeys,
-        //     confirm,
-        //     clearFilters,
-        // }: FilterDropdownProps) => (
-        //     <div style={{ padding: 8 }}>
-        //         <Input
-        //             autoFocus
-        //             placeholder="搜索..."
-        //             value={selectedKeys[0]}
-        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-        //             onPressEnter={() => confirm()}
-        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
-        //         />
-        //         <Button
-        //             onClick={() => confirm()}
-        //             size="small"
-        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-        //         >
-        //             搜索
-        //         </Button>
-        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-        //             重置
-        //         </Button>
-        //     </div>
-        // ),
-        // onFilter: (values: string, record: hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
     },
     {
         title: '状态',
@@ -407,35 +257,6 @@ export const hostinventoryColumns = [
         title: '主机名',
         dataIndex: 'uuid',
         key: 'uuid',
-        onFilter: (values: string, record: hostinventoryColumnsType) => record.uuid.includes(values) || record.ip_address.toLowerCase().includes(values.toLowerCase()),
-        // filterDropdown: ({
-        //     setSelectedKeys,
-        //     selectedKeys,
-        //     confirm,
-        //     clearFilters,
-        // }: FilterDropdownProps) => (
-        //     <div style={{ padding: 8 }}>
-        //         <Input
-        //             autoFocus
-        //             placeholder="搜索主机名或IP..."
-        //             value={selectedKeys[0]}
-        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-        //             onPressEnter={() => confirm()}
-        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
-        //         />
-        //         <Button
-        //             onClick={() => confirm()}
-        //             size="small"
-        //             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-        //         >
-        //             搜索
-        //         </Button>
-        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-        //             重置
-        //         </Button>
-        //     </div>
-        // ),
-        //filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         render: (text: string, record: hostinventoryColumnsType) => (
             <div>
                 <div>
@@ -473,81 +294,7 @@ export const hostinventoryColumns = [
             </div>
         ),
     },
-    // {
-    //     title: "主机名",
-    //     dataIndex: 'uuid', key: 'uuid',
-    //     onFilter: (values:string, record:hostinventoryColumnsType) => record.uuid.includes(values),
-    //     filterDropdown: ({
-    //         setSelectedKeys,
-    //         selectedKeys,
-    //         confirm,
-    //         clearFilters,
-    //     }: FilterDropdownProps) => (
-    //         <div style={{ padding: 8 }}>
-    //             <Input
-    //                 autoFocus
-    //                 placeholder="搜索..."
-    //                 value={selectedKeys[0]}
-    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-    //                 onPressEnter={() => confirm()}
-    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
-    //             />
-    //             <Button
-    //                 onClick={() => confirm()}
-    //                 size="small"
-    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-    //             >
-    //                 搜索
-    //             </Button>
-    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-    //                 重置
-    //             </Button>
-    //         </div>
-    //     ),
-    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
 
-    //     render: (text: string) => (
-    //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-    //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-    //           <Button style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-    //                     padding:'0 0'}}>{text.slice(0,5)}</Button>
-    //         </Link>
-    //       ),
-    // },
-    // {
-    //     title: "主机IP",
-    //     dataIndex: 'ip_address',
-    //     filterDropdown: ({
-    //         setSelectedKeys,
-    //         selectedKeys,
-    //         confirm,
-    //         clearFilters,
-    //     }: FilterDropdownProps) => (
-    //         <div style={{ padding: 8 }}>
-    //             <Input
-    //                 autoFocus
-    //                 placeholder="搜索..."
-    //                 value={selectedKeys[0]}
-    //                 onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-    //                 onPressEnter={() => confirm()}
-    //                 style={{ width: 188, marginBottom: 8, display: 'block' }}
-    //             />
-    //             <Button
-    //                 onClick={() => confirm()}
-    //                 size="small"
-    //                 style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-    //             >
-    //                 搜索
-    //             </Button>
-    //             <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-    //                 重置
-    //             </Button>
-    //         </div>
-    //     ),
-    //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    //     onFilter: (values:string, record:hostinventoryColumnsType) => record.ip_address.toString().toLowerCase().includes(values.toLowerCase()),
-
-    // }, 
     {
         title: '操作系统',
         dataIndex: 'os_version',
@@ -600,17 +347,43 @@ export const hostinventoryColumns = [
             <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
         ),
     },
-    //
-
-    {
-        title: '内存使用量',
-        dataIndex: 'mem_use',
-        sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
-    },
     {
         title: 'CPU使用率',
         dataIndex: 'cpu_use',
+        render: (text: string, record: any) => (
+            <div style={{
+                fontSize: 'small', // 字体更小
+                // background: '#f0f0f0', // 灰色背景
+                display: 'inline-block', // 使得背景色仅围绕文本
+                // marginTop: '4px', // 上边距
+            }}>
+                <span style={{
+                    border:'2px solid #f0f0f0',fontWeight: 'bold',
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    }}>CPU</span> {record.cpu_use}
+            </div>
+        ),
         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
+    },
+    {
+        title: '内存使用量',
+        dataIndex: 'mem_use',
+        render: (text: string, record: any) => (
+            <div style={{
+                fontSize: 'small', // 字体更小
+                // background: '#f0f0f0', // 灰色背景
+                display: 'inline-block', // 使得背景色仅围绕文本
+                // marginTop: '4px', // 上边距
+            }}>
+                <span style={{
+                    border: '2px solid #f0f0f0', fontWeight: 'bold',
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                }}>内存</span> {record.mem_use}
+            </div>
+        ),
+        sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
     },
     {
         title: '操作',
@@ -762,12 +535,6 @@ export const fimColumns = [
         }),
     },
     {
-        title: '告警时间',
-        dataIndex: 'event_time',
-        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-        sorter: (a: any, b: any) => parseFloat(b.event_time) - parseFloat(a.event_time),
-    },
-    {
         title: '告警类型',
         dataIndex: 'alert_type',
         onFilter: (value: string | number | boolean, record: FimDataType) => record.alert_type.includes(value as string),
@@ -799,6 +566,12 @@ export const fimColumns = [
                 //maxWidth: 170, // 最大宽度200px
             },
         }),
+    },
+    {
+        title: '告警时间',
+        dataIndex: 'event_time',
+        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+        sorter: (a: any, b: any) => parseFloat(b.event_time) - parseFloat(a.event_time),
     },
 ];
 
@@ -1096,7 +869,8 @@ export const runningProcessesColumns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        Maxwidth: '15px',
+        Maxwidth: '20px',
+        hide: true, // 添加隐藏属性
     },
     {
         title: '主机名',
@@ -1226,23 +1000,53 @@ export const runningProcessesColumns = [
         ),
     },
     {
-        title: 'CPU',
+        title: 'CPU占用',
         dataIndex: 'cpuPercent',
         render: (text: string, record: any) => (
-            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '30px' }}>
-                {record.cpuPercent}
+            <div style={{
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '30px',
+                fontSize: 'small', // 字体更小
+                // background: '#f0f0f0', // 灰色背景
+                display: 'inline-block', // 使得背景色仅围绕文本
+                // marginTop: '4px', // 上边距
+            }}>
+                <span style={{
+                    border: '2px solid #f0f0f0', fontWeight: 'bold',
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                }}>CPU</span> {record.cpuPercent}
             </div>
         ),
+        // render: (text: string, record: any) => (
+        //     <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '30px' }}>
+        //         {record.cpuPercent}
+        //     </div>
+        // ),
         sorter: (a: runningProcessesColumnsType, b: runningProcessesColumnsType) => parseFloat(a.cpuPercent) - parseFloat(b.cpuPercent),
     },
     {
-        title: '内存',
+        title: '内存占用',
         dataIndex: 'memoryPercent',
         render: (text: string, record: any) => (
-            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '50px' }}>
-                {record.memoryPercent}
+            <div style={{
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '30px',
+                fontSize: 'small', // 字体更小
+                // background: '#f0f0f0', // 灰色背景
+                display: 'inline-block', // 使得背景色仅围绕文本
+                // marginTop: '4px', // 上边距
+            }}>
+                <span style={{
+                    border: '2px solid #f0f0f0', fontWeight: 'bold',
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                }}>内存</span> {record.memoryPercent}
             </div>
         ),
+        // render: (text: string, record: any) => (
+        //     <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: '50px' }}>
+        //         {record.memoryPercent}
+        //     </div>
+        // ),
         sorter: (a: runningProcessesColumnsType, b: runningProcessesColumnsType) => parseFloat(a.memoryPercent) - parseFloat(b.memoryPercent),
     },
     {
@@ -1759,7 +1563,6 @@ export const baselineDetectColumns = [
             </div>
         ),
     },
-
     {
         title: '基线名称',
         dataIndex: 'check_name',
@@ -1788,7 +1591,6 @@ export const baselineDetectColumns = [
         filters: [{ text: '建议调整', value: '建议调整' }, { text: '自行判断', value: '自行判断' },
         ],
         onFilter: (value: string | number | boolean, record: any) => record.adjustment_requirement.includes(value as string),
-
         render: (text: string, record: baselineDetectColumnsType) => (
             <Tooltip title={record.instruction}>
                 {text}
@@ -1805,17 +1607,12 @@ export const baselineDetectColumns = [
     {
         title: '最新扫描时间',
         dataIndex: 'last_checked',
-
-        // render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-        // sorter: (a: any, b: any) => Date.parse(b.occurrenceTime) - Date.parse(a.occurrenceTime),
-        // sorter: (a: { occurrenceTime: string | number | Date; }, b: { occurrenceTime: string | number | Date; }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
-        // sortDirections: ['ascend', 'descend'],
+        // sorter: (a: any, b: any) => parseFloat(b.last_checked) - parseFloat(a.last_checked),
     },
     {
         title: '操作',
         dataIndex: 'operation',
         render: (text: string, record: baselineDetectColumnsType) => (
-
             <div>
                 <Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
                     <Button style={{
@@ -1842,6 +1639,7 @@ export const threatHuntingColumns = [
         dataIndex: 'id',
         key: 'id',
         Maxwidth: '15px',
+        // hide: true, // 隐藏该列
     },
     {
         title: '主机名',
@@ -1969,48 +1767,48 @@ export const threatHuntingColumns_2 = [
 //     confirm: () => void;
 //     clearFilters?: () => void;
 //   }
-export const generate_new_columns = (columns: any[], search_index: string[]): any[] => {
-    // 遍历this.props.columns中的每一列
-    return columns.map((column: any) => {
-        // 如果列名在search_index中
-        if (search_index.includes(column.dataIndex)) {
-            // 为这列添加搜索功能
-            return {
-                ...column,
-                filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
-                    <div style={{ padding: 8 }}>
-                        <Input
-                            autoFocus
-                            placeholder={`搜索${column.title}...`}
-                            value={filterDropdownProps.selectedKeys[0]}
-                            onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                            onPressEnter={() => filterDropdownProps.confirm()}
-                            style={{ width: 188, marginBottom: 8, display: 'block' }}
-                        />
-                        <Button
-                            onClick={() => filterDropdownProps.confirm()}
-                            size="small"
-                            style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-                        >
-                            搜索
-                        </Button>
-                        <Button
-                            disabled={filterDropdownProps.clearFilters === undefined}
-                            onClick={() => filterDropdownProps.clearFilters?.()}
-                            size="small"
-                            style={{ width: 90 }}
-                        >
-                            重置
-                        </Button>
-                    </div>
-                ),
-            };
-        } else {
-            // 如果不在search_index中，直接返回原列
-            return column;
-        }
-    });
-};
+// export const generate_new_columns = (columns: any[], search_index: string[]): any[] => {
+//     // 遍历this.props.columns中的每一列
+//     return columns.map((column: any) => {
+//         // 如果列名在search_index中
+//         if (search_index.includes(column.dataIndex)) {
+//             // 为这列添加搜索功能
+//             return {
+//                 ...column,
+//                 filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
+//                     <div style={{ padding: 8 }}>
+//                         <Input
+//                             autoFocus
+//                             placeholder={`搜索${column.title}...`}
+//                             value={filterDropdownProps.selectedKeys[0]}
+//                             onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
+//                             onPressEnter={() => filterDropdownProps.confirm()}
+//                             style={{ width: 188, marginBottom: 8, display: 'block' }}
+//                         />
+//                         <Button
+//                             onClick={() => filterDropdownProps.confirm()}
+//                             size="small"
+//                             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
+//                         >
+//                             搜索
+//                         </Button>
+//                         <Button
+//                             disabled={filterDropdownProps.clearFilters === undefined}
+//                             onClick={() => filterDropdownProps.clearFilters?.()}
+//                             size="small"
+//                             style={{ width: 90 }}
+//                         >
+//                             重置
+//                         </Button>
+//                     </div>
+//                 ),
+//             };
+//         } else {
+//             // 如果不在search_index中，直接返回原列
+//             return column;
+//         }
+//     });
+// };
 
 
 export const virusscannigAllTasksColumns = [
@@ -2297,38 +2095,138 @@ export const hostperformanceColumns = [
         title: '操作系统',
         dataIndex: 'ostype',
         key: 'ostype',
-        // filterDropdown: ({
-        //     setSelectedKeys,
-        //     selectedKeys,
-        //     confirm,
-        //     clearFilters,
-        // }: FilterDropdownProps) => (
-        //     <div style={{ padding: 8 }}>
-        //         <Input
-        //             autoFocus
-        //             placeholder="搜索..."
-        //             value={selectedKeys[0]}
-        //             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-        //             onPressEnter={() => confirm()}
-        //             style={{ width: 188, marginBottom: 8, display: 'block' }}
-        //         />
-        //         <Button
-        //             onClick={() => confirm()}
-        //             size="small"
-        //             style={{ width: 90, marginRight: 8,backgroundColor:'#1664FF',color:'white' }}
-        //         >
-        //             搜索
-        //         </Button>
-        //         <Button disabled={clearFilters === undefined} onClick={() => clearFilters?.()} size="small" style={{ width: 90 }}>
-        //             重置
-        //         </Button>
-        //     </div>
-        // ),
-        // filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        // onFilter: (values:string, record:hostinventoryColumnsType) => record.os_version.toString().toLowerCase().includes(values.toLowerCase()),
     },
 ];
 
+export const baseLineDetectScanResult1Columns = [
+    { title: '影响主机', dataIndex: 'influencehost', key: 'influencehost' },
+    {
+        title: '标签', dataIndex: 'label',
+        //sorter: (a: any, b: any) => Date.parse(b.foundtime) - Date.parse(a.foundtime),
+    },
+    {
+        title: '检查结果', dataIndex: 'status',
+        filters: [],
+        onFilter: (value: string | number | boolean, record: DataType) => record.status.includes(value as string),
+    },
+    {
+        title: '操作', dataIndex: 'operation',
+        render: (text: string, record: any) => (
+            // 在 render 方法中返回包含按钮的元素
+            <Link to="/app/create_agent_task" target="_blank">
+                <Button
+                    style={{
+                        fontWeight: 'bold', padding: '0 0',
+                        border: 'transparent',
+                        backgroundColor: 'transparent',
+                        // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
+                        // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
+                    }}>加白名单</Button>
+            </Link>
+        ),
+    },
+];
+export const baseLineDetectCheckedItemColumns = [
+    {
+        title: '检查项',
+        dataIndex: 'checkName',
+        key: 'host_name',
+        onHeaderCell: () => ({
+            style: {
+                maxWidth: 200, // 最大宽度200px
+            },
+        }),
+    },
+    {
+        title: '级别',
+        dataIndex: 'level',
+
+        onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
+    },
+    {
+        title: '通过率',
+        dataIndex: 'passRate',
+        sorter: (a: any, b: any) => Date.parse(b.passRate) - Date.parse(a.passRate),
+    },
+
+    {
+        title: '操作',
+        dataIndex: 'operation',
+        render: (text: string, record: any) => (
+            // 在 render 方法中返回包含按钮的元素
+            <Link to="/app/create_agent_task" target="_blank">
+                <Button type="link" style={{ color: '#4086f4' }}>重新检查</Button>
+            </Link>
+        ),
+    },
+];
+export const baseLineDetectHostItemColumns = [
+    {
+        title: '影响主机',
+        dataIndex: 'influencedHost',
+        key: 'influencedHost',
+        onHeaderCell: () => ({
+            style: {
+                maxWidth: 200, // 最大宽度200px
+            },
+        }),
+    },
+    {
+        title: '风险项',
+        dataIndex: 'riskItem',
+        sorter: (a: any, b: any) => Date.parse(b.riskItem) - Date.parse(a.riskItem),
+    },
+    {
+        title: '通过项',
+        dataIndex: 'passItem',
+        //
+        // onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.level.includes(value as string),
+    },
+
+    {
+        title: '操作',
+        dataIndex: 'operation',
+        render: (text: string, record: any) => (
+            // 在 render 方法中返回包含按钮的元素
+            <Link to="/app/create_agent_task" target="_blank">
+                <Button type="link" style={{ color: '#4086f4' }}>重新检查</Button>
+            </Link>
+        ),
+    },
+];
+export const baseLineDetectScanResult2Columns = [
+    {
+        title: '影响主机',
+        dataIndex: 'influencedHost',
+        key: 'influencedHost',
+        onHeaderCell: () => ({
+            style: {
+                maxWidth: 200, // 最大宽度200px
+            },
+        }),
+    },
+    {
+        title: '标签',
+        dataIndex: 'label',
+    },
+    {
+        title: '扫描结果',
+        dataIndex: 'scanResult',
+
+        //onFilter: (value: string | number | boolean, record: checkedItemDataType) => record.scanResult.includes(value as string),
+    },
+
+    {
+        title: '操作',
+        dataIndex: 'operation',
+        render: (text: string, record: any) => (
+            // 在 render 方法中返回包含按钮的元素
+            <Link to="/app/create_agent_task" target="_blank">
+                <Button type="link" style={{ color: '#4086f4' }}>加白名单</Button>
+            </Link>
+        ),
+    },
+];
 export const constRenderTable = (OriginData: any[], title: string,
                                  timeColumnIndex: string[], column: any[], currentPanel: string, api: string,
                                  searchIndex?: string[], additionalButton?: () => void, additionalButtonTitile?: string) => {

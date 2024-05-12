@@ -178,11 +178,12 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                             ? record[column.dataIndex].toString().toLowerCase().includes(value.toLowerCase())
                             : false,
                 };
-            } else {
+            }
+            else {
                 // 如果不在search_index中，直接返回原列
                 return column;
             }
-        });
+        }).filter((column: any) => !column.hide);
     };
 
     onSelectChange = (selectedRowKeys: React.Key[], selectedRows: any[]) => {
@@ -240,7 +241,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             message.info('selectedRows中没有有效数据');
         }
         this.toggleModal(); // 关闭模态框
-        message.info('已刷新:' + this.props.apiEndpoint + '的数据');
+        // message.info('已刷新:' + this.props.apiEndpoint + '的数据');
     };
     handleCancel = () => {
         this.toggleModal(); // 关闭模态框
@@ -264,15 +265,16 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                     ]}
                     //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
                 >
-                    确认删除选中的:{rows.map(row => (
+                    确认删除选中的:
+                    {rows.map(row => (
                     <span key={row.uuid}>
                     <Link to={`/app/detailspage?uuid=${encodeURIComponent(row.uuid)}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
                             padding: '0 0',
-                        }}>{row.uuid.slice(0, 5)}</Button>
+                        }}>{row.uuid && row.uuid}</Button>
                     </Link>
-                        {' '}
+                        {','}
                     </span>
                 ))}
                     条目?
@@ -435,7 +437,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                             className={selectedTableStyle}
                                             rowSelection={rowSelection}
                                             rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
-                                            dataSource={data}
+                                            dataSource={data || []}
                                             columns={new_columns}
                                             pagination={{
                                                 showQuickJumper: true,

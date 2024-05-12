@@ -3,7 +3,6 @@
 import React from 'react';
 import { Card, Col, Button, Row, Modal, Form, Input, Select } from 'antd'
 import { Link } from 'react-router-dom';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { constRenderTable } from '../Columns';

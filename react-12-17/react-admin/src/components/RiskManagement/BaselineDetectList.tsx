@@ -66,7 +66,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         super(props);
         this.columns = [];
         this.state = {
-            count: 2,
+            count: 0,
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
             selectedRowKeys: [], // 这里用来存储勾选的行的 key 值
@@ -80,6 +80,11 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
     }
 
     columns: any;
+
+    handleReload = () => {
+        console.log("count:this.state.count+1:"+this.state.count)
+        this.setState({count:this.state.count+1})
+    };
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
@@ -146,23 +151,25 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         }
         else{
             const { currentPanel } = this.state;
+            const data = currentPanel==="windows"?windowsBaseLineCheckOriginData:linuxBaseLineCheckOriginData
             return (
                 <Row style={{ width: '100%' }}>
                     <FetchDataForElkeidTable
-                        key={currentPanel}
+                        key={currentPanel+this.state.count}
                         apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}
                         timeColumnIndex={['last_checked']}
                         columns={baselineDetectColumns}
                         currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}
                         search={['uuid', 'check_name']}
+                        handleReload={this.handleReload}
                     />
                     {/*<DataDisplayTable*/}
                     {/*    key={currentPanel}*/}
-                    {/*    externalDataSource={currentPanel==="windows"?windowsBaseLineCheckOriginData:linuxBaseLineCheckOriginData}*/}
+                    {/*    externalDataSource={data}*/}
                     {/*    apiEndpoint={'http://localhost:5000/api/baseline_check/' + currentPanel + '/all'}*/}
                     {/*    timeColumnIndex={['last_checked']}*/}
                     {/*    columns={baselineDetectColumns}*/}
-                    {/*    currentPanel={currentPanel}*/}
+                    {/*    currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}*/}
                     {/*    searchColumns={['uuid', 'check_name']}*/}
                     {/*/>*/}
                 </Row>
@@ -240,13 +247,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         const { isSidebarOpen, selectedDateRange, currentTime } = this.state;
         // Conditional button style
 
-        const scanResult: StatusItem[] = [
-            { color: 'green', label: '通过项', value: 7 },
-            { color: '#E53F3F', label: '严重风险项', value: 2 },
-            { color: '#846BCE', label: '高危风险项', value: 5 },
-            { color: '#FEC745', label: '中危风险项', value: 1 },
-            { color: '#468DFF', label: '低危风险项', value: 1 },
-        ];
         return (
             <DataContext.Consumer>
                 {(context: DataContextType | undefined) => {
@@ -270,15 +270,27 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
 
 
                     //const hostCheckedPassedCount = linuxBaseLineCheckMetaData_status.typeCount.get('TRUE');//检查通过数量
-                    const hostCheckedCount = linuxBaseLineCheckMetaData_uuid.tupleCount;//检查项数量
                     const hostCheckedPassedRate = 1 - ((blLinuxNeedAdjustmentItemCount || 0) + (blWindowsNeedAdjustmentItemCount || 0)) / (blWindowsCheckNameCount + blLinuxCheckNameCount);
+
+                    const scanResult: StatusItem[] = [
+                        {
+                            color: '#E53F3F',
+                            label: '严重风险项',
+                            value: blWindowsCheckNameCount + blLinuxCheckNameCount-(blLinuxNeedAdjustmentItemCount || 0) + (blWindowsNeedAdjustmentItemCount || 0)
+                        },
+                        // { color: '#846BCE', label: '高危风险项', value: 5 },
+                        // { color: '#FEC745', label: '中危风险项', value: 1 },
+                        // { color: '#468DFF', label: '低危风险项', value: 1 },
+                        { color: 'green', label: '通过项', value: (blLinuxNeedAdjustmentItemCount || 0) + (blWindowsNeedAdjustmentItemCount || 0) },
+                    ];
+
                     return (
                         <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>
-                                <Col className="gutter-row" md={24}>
+                                <Col md={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
-                                        <Col className="gutter-row" md={24}>
+                                        <Col md={24}>
                                             <Card bordered={false} /*title="主机状态分布" 产生分界线*/
                                                   style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
                                                 <div style={{
@@ -294,9 +306,8 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                     }}>基线概览</h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
-                                                    <Col className="gutter-row" md={6}
+                                                    <Col md={6}
                                                          style={{ marginLeft: '15px', marginTop: '10px' }}>
-                                                        {/* <h2>最近扫描时间（每日自动扫描）</h2> */}
                                                         <div className="container" style={{
                                                             // borderTop: '2px solid #E5E6EB',
                                                             // borderBottom: '2px solid #E5E6EB',
@@ -304,43 +315,52 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                             borderRight: '2px solid #E5E6EB',
                                                         }}>
                                                             <Row gutter={24}>
-                                                                <h2 style={{ fontSize: '16px' }}>最近扫描时间</h2>
+                                                                <Row>
+                                                                    <h2 style={{ fontSize: '16px' }}>最近扫描时间:</h2>
+                                                                </Row>
+                                                                <Row>
                                                                 <span className="currentTime"
-                                                                      style={{ marginRight: '10px' }}>{currentTime}</span>
-                                                                <Button
-                                                                    style={{
-                                                                        backgroundColor: '#1664FF',
-                                                                        color: 'white',
-                                                                        marginRight: '10px',
-                                                                        transition: 'opacity 0.3s', // 添加过渡效果
-                                                                        opacity: 1, // 初始透明度
-                                                                    }}
-                                                                    onMouseEnter={(e) => {
-                                                                        e.currentTarget.style.opacity = 0.7;
-                                                                    }} // 鼠标进入时将透明度设置为0.5
-                                                                    onMouseLeave={(e) => {
-                                                                        e.currentTarget.style.opacity = 1;
-                                                                    }} // 鼠标离开时恢复透明度为1
-                                                                    onClick={this.toggleSidebar}>立即扫描</Button>
+                                                                      style={{ marginRight: '10px' }}>{currentTime}
+                                                                </span>
+                                                                </Row>
+                                                                    <Row>
+                                                                        <Button
+                                                                            style={{
+                                                                                backgroundColor: '#1664FF',
+                                                                                color: 'white',
+                                                                                marginRight: '10px',
+                                                                                transition: 'opacity 0.3s', // 添加过渡效果
+                                                                                opacity: 1, // 初始透明度
+                                                                            }}
+                                                                            onMouseEnter={(e) => {
+                                                                                e.currentTarget.style.opacity = 0.7;
+                                                                            }} // 鼠标进入时将透明度设置为0.5
+                                                                            onMouseLeave={(e) => {
+                                                                                e.currentTarget.style.opacity = 1;
+                                                                            }} // 鼠标离开时恢复透明度为1
+                                                                            onClick={this.toggleSidebar}>立即扫描</Button>
+                                                                    </Row>
                                                             </Row>
-                                                            <div className={isSidebarOpen ? 'overlay open' : 'overlay'}
-                                                                 onClick={this.closeSidebar} />
-                                                            <div
-                                                                className={isSidebarOpen ? 'smallsidebar open' : 'smallsidebar'}>
-                                                                <button onClick={this.toggleSidebar}
-                                                                        className="close-btn">&times;</button>
-                                                                <BaseLineDetectScanSidebar
-                                                                    scanInfo={['基线检查', '基线扫描中，请稍后', '返回基线列表，查看详情']}
-                                                                    statusData={scanResult}
-                                                                    isSidebarOpen={this.state.isSidebarOpen}
-                                                                    toggleSidebar={this.toggleSidebar}
-                                                                    riskItemCount={this.state.riskItemCount} // 传递风险项的数量
-                                                                />
-                                                            </div>
+                                                                    <div
+                                                                        className={isSidebarOpen ? 'overlay open' : 'overlay'}
+                                                                        onClick={this.closeSidebar} />
+                                                                    <div
+                                                                        className={isSidebarOpen ? 'smallsidebar open' : 'smallsidebar'}>
+                                                                        <button onClick={this.toggleSidebar}
+                                                                                className="close-btn">&times;</button>
+                                                                        <BaseLineDetectScanSidebar
+                                                                            scanInfo={['基线检查', '基线扫描中，请稍后', '返回基线列表，查看详情']}
+                                                                            statusData={scanResult}
+                                                                            hostCount={blLinuxHostCount+blWindowsHostCount}
+                                                                            riskItemCount={(blLinuxNeedAdjustmentItemCount || 0) + (blWindowsNeedAdjustmentItemCount || 0)} // 传递风险项的数量
+                                                                            isSidebarOpen={this.state.isSidebarOpen}
+                                                                            toggleSidebar={this.toggleSidebar}
+                                                                        />
+                                                                    </div>
                                                         </div>
                                                     </Col>
-                                                    <Col className="gutter-row" md={4}>
-                                                        <Card
+                                                    <Col md={4}>
+                                                    <Card
                                                             bordered={false}
                                                             style={{
                                                                 height: '100px',
@@ -354,14 +374,14 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24}>
-                                                                    <Statistic title={<span>最近检查通过率</span>}
+                                                                    <Statistic title={<span style={{fontSize:'18px'}}>最近检查通过率</span>}
                                                                                value={(hostCheckedPassedRate * 100).toString().slice(0, 4) + '%'} />
                                                                 </Col>
 
                                                             </Row>
                                                         </Card>
                                                     </Col>
-                                                    <Col className="gutter-row" md={4}>
+                                                    <Col md={4}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
@@ -376,14 +396,14 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24}>
-                                                                    <Statistic title={<span>检查主机数</span>}
+                                                                    <Statistic title={<span style={{fontSize:'18px'}}>检查主机数</span>}
                                                                                value={blLinuxHostCount + blWindowsHostCount} />
                                                                 </Col>
 
                                                             </Row>
                                                         </Card>
                                                     </Col>
-                                                    <Col className="gutter-row" md={4}>
+                                                    <Col md={4}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
@@ -398,7 +418,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24}>
-                                                                    <Statistic title={<span>检查项</span>}
+                                                                    <Statistic title={<span style={{fontSize:'18px'}}>检查项</span>}
                                                                                value={blWindowsCheckNameCount + blLinuxCheckNameCount} />
                                                                 </Col>
 
@@ -412,8 +432,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                     </Row>
                                 </Col>
                                 <Col md={24}>
-                                    <div className="gutter-box">
-                                        <Card bordered={false}>
+                                    <Card bordered={false}>
                                             <div style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
@@ -442,7 +461,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                 {this.renderCurrentPanel(linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData)}
                                             </div>
                                         </Card>
-                                    </div>
                                 </Col>
                                 <Link to="/app/baseline_detail" target="_blank">
                                     <Button type="link" className="custom-link-button">基线检查详情</Button>
