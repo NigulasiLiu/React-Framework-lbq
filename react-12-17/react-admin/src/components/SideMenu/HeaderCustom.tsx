@@ -50,7 +50,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
         // let storageUser = umbrella.getLocalStorage('user');
         // let storageUser1 = localStorage.getItem("user");
         let storageUser = umbrella.getLocalStorage('user');
-        message.info(`storageUser: ${storageUser}`); // 显示用户信息
+        // message.info(`storageUser: ${storageUser}`); // 显示用户信息
 
         if (hideSiderMenu && props.collapsed === false) {
             props.toggle();

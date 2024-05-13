@@ -1,6 +1,3 @@
-/**
- * Created by hao.cheng on 2017/4/22.
- */
 import React from 'react';
 import PropTypes from 'prop-types';
 import setFont from './iconfont';

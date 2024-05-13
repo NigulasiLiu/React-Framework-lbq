@@ -4,12 +4,13 @@ import NotFound from './components/pages/NotFound';
 import Login from './components/pages/Login';
 import App from './App';
 import DetailsPage from './components/DetailsPage/DetailsPage';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 
 export default () => (
+
     <Router>
         <Switch>
-            {/* <Route exact path="/" render={() => <Redirect to="/app/Dashboard" push />} /> */}
             <Route exact path="/" render={() => <Redirect to="/login" push />} />
             <Route path="/app" component={App} />
             <Route path="/details/:id" component={DetailsPage} />

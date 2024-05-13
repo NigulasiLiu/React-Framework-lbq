@@ -1,6 +1,3 @@
-/**
- * Created by hao.cheng on 2017/4/16.
- */
 import React from 'react';
 import { Table, Input, Button } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';

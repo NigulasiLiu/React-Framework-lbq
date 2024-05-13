@@ -22,39 +22,6 @@ export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', reque
       Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
     }
   };
-  // try {
-  //   let response;
-  //   switch (requestType) {
-  //     case 'get':
-  //       // 发送 GET 请求
-  //       response = await axios.get(endpoint, config);
-  //       break;
-  //     case 'post':
-  //       // 发送 POST 请求
-  //       response = await axios.post(endpoint, requestParams, config);
-  //       break;
-  //     case 'delete':
-  //       // 发送 DELETE 请求
-  //       response = await axios.delete(endpoint, config);
-  //       break;
-  //     default:
-  //       throw new Error('Unsupported request type');
-  //   }
-  //
-  //   if (response.data && response.data.message) {
-  //     // 处理响应数据
-  //     return response.data.message;
-  //   } else {
-  //     // 处理无数据响应
-  //     message.error('采集失败: ' + (response.data.message || '未知错误'));
-  //   }
-  // } catch (error) {
-  //   // 处理请求错误
-  //   console.error('Request failed:', error);
-  //   message.error('请求错误: ' + error.message);
-  //   throw error;
-  // }
-
   try {
     const response = await axios.get(endpoint, config);
     if (response.data && response.data.message) {
@@ -67,7 +34,7 @@ export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', reque
   } catch (error) {
     // 处理请求错误
     console.error('Request failed:', error);
-    message.error('请求错误: ' + error.message);
+    // message.error('请求错误: ' + error.message);
     throw error;
   }
 

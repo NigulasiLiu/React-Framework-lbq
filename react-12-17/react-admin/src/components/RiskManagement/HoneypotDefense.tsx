@@ -6,6 +6,7 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import moment from 'moment/moment';
+import umbrella from 'umbrella-storage';
 
 interface HoneypotDefenseProps{
 
@@ -176,8 +177,15 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
   };
   handleHoneypotSubmit = async (values: any) => {
     try {
+      const token = umbrella.getLocalStorage('jwt_token');
+      // 配置axios请求头部，包括JWT
+      const config = {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+        }
+      };
       // 直接将values作为POST请求的body发送
-      const response = await axios.post('/api/honeypot/setup', values);
+      const response = await axios.post('/api/honeypot/setup', values,config);
       console.log(response.data);
       message.success('蜜罐信息添加成功');
       this.hideHoneypotModal(); // 关闭Modal

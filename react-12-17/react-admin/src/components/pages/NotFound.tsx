@@ -1,6 +1,3 @@
-/**
- * Created by hao.cheng on 2017/5/7.
- */
 import React from 'react';
 import img from '../../style/imgs/404.png';
 

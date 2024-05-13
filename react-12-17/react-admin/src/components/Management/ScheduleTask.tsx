@@ -8,6 +8,7 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import moment from 'moment';
 import axios from 'axios';
 import umbrella from 'umbrella-storage';
+import { useHistory } from 'react-router-dom';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -364,8 +365,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                 this.handleRefresh("http://localhost:5000/api/taskdetail/all")
             })
             .catch(error => {
-                message.error('任务删除失败');
-                console.error('删除任务时出错：', error);
+                if (error.response && error.response.status === 401) {
+                    // 检测到401未授权错误
+                    message.error('Session expired, please login again.');
+                } else {
+                    message.error('任务删除失败');
+                    console.error('删除任务时出错：', error);
+                }
             });
     };
     handlePause = (job_id: string) => {
@@ -376,8 +382,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                 this.handleRefresh("http://localhost:5000/api/taskdetail/all")
             })
             .catch(error => {
-                message.error('任务暂停失败');
-                console.error('暂停任务时出错：', error);
+                if (error.response && error.response.status === 401) {
+                // 检测到401未授权错误
+                message.error('Session expired, please login again.');
+            } else {
+                    message.error('任务暂停失败');
+                    console.error('暂停任务时出错：', error);
+            }
             });
     };
     handleResume = (job_id: string) => {
@@ -388,8 +399,13 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                 this.handleRefresh("http://localhost:5000/api/taskdetail/all")
             })
             .catch(error => {
-                message.error('任务恢复失败');
-                console.error('恢复任务时出错：', error);
+                if (error.response && error.response.status === 401) {
+                    // 检测到401未授权错误
+                    message.error('Session expired, please login again.');
+                } else {
+                    message.error('任务恢复失败');
+                    console.error('恢复任务时出错：', error);
+                }
             });
     };
     handleOk = async () => {

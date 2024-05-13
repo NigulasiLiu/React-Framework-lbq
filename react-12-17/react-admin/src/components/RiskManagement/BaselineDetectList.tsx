@@ -73,7 +73,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
             areRowsSelected: false,
             selectedDateRange: [null, null],
             isSidebarOpen: false,
-            currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
+            currentTime: new Date().toLocaleString(), // 添加用于存储当前时间的状态变量
             riskItemCount: 5,
             currentPanel: 'linux',
         };

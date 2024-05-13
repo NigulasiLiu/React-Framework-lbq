@@ -1,6 +1,3 @@
-/**
- * Created by hao.cheng on 2017/5/8.
- */
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card } from 'antd';

@@ -5,6 +5,7 @@ import { LoadingOutlined,  } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
+import umbrella from 'umbrella-storage';
 
 
 interface MicroIsolationProps{
@@ -212,7 +213,14 @@ handleDecryptSubmit = async () => {
   };
   
   try {
-    const response = await axios.post('http://localhost:5000/api/isolate/decrypt', postData);
+    const token = umbrella.getLocalStorage('jwt_token');
+    // 配置axios请求头部，包括JWT
+    const config = {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+      }
+    };
+    const response = await axios.post('http://localhost:5000/api/isolate/decrypt', postData,config);
     if (response.data.code === 0) {
       message.success('文件解除隔离成功');
     } else {
@@ -275,7 +283,14 @@ handleEncryptSubmit = async () => {
   };
   
   try {
-    const response = await axios.post('http://localhost:5000/api/isolate/encrypt', postData);
+    const token = umbrella.getLocalStorage('jwt_token');
+    // 配置axios请求头部，包括JWT
+    const config = {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+      }
+    };
+    const response = await axios.post('http://localhost:5000/api/isolate/encrypt', postData,config);
     if (response.data.code === 0) {
       message.success('文件隔离成功');
     } else {

@@ -86,7 +86,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
             activeIndex: [-1, -1, -1, -1],
             isSidebarOpen: false,
             isScanningProcessSidebarOpen: false,
-            currentTime: '2023-12-28 10:30:00', // 添加用于存储当前时间的状态变量
+            currentTime: new Date().toLocaleString(), // 添加用于存储当前时间的状态变量
             riskItemCount: 5, // 初始化风险项的数量
 
 

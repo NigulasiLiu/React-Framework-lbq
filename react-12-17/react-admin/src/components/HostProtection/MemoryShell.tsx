@@ -5,6 +5,7 @@ import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { constRenderTable } from '../Columns';
+import umbrella from 'umbrella-storage';
 
 const { TextArea } = Input;
 
@@ -132,10 +133,16 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
         try {
             // 直接将values作为POST请求的body发送
             console.log('values:', JSON.stringify(values, null, 2));
-            // const response = await axios.post('http://localhost:5000/api/memoryshell/check', values);
             const formData = new FormData();
+            const token = umbrella.getLocalStorage('jwt_token');
+            // 配置axios请求头部，包括JWT
+            const config = {
+                headers: {
+                    Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+                }
+            };
             formData.append('data', values.data); // 使用表单字段名 'data'，将待解码内容作为值传递
-            const response = await axios.post('http://localhost:5000/api/memoryshell/check', formData);
+            const response = await axios.post('http://localhost:5000/api/memoryshell/check', formData,config);
             console.log('response.data:' + JSON.stringify(response.data, null, 2));
             message.success('成功发送待检测的poc内容');
             this.hideMemoryShellModal(); // 关闭Modal
@@ -144,8 +151,6 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                 responseData: response.data,
                 detailModalVisible: true,
             });
-
-
         } catch (error) {
             console.error('发送失败:', error);
             message.error('poc内容发送失败，请稍后再试');
@@ -170,11 +175,11 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                     autoComplete="off"
                 >
                     <Form.Item
-                        label={<span style={{ fontSize: '18px' }}>添加待解码内容</span>}
+                        label={<span style={{ fontSize: '18px' }}>添加检测内容</span>}
                         name="data"
-                        rules={[{ required: true, message: '添加待解码内容' }]}
+                        rules={[{ required: true, message: '检测内容不能为空' }]}
                     >
-                        <TextArea rows={8} placeholder="添加待解码内容" />
+                        <TextArea rows={8} placeholder="添加检测内容" />
                     </Form.Item>
                 </Form>
             </Modal>

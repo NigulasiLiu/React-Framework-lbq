@@ -17,13 +17,12 @@ interface IFRequestParam {
  * @param msg       接口异常提示
  * @param headers   接口所需header配置
  */
-export const get = ({ url, msg = '接口异常', config }: IFRequestParam) =>
+export const get = ({ url, config }: IFRequestParam) =>
     axios
         .get(url, config)
         .then((res) => res.data)
         .catch((err) => {
             console.log(err);
-            message.warn(msg);
         });
 
 /**

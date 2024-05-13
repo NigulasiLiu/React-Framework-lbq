@@ -146,7 +146,7 @@ const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
 class Dashboard extends React.Component<DashboardProps> {
 
 
-    renderDataCard = (OriginData: any[]) => {
+    renderDataCard = (OriginData: any[],last7totalVulsum:number) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
@@ -159,7 +159,7 @@ class Dashboard extends React.Component<DashboardProps> {
                 <div>
                     <DataCard
                         title="待处理高可利用漏洞"
-                        value={totalExpResultCount}
+                        value={last7totalVulsum}
                         valueItem={[
                             { value: '0', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
                             { value: '0', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
@@ -250,6 +250,9 @@ class Dashboard extends React.Component<DashboardProps> {
                     } = context;
                     console.log('过去7日漏洞风险:'+last7VulValue);
                     const vulAlertData = generateAlertData(last7VulValue);
+                    const last7totalVulSum = last7VulValue.reduce((acc, currentValue) => {
+                        return acc + currentValue;
+                    }, 0); // 初始化累加器为0
                     // 转换value为DataItem类型
                     const vulProcessedData = vulAlertData.map(item => ({ ...item, Vuln: Number(item.value) }));
 
@@ -715,7 +718,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         </div>
                                                     </Col>
                                                     <Col span={6}>
-                                                        {this.renderDataCard(vulnOriginData)}
+                                                        {this.renderDataCard(vulnOriginData,last7totalVulSum)}
                                                     </Col>
                                                 </Row>
 

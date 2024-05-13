@@ -41,44 +41,44 @@ function handleResize(handler: (isMobile: boolean) => void) {
     window.addEventListener('resize', resizeListener.bind(null, handler));
 }
 
-function openFNotification() {
-    const openNotification = () => {
-        notification.open({
-            message: '博主-yezihaohao',
-            description: (
-                <div>
-                    <p>
-                        GitHub地址：
-                        <a
-                            href="https://github.com/yezihaohao"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            https://github.com/yezihaohao
-                        </a>
-                    </p>
-                    <p>
-                        博客地址：
-                        <a
-                            href="https://yezihaohao.github.io/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            https://yezihaohao.github.io/
-                        </a>
-                    </p>
-                </div>
-            ),
-            icon: <SmileOutlined style={{ color: 'red' }} />,
-            duration: 0,
-        });
-        umbrella.setLocalStorage('hideBlog', true);
-    };
-    const storageFirst = umbrella.getLocalStorage('hideBlog');
-    if (!storageFirst) {
-        openNotification();
-    }
-}
+// function openFNotification() {
+//     const openNotification = () => {
+//         notification.open({
+//             message: '博主-yezihaohao',
+//             description: (
+//                 <div>
+//                     <p>
+//                         GitHub地址：
+//                         <a
+//                             href="https://github.com/yezihaohao"
+//                             target="_blank"
+//                             rel="noopener noreferrer"
+//                         >
+//                             https://github.com/yezihaohao
+//                         </a>
+//                     </p>
+//                     <p>
+//                         博客地址：
+//                         <a
+//                             href="https://yezihaohao.github.io/"
+//                             target="_blank"
+//                             rel="noopener noreferrer"
+//                         >
+//                             https://yezihaohao.github.io/
+//                         </a>
+//                     </p>
+//                 </div>
+//             ),
+//             icon: <SmileOutlined style={{ color: 'red' }} />,
+//             duration: 0,
+//         });
+//         umbrella.setLocalStorage('hideBlog', true);
+//     };
+//     const storageFirst = umbrella.getLocalStorage('hideBlog');
+//     if (!storageFirst) {
+//         openNotification();
+//     }
+// }
 
 
 function App(props: AppProps) {
@@ -96,10 +96,10 @@ function App(props: AppProps) {
             // const userData = JSON.parse(user);  // 将字符串解析回对象
             const userData = user;
             setAlita('auth', userData);
-            message.info(`User Info: ${user}`); // 显示用户信息
+            // message.info(`User Info: ${user}`); // 显示用户信息
         }
         else{
-            message.info(`No User Info!`); // 显示用户信息
+            message.info(`No User Info! Please login!`); // 显示用户信息
         }
         setAlita('responsive', { isMobile: checkIsMobile() });
 

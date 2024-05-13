@@ -8,6 +8,7 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
+import umbrella from 'umbrella-storage';
 
 
 interface StatusPanelProps {
@@ -98,8 +99,15 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     };
     handleTTPsSubmit = async (values: any) => {
         try {
+            const token = umbrella.getLocalStorage('jwt_token');
+            // 配置axios请求头部，包括JWT
+            const config = {
+                headers: {
+                    Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+                }
+            };
             // 直接将values作为POST请求的body发送
-            const response = await axios.post('/api/getTTPs', values);
+            const response = await axios.post('/api/getTTPs', values,config);
             console.log(response.data);
             message.success('TTPs添加成功');
             this.closeModal(); // 关闭Modal

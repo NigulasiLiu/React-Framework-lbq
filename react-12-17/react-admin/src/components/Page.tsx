@@ -1,6 +1,3 @@
-/**
- * Created by hao.cheng on 2017/4/16.
- */
 import React, { ReactNode } from 'react';
 
 interface PageProps {

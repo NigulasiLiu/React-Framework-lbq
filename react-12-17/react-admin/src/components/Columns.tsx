@@ -1579,7 +1579,7 @@ export const baselineDetectColumns = [
         dataIndex: 'details',
         render: (text: string, record: any) => (
             <Tooltip title={record.details}>
-                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px' }}>
                     {record.details}
                 </div>
             </Tooltip>
@@ -1609,28 +1609,28 @@ export const baselineDetectColumns = [
         dataIndex: 'last_checked',
         // sorter: (a: any, b: any) => parseFloat(b.last_checked) - parseFloat(a.last_checked),
     },
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        render: (text: string, record: baselineDetectColumnsType) => (
-            <div>
-                <Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-                    <Button style={{
-                        fontWeight: 'bold',
-                        border: 'transparent',
-                        backgroundColor: 'transparent',
-                        color: '#4086FF',
-                        marginRight: '20px',
-                        padding: '0 0',
-                    }} className="custom-link-button">详情</Button>
-                </Link>
-                {/* <Button className="custom-link-button" 
-            style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
-            padding:'0 0' }}>加白名单</Button> */}
-            </div>
-        ),
-
-    },
+    // {
+    //     title: '操作',
+    //     dataIndex: 'operation',
+    //     render: (text: string, record: baselineDetectColumnsType) => (
+    //         <div>
+    //             <Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+    //                 <Button style={{
+    //                     fontWeight: 'bold',
+    //                     border: 'transparent',
+    //                     backgroundColor: 'transparent',
+    //                     color: '#4086FF',
+    //                     marginRight: '20px',
+    //                     padding: '0 0',
+    //                 }} className="custom-link-button">详情</Button>
+    //             </Link>
+    //             {/* <Button className="custom-link-button"
+    //         style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',
+    //         padding:'0 0' }}>加白名单</Button> */}
+    //         </div>
+    //     ),
+    //
+    // },
 ];
 
 export const threatHuntingColumns = [

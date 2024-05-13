@@ -4,34 +4,6 @@ import { FilteredDataResult_new } from './useFilterOriginData_new';
 
 const { Text, Title } = Typography;
 
-// interface FilteredDataResult {
-//   id: number;
-//   ip: string;
-//   port: string;
-//   scanTime: string;
-//   scanType: string;
-//   vul_detection_exp_result: {
-//     bug_exp: string;
-//     id: number;
-//     ip: string;
-//     scanTime: string;
-//   };
-//   vul_detection_finger_result: {
-//     finger: string;
-//     id: number;
-//     ip: string;
-//     scanTime: string;
-//     url: string;
-//   };
-//   vul_detection_poc_result: {
-//     bug_poc: string;
-//     id: number;
-//     ip: string;
-//     scanTime: string;
-//     url: string;
-//   };
-// }
-
 interface Props {
   filterData: Map<string, FilteredDataResult_new[]>;
 }

@@ -38,9 +38,16 @@ class Login extends React.Component<LoginProps> {
         const userInfo = requestBody.username;  // 假设用户信息在response.data.user中
         // localStorage.setItem("user", userInfo);  // 存储用户信息到LocalStorage
         umbrella.setLocalStorage("user", userInfo);
-        message.info("username:"+umbrella.getLocalStorage("user"));
+        // message.info("username:"+umbrella.getLocalStorage("user"));
         try {
-            const response = await axios.post('http://localhost:5000/api/login', requestBody);
+            const token = umbrella.getLocalStorage('jwt_token');
+            // 配置axios请求头部，包括JWT
+            const config = {
+                headers: {
+                    Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+                }
+            };
+            const response = await axios.post('http://localhost:5000/api/login', requestBody,config);
 
             // 检查 response.data 是否符合预期格式和内容
             // if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
@@ -110,9 +117,9 @@ class Login extends React.Component<LoginProps> {
                             />
                         </FormItem>
                         <FormItem>
-                            <span className="login-form-forgot" style={{ float: 'right' }}>
-                                忘记密码
-                            </span>
+                            {/*<span className="login-form-forgot" style={{ float: 'right' }}>*/}
+                            {/*    忘记密码*/}
+                            {/*</span>*/}
                             <Button
                                 type="primary"
                                 htmlType="submit"
@@ -129,13 +136,13 @@ class Login extends React.Component<LoginProps> {
                             >
                                 登录
                             </Button>
-                            <p style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span>或 注册</span>
-                                <span onClick={this.gitHub}>
-                                    <GithubOutlined />
-                                    (第三方登录)
-                                </span>
-                            </p>
+                            {/*<p style={{ display: 'flex', justifyContent: 'space-between' }}>*/}
+                            {/*    <span>或 注册</span>*/}
+                            {/*    <span onClick={this.gitHub}>*/}
+                            {/*        <GithubOutlined />*/}
+                            {/*        (第三方登录)*/}
+                            {/*    </span>*/}
+                            {/*</p>*/}
                         </FormItem>
                     </Form>
                 </div>
