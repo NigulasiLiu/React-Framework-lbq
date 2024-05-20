@@ -9,6 +9,7 @@ import moment from 'moment';
 import axios from 'axios';
 import umbrella from 'umbrella-storage';
 import { useHistory } from 'react-router-dom';
+import { Task_Data_API } from '../../service/config';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -362,7 +363,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务删除成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
-                this.handleRefresh("http://localhost:5000/api/taskdetail/all")
+                this.handleRefresh(Task_Data_API)
             })
             .catch(error => {
                 if (error.response && error.response.status === 401) {
@@ -379,7 +380,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
-                this.handleRefresh("http://localhost:5000/api/taskdetail/all")
+                this.handleRefresh(Task_Data_API)
             })
             .catch(error => {
                 if (error.response && error.response.status === 401) {
@@ -396,7 +397,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
-                this.handleRefresh("http://localhost:5000/api/taskdetail/all")
+                this.handleRefresh(Task_Data_API)
             })
             .catch(error => {
                 if (error.response && error.response.status === 401) {
@@ -469,7 +470,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                         </Row>
                         <DataDisplayTable
                             externalDataSource={originDataArray}
-                            apiEndpoint="http://localhost:5000/api/taskdetail/all"
+                            apiEndpoint={Task_Data_API}
                             timeColumnIndex={[]}
                             columns={column}
                             currentPanel={currentPanel}

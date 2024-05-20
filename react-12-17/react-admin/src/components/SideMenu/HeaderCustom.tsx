@@ -21,6 +21,7 @@ import screenfull from 'screenfull';
 import avater from '../../style/imgs/user1.png';
 import logo from '../../style/imgs/owl.png';
 import SiderCustom from './SiderCustom';
+import { APP_Server_URL } from '../../service/config';
 
 
 const { Header } = Layout;
@@ -97,7 +98,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
     const logout = async () => {
         try {
             // 调用后端登出API
-            await axios.get('http://localhost:5000/api/logout', {
+            await axios.get(APP_Server_URL+'/api/logout', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwt_token')}`, // 发送当前JWT
                 },

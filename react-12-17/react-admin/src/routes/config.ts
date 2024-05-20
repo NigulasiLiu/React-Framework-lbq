@@ -44,22 +44,26 @@ const menus: {
             title: '主机防护',
             icon: 'copy',
             subs: [
-                {
-                    key: '/app/HostProtection/TotalAlertList',
-                    title: '告警列表',
-                    component: 'TotalAlertList',
-                },
+                // {
+                //     key: '/app/HostProtection/TotalAlertList',
+                //     title: '告警列表',
+                //     component: 'TotalAlertList',
+                // },
                 {
                     key: '/app/HostProtection/MicroIsolation',
                     title: '文件隔离',
                     component: 'MicroIsolation',
                 },
-                { key: '/app/HostProtection/memory-horse', title: '内存马检测', component: 'MemoryHorseDetection' },
                 {
-                    key: '/app/HostProtection/TotalWhiteList',
-                    title: '白名单',
-                    component: 'TotalWhiteList',
+                    key: '/app/HostProtection/memory-horse',
+                    title: '内存马检测',
+                    component: 'MemoryHorseDetection'
                 },
+                // {
+                //     key: '/app/HostProtection/TotalWhiteList',
+                //     title: '白名单',
+                //     component: 'TotalWhiteList',
+                // },
             ],
         },
         {
@@ -99,7 +103,7 @@ const menus: {
         },
         
         // { key: '/app/honeypot', title: '蜜罐防御', component: 'HoneypotDefense' },
-        { key: '/app/threat-hunting', title: '威胁狩猎', component: 'ThreatHunting' },
+        { key: '/app/threat-hunting', title: '威胁分析', component: 'ThreatHunting' },
         {
             key: '/app/Management',
             title: '系统管理',

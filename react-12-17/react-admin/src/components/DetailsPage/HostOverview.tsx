@@ -13,6 +13,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { convertUnixTime } from '../ContextAPI/DataService';
+import { Assets_Data_API, Fim_Data_API, Monitor_Data_API, Port_Data_API, Process_Data_API } from '../../service/config';
 
 const { Text } = Typography;
 
@@ -789,27 +790,27 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Card>
                                     </Row>
                                     <Row ref={this.openPortsRef} gutter={[8, 16]}>
-                                        {this.renderTable(portOriginData, 'http://localhost:5000/api/portinfo/all', '开放端口', [], openPortsColumns, 'open_ports_' + this.state.host_uuid+"_details",
+                                        {this.renderTable(portOriginData, Port_Data_API, '开放端口', [], openPortsColumns, 'open_ports_' + this.state.host_uuid+"_details",
                                             ["port_number","port_name"]
                                         )}
                                     </Row>
                                     <Row ref={this.processRef} gutter={[8, 16]}>
-                                        {this.renderTable(processOriginData, 'http://localhost:5000/api/process/all', '运行进程', ['createTime'], runningProcessesColumns, 'process_' + this.state.host_uuid+"_details"
+                                        {this.renderTable(processOriginData, Process_Data_API, '运行进程', ['createTime'], runningProcessesColumns, 'process_' + this.state.host_uuid+"_details"
                                             ,["pid","name","userName","cmdline"]
                                         )}
                                     </Row>
                                     <Row ref={this.assetRef} gutter={[8, 16]}>
-                                        {this.renderTable(assetOriginData, 'http://localhost:5000/api/asset_mapping/all', '系统服务', [], systemServicesColumns, 'services_' + this.state.host_uuid+"_details"
+                                        {this.renderTable(assetOriginData, Assets_Data_API, '系统服务', [], systemServicesColumns, 'services_' + this.state.host_uuid+"_details"
                                             ,["service","port","ostype"]
                                         )}
                                     </Row>
                                     <Row ref={this.MonitorRef} gutter={[8, 16]}>
-                                        {this.renderTable(monitoredOriginData, 'http://localhost:5000/api/monitored/all', '文件监控', ['timestamp'], monitoredColumns, 'monitored_' + this.state.host_uuid+"_details"
+                                        {this.renderTable(monitoredOriginData, Monitor_Data_API, '文件监控', ['timestamp'], monitoredColumns, 'monitored_' + this.state.host_uuid+"_details"
                                             ,["file_path",]
                                         )}
                                     </Row>
                                     <Row ref={this.fimRef} gutter={[8, 16]}>
-                                        {this.renderTable(fimOriginData, 'http://localhost:5000/api/FileIntegrityInfo/all', '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid+"_details"
+                                        {this.renderTable(fimOriginData, Fim_Data_API, '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid+"_details"
                                             ,["filename",]
                                         )}
                                     </Row>

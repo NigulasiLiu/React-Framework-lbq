@@ -426,8 +426,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                    }}>威胁狩猎</h2>
+                                                        // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                    }}>威胁分析</h2>
                                                 </div>
                                                 <Menu
                                                     onClick={this.handleMenuClick}

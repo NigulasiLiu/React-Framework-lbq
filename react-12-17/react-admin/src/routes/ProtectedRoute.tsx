@@ -1,18 +1,19 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import React, { ComponentType } from 'react';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { verifyJWT } from '../utils';
 
-// @ts-ignore
-const ProtectedRoute = ({ component: Component, ...rest }) => (
+interface ProtectedRouteProps extends RouteProps {
+        component: ComponentType<any>;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => {
-        const token = localStorage.getItem('jwt_token');  // 从localStorage获取token
-        const isTokenValid = token && verifyJWT(token); // 假设verifyJWT是你的验证函数
-        console.log("isTokenValid", isTokenValid);
-        return isTokenValid ? (
-            <Component {...props} />
-        ) : (
-            <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-        );
+            const token = localStorage.getItem('jwt_token');
+            const isTokenValid = token && verifyJWT(token);
+            if (!isTokenValid) {
+                    return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />;
+            }
+            return <Component {...props} />;
     }} />
 );
 

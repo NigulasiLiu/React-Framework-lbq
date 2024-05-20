@@ -50,7 +50,8 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({
             active={true}
           //payload={data} 
           //borderColor="#ff0000"
-          />} />
+          />}
+          />
           <Pie
             data={data}
             cx="50%"

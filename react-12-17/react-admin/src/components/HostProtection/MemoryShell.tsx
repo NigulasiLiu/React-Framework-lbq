@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import { Col, Row, Card, Input, Button, Tooltip, Modal, Form, message, Descriptions } from 'antd';
-import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { Col, Row, Card, Input, Button, Tooltip, Modal, Form, message, Upload, message as AntMessage } from 'antd';
+import { LoadingOutlined,  } from '@ant-design/icons';
 import moment from 'moment';
+import CustomUpload from '../CustomAntd/CustomUpload'
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { constRenderTable } from '../Columns';
 import umbrella from 'umbrella-storage';
+import { APP_Server_URL, MemoryShell_API, Task_Data_API } from '../../service/config';
 
 const { TextArea } = Input;
 
@@ -18,7 +20,7 @@ interface MemmoryShellStates {
 
     detailModalVisible: boolean;  // 新增状态控制新Modal的显示
     responseData: any;
-    // shellPoc: any;
+    uploadedFileContent: string | null; // 添加一个字段来存储上传文件的内容
 }
 
 class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates> {
@@ -30,11 +32,10 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
 
             detailModalVisible: false,  // 初始化为不显示
             responseData: null,
-            // shellPoc: null,
+            uploadedFileContent: null, // 初始化为null
         };
         // Define your table columns based on the DataItem interface
     }
-
     MemoryHorseColumns = [
         {
             title: 'ID',
@@ -120,7 +121,6 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
             ],
         },
     ];
-
     // 显示Modal
     showModal = () => {
         this.setState({ modalVisible: true });
@@ -131,9 +131,6 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
     };
     handleMemoryShellSubmit = async (values: any) => {
         try {
-            // 直接将values作为POST请求的body发送
-            console.log('values:', JSON.stringify(values, null, 2));
-            const formData = new FormData();
             const token = umbrella.getLocalStorage('jwt_token');
             // 配置axios请求头部，包括JWT
             const config = {
@@ -141,8 +138,17 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                     Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
                 }
             };
-            formData.append('data', values.data); // 使用表单字段名 'data'，将待解码内容作为值传递
-            const response = await axios.post('http://localhost:5000/api/memoryshell/check', formData,config);
+
+            const { uploadedFileContent } = this.state;
+
+            // 直接将values作为POST请求的body发送
+            // console.log('values:', JSON.stringify(values, null, 2));
+            const formData = new FormData();
+            const poc_data = uploadedFileContent?uploadedFileContent:values.data;
+            formData.append('data', poc_data); // 使用表单字段名 'data'，将待解码内容作为值传递
+
+
+            const response = await axios.post(APP_Server_URL+'/api/memoryshell/check', formData,config);
             console.log('response.data:' + JSON.stringify(response.data, null, 2));
             message.success('成功发送待检测的poc内容');
             this.hideMemoryShellModal(); // 关闭Modal
@@ -156,7 +162,18 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
             message.error('poc内容发送失败，请稍后再试');
         }
     };
+
+
+    handleUploadSuccess = (fileName: string, fileContent: string) => {
+        this.setState({ uploadedFileContent: fileContent }); // 将上传文件的内容存储到state中
+    };
+
+    handleUploadError = (fileName: string) => {
+        message.error(`${fileName} 文件上传失败，请重试`);
+    };
+
     renderMemoryShellModal = () => {
+        const { uploadedFileContent } = this.state;
         return (
             <Modal
                 title={<span style={{ fontSize: '22px' }}>内存马检测</span>}
@@ -179,13 +196,34 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                         name="data"
                         rules={[{ required: true, message: '检测内容不能为空' }]}
                     >
-                        <TextArea rows={8} placeholder="添加检测内容" />
+                        {/*<TextArea rows={8} placeholder="添加检测内容" />*/}
+                        <TextArea
+                            rows={8}
+                            placeholder="添加检测内容"
+                            value={uploadedFileContent || ''} // 如果有上传文件内容，则将TextArea的值设置为上传文件的内容
+                            onChange={(e) => this.setState({ uploadedFileContent: e.target.value })}
+                            disabled={!!uploadedFileContent} // 如果有上传文件内容，则禁用TextArea
+                        />
                     </Form.Item>
+                    {/*<Form.Item*/}
+                    {/*    label={<span style={{ fontSize: '18px' }}>添加检测内容</span>}*/}
+                    {/*    name="data"*/}
+                    {/*    rules={[{ required: true, message: '检测内容不能为空' }]}*/}
+                    {/*>*/}
+                    {/*    <CustomUpload*/}
+                    {/*        onUploadSuccess={this.handleUploadSuccess}*/}
+                    {/*        onUploadError={this.handleUploadError}*/}
+                    {/*    />*/}
+                    {/*</Form.Item>*/}
+
                 </Form>
             </Modal>
         );
     };
-
+    handleRefresh = (api:string) => {
+        // 这个方法将被用于调用context中的refreshDataFromAPI
+        this.context.refreshDataFromAPI();
+    };
     renderDetailModal = () => {
         return (
             <Modal
@@ -193,7 +231,12 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                 visible={this.state.detailModalVisible}
                 onCancel={() => this.setState({ detailModalVisible: false })}
                 footer={[
-                    <Button key="back" onClick={() => this.setState({ detailModalVisible: false })}>
+                    <Button key="back" onClick={
+                        () => {
+                        this.setState({ detailModalVisible: false })
+                        this.handleRefresh(MemoryShell_API)
+                    }
+                    }>
                         关闭
                     </Button>,
                 ]}
@@ -281,8 +324,9 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const { memHorseOriginData } = context;
+                    const { memHorseOriginData,refreshDataFromAPI } = context;
                     // 将函数绑定到类组件的实例上
+                    this.handleRefresh = refreshDataFromAPI;
 
                     return (
                         <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
@@ -291,7 +335,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                 <Col md={24}>
                                     {constRenderTable(memHorseOriginData, '内存马捕获', ['alert_time'],
-                                        this.MemoryHorseColumns, 'memHorseList', 'http://localhost:5000/api/memoryshell/all', ['uuid'], this.showModal, '内存马检测')}
+                                        this.MemoryHorseColumns, 'memHorseList', MemoryShell_API, ['uuid'], this.showModal, '内存马检测')}
                                 </Col>
                             </Row>
                         </div>

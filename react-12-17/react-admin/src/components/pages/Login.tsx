@@ -6,6 +6,7 @@ import axios from 'axios';
 import { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router';
 import umbrella from 'umbrella-storage';
+import { Login_API } from '../../service/config';
 
 const FormItem = Form.Item;
 
@@ -47,7 +48,7 @@ class Login extends React.Component<LoginProps> {
                     Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
                 }
             };
-            const response = await axios.post('http://localhost:5000/api/login', requestBody,config);
+            const response = await axios.post(Login_API, requestBody,config);
 
             // 检查 response.data 是否符合预期格式和内容
             // if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
@@ -73,7 +74,7 @@ class Login extends React.Component<LoginProps> {
                     stateName: 'auth',
                     data: { uid: response.data.access_token }, // 或其他你需要存储的用户信息
                 });
-
+                console.log("登陆成功");
                 // 跳转到主页或其他适当页面
                 this.props.history.push('/app/Dashboard');
             } else {

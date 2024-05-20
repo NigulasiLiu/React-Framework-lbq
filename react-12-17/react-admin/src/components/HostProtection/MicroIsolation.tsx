@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import umbrella from 'umbrella-storage';
+import { APP_Server_URL } from '../../service/config';
 
 
 interface MicroIsolationProps{
@@ -220,7 +221,7 @@ handleDecryptSubmit = async () => {
         Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
       }
     };
-    const response = await axios.post('http://localhost:5000/api/isolate/decrypt', postData,config);
+    const response = await axios.post(APP_Server_URL+'/api/isolate/decrypt', postData,config);
     if (response.data.code === 0) {
       message.success('文件解除隔离成功');
     } else {
@@ -290,7 +291,7 @@ handleEncryptSubmit = async () => {
         Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
       }
     };
-    const response = await axios.post('http://localhost:5000/api/isolate/encrypt', postData,config);
+    const response = await axios.post(APP_Server_URL+'/api/isolate/encrypt', postData,config);
     if (response.data.code === 0) {
       message.success('文件隔离成功');
     } else {
@@ -322,43 +323,6 @@ renderEncryptModal=()=>{
     </Modal>
   );
 }
-
-
-// // 新增 - 提交表单进行文件隔离
-// onEncryptFinish = async (values:any) => {
-//   try {
-//     const response = await axios.post('http://localhost:5000/api/isolate/encrypt', {
-//       ip_address: values.ip_address,
-//       filename: values.filename,
-//       filepath: values.filepath,
-//     });
-//     if (response.data.code === 0) {
-//       message.success('文件隔离成功');
-//     } else {
-//       message.error('文件隔离失败: ' + response.data.message);
-//     }
-//   } catch (error) {
-//     console.error('隔离请求错误:', error);
-//     message.error('文件隔离请求发送失败');
-//   }
-// };
-// onDecryptFinish = async (values:any) => {
-//   try {
-//     const response = await axios.post('http://localhost:5000/api/isolate/decrypt', {
-//       ip_address: values.ip_address,
-//       filename: values.filename,
-//       filepath: values.filepath,
-//     });
-//     if (response.data.code === 0) {
-//       message.success('文件解除隔离成功');
-//     } else {
-//       message.error('文件解除隔离失败: ' + response.data.message);
-//     }
-//   } catch (error) {
-//     console.error('解除隔离请求错误:', error);
-//     message.error('文件解除隔离请求发送失败');
-//   }
-// };
 
   render() {
     return (

@@ -194,15 +194,15 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
               {/*  columns={virusscandetailscolumns}*/}
               {/*  currentPanel="hostOverviewdiskinfolist"*/}
               {/*/>*/}
-              <DataDisplayTable
-                  key={'hostOverviewdiskinfolist'}
-                  apiEndpoint={'http://localhost:5000/api/files/diskinfo'}
-                  externalDataSource={[]}
-                  timeColumnIndex={[]}
-                  columns={virusscandetailscolumns}
-                  currentPanel={"hostOverviewdiskinfolist"}
-                  searchColumns={['uuid', 'check_name']}
-              />
+              {/*<DataDisplayTable*/}
+              {/*    key={'hostOverviewdiskinfolist'}*/}
+              {/*    apiEndpoint={'http://localhost:5000/api/files/diskinfo'}*/}
+              {/*    externalDataSource={[]}*/}
+              {/*    timeColumnIndex={[]}*/}
+              {/*    columns={virusscandetailscolumns}*/}
+              {/*    currentPanel={"hostOverviewdiskinfolist"}*/}
+              {/*    searchColumns={['uuid', 'check_name']}*/}
+              {/*/>*/}
             </Row>
           </Card>
         </Row>

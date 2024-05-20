@@ -4,7 +4,6 @@ import NotFound from './components/pages/NotFound';
 import Login from './components/pages/Login';
 import App from './App';
 import DetailsPage from './components/DetailsPage/DetailsPage';
-import ProtectedRoute from './routes/ProtectedRoute';
 
 
 export default () => (

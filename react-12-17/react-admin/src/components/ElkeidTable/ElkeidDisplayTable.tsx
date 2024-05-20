@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal, message } from 'antd';
 import moment, { Moment } from 'moment';
 import { FilterDropdownProps, simplifiedTablePanel } from '../Columns';
-import { ExclamationCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { handleDelete, handleExport } from '../ContextAPI/DataService';
 import { Link } from 'react-router-dom';
 
@@ -439,27 +439,11 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                                 </Button>)}
                                             {/*<Button*/}
                                             {/*    style={{*/}
-                                            {/*        ...selectedcompStyle, backgroundColor: isButtonDisabled?'#f6c6cf':'#fb1440', color: 'white', marginRight: '10px',*/}
-                                            {/*        transition: 'opacity 0.3s', // 添加过渡效果*/}
-                                            {/*        opacity: 1, // 初始透明度*/}
+                                            {/*        ...selectedcompStyle,*/}
                                             {/*    }}*/}
-                                            {/*    onMouseEnter={(e) => { e.currentTarget.style.opacity = 0.7; }} // 鼠标进入时将透明度设置为0.5*/}
-                                            {/*    onMouseLeave={(e) => { e.currentTarget.style.opacity = 1; }} // 鼠标离开时恢复透明度为1*/}
-                                            {/*    onClick={() => this.toggleModal()}*/}
-                                            {/*    disabled={isButtonDisabled}*/}
-                                            {/*>*/}
-                                            {/*    批量删除*/}
+                                            {/*    onClick={this.props.handleReload}>*/}
+                                            {/*    采集最新数据*/}
                                             {/*</Button>*/}
-
-                                            <Button
-                                                style={{
-                                                    ...selectedcompStyle,
-                                                }}
-                                                // onClick={() => this.handleFetchLatestData('', '', '')}>
-
-                                                onClick={this.props.handleReload}>
-                                                采集最新数据
-                                            </Button>
 
                                         </Col>
                                         <Col flex="auto" style={{
@@ -467,6 +451,11 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                             fontSize: isSidebar ? '12px' : '',
                                         }}>
                                             <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
+                                        </Col>
+
+                                        <Col style={{ textAlign: 'left', marginLeft: 10, marginRight: '0px' }}>
+                                            <Button icon={<ReloadOutlined />}
+                                                    onClick={this.props.handleReload}>刷新</Button>
                                         </Col>
                                         {/* {!isSidebar && this.props.timeColumnIndex && this.props.timeColumnIndex.length > 0 && (
                                 <Col flex="none" span={5} style={{ marginLeft: 'auto',marginRight:'0px' }}>

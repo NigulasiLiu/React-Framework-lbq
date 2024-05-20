@@ -15,6 +15,9 @@ import useTransformedData from '../HostProtection/useTransformedData';
 import useCalculateAverage from './useCalculateAverage';
 import { processData } from './DataService';
 import { message } from 'antd';
+import {Agent_Data_API,Monitor_Data_API,Fim_Data_API,Vul_Data_API,Port_Data_API,Process_Data_API,Assets_Data_API,BaseLine_linux_Data_API,
+    BaseLine_windows_Data_API,Task_Data_API,MemoryShell_API,Honey_API,Brute_TTPs_API,Privilege_TTPs_API,Defense_TTPs_API,
+    Virus_Data_API,Isolate_Data_API,User_Data_API} from '../../service/config';
 
 
 export interface DataContextType {
@@ -152,29 +155,27 @@ const DataManager: React.FC = ({ children }) => {
     const [isolationOriginData, setIsolationOriginData] = useState<any>([]);
     // 数据更新函数映射表
     const setDataFunctions: SetDataFunctions = {
-        'http://localhost:5000/api/agent/all': setAgentOriginData,
+        [Agent_Data_API as string]: setAgentOriginData,
+        [Monitor_Data_API as string]: setMonitoredOriginData,
+        [Fim_Data_API as string]: setFimOriginData,
+        [Vul_Data_API as string]: setVulnOriginData,
+        [Port_Data_API as string]: setPortOriginData,
+        [Process_Data_API as string]: setProcessOriginData,
+        [Assets_Data_API as string]: setAssetOriginData,
+        [BaseLine_linux_Data_API as string]: setlinuxBLCheckOriginData,
+        [BaseLine_windows_Data_API as string]: setwindowsBLCheckOriginData,
+        [Task_Data_API as string]: settaskDetailsOriginData,
+        [MemoryShell_API as string]: setmemHorseOriginData,
+        [Honey_API as string]: sethoneyPotOriginData,
 
-        'http://localhost:5000/api/monitored/all': setMonitoredOriginData,
-        'http://localhost:5000/api/FileIntegrityInfo/all': setFimOriginData,
+        [Brute_TTPs_API as string]: setbruteforceTTPsOriginData,
+        [Privilege_TTPs_API as string]: setprivilegeescalationTTPsOriginData,
+        [Defense_TTPs_API as string]: setdefenseavoidanceTTPsOriginData,
 
-        'http://localhost:5000/api/vulndetetion/all': setVulnOriginData,
-        'http://localhost:5000/api/portinfo/all': setPortOriginData,
-        'http://localhost:5000/api/process/all': setProcessOriginData,
-        'http://localhost:5000/api/asset_mapping/all': setAssetOriginData,
-        'http://localhost:5000/api/baseline_check/linux/all': setlinuxBLCheckOriginData,
-        'http://localhost:5000/api/baseline_check/windows/all': setwindowsBLCheckOriginData,
-        'http://localhost:5000/api/taskdetail/all': settaskDetailsOriginData,
-        'http://localhost:5000/api/memoryshell/all': setmemHorseOriginData,
-        'http://localhost:5000/api/honeypot/all': sethoneyPotOriginData,
+        [User_Data_API as string]: setUsersOriginData,
 
-        'http://localhost:5000/api/brute-force/all': setbruteforceTTPsOriginData,
-        'http://localhost:5000/api/privilege-escalation/all': setprivilegeescalationTTPsOriginData,
-        'http://localhost:5000/api/defense-avoidance/all': setdefenseavoidanceTTPsOriginData,
-
-        'http://localhost:5000/api/users/all': setUsersOriginData,
-
-        'http://localhost:5000/api/virus/all': setVirusOriginData,
-        'http://localhost:5000/api/isolate/all': setIsolationOriginData,
+        [Virus_Data_API as string]: setVirusOriginData,
+        [Isolate_Data_API as string]: setIsolationOriginData,
         // 添加其他API端点和对应的设置函数
     };
 
@@ -186,70 +187,44 @@ const DataManager: React.FC = ({ children }) => {
             const setDataFunction = setDataFunctions[apiEndpoint];
             if (setDataFunction) {
                 setDataFunction(data); // 更新状态
-                // message.success(apiEndpoint + ' Data refreshed successfully');
+                message.success(apiEndpoint + ' Data refreshed successfully');
             } else {
                 console.error('No matching function found for the API endpoint');
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
-            message.error('Failed to refresh' + { apiEndpoint } + 'data');
+            message.error('获取接口' + { apiEndpoint } + '数据失败');
         }
     };
 
     useEffect(() => {
 
-        refreshDataFromAPI('http://localhost:5000/api/agent/all');
+        refreshDataFromAPI(Agent_Data_API);
 
-        refreshDataFromAPI('http://localhost:5000/api/monitored/all');
-        refreshDataFromAPI('http://localhost:5000/api/FileIntegrityInfo/all');
+        refreshDataFromAPI(Monitor_Data_API);
+        refreshDataFromAPI(Fim_Data_API);
 
-        refreshDataFromAPI('http://localhost:5000/api/portinfo/all');
-        refreshDataFromAPI('http://localhost:5000/api/process/all');
-        refreshDataFromAPI('http://localhost:5000/api/asset_mapping/all');
-        refreshDataFromAPI('http://localhost:5000/api/baseline_check/linux/all');
-        refreshDataFromAPI('http://localhost:5000/api/baseline_check/windows/all');
-        refreshDataFromAPI('http://localhost:5000/api/vulndetetion/all');
-        refreshDataFromAPI('http://localhost:5000/api/taskdetail/all');
-        refreshDataFromAPI('http://localhost:5000/api/memoryshell/all');
-        refreshDataFromAPI('http://localhost:5000/api/honeypot/all');
+        refreshDataFromAPI(Port_Data_API);
+        refreshDataFromAPI(Process_Data_API);
+        refreshDataFromAPI(Assets_Data_API);
+        refreshDataFromAPI(BaseLine_linux_Data_API);
+        refreshDataFromAPI(BaseLine_windows_Data_API);
+        refreshDataFromAPI(Vul_Data_API);
+        refreshDataFromAPI(Task_Data_API);
+        refreshDataFromAPI(MemoryShell_API);
+        refreshDataFromAPI(Honey_API);
 
-        refreshDataFromAPI('http://localhost:5000/api/brute-force/all');
-        refreshDataFromAPI('http://localhost:5000/api/privilege-escalation/all');
-        refreshDataFromAPI('http://localhost:5000/api/defense-avoidance/all');
-
-
-        refreshDataFromAPI('http://localhost:5000/api/users/all');
-        refreshDataFromAPI('http://localhost:5000/api/isolate/all');
-
-        refreshDataFromAPI('http://localhost:5000/api/virus/all');
+        refreshDataFromAPI(Brute_TTPs_API);
+        refreshDataFromAPI(Privilege_TTPs_API);
+        refreshDataFromAPI(Defense_TTPs_API);
 
 
-        // const fetchData = async () => {
-        //   try {
-        //     const agentOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/agent/all' });
-        //     const fimOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/FileIntegrityInfo/all' });
-        //     const portOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/portinfo/all' });
-        //     const processOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/process/all' });
-        //     const assetOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/asset_mapping/all' });
-        //     const linuxBaseLineCheckOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/baseline_check/linux/all' });
-        //     const windowsBaseLineCheckOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/baseline_check/windows/all' });
-        //     const vulnOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/vulndetetion/all' });
-        //     const taskDetailsOriginData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/taskdetail/all' });
-        //     //settaskRecordOriginData(taskRecordOriginData);
-        //     settaskDetailsOriginData(taskDetailsOriginData);
-        //     setAgentOriginData(agentOriginData);
-        //     setFimOriginData(fimOriginData);
-        //     setPortOriginData(portOriginData);
-        //     setProcessOriginData(processOriginData);
-        //     setAssetOriginData(assetOriginData);
-        //     setlinuxBLCheckOriginData(linuxBaseLineCheckOriginData);
-        //     setwindowsBLCheckOriginData(windowsBaseLineCheckOriginData);
-        //     setVulnOriginData(vulnOriginData);
-        //   } catch (error) {
-        //     console.error('Failed to fetch initial data:', error);
-        //   }
-        // };
-        // fetchData();
+        refreshDataFromAPI(User_Data_API);
+        refreshDataFromAPI(Isolate_Data_API);
+
+        refreshDataFromAPI(Virus_Data_API);
+
+
     }, []);
 
     const fetchLatestData = async (apiEndpoint: string, searchField = '', searchQuery = '', rangeQuery = '', timeColumnIndex: string[] = []) => {
@@ -280,7 +255,7 @@ const DataManager: React.FC = ({ children }) => {
 
     //完整性检验信息
     const fimMetaData_hostname = useExtractOrigin('hostname', fimOriginData);
-    const topFiveFimData = useSortedData('filename', 'event_time', 'http://localhost:5000/api/FileIntegrityInfo/all'); // 这将返回DataItem[]类型的数据
+    const topFiveFimData = useSortedData('filename', 'event_time', Fim_Data_API); // 这将返回DataItem[]类型的数据
 
 
     //端口信息

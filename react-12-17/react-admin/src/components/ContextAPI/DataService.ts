@@ -3,6 +3,8 @@ import axios from 'axios';
 import { GenericDataItem, AgentInfoType } from '../Columns'
 import { message, } from 'antd'
 import umbrella from 'umbrella-storage';
+import { Redirect } from 'react-router-dom';
+import { APP_Server_URL } from '../../service/config';
 
 interface FetchDataParams {
   apiEndpoint: string;
@@ -12,7 +14,6 @@ interface FetchDataParams {
 
 export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', requestParams }: FetchDataParams): Promise<any[]> => {
   let endpoint = `${apiEndpoint}`;
-
   // 从localStorage获取JWT
   // const token1 = localStorage.getItem('jwt_token'); // 假设JWT存储在localStorage的'jwtToken'键下
   const token = umbrella.getLocalStorage('jwt_token');
@@ -34,7 +35,16 @@ export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', reque
   } catch (error) {
     // 处理请求错误
     console.error('Request failed:', error);
-    // message.error('请求错误: ' + error.message);
+    // 检查错误状态码，如果是401，则弹出提示窗口并重定向到登录页面
+    if (error.response && error.response.status === 401) {
+      window.alert('您的登录状态已过期，请重新登录');
+      try {
+        await axios.get(`${APP_Server_URL}/api/logout`, config);
+      } catch (logoutError) {
+        console.error('Logout failed:', logoutError);
+      }
+      window.location.href = '/login';
+    }
     throw error;
   }
 

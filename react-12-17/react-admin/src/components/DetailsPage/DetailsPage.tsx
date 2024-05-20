@@ -24,6 +24,7 @@ import { FilterDropdownProps } from 'antd/lib/table/interface';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import Item from 'antd/lib/list/Item';
 import moment from 'moment';
+import { APP_Server_URL } from '../../service/config';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -1155,7 +1156,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     </Row>
                                 </Card>
                                 {this.renderModal()}
-                                {this.renderBaseLineCheckTable('http://localhost:5000/api/vulndetetion/query_uuid?uuid=',
+                                {this.renderBaseLineCheckTable(APP_Server_URL+'/api/vulndetetion/query_uuid?uuid=',
                                     this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel, '漏洞概览', ['port'])}
                             </div>
                         );
@@ -1311,7 +1312,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 </Row>
                                 <Row style={{ width: '100%', margin: '0 auto' }}>
                                     {this.renderBLWhiteListModal()}
-                                    {this.renderBaseLineCheckTable('http://localhost:5000/api/baseline_check/' + os_version + '/query_uuid?uuid=',
+                                    {this.renderBaseLineCheckTable(APP_Server_URL+'/api/baseline_check/' + os_version + '/query_uuid?uuid=',
                                         this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线概览', ['check_name'])}
                                 </Row>
                             </div>

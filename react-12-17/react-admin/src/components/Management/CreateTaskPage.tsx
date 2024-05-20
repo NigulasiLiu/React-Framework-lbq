@@ -2,13 +2,14 @@ import React, { createRef, useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, TimePicker, Col } from 'antd';
 import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { createNewTaskColumns, fimColumns } from '../Columns';
+import { createNewTaskColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
-import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
+
 import moment, { Moment } from 'moment';
 import { fetchDataFromAPI } from '../ContextAPI/DataService';
-
+import { Task_Data_API } from '../../service/config';
+// import '../CustomAntd/CustomDatePicker.less'
 const { Step } = Steps;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -56,7 +57,7 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
   //获取已经存在的任务的uuid，用于判断用户输入的新job_id是否合理
   async fetchTaskDetails() {
     try {
-      const taskData = await fetchDataFromAPI({ apiEndpoint: 'http://localhost:5000/api/taskdetail/all' });
+      const taskData = await fetchDataFromAPI({ apiEndpoint: Task_Data_API });
       if (taskData !== undefined) {
         const taskDataArray = Array.isArray(taskData) ? taskData : [taskData]
         const jobIds = taskDataArray.map(item => item.job_id);
@@ -418,7 +419,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                           <Row style={{ width: '100%' }}>
                             <Col span={11}>
                               <Form.Item label="开始时间" name="startTime" rules={[{ required: true, message: '请选择开始时间' }]}>
-                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()}
+                                <DatePicker className="custom-date-picker" showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()}
                                   value={this.state.startTime}
                                   onChange={this.handleStartTimeChange}/>
                               </Form.Item>
@@ -430,7 +431,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                               rules={[
                                 { required: true, message: '请选择结束时间' },
                               ]}>
-                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} 
+                                <DatePicker className="custom-date-picker" showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()}
                                   value={this.state.endTime}
                                   onChange={this.handleEndTimeChange}/>
                               </Form.Item>
@@ -443,7 +444,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                       <Row style={{ width: '100%' }}>
                         <Col span={24}>
                           <Form.Item label="执行时间" name="executionTime" rules={[{ required: true, message: '请选择执行时间' }]}>
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()} 
+                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment()}
                                   value={this.state.excuteTime}
                                   onChange={this.handleExcuteTimeChange}/>
                           </Form.Item>

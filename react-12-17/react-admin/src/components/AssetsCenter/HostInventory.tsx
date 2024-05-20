@@ -6,6 +6,7 @@ import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Agent_Data_API } from '../../service/config';
 
 //const { Search } = Input;
 
@@ -397,7 +398,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}>
                                 <Col md={24}>
                                     {constRenderTable(agentOriginData, '主机内容', [],
-                                        hostinventoryColumns, 'hostinventory', 'http://localhost:5000/api/agent/all',
+                                        hostinventoryColumns, 'hostinventory', Agent_Data_API,
                                         ['uuid', 'os_version'])}
                                     {/* <div className="gutter-box">
                     <Card bordered={false}>

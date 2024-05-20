@@ -7,9 +7,6 @@ import moment from 'moment';
 import DataDisplayTable from './ElkeidTable/DataDisplayTable';
 
 
-
-export const ServerPort = 'http://localhost:5000';
-
 export interface FilterDropdownProps {
     setSelectedKeys: (keys: string[]) => void;
     selectedKeys: string[];
@@ -964,7 +961,13 @@ export const runningProcessesColumns = [
     {
         title: '用户',
         dataIndex: 'userName',
-
+        render: (text: string, record: runningProcessesColumnsType) => (
+            <Tooltip title={record.cmdline}>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+                    {record.userName}
+                </div>
+            </Tooltip>
+        ),
         //onFilter: (value: string | number | boolean, record: runningProcessesColumnsType) => (record.userName&&record.userName.includes(value as string)),
     },
     // {
@@ -988,17 +991,17 @@ export const runningProcessesColumns = [
     //         </Tooltip>
     //     ),
     // },
-    {
-        title: '命令行',
-        dataIndex: 'cmdline',
-        render: (text: string, record: runningProcessesColumnsType) => (
-            <Tooltip title={record.cmdline}>
-                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
-                    {record.cmdline}
-                </div>
-            </Tooltip>
-        ),
-    },
+    // {
+    //     title: '命令行',
+    //     dataIndex: 'cmdline',
+    //     render: (text: string, record: runningProcessesColumnsType) => (
+    //         <Tooltip title={record.cmdline}>
+    //             <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+    //                 {record.cmdline}
+    //             </div>
+    //         </Tooltip>
+    //     ),
+    // },
     {
         title: 'CPU占用',
         dataIndex: 'cpuPercent',
