@@ -63,7 +63,10 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
                 return (
                     <div key={index} style={{ marginBottom: '40px' }}> {/* 增加行与行之间的距离 */}
                         {/* Label with sequence number and YouYuan font */}
-                        <div style={{ fontFamily: 'YouYuan', marginBottom: '10px' }}>
+                        <div style={{
+                            // fontFamily: 'YouYuan',
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            marginBottom: '10px' }}>
                             {`${label}`} {/* 添加序号 {`${index + 1}. ${label}`}*/}
                         </div>
                         {/* Progress bar in a separate row */}
@@ -346,6 +349,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -484,6 +488,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -673,6 +678,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -736,6 +742,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -859,6 +866,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '16px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -920,6 +928,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '16px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -1003,10 +1012,11 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
-                                                    }}>TTPs 威胁捕获</h2>
+                                                    }}>威胁狩猎</h2>
                                                 </div>
                                                 <Row gutter={0}>
                                                     <Col span={12}>

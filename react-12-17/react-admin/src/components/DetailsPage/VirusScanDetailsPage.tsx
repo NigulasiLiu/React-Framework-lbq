@@ -4,7 +4,7 @@ import { Menu, Row, Col, Card, Statistic, Typography, Button, Progress } from 'a
 
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { baselineDetectColumns, virusscandetailscolumns } from '../Columns';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 
 
 const { Text } = Typography;
@@ -111,7 +111,10 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
 
     const percent = 100 * finished / total;
     return (
-      <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold', width: '90%', margin: '0 auto' }}>
+      <div style={{
+        // fontFamily: "'YouYuan', sans-serif",
+        // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+        fontWeight: 'bold', width: '90%', margin: '0 auto' }}>
         <BreadcrumbCustom />
         {/* <Button
                         type="link"
@@ -129,7 +132,10 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
             </div>
             <Row gutter={[6, 6]}>
               <Col className="gutter-row" md={24}>
-                <Card bordered={false} style={{ fontFamily: 'YouYuan, sans-serif' }}>
+                <Card bordered={false} style={{
+                  // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                }}
+                >
                   <Row gutter={16}>
                     {Object.entries(data).map(([key, value], index) => (
                       <Col key={index} span={6} style={{ fontSize: '15px', marginBottom: '10px' }}>

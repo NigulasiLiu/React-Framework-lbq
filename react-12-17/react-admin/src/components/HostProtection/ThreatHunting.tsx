@@ -6,9 +6,10 @@ import {
 } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import umbrella from 'umbrella-storage';
+import { Brute_TTPs_API, Defense_TTPs_API, Privilege_TTPs_API } from '../../service/config';
 
 
 interface StatusPanelProps {
@@ -178,23 +179,13 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
         const { currentPanel } = this.state;
         console.log('this.state.currentPanel:' + currentPanel);
 
-        // {constRenderTable(bruteforceTTPsOriginData, 'TTPs-暴力破解', [],
-        //     threatHuntingColumns, 'threathuntinglist',"http://localhost:5000/api/brute-force/all",
-        //     [''],this.openModal,"添加TTPs")}
-        //
-        // {constRenderTable(bruteforceTTPsOriginData, 'TTPs-权限提升', [],
-        //     threatHuntingColumns, 'threathuntinglist',"http://localhost:5000/api/privilege-escalation/all",[''],this.openModal,"添加TTPs")}
-        //
-        // {constRenderTable(bruteforceTTPsOriginData, 'TTPs-防御规避', [],
-        //     threatHuntingColumns, 'threathuntinglist',"http://localhost:5000/api/defense-avoidance/all",[''],this.openModal,"添加TTPs")}
-
         switch (currentPanel) {
             case 'brute-force':
                 return (
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={bruteforceTTPsOriginData}
-                        apiEndpoint="http://localhost:5000/api/brute-force/all"
+                        apiEndpoint={Brute_TTPs_API}
                         timeColumnIndex={[]}
                         columns={threatHuntingColumns}
                         currentPanel={currentPanel}
@@ -208,7 +199,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={privilegeescalationTTPsOriginData}
-                        apiEndpoint="http://localhost:5000/api/privilege-escalation/all"
+                        apiEndpoint={Privilege_TTPs_API}
                         timeColumnIndex={[]}
                         columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
@@ -222,7 +213,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={defenseavoidanceTTPsOriginData}
-                        apiEndpoint="http://localhost:5000/api/defense-avoidance/all"
+                        apiEndpoint={Defense_TTPs_API}
                         timeColumnIndex={[]}
                         columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
@@ -319,10 +310,11 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
-                                                    }}>威胁捕获概览</h2>
+                                                    }}>威胁狩猎概览</h2>
                                                 </div>
                                                 <Row>
                                                     <Col span={9} style={{ marginLeft: '10px' }}>
@@ -338,7 +330,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                                 backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                                             }}
                                                         >
-                                                            {this.renderPanelAndPieChart(vulnOriginData, '已捕获威胁',
+                                                            {this.renderPanelAndPieChart(vulnOriginData, '已狩猎威胁',
                                                                 '风险等级1', '风险等级2', '风险等级3')}
                                                         </Card>
                                                     </Col>
@@ -426,8 +418,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
-                                                        // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                    }}>威胁分析</h2>
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                    }}>威胁狩猎</h2>
                                                 </div>
                                                 <Menu
                                                     onClick={this.handleMenuClick}

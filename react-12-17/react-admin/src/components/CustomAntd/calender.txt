@@ -275,7 +275,7 @@
 .ant-calendar .ant-calendar-ok-btn[disabled].active {
   color: rgba(0, 0, 0, 0.25);
   background-color: #f5f5f5;
-  border-color: #d9d9d9;
+  border-color: #FAFAFA;//#d9d9d9;
   box-shadow: none;
 }
 .ant-calendar .ant-calendar-ok-btn-disabled > a:only-child,
@@ -329,7 +329,7 @@
 .ant-calendar .ant-calendar-ok-btn[disabled].active {
   color: rgba(0, 0, 0, 0.25);
   background-color: #f5f5f5;
-  border-color: #d9d9d9;
+  border-color: #FAFAFA;//#d9d9d9;
   box-shadow: none;
 }
 .ant-calendar .ant-calendar-ok-btn-disabled > a:only-child,
@@ -411,7 +411,7 @@
   color: #000000;
   background-color: #fff;
   background-image: none;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #FAFAFA;//#d9d9d9;
   border-radius: 2px;
   border: 0;
   box-shadow: none;
@@ -446,7 +446,7 @@
 }
 .ant-calendar-range .ant-calendar-input-disabled:hover,
 .ant-calendar-range .ant-calendar-time-picker-input-disabled:hover {
-  border-color: #d9d9d9;
+  border-color: #FAFAFA;//#d9d9d9;
   border-right-width: 1px !important;
 }
 .ant-calendar-range .ant-calendar-input[disabled],
@@ -456,7 +456,7 @@
 }
 .ant-calendar-range .ant-calendar-input[disabled]:hover,
 .ant-calendar-range .ant-calendar-time-picker-input[disabled]:hover {
-  border-color: #d9d9d9;
+  border-color: #FAFAFA;//#d9d9d9;
   border-right-width: 1px !important;
 }
 .ant-calendar-range .ant-calendar-input:focus,

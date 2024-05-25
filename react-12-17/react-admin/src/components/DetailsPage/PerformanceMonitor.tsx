@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card } from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, } from 'recharts';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { hostperformanceColumns, StatusItem } from '../Columns';
 
 //const { Search } = Input;
@@ -51,7 +51,10 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
 
 
         return (
-            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+            <div style={{
+                // fontFamily: "'YouYuan', sans-serif",
+                // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                fontWeight: 'bold' }}>
 
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
                     <Col span={12} style={{ width: 660 }}>

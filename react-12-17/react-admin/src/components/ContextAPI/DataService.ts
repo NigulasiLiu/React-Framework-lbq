@@ -12,6 +12,7 @@ interface FetchDataParams {
   requestParams?: any;
 }
 
+let hasAlertBeenShown = false; // 全局变量，用于跟踪是否已经显示过alert
 export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', requestParams }: FetchDataParams): Promise<any[]> => {
   let endpoint = `${apiEndpoint}`;
   // 从localStorage获取JWT
@@ -36,7 +37,8 @@ export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', reque
     // 处理请求错误
     console.error('Request failed:', error);
     // 检查错误状态码，如果是401，则弹出提示窗口并重定向到登录页面
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 && !hasAlertBeenShown) {
+      hasAlertBeenShown = true; // 设置标志变量，表示已经显示过alert
       window.alert('您的登录状态已过期，请重新登录');
       try {
         await axios.get(`${APP_Server_URL}/api/logout`, config);
@@ -152,42 +154,42 @@ export const handleExport = (externalDataSource: any[], currentPanel: any,select
   document.body.removeChild(link);
 };
 
-export const handleDelete = (currentPanel: string, selectedRowKeys: any[]) => {
-  const panel_to_delete_api: Record<string, string> = {
-    "agent": "http://localhost:5000/api/agent/delete",
-    "hostinventory": "http://localhost:5000/api/agent/delete",
-    "fim": "http://localhost:5000/api/fim/delete",
-    "running_processes": "http://localhost:5000/api/process/delete",
-    "open_ports": "http://localhost:5000/api/hostport/delete",
-    "system_services": "http://localhost:5000/api/asset_mapping/delete",
-    "baseline_check_linux": "http://localhost:5000/api/baseline_check/linux/delete",
-    "baseline_check_windows": "http://localhost:5000/api/baseline_check/windows/delete",
-  };
-
-  const apiUrl = panel_to_delete_api[currentPanel]; // 获取对应面板的 API 地址
-  const token = umbrella.getLocalStorage('jwt_token');
-  // 配置axios请求头部，包括JWT
-  const config = {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
-    }
-  };
-  // 构造 DELETE 请求
-  const deleteRequests = selectedRowKeys.map((key: string) => {
-    const url = `${apiUrl}?uuid=${key}`; // 构造完整的 URL，包括选定行的键值
-    return axios.delete(url,config)
-        .then(() => {
-          message.success(`成功删除条目: ${key}`); // 输出成功删除的消息
-        })
-        .catch(error => {
-          message.error(`Failed to delete item ${key}: ${error.message}`); // 输出错误信息
-          return Promise.reject(error); // 将错误继续传递给 Promise 链
-        });
-  });
-
-  // 返回所有 DELETE 请求的 Promise 数组
-  return Promise.all(deleteRequests);
-}
+// export const handleDelete = (currentPanel: string, selectedRowKeys: any[]) => {
+//   const panel_to_delete_api: Record<string, string> = {
+//     "agent": "http://localhost:5000/api/agent/delete",
+//     "hostinventory": "http://localhost:5000/api/agent/delete",
+//     "fim": "http://localhost:5000/api/fim/delete",
+//     "running_processes": "http://localhost:5000/api/process/delete",
+//     "open_ports": "http://localhost:5000/api/hostport/delete",
+//     "system_services": "http://localhost:5000/api/asset_mapping/delete",
+//     "baseline_check_linux": "http://localhost:5000/api/baseline_check/linux/delete",
+//     "baseline_check_windows": "http://localhost:5000/api/baseline_check/windows/delete",
+//   };
+//
+//   const apiUrl = panel_to_delete_api[currentPanel]; // 获取对应面板的 API 地址
+//   const token = umbrella.getLocalStorage('jwt_token');
+//   // 配置axios请求头部，包括JWT
+//   const config = {
+//     headers: {
+//       Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+//     }
+//   };
+//   // 构造 DELETE 请求
+//   const deleteRequests = selectedRowKeys.map((key: string) => {
+//     const url = `${apiUrl}?uuid=${key}`; // 构造完整的 URL，包括选定行的键值
+//     return axios.delete(url,config)
+//         .then(() => {
+//           message.success(`成功删除条目: ${key}`); // 输出成功删除的消息
+//         })
+//         .catch(error => {
+//           message.error(`Failed to delete item ${key}: ${error.message}`); // 输出错误信息
+//           return Promise.reject(error); // 将错误继续传递给 Promise 链
+//         });
+//   });
+//
+//   // 返回所有 DELETE 请求的 Promise 数组
+//   return Promise.all(deleteRequests);
+// }
 
 export const convertUnixTime = (timestamp: number): string => {
   const date = new Date(timestamp * 1000);

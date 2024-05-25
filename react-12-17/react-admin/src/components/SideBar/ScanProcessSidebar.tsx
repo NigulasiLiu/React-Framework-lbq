@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Button } from 'antd';
 import { StatusItem } from '../Columns';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import CustomLoader from './CustomLoader';
+import CustomLoader from '../CustomAntd/CustomLoader';
 import scanguard from '../../style/imgs/scanguard.png'
 
 
@@ -154,7 +154,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
       <div>
         <Col md={24} style={{ borderTop: '5px solid #4086FF' }}>
           <Card
-            style={{ fontWeight: 'bolder', width: 500, height: 680, border: 'solid 1px black', justifyContent: 'center' }}>
+            style={{ fontWeight: 'bolder', width: 500, height: 680, border:'2px solid #becffa', justifyContent: 'center' }}>
             <Row>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2, fontWeight: 'bold' }}>
                 <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[0]}</h2>

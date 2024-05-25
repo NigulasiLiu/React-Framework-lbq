@@ -2,12 +2,13 @@ import React from 'react';
 import { Row, Col, Card, Button, Statistic, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import VirusScanningTaskSidebar from './VirusScanTableSidebar';
-import VirusScanProcessSidebar from '../RiskManagement/ScanProcessSidebar';
+import VirusScanProcessSidebar from '../SideBar/ScanProcessSidebar';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { fimColumns, StatusItem, virusscanningColumns } from '../Columns';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Virus_Data_API } from '../../service/config';
 
 interface VirusScanningProps {
     hostID: string;
@@ -164,7 +165,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     const { virusOriginData,VirusHostCount } = context;
                     // this.props.pageWidth ? this.props.pageWidth : '1320'
                     return (
-                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold', width: '100%' }}>
+                        <div style={{
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold', width: '100%' }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>
                                 <Col className="gutter-row" span={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
@@ -179,6 +182,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -189,28 +193,11 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                          style={{ marginLeft: '15px', marginTop: '10px' }}>
                                                         <div className="container">
                                                             <Row gutter={24}>
-                                                                <h2 style={{ fontSize: '16px' }}>最近扫描时间:</h2>
+                                                                <h2 style={{ fontSize: '16px' }}>最近扫描时间: </h2>
                                                                 <span className="currentTime" style={{
                                                                     marginRight: '10px',
                                                                     marginBottom: '8px',
                                                                 }}>{currentTime}</span>
-                                                                {/*<Link to="/app/create_virusscan_task" target="_blank">*/}
-                                                                {/*    <Button type="link"*/}
-                                                                {/*            style={{*/}
-                                                                {/*                backgroundColor: '#1664FF',*/}
-                                                                {/*                color: 'white',*/}
-                                                                {/*                marginRight: '10px',*/}
-                                                                {/*                transition: 'opacity 0.3s', // 添加过渡效果*/}
-                                                                {/*                opacity: 1, // 初始透明度*/}
-                                                                {/*            }}*/}
-                                                                {/*            onMouseEnter={(e) => {*/}
-                                                                {/*                e.currentTarget.style.opacity = 0.7;*/}
-                                                                {/*            }} // 鼠标进入时将透明度设置为0.5*/}
-                                                                {/*            onMouseLeave={(e) => {*/}
-                                                                {/*                e.currentTarget.style.opacity = 1;*/}
-                                                                {/*            }} // 鼠标离开时恢复透明度为1*/}
-                                                                {/*    >创建病毒扫描任务</Button>*/}
-                                                                {/*</Link>*/}
                                                                 <Button
                                                                     style={{
                                                                         backgroundColor: '#1664FF',
@@ -354,7 +341,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                 marginBottom: 16,
                                                 fontWeight: 'bold',
                                             }}>
-                                                <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>扫描结果</h2>
+                                                <h2 style={{
+                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize:'18px',
+                                                    fontWeight: 'bold', marginLeft: '0px' }}>扫描结果</h2>
                                             </div>
                                             {/*<FetchDataForElkeidTable*/}
                                             {/*    apiEndpoint="http://localhost:5000/api/files/vulnerability"*/}
@@ -365,7 +354,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                             <DataDisplayTable
                                                 key={"VirusScanning"}
                                                 externalDataSource={virusOriginData}
-                                                apiEndpoint="http://localhost:5000/api/virus/all"
+                                                apiEndpoint={Virus_Data_API}
                                                 timeColumnIndex={[]}
                                                 columns={virusscanningColumns}
                                                 currentPanel={"VirusScanning"}

@@ -10,7 +10,8 @@ const renderMenuItem = (
 ) => (
     <Menu.Item key={item.key} className="menu-item">
         <Link to={(item.route || item.key) + (item.query || '')}>
-            <span className="nav-text">{item.title}</span>
+            <span className="nav-text" style={{
+                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',}}>{item.title}</span>
         </Link>
     </Menu.Item>
 );
@@ -20,7 +21,8 @@ const renderSubMenu = (item: IFMenu) => {
     return (
         <Menu.SubMenu
             key={item.key}
-            title={<span className="nav-text">{item.title}</span>}
+            title={<span className="nav-text" style={{
+                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',}}>{item.title}</span>}
             className="submenu-item"
         >
             {item.subs!.map(renderMenu)}

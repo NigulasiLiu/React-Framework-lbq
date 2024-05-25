@@ -1,18 +1,17 @@
 import React, { ReactNode } from 'react';
-import { Row, Col, Card, Menu, Button, Modal, Statistic, Empty, Alert , Tooltip, Table } from 'antd';
+import { Row, Col, Card, Menu, Button, Modal, Statistic, Empty, Alert, Tooltip, Table } from 'antd';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 import HostOverview from './HostOverview';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
-import HostDetailsTable from './HostDetailsTable';
-import VulnerabilityDetailsSidebar from '../RiskManagement/VulnerabilityDetailsSidebar';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import VulnerabilityDetailsSidebar from '../SideBar/VulnerabilityDetailsSidebar';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import {
     hostalertColumns,
     fimColumns,
     baselineDetectColumns,
     virusscanningColumns,
-    baselineDetectColumnsType,
+    baselineDetectColumnsType, constRenderTable, Honeypotcolumns, threatHuntingColumns, threatHuntingColumns_2,
 } from '../Columns';
 import AlertList from '../HostProtection/AlertList';
 import VirusScanning from '../VirusScanning/VirusScanning';
@@ -22,9 +21,10 @@ import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
-import Item from 'antd/lib/list/Item';
 import moment from 'moment';
-import { APP_Server_URL } from '../../service/config';
+import { APP_Server_URL, Brute_TTPs_API, Defense_TTPs_API, Honey_API, Privilege_TTPs_API } from '../../service/config';
+import honeypotDefense from '../RiskManagement/HoneypotDefense';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -73,6 +73,7 @@ interface DetailsPageState {
         [panelName: string]: React.Key[];
     };
 };
+
 
 class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     constructor(props: any) {
@@ -368,16 +369,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     dataIndex: 'operation',
                     render: (text: string, record: baselineDetectColumnsType) => (
                         <div>
-                            <Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-                                <Button style={{
-                                    fontWeight: 'bold',
-                                    border: 'transparent',
-                                    backgroundColor: 'transparent',
-                                    color: '#4086FF',
-                                    marginRight: '20px',
-                                    padding: '0 0',
-                                }} className="custom-link-button">详情</Button>
-                            </Link>
+                            {/*<Link to={`/app/baseline_detail?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">*/}
+                            {/*    <Button style={{*/}
+                            {/*        fontWeight: 'bold',*/}
+                            {/*        border: 'transparent',*/}
+                            {/*        backgroundColor: 'transparent',*/}
+                            {/*        color: '#4086FF',*/}
+                            {/*        marginRight: '20px',*/}
+                            {/*        padding: '0 0',*/}
+                            {/*    }} className="custom-link-button">详情</Button>*/}
+                            {/*</Link>*/}
                             <Button onClick={() => this.toggleBLOperationModal(record)} className="custom-link-button"
                                     style={{
                                         fontWeight: 'bold',
@@ -417,6 +418,76 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     }
 
     expandedRowRender: ((record: any) => ReactNode) | undefined;
+
+    // filteredData1 = (originData:any[], name:string) =>{
+    //     // 针对TTPs数据的筛选
+    //     if (originData === undefined) {
+    //         return (
+    //             <div>
+    //                 <Alert message={'No ' + name + ' available for this host.'} type="warning" showIcon />
+    //             </div>
+    //         );
+    //     }
+    //     const OriginDataArray = Array.isArray(originData) ? originData : [originData];
+    //     if (OriginDataArray.length === 0) {
+    //         return (
+    //             <div>
+    //                 <Alert message={'No' + name + 'Array available for this host.'} type="warning" showIcon />
+    //                 {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+    //                 {/* <Empty description="No data available for this host." /> */}
+    //             </div>
+    //         );
+    //     }
+    //     const filteredData = OriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+    //     if (!filteredData) {
+    //         return (
+    //             <div>
+    //                 <Alert message="No filteredData available for this host." type="warning" showIcon />
+    //                 {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+    //                 {/* <Empty description="No data available for this host." /> */}
+    //             </div>
+    //         );
+    //     }
+    // }
+    filteredData = (originData: any[], name: string) => {
+        // 针对TTPs数据的筛选
+        if (!originData) {
+            return {
+                data: [],
+                error: (
+                    <div>
+                        <Alert message={`No ${name} available for this host.`} type="warning" showIcon />
+                    </div>
+                ),
+            };
+        }
+
+        const OriginDataArray = Array.isArray(originData) ? originData : [originData];
+        if (OriginDataArray.length === 0) {
+            return {
+                data: [],
+                error: (
+                    <div>
+                        <Alert message={`No ${name} data available for this host.`} type="warning" showIcon />
+                    </div>
+                ),
+            };
+        }
+
+        const filteredData = OriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+        if (filteredData.length === 0) {
+            return {
+                data: [],
+                error: (
+                    <div>
+                        <Alert message={`No ${name} data available for this host.`} type="warning" showIcon />
+                    </div>
+                ),
+            };
+        }
+
+        return { data: filteredData, error: null };
+    }
 
     //对漏洞条目的操作
     toggleVulOperationModal = (record = null) => {
@@ -564,27 +635,30 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
     handleBLIgnoreButtonClick = async (record: any) => {
         try {
-            const response = await fetch('apiEndpoint', {
-                method: 'POST', // 或 'GET', 根据您的API要求
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 可能还需要其他头部信息，如认证令牌
-                },
-                body: JSON.stringify({
-                    // 这里根据API的需要发送适当的数据
-                    vulnId: record.id, // 假设每条记录有唯一的id来标识漏洞
-                }),
-            });
-
-            if (1) {
-                // 如果API调用成功，更新状态以增加累计忽略的漏洞计数
-                this.setState(prevState => ({
-                    ignoredVulnerabilitiesCount: prevState.ignoredVulnerabilitiesCount + 1,
-                }));
-            } else {
-                // 处理API调用失败的情况
-                console.error('API调用失败:', response.statusText);
-            }
+            this.setState(prevState => ({
+                ignoredVulnerabilitiesCount: prevState.ignoredVulnerabilitiesCount + 1,
+            }));
+            // const response = await fetch('apiEndpoint', {
+            //     method: 'POST', // 或 'GET', 根据您的API要求
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         // 可能还需要其他头部信息，如认证令牌
+            //     },
+            //     body: JSON.stringify({
+            //         // 这里根据API的需要发送适当的数据
+            //         vulnId: record.id, // 假设每条记录有唯一的id来标识漏洞
+            //     }),
+            // });
+            //
+            // if (1) {
+            //     // 如果API调用成功，更新状态以增加累计忽略的漏洞计数
+            //     this.setState(prevState => ({
+            //         ignoredVulnerabilitiesCount: prevState.ignoredVulnerabilitiesCount + 1,
+            //     }));
+            // } else {
+            //     // 处理API调用失败的情况
+            //     console.error('API调用失败:', response.statusText);
+            // }
         } catch (error) {
             console.error('请求错误:', error);
         }
@@ -673,46 +747,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
-
-    setStatusData() {
-        // 本地定义的StatusItem数据
-        const localStatusData: StatusItem[] = [
-            { label: 'Created', value: 7, color: '#22BC44' }, //GREEN
-            { label: 'Running', value: 2, color: '#FBB12E' }, //ORANGE
-            { label: 'Exited', value: 5, color: '#EA635F' }, //RED
-            { label: 'Unknown', value: 1, color: '#E5E8EF' }, //GREY
-        ];
-
-        // 更新状态
-        this.setState({ statusData: localStatusData });
-    }
-
-    renderRowSelection = () => {
-        return {
-            selectedRowKeys: this.state.selectedRowKeys,
-            onChange: (selectedRowKeys: React.Key[]) => {
-                this.setState({ selectedRowKeys });
-            },
-            // Add other rowSelection properties and methods as needed
-        };
+    renderTable = (filteredData: any[], title: string, columns: any[], currentPanel: string, api: string, searchIndex=['']) => {
+        return (
+            <div>
+                {constRenderTable(filteredData, title, [],
+                    columns, currentPanel, api, searchIndex)};
+            </div>
+        );
     };
 
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState((prevState) => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) =>
-                i === index ? index : val,
-            ),
-        }));
-    };
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
-
-    renderBaseLineCheckTable = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string, searchIndex: string[]) => {
+    renderVulOrBLTable = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string, searchIndex: string[]) => {
         if (uuid !== undefined) {
             return (
                 <div style={{ width: '100%' }}>
@@ -721,10 +765,14 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             <Col md={24}>
                                 <Card bordered={false}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{title}</h2>
+                                        <h2 style={{
+                                            fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                            fontSize: '18px',
+                                            fontWeight: 'bold',
+                                        }}>{title}</h2>
                                     </div>
                                     <FetchDataForElkeidTable
-                                        key={currentPanel+this.state.baselineTableReloadCount}
+                                        key={currentPanel + this.state.baselineTableReloadCount}
                                         apiEndpoint={apiEndpoint + uuid}
                                         timeColumnIndex={timeColumnIndex}
                                         columns={columns}
@@ -757,12 +805,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
     renderCurrentPanel = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
                           vulOriginData: any[],
+                          HoneyPotOriginData: any[],
+                          bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[],defenseavoidanceTTPsOriginData: any[],
+                          VirusOriginData: any[],
                           HoneyPotHostCount: number, TTPsHostCount: number, VirusHostCount: number) => {
-
-        const blPassData: StatusItem[] = [
-            { label: '风险项', value: 0, color: '#4086FF' },
-            { label: '通过项', value: 1, color: '#E5E8EF' },
-        ];
 
         const { currentPanel } = this.state;
         //const os_version = ['ubuntu', 'windows'];
@@ -776,9 +822,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     // return <div>No data available for this host.</div>;
                     return (
                         <div>
-                          <Alert message="No data available for this host." type="warning" showIcon />
-                          {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                          {/* <Empty description="No data available for this host." /> */}
+                            <Alert message="No data available for this host." type="warning" showIcon />
+                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                            {/* <Empty description="No data available for this host." /> */}
                         </div>
                     );
                 }
@@ -828,39 +874,125 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 }
 
                 //针对漏洞数据的筛选
-                if (vulOriginData === undefined) {
-                    return (
-                        <div>
-                            <Alert message="No vulOriginData available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
-                }
-                const vulOriginDataArray = Array.isArray(vulOriginData) ? vulOriginData : [vulOriginData];
-                if (vulOriginDataArray.length === 0) {
-                    return (
-                        <div>
-                            <Alert message="No vulOriginDataArray available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
-                }
-                const filteredvulData = vulOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
-                if (!filteredvulData) {
-                    return (
-                        <div>
-                            <Alert message="No filteredvulData available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
-                }
+                // if (vulOriginData === undefined) {
+                //     return (
+                //         <div>
+                //             <Alert message="No vulOriginData available for this host." type="warning" showIcon />
+                //         </div>
+                //     );
+                // }
+                // const vulOriginDataArray = Array.isArray(vulOriginData) ? vulOriginData : [vulOriginData];
+                // if (vulOriginDataArray.length === 0) {
+                //     return (
+                //         <div>
+                //             <Alert message="No vulOriginDataArray available for this host." type="warning" showIcon />
+                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                //             {/* <Empty description="No data available for this host." /> */}
+                //         </div>
+                //     );
+                // }
+                // const filteredvulData = vulOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+                // if (!filteredvulData) {
+                //     return (
+                //         <div>
+                //             <Alert message="No filteredvulData available for this host." type="warning" showIcon />
+                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                //             {/* <Empty description="No data available for this host." /> */}
+                //         </div>
+                //     );
+                // }
+
+                const vulResult = this.filteredData(vulOriginData, 'Vuln');
+                // if (vulResult.error) {
+                //     return vulResult.error; // 显示错误消息
+                // }
+                const filteredvulData = vulResult.data;
                 let totalExpResultCount = 0;
                 filteredvulData.forEach(item => {
                     totalExpResultCount += item.vul_detection_exp_result.length;
                 });
+
+
+                // //针对蜜罐数据的筛选
+                // if (HoneyPotOriginData === undefined) {
+                //     return (
+                //         <div>
+                //             <Alert message="No vulOriginData available for this host." type="warning" showIcon />
+                //         </div>
+                //     );
+                // }
+                // const honeyPotOriginDataArray = Array.isArray(HoneyPotOriginData) ? HoneyPotOriginData : [HoneyPotOriginData];
+                // if (honeyPotOriginDataArray.length === 0) {
+                //     return (
+                //         <div>
+                //             <Alert message="No honeyPotOriginDataArray available for this host." type="warning" showIcon />
+                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                //             {/* <Empty description="No data available for this host." /> */}
+                //         </div>
+                //     );
+                // }
+                // const filteredHoneyPotData = honeyPotOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+                // if (!filteredHoneyPotData) {
+                //     return (
+                //         <div>
+                //             <Alert message="No filteredhoneyPotData available for this host." type="warning" showIcon />
+                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                //             {/* <Empty description="No data available for this host." /> */}
+                //         </div>
+                //     );
+                // }
+                const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
+                // if (honeyPotResult.error) {
+                //     return honeyPotResult.error; // 显示错误消息
+                // }
+                const filteredHoneyPotData = honeyPotResult.data;
+
+                // 针对TTPs数据的筛选
+                const ttpsResult1 = this.filteredData(bruteforceTTPsOriginData, 'bruteforceTTPs');
+                // if (ttpsResult1.error) {
+                //     return ttpsResult1.error; // 显示错误消息
+                // }
+                const filteredTTPsData1 = ttpsResult1.data;
+
+                const ttpsResult2 = this.filteredData(privilegeescalationTTPsOriginData, 'privilegeescalationTTPs');
+                // if (ttpsResult2.error) {
+                //     return ttpsResult2.error; // 显示错误消息
+                // }
+                const filteredTTPsData2 = ttpsResult2.data;
+                const ttpsResult3 = this.filteredData(defenseavoidanceTTPsOriginData, 'defenseavoidanceTTPs');
+                // if (ttpsResult3.error) {
+                //     return ttpsResult3.error; // 显示错误消息
+                // }
+                const filteredTTPsData3 = ttpsResult3.data;
+
+                //针对病毒扫描数据的筛选
+                // if (VirusOriginData === undefined) {
+                //     return (
+                //         <div>
+                //             <Alert message="No VirusOriginData available for this host." type="warning" showIcon />
+                //         </div>
+                //     );
+                // }
+                // const virusOriginDataArray = Array.isArray(VirusOriginData) ? VirusOriginData : [VirusOriginData];
+                // if (virusOriginDataArray.length === 0) {
+                //     return (
+                //         <div>
+                //             <Alert message="No virusOriginDataArray available for this host." type="warning" showIcon />
+                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                //             {/* <Empty description="No data available for this host." /> */}
+                //         </div>
+                //     );
+                // }
+                // const filteredVirusData = virusOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+                // if (!filteredVirusData) {
+                //     return (
+                //         <div>
+                //             <Alert message="No filteredVirusData available for this host." type="warning" showIcon />
+                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                //             {/* <Empty description="No data available for this host." /> */}
+                //         </div>
+                //     );
+                // }
 
                 const AlertData_uuid = [
                     { label: '蜜罐告警', value: HoneyPotHostCount ? HoneyPotHostCount : 0, color: '#FFBB28' },
@@ -878,7 +1010,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     case 'hostAlertInfo':
                         return (
                             <div style={{ marginTop: '-20px' }}>
-                                <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                                <div style={{
+                                    // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                    fontWeight: 'bold' }}>
                                     <Col md={24}>
                                         <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
                                             <Col md={24}>
@@ -897,6 +1031,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                         }}>告警概览</h2>
                                                     </div>
                                                     <Row gutter={[6, 6]}>
+                                                        <Col md={2}/>
                                                         <Col md={10}>
                                                             <Card
                                                                 bordered={false}
@@ -928,7 +1063,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 </Row>
                                                             </Card>
                                                         </Col>
-                                                        <Col md={7}>
+                                                        <Col md={2}/>
+                                                        <Col md={10}>
                                                             <Card
                                                                 bordered={false}
                                                                 style={{
@@ -951,29 +1087,29 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 </Row>
                                                             </Card>
                                                         </Col>
-                                                        <Col md={7}>
-                                                            <Card
-                                                                bordered={false}
-                                                                style={{
-                                                                    height: '100px',
-                                                                    width: '300px',
-                                                                    minWidth: '150px', // 最小宽度300px，而非100px
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center',
-                                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                                }}
-                                                            >
-                                                                <Row>
-                                                                    <Col style={{ marginRight: '250px' }} span={24}>
-                                                                        <Statistic title={<span
-                                                                            style={{ fontSize: '16px' }}>白名单规则数</span>}
-                                                                                   value={0} />
-                                                                    </Col>
-
-                                                                </Row>
-                                                            </Card>
-                                                        </Col>
+                                                        {/*<Col md={7}>*/}
+                                                        {/*    <Card*/}
+                                                        {/*        bordered={false}*/}
+                                                        {/*        style={{*/}
+                                                        {/*            height: '100px',*/}
+                                                        {/*            width: '300px',*/}
+                                                        {/*            minWidth: '150px', // 最小宽度300px，而非100px*/}
+                                                        {/*            display: 'flex',*/}
+                                                        {/*            alignItems: 'center',*/}
+                                                        {/*            justifyContent: 'center',*/}
+                                                        {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
+                                                        {/*        }}*/}
+                                                        {/*    >*/}
+                                                        {/*        <Row>*/}
+                                                        {/*            <Col style={{ marginRight: '250px' }} span={24}>*/}
+                                                        {/*                <Statistic title={<span*/}
+                                                        {/*                    style={{ fontSize: '16px' }}>白名单规则数</span>}*/}
+                                                        {/*                           value={0} />*/}
+                                                        {/*            </Col>*/}
+                                                        {/*        */}
+                                                        {/*        </Row>*/}
+                                                        {/*    </Card>*/}
+                                                        {/*</Col>*/}
                                                     </Row>
 
                                                 </Card>
@@ -982,28 +1118,42 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         <Row gutter={[12, 6]}/*(列间距，行间距)*/
                                              style={{ width: '100%', margin: '0 auto' }}>
                                             <Col md={24}>
-                                                <div className="gutter-box">
-                                                    <Card bordered={false}>
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            justifyContent: 'space-between',
-                                                            marginBottom: 16,
-                                                            fontWeight: 'bold',
-                                                        }}>
-                                                            <h2 style={{
-                                                                fontWeight: 'bold',
-                                                                marginLeft: '0px',
-                                                            }}>告警内容</h2>
-                                                            {/*<Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>*/}
-                                                        </div>
-                                                        {/*<FetchDataForElkeidTable*/}
-                                                        {/*    apiEndpoint={this.props.apiEndpoint}*/}
-                                                        {/*    timeColumnIndex={[]}*/}
-                                                        {/*    columns={this.props.columns}*/}
-                                                        {/*    currentPanel={this.props.currentPanel}*/}
-                                                        {/*/>*/}
-                                                    </Card>
-                                                </div>
+                                                    {/*<Card bordered={false}>*/}
+                                                    {/*    <div style={{*/}
+                                                    {/*        display: 'flex',*/}
+                                                    {/*        justifyContent: 'space-between',*/}
+                                                    {/*        marginBottom: 16,*/}
+                                                    {/*        fontWeight: 'bold',*/}
+                                                    {/*    }}>*/}
+                                                    {/*        <h2 style={{*/}
+                                                    {/*            fontWeight: 'bold',*/}
+                                                    {/*            marginLeft: '0px',*/}
+                                                    {/*        }}>告警内容</h2>*/}
+                                                    {/*        /!*<Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>*!/*/}
+                                                    {/*    </div>*/}
+
+
+                                                    {/*</Card>*/}
+
+                                                {constRenderTable(
+                                                    filteredHoneyPotData, '蜜罐信息', [],
+                                                    Honeypotcolumns, 'HoneypotDefenselistDetails', Honey_API, ['uuid']
+                                                )}
+                                                {constRenderTable(
+                                                    filteredTTPsData1, '威胁狩猎-暴力破解', [],
+                                                    threatHuntingColumns, 'brute-force-details',
+                                                    Brute_TTPs_API, ['uuid', 'atk_ip']
+                                                )}
+                                                {constRenderTable(
+                                                    filteredTTPsData2, '威胁狩猎-权限提升', [],
+                                                    threatHuntingColumns_2, 'privilege-escalation-details',
+                                                    Privilege_TTPs_API, ['uuid', 'atk_ip']
+                                                )}
+                                                {constRenderTable(
+                                                    filteredTTPsData3, '威胁狩猎-防御规避', [],
+                                                    threatHuntingColumns_2, 'defense-avoidance-details',
+                                                    Defense_TTPs_API, ['uuid', 'atk_ip']
+                                                )}
                                             </Col>
                                         </Row>
                                     </Col>
@@ -1022,6 +1172,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         fontWeight: 'bold',
                                     }}>
                                         <h2 style={{
+                                            fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                             fontSize: '18px',
                                             fontWeight: 'bold',
                                             marginLeft: '0px',
@@ -1156,8 +1307,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     </Row>
                                 </Card>
                                 {this.renderModal()}
-                                {this.renderBaseLineCheckTable(APP_Server_URL+'/api/vulndetetion/query_uuid?uuid=',
-                                    this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel, '漏洞概览', ['port'])}
+                                {this.renderVulOrBLTable(APP_Server_URL + '/api/vulndetetion/query_uuid?uuid=',
+                                    this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel, '漏洞内容', ['port'])}
                             </div>
                         );
                     case 'baseLineDetectDetailList':
@@ -1174,10 +1325,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                 fontWeight: 'bold',
                                             }}>
                                                 <h2 style={{
+                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                     fontSize: '18px',
                                                     fontWeight: 'bold',
                                                     marginTop: '0px',
-                                                }}>告警概览</h2>
+                                                }}>基线概览</h2>
                                             </div>
                                             <Row gutter={[6, 6]}>
                                                 <Col md={1} />
@@ -1312,8 +1464,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 </Row>
                                 <Row style={{ width: '100%', margin: '0 auto' }}>
                                     {this.renderBLWhiteListModal()}
-                                    {this.renderBaseLineCheckTable(APP_Server_URL+'/api/baseline_check/' + os_version + '/query_uuid?uuid=',
-                                        this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线概览', ['check_name'])}
+                                    {this.renderVulOrBLTable(APP_Server_URL + '/api/baseline_check/' + os_version + '/query_uuid?uuid=',
+                                        this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'])}
                                 </Row>
                             </div>
                             // <HostDetailsTable
@@ -1334,23 +1486,24 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 />
                             </div>
                         );
+                    case 'honeyPot':
+                        return (
+                            <div style={{fontWeight: 'bold' }}>
+                                <Row gutter={[12, 6]} style={{ marginTop: '0px' }}>
+                                    <Col md={24}>
+                                        {/*{this.renderTable(filteredHoneyPotData, '蜜罐信息', Honeypotcolumns,*/}
+                                        {/*    'honeyPot_host', Honey_API)}*/}
+                                    </Col>
+                                </Row>
+                            </div>
+                    )
+                        ;
                     case 'performancemonitor':
                         return (
                             <div style={{ marginTop: '-20px' }}>
                                 <PerformanceMonitor />
                             </div>
                         );
-                    // case 'assetfingerprint':
-                    //     return (
-                    //             <HostDetailsTable
-                    //                 apiEndpoint="http://localhost:5000/api/vulndetetion/query?host_ip="
-                    //                 columns={fimColumns}
-                    //                 currentPanel={currentPanel}
-                    //                 titleName="资产指纹"
-                    //                 selectedRowKeys={this.state.panelSelectedRowKeys.assetfingerprint}
-                    //                 onSelectChange={(keys: any) => this.onSelectChange(keys, 'assetfingerprint')}
-                    //             />
-                    //     );
                     default:
                         return (
                             <HostOverview
@@ -1359,8 +1512,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         );
                 }
             }
-        }
-        else {
+        } else {
             return (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <LoadingOutlined style={{ fontSize: '3em' }} />
@@ -1383,8 +1535,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
                         agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                        vulnOriginData,
-
+                        vulnOriginData,honeyPotOriginData,virusOriginData,
+                        bruteforceTTPsOriginData,
+                        privilegeescalationTTPsOriginData,
+                        defenseavoidanceTTPsOriginData,
                         bruteforceTTPsMetaData_uuid,
                         privilegeescalationTTPsMetaData_uuid,
                         defenseavoidanceTTPsMetaData_uuid,
@@ -1408,7 +1562,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
 
                     return (
-                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold',
+                        }}>
                             <BreadcrumbCustom />
                             <span>
                 {this.props.host_name}
@@ -1425,22 +1582,28 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                             <Menu.Item key="hostoverview">主机概览</Menu.Item>
                                             <Menu.Item key="hostAlertInfo">安全告警（AlarmTotal）</Menu.Item>
                                             <Menu.Item key="vulnerabilityDetailList">漏洞风险（VulnTotal）</Menu.Item>
-                                            <Menu.Item
-                                                key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
+                                            <Menu.Item key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
+                                            {/*<Menu.Item key="honeyPot">蜜罐防御（HoneyPot）</Menu.Item>*/}
+                                            {/*<Menu.Item key="TTPs">威胁狩猎（TTPs）</Menu.Item>*/}
+                                            {/*<Menu.Item key="microIsolation">文件隔离（MicroIsolate）</Menu.Item>*/}
                                             <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
                                             <Menu.Item key="performancemonitor">性能监控</Menu.Item>
-                                            {/* <Menu.Item key="runningalertlist">运行时安全告警（RaspAlarmTotal）</Menu.Item> */}
                                             {/* <Menu.Item key="assetfingerprint">资产指纹</Menu.Item> */}
                                             {/* 可以根据需要添加更多的Menu.Item */}
                                             {/* 使用透明div作为flex占位符 */}
                                             <div style={{ flexGrow: 1 }}></div>
 
                                         </Menu>
-                                        {/* 渲染当前激活的子面板 */}
+                                        {/* 渲染当前激活的子面板,HoneyPotHostCount, TTPsHostCount, VirusHostCount */}
                                         <Card bordered={false}
                                               style={{ backgroundColor: '#F6F7FB', margin: '0 auto', width: '90%' }}>
                                             {this.renderCurrentPanel(agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData, vulnOriginData,
-                                                HoneyPotHostCount, TTPsHostCount, VirusHostCount)}
+                                                honeyPotOriginData,
+                                                bruteforceTTPsOriginData,privilegeescalationTTPsOriginData,defenseavoidanceTTPsOriginData,
+                                                virusOriginData,
+                                                HoneyPotHostCount,
+                                                TTPsHostCount,
+                                                VirusHostCount)}
                                         </Card>
                                     </Col>
                                 </Row>

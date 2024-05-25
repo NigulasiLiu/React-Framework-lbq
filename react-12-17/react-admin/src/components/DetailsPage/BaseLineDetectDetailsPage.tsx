@@ -1,6 +1,6 @@
 // HostAlertList.tsx
 import React from 'react';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { Menu, Row, Col, Card, Statistic, Typography, Button } from 'antd';
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
@@ -349,7 +349,9 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                     const hostCheckedPassedRate = 1 - ((blLinuxNeedAdjustmentItemCount || 0) + (blWindowsNeedAdjustmentItemCount || 0)) / (blWindowsCheckNameCount + blLinuxCheckNameCount);
 
                     return (
-                        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold' }}>
                             <BreadcrumbCustom />
                             <Row style={{
                                 width: '110%', height: '80px', backgroundColor: '#FFFFFF', //height:'40px',
@@ -375,7 +377,9 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                             <div>
                                 <Row gutter={[12, 6]} style={{ marginTop: '10px', width: '100%', margin: '0 auto' }}>
                                     <Col md={24}>
-                                        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                                        <div style={{
+                                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                            fontWeight: 'bold' }}>
                                             <Col className="gutter-row" md={24}>
                                                 <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
                                                     <Col className="gutter-row" md={24}>

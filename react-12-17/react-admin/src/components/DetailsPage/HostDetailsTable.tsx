@@ -3,7 +3,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Card, Col, Row } from 'antd';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 
 interface HostDetailsTableState {
     selectedRowKeys: React.Key[];

@@ -4,20 +4,37 @@ import { templateData } from './SeperateData';
 import useSortedData from './TopFiveDataProvider';
 import { convertAndFillData } from './SeperateData';
 import { DataItem } from '../Columns';
-import useExtractOrigin,{
+import useExtractOrigin, {
     MetaDataResult, getTopFiveTypeCounts,
-     getPastSevenDaysAlerts,
+    getPastSevenDaysAlerts,
 } from './ExtractOriginData';
-import useAggregateUUIDs from './useAggregateUUIDs'
+import useAggregateUUIDs from './useAggregateUUIDs';
 import { fetchDataFromAPI } from './DataService';
 import { FilteredDataResult_new } from './useFilterOriginData_new';
 import useTransformedData from '../HostProtection/useTransformedData';
 import useCalculateAverage from './useCalculateAverage';
 import { processData } from './DataService';
 import { message } from 'antd';
-import {Agent_Data_API,Monitor_Data_API,Fim_Data_API,Vul_Data_API,Port_Data_API,Process_Data_API,Assets_Data_API,BaseLine_linux_Data_API,
-    BaseLine_windows_Data_API,Task_Data_API,MemoryShell_API,Honey_API,Brute_TTPs_API,Privilege_TTPs_API,Defense_TTPs_API,
-    Virus_Data_API,Isolate_Data_API,User_Data_API} from '../../service/config';
+import {
+    Agent_Data_API,
+    Monitor_Data_API,
+    Fim_Data_API,
+    Vul_Data_API,
+    Port_Data_API,
+    Process_Data_API,
+    Assets_Data_API,
+    BaseLine_linux_Data_API,
+    BaseLine_windows_Data_API,
+    Task_Data_API,
+    MemoryShell_API,
+    Honey_API,
+    Brute_TTPs_API,
+    Privilege_TTPs_API,
+    Defense_TTPs_API,
+    Virus_Data_API,
+    Isolate_Data_API,
+    User_Data_API,
+} from '../../service/config';
 
 
 export interface DataContextType {
@@ -113,11 +130,11 @@ export interface DataContextType {
     agentMEMuseMetaData: MetaDataResult;
     agentAVGMEMUse: string;
 
-    bruteforceTTPsMetaData_uuid:MetaDataResult;
-    privilegeescalationTTPsMetaData_uuid:MetaDataResult;
-    defenseavoidanceTTPsMetaData_uuid:MetaDataResult;
-    VirusMetaData_uuid:MetaDataResult;
-    HoneyPotMetaData_uuid:MetaDataResult;
+    bruteforceTTPsMetaData_uuid: MetaDataResult;
+    privilegeescalationTTPsMetaData_uuid: MetaDataResult;
+    defenseavoidanceTTPsMetaData_uuid: MetaDataResult;
+    VirusMetaData_uuid: MetaDataResult;
+    HoneyPotMetaData_uuid: MetaDataResult;
 
     //agentOriginData_2:Map<string, AgentInfoType>|undefined;
 };
@@ -224,6 +241,29 @@ const DataManager: React.FC = ({ children }) => {
 
         refreshDataFromAPI(Virus_Data_API);
 
+
+        const interval = setInterval(() => {
+            refreshDataFromAPI(Agent_Data_API);
+            refreshDataFromAPI(Monitor_Data_API);
+            refreshDataFromAPI(Fim_Data_API);
+            refreshDataFromAPI(Port_Data_API);
+            refreshDataFromAPI(Process_Data_API);
+            refreshDataFromAPI(Assets_Data_API);
+            refreshDataFromAPI(BaseLine_linux_Data_API);
+            refreshDataFromAPI(BaseLine_windows_Data_API);
+            refreshDataFromAPI(Vul_Data_API);
+            refreshDataFromAPI(Task_Data_API);
+            refreshDataFromAPI(MemoryShell_API);
+            refreshDataFromAPI(Honey_API);
+            refreshDataFromAPI(Brute_TTPs_API);
+            refreshDataFromAPI(Privilege_TTPs_API);
+            refreshDataFromAPI(Defense_TTPs_API);
+            refreshDataFromAPI(User_Data_API);
+            refreshDataFromAPI(Isolate_Data_API);
+            refreshDataFromAPI(Virus_Data_API);
+        }, 60000); // 60s
+
+        return () => clearInterval(interval);
 
     }, []);
 
@@ -345,7 +385,7 @@ const DataManager: React.FC = ({ children }) => {
     const TTPsHostCount = useAggregateUUIDs([
         bruteforceTTPsMetaData_uuid,
         privilegeescalationTTPsMetaData_uuid,
-        defenseavoidanceTTPsMetaData_uuid
+        defenseavoidanceTTPsMetaData_uuid,
     ]);
 
     //top5表单

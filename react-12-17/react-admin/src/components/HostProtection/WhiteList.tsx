@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Table, Popconfirm, Input, Button, DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -238,7 +238,10 @@ class WhiteList extends React.Component<WhiteListProps, WhiteListState> {
 
 
         return (
-            <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+            <div style={{
+                // fontFamily: "'YouYuan', sans-serif",
+                // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                fontWeight: 'bold' }}>
                 <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
                     <Col md={24}>
                         <div className="gutter-box">

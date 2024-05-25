@@ -265,7 +265,9 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                     ];
 
                     return (
-                        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold' }}>
                             <Row gutter={[8, 16]}>
                                 <Col span={3}>
 

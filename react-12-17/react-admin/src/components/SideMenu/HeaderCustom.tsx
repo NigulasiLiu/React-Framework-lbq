@@ -208,8 +208,9 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                     <img src={logo} alt="Logo"
                                          style={{ width: '60px', height: '60px', marginRight: '20px' }} />
                                     <h2 style={{
-                                        fontFamily: '\'YouYuan\', sans-serif',
+                                        // fontFamily: '\'YouYuan\', sans-serif',
                                         fontWeight: 'bold',
+                                        // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                         padding: '22px,6px',
                                         margin: '10px,0px',
                                         color: 'rgba(0, 0, 0, 0.85)',

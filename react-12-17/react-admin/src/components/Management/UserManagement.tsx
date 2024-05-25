@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { constRenderTable } from '../Columns';
+import { User_Data_API } from '../../service/config';
 
 
 
@@ -234,12 +235,15 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
                 const { usersOriginData} = context;
 
                 return (
-                    <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                    <div style={{
+                        // fontFamily: "'YouYuan', sans-serif",
+                        // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                        fontWeight: 'bold' }}>
                         {this.renderModal()}
                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                             <Col md={24}>
                             {constRenderTable(usersOriginData, '用户列表', [], 
-                                          this.userManagementColumns, 'UserManagementlist',"http://localhost:5000/api/users/all",[''],this.showModal,"添加用户")}
+                                          this.userManagementColumns, 'UserManagementlist',User_Data_API,[''],this.showModal,"添加用户")}
                                 {/* <div className="gutter-box">
                                     <Card bordered={false}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>

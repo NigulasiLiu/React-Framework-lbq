@@ -234,7 +234,9 @@ const SiderCustom = (props: SiderCustomProps) => {
         >
             <div className="logo-title-container" style={{ padding: '1px,1px', margin: '0px,0px',display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
                 <img src={logo} alt="Logo" style={{ width: '60px', height: '60px', marginRight: '10px' }} />
-                <h2 style={{ fontFamily: "'YouYuan', sans-serif", 
+                <h2 style={{
+                    // fontFamily: "'YouYuan', sans-serif",
+                    // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                 fontWeight: 'bold',padding: '22px,6px', margin: '10px,0px', color: 'rgba(0, 0, 0, 0.85)', 
                 display: 'flex', alignItems: 'center',fontSize:'16px' }}>Security Platform</h2>
             </div>

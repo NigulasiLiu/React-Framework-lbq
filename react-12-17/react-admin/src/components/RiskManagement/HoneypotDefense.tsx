@@ -1,12 +1,13 @@
 import React, { createRef } from 'react';
 import { Card, Col, Row, Modal, Form, Input, Button, message, Tooltip } from 'antd';
 import axios from 'axios';
-import { constRenderTable, hostinventoryColumnsType } from '../Columns';
+import { constRenderTable, Honeypotcolumns, hostinventoryColumnsType } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import moment from 'moment/moment';
 import umbrella from 'umbrella-storage';
+import { Honey_API } from '../../service/config';
 
 interface HoneypotDefenseProps{
 
@@ -48,65 +49,6 @@ const columnsHoneypotInfo1 = [
     key: 'honeypot_status',
   },
 ];
-
-const columnsHoneypotInfo = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
-    Maxwidth: '15px',
-  },
-  {
-    title: '主机名',
-    dataIndex: 'uuid',
-    key: 'uuid',
-    render: (text: string, record: any) => (
-        <div>
-          <div>
-            <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-              <Button style={{
-                fontWeight: 'bold',
-                border: 'transparent',
-                backgroundColor: 'transparent',
-                color: '#4086FF',
-                padding: '0 0',
-              }}>
-                <Tooltip title={record.uuid}>
-                  <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
-                    {record.uuid || '-'}
-                  </div>
-                </Tooltip>
-              </Button>
-            </Link>
-          </div>
-          <div style={{
-            fontSize: 'small', // 字体更小
-            background: '#f0f0f0', // 灰色背景
-            padding: '2px 4px', // 轻微内边距
-            borderRadius: '2px', // 圆角边框
-            display: 'inline-block', // 使得背景色仅围绕文本
-            marginTop: '4px', // 上边距
-          }}>
-            <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agent_ip}
-          </div>
-        </div>
-    ),
-  },
-  {
-    title: '蜜罐IP',
-    dataIndex: 'agent_ip',
-    key: 'agent_ip',
-  },
-  {
-    title: '攻击时刻',
-    dataIndex: 'atk_time',
-    key: 'atk_time',
-    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-    sorter: (a: any, b: any) => parseFloat(b.atk_time) - parseFloat(a.atk_time),
-  },
-];
-
-
 const columnsAttackerInfo = [
   {
       title: 'ID',
@@ -257,7 +199,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                             <Col md={24}>
                             {constRenderTable(honeyPotOriginData, '蜜罐信息', [],
-                                      columnsHoneypotInfo, 'HoneypotDefenselist',"http://localhost:5000/api/honeypot/all",['uuid'],
+                                Honeypotcolumns, 'HoneypotDefenselist',Honey_API,['uuid'],
                                 this.showModal,"新增蜜罐")}
                             </Col>
                         </Row>

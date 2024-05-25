@@ -113,7 +113,10 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                         { label: '病毒扫描告警', value: VirusHostCount === 0 ? 40 : VirusHostCount, color: '#846CCE' },
                     ];
                     return (
-                        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: "'YouYuan', sans-serif",
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold' }}>
                             <Col className="gutter-row" md={24}>
                                 <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
                                     <Col className="gutter-row" md={24}>

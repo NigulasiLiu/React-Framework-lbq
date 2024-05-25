@@ -3,7 +3,7 @@ import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal, 
 import moment, { Moment } from 'moment';
 import { FilterDropdownProps, simplifiedTablePanel } from '../Columns';
 import { ExclamationCircleOutlined, LoadingOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { handleDelete, handleExport } from '../ContextAPI/DataService';
+import { handleExport } from '../ContextAPI/DataService';
 import { Link } from 'react-router-dom';
 
 const { Option } = Select;
@@ -291,61 +291,61 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
 
     };
 
-    toggleModal = () => {
-        this.setState(prevState => ({
-            showModal: !prevState.showModal,
-            // selectedRows: record, // 设置当前记录，以便后续操作
-        }));
-    };
-    handleOk = async () => {
-        // 处理忽略操作
-        console.log("selectedRows:", this.state.selectedRows);
-        if (this.state.selectedRows && this.state.selectedRows.length > 0 && this.state.selectedRows[0]) {
-            const record = this.state.selectedRows.map(row => row.uuid);
-            await handleDelete(this.props.currentPanel, record);
-        } else {
-            message.info("selectedRows中没有有效数据");
-        }
-        this.toggleModal(); // 关闭模态框
-    };
-    handleCancel = () => {
-        this.toggleModal(); // 关闭模态框
-    };
-    renderModal = (rows: any[]) => {
-        return (
-            <>
-                <Modal
-                    title="确认操作"
-                    visible={this.state.showModal}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    footer={[
-                        <Button key="back" onClick={this.handleCancel}>
-                            取消
-                        </Button>,
-                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
-                                onClick={this.handleOk}>
-                            是
-                        </Button>,
-                    ]}
-                    //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
-                >
-                    确认删除选中的:{rows.map(row => (
-                            <span key={row.uuid}>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(row.uuid)}`} target="_blank">
-                        <Button style={{
-                            fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-                            padding: '0 0'
-                        }}>{row.uuid.slice(0, 5)}</Button>
-                    </Link>
-                                {' '}
-                    </span>
-                        ))}
-                            条目?
-                </Modal>
-            </>
-        );
-    };
+    // toggleModal = () => {
+    //     this.setState(prevState => ({
+    //         showModal: !prevState.showModal,
+    //         // selectedRows: record, // 设置当前记录，以便后续操作
+    //     }));
+    // };
+    // handleOk = async () => {
+    //     // 处理忽略操作
+    //     console.log("selectedRows:", this.state.selectedRows);
+    //     if (this.state.selectedRows && this.state.selectedRows.length > 0 && this.state.selectedRows[0]) {
+    //         const record = this.state.selectedRows.map(row => row.uuid);
+    //         await handleDelete(this.props.currentPanel, record);
+    //     } else {
+    //         message.info("selectedRows中没有有效数据");
+    //     }
+    //     this.toggleModal(); // 关闭模态框
+    // };
+    // handleCancel = () => {
+    //     this.toggleModal(); // 关闭模态框
+    // };
+    // renderModal = (rows: any[]) => {
+    //     return (
+    //         <>
+    //             <Modal
+    //                 title="确认操作"
+    //                 visible={this.state.showModal}
+    //                 onOk={this.handleOk}
+    //                 onCancel={this.handleCancel}
+    //                 footer={[
+    //                     <Button key="back" onClick={this.handleCancel}>
+    //                         取消
+    //                     </Button>,
+    //                     <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+    //                             onClick={this.handleOk}>
+    //                         是
+    //                     </Button>,
+    //                 ]}
+    //                 //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
+    //             >
+    //                 确认删除选中的:{rows.map(row => (
+    //                         <span key={row.uuid}>
+    //                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(row.uuid)}`} target="_blank">
+    //                     <Button style={{
+    //                         fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
+    //                         padding: '0 0'
+    //                     }}>{row.uuid.slice(0, 5)}</Button>
+    //                 </Link>
+    //                             {' '}
+    //                 </span>
+    //                     ))}
+    //                         条目?
+    //             </Modal>
+    //         </>
+    //     );
+    // };
 
 
     render() {
@@ -395,10 +395,11 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
 
         return (//Table的宽度被设置为1330px
             <div style={{
-                fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold',
+                // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                fontWeight: 'bold',
                 width: this.props.currentPanel?.includes('baseLineDetectScanResult1') ? '64%' : tableWidth,
             }}>
-                {this.renderModal(this.state.selectedRows)}
+                {/*{this.renderModal(this.state.selectedRows)}*/}
                 <Row gutter={[12, 6]} style={{ marginTop: '-10px' }}>
                     {/* Main content area */}
                     <Col
@@ -423,27 +424,20 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                                             >
                                                 批量导出
                                             </Button>
-                                            {(this.props.currentPanel!=="createnewtask" &&
-                                                <Button
-                                                    style={{
-                                                        ...selectedcompStyle, backgroundColor: isButtonDisabled?'#f6c6cf':'#fb1440', color: 'white', marginRight: '10px',
-                                                        transition: 'opacity 0.3s', // 添加过渡效果
-                                                        opacity: 1, // 初始透明度
-                                                    }}
-                                                    onMouseEnter={(e) => { e.currentTarget.style.opacity = 0.7; }} // 鼠标进入时将透明度设置为0.5
-                                                    onMouseLeave={(e) => { e.currentTarget.style.opacity = 1; }} // 鼠标离开时恢复透明度为1
-                                                    onClick={() => this.toggleModal()}
-                                                    disabled={isButtonDisabled}
-                                                >
-                                                    批量删除
-                                                </Button>)}
-                                            {/*<Button*/}
-                                            {/*    style={{*/}
-                                            {/*        ...selectedcompStyle,*/}
-                                            {/*    }}*/}
-                                            {/*    onClick={this.props.handleReload}>*/}
-                                            {/*    采集最新数据*/}
-                                            {/*</Button>*/}
+                                            {/*{(this.props.currentPanel!=="createnewtask" &&*/}
+                                            {/*    <Button*/}
+                                            {/*        style={{*/}
+                                            {/*            ...selectedcompStyle, backgroundColor: isButtonDisabled?'#f6c6cf':'#fb1440', color: 'white', marginRight: '10px',*/}
+                                            {/*            transition: 'opacity 0.3s', // 添加过渡效果*/}
+                                            {/*            opacity: 1, // 初始透明度*/}
+                                            {/*        }}*/}
+                                            {/*        onMouseEnter={(e) => { e.currentTarget.style.opacity = 0.7; }} // 鼠标进入时将透明度设置为0.5*/}
+                                            {/*        onMouseLeave={(e) => { e.currentTarget.style.opacity = 1; }} // 鼠标离开时恢复透明度为1*/}
+                                            {/*        onClick={() => this.toggleModal()}*/}
+                                            {/*        disabled={isButtonDisabled}*/}
+                                            {/*    >*/}
+                                            {/*        批量删除*/}
+                                            {/*    </Button>)}*/}
 
                                         </Col>
                                         <Col flex="auto" style={{

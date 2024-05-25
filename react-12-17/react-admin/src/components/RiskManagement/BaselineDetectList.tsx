@@ -2,11 +2,11 @@ import zhCN from 'antd/es/locale/zh_CN';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { Row, Col, Card, Input, Button, DatePicker, Statistic, Menu } from 'antd';
-import BaseLineDetectScanSidebar from './ScanProcessSidebar';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import BaseLineDetectScanSidebar from '../SideBar/ScanProcessSidebar';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { baselineDetectColumns, BaseLineDataType, StatusItem, fimColumns } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { LoadingOutlined } from '@ant-design/icons';
 import { APP_Server_URL } from '../../service/config';
 
@@ -227,6 +227,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -243,7 +244,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                         }}>
                                                             <Row gutter={24}>
                                                                 <Row>
-                                                                    <h2 style={{ fontSize: '16px' }}>最近扫描时间:</h2>
+                                                                    <h2 style={{ fontSize: '16px' }}>最近扫描时间: </h2>
                                                                 </Row>
                                                                 <Row>
                                                                 <span className="currentTime"
@@ -366,7 +367,9 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                 marginBottom: 16,
                                                 fontWeight: 'bold',
                                             }}>
-                                                <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>基线内容</h2>
+                                                <h2 style={{
+                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                    fontWeight: 'bold', marginLeft: '0px',fontSize:'18px' }}>基线内容</h2>
                                             </div>
                                             <Menu
                                                 onClick={this.handleMenuClick}
@@ -389,9 +392,9 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                             </div>
                                         </Card>
                                 </Col>
-                                <Link to="/app/baseline_detail" target="_blank">
-                                    <Button type="link" className="custom-link-button">基线检查详情</Button>
-                                </Link>
+                                {/*<Link to="/app/baseline_detail" target="_blank">*/}
+                                {/*    <Button type="link" className="custom-link-button">基线检查详情</Button>*/}
+                                {/*</Link>*/}
                             </Row>
                         </div>
                     );

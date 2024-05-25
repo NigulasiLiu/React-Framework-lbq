@@ -10,7 +10,7 @@ import {
     GenericDataItem, StatusItem, monitoredColumns,
 } from '../Columns';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { convertUnixTime } from '../ContextAPI/DataService';
 import { Assets_Data_API, Fim_Data_API, Monitor_Data_API, Port_Data_API, Process_Data_API } from '../../service/config';
@@ -21,20 +21,6 @@ const { Text } = Typography;
 interface HostOverviewProps extends RouteComponentProps {
     // ... other props if there are any
     changePanel: (panelName: string) => void; //切换子panel
-}
-export interface agentInfoType {
-    host_name: string;
-    ip_address: string;
-    os_version: string;
-    status: string;
-    last_seen: string;
-    disk_total: string;
-    mem_total: string;
-    mem_use: string;
-    cpu_use: string;
-    py_version: string;
-    processor_name: string;
-    processor_architecture: string;
 }
 
 interface HostOverviewState {
@@ -149,61 +135,61 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
         }
     }
 
-    renderBLPieChart = (linuxOriginData: any, winOriginData: any,
-        title1: string, title2: string, wholeCount: number,
-        width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
-        if (linuxOriginData !== undefined && winOriginData !== undefined) {
-            // 确保OriginData总是作为数组处理
-            const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
-            const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
-
-            const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
-            const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
-            // 确保needAdjItems不为空再访问它的属性
-            if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
-                // 使用reduce和findIndex方法统计唯一uuid个数
-                const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
-                    // 查找在累积数组中uuid是否已存在
-                    const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                    // 如果不存在，则添加到累积数组中
-                    if (index === -1) {
-                        acc.push(current);
-                    }
-                    return acc;
-                }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-                const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
-                    // 查找在累积数组中uuid是否已存在
-                    const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                    // 如果不存在，则添加到累积数组中
-                    if (index === -1) {
-                        acc.push(current);
-                    }
-                    return acc;
-                }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-
-                const baselineAlertData: StatusItem[] = [
-                    // 确保使用正确的方法来计数
-                    { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#EA635F' },//RED
-                    { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#468DFF' }//蓝
-                ];
-                return (
-                    <CustomPieChart
-                        data={baselineAlertData}
-                        innerRadius={34}
-                        deltaRadius={5}
-                        outerRadius={50}
-                        cardHeight={150}
-                        hasDynamicEffect={true}
-                    />
-                );
-            }
-        }
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                <LoadingOutlined style={{ fontSize: '3em' }} />
-            </div>
-        );
-    }
+    // renderBLPieChart = (linuxOriginData: any, winOriginData: any,
+    //     title1: string, title2: string, wholeCount: number,
+    //     width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
+    //     if (linuxOriginData !== undefined && winOriginData !== undefined) {
+    //         // 确保OriginData总是作为数组处理
+    //         const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
+    //         const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+    //
+    //         const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
+    //         const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+    //         // 确保needAdjItems不为空再访问它的属性
+    //         if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
+    //             // 使用reduce和findIndex方法统计唯一uuid个数
+    //             const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
+    //                 // 查找在累积数组中uuid是否已存在
+    //                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+    //                 // 如果不存在，则添加到累积数组中
+    //                 if (index === -1) {
+    //                     acc.push(current);
+    //                 }
+    //                 return acc;
+    //             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+    //             const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
+    //                 // 查找在累积数组中uuid是否已存在
+    //                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+    //                 // 如果不存在，则添加到累积数组中
+    //                 if (index === -1) {
+    //                     acc.push(current);
+    //                 }
+    //                 return acc;
+    //             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+    //
+    //             const baselineAlertData: StatusItem[] = [
+    //                 // 确保使用正确的方法来计数
+    //                 { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#EA635F' },//RED
+    //                 { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#468DFF' }//蓝
+    //             ];
+    //             return (
+    //                 <CustomPieChart
+    //                     data={baselineAlertData}
+    //                     innerRadius={34}
+    //                     deltaRadius={5}
+    //                     outerRadius={50}
+    //                     cardHeight={150}
+    //                     hasDynamicEffect={true}
+    //                 />
+    //             );
+    //         }
+    //     }
+    //     return (
+    //         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+    //             <LoadingOutlined style={{ fontSize: '3em' }} />
+    //         </div>
+    //     );
+    // }
     renderPieCharBaseLineChart = (OriginData: any, linux: any, windows: any) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
@@ -383,7 +369,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                             style={{ backgroundColor: '#ffffff' }}>
                             <Row>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold' }}>
-                                    <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                                    <h2 style={{
+                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
                                 </div>
                             </Row>
                             <DataDisplayTable
@@ -454,37 +441,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         VirusMetaData_uuid,
                         HoneyPotMetaData_uuid,
                     } = context;
-                    // const data = {
-                    //     '主机名称': this.state.host_uuid,
-                    //     '主机ID': 'bb141656-d7ed-5e41-b7f5-300...',
-                    //     '操作系统': '',
-                    //     '主机标签': '-',
-                    //     '设备型号': 'VMware, Inc.',
-                    //     '生产商': '-',
-                    //     '系统负载': '1.03/1.13',
-                    //     '公网IPv4': '-',
-                    //     '公网IPv6': '-',
-                    //     '私网IPv4': '172.17.0.2',
-                    //     '私网IPv6': '-',
-                    //     '网络区域': 'private',
-                    //     '操作系统版本': '3.10.0-1160.el7.x86_64',
-                    //     '容器平台': 'VMware Virtual Platform',
-                    //     'CPU信息': '12th Gen Intel(R) Core(TM) i7...',
-                    //     'CPU使用率': '2.69%',
-                    //     '内存大小': '3.68 GB',
-                    //     '内存使用率': '83%',
-                    //     '默认网关': '172.17.0.1',
-                    //     '地域': 'default',
-                    //     '内存占用率': '84.24%',
-                    //     '磁盘占用': '0.82/0.56/0.5',
-                    //     '网卡序列': 'F0684D56-4A26-C1B9-CE...',
-                    //     '注册时间': '2023-12-27 04:08:53',
-                    //     '最近活跃时间': '2024-01-12 17:46:01',
-                    //     '更新时间': '2023-12-13 23:18:24',
-                    //     '探测时间': '2023-12-27 04:09:03',
-                    //     'DNS服务器': '192.168.218.2',
-                    //     // ... any other data fields
-                    // };
                     const HoneyPotHostCount = (HoneyPotMetaData_uuid && HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
                     const bruteforceTTPsHostCount = (
                         (bruteforceTTPsMetaData_uuid && bruteforceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
@@ -514,7 +470,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         <Card bordered={false}
                                             style={{ fontWeight: 'bolder', width: '100%', minHeight: 150, backgroundColor: '#ffffff' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                                                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>基础信息</h2>
+                                                <h2 style={{
+                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>基础信息</h2>
                                             </div>
                                             <div style={{ marginLeft: '90px' }}>
                                                 {this.renderBasicInfoData(agentOriginData)}
@@ -527,16 +484,17 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                 style={{ fontWeight: 'bolder', width: '100%', maxHeight: 280, backgroundColor: '#ffffff' }}>
                                                 <Row>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>安全告警</h2>
+                                                        <h2 style={{
+                                                            fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>安全告警</h2>
                                                     </div>
-                                                    <Button
-                                                        type="link"
-                                                        style={{
-                                                            fontWeight: 'bold', padding: '0 0',
-                                                            border: 'transparent',
-                                                            backgroundColor: 'transparent',marginLeft: 'auto', marginRight: '0',
-                                                        }}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}
-                                                        onClick={() => this.goToPanel('hostalertlist')}>详情</Button>
+                                                    {/*<Button*/}
+                                                    {/*    type="link"*/}
+                                                    {/*    style={{*/}
+                                                    {/*        fontWeight: 'bold', padding: '0 0',*/}
+                                                    {/*        border: 'transparent',*/}
+                                                    {/*        backgroundColor: 'transparent',marginLeft: 'auto', marginRight: '0',*/}
+                                                    {/*    }}//style={{ border:'false',color: '#1964F5',fontWeight: 'bold',marginLeft: '300px',marginTop: '-55px'}}*/}
+                                                    {/*    onClick={() => this.goToPanel('hostalertlist')}>详情</Button>*/}
                                                 </Row>
                                                 <Row >
                                                     <Col span={12}>
@@ -566,7 +524,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
 
                                                 <Row>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
+                                                        <h2 style={{
+                                                            fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>漏洞风险</h2>
                                                     </div>
                                                     <Button
                                                         type="link"
@@ -590,7 +549,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
 
                                                 <Row>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                                                        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>基线风险</h2>
+                                                        <h2 style={{
+                                                            fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>基线风险</h2>
                                                     </div>
                                                     <Button
                                                         type="link"
@@ -612,7 +572,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                             style={{ fontWeight: 'bolder', width: '100%', minHeight: 80, backgroundColor: '#ffffff' }}>
                                             <Row>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                                                    <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
+                                                    <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>资产指纹</h2>
                                                 </div>
                                             </Row>
                                             <Row justify="space-between" align="middle">

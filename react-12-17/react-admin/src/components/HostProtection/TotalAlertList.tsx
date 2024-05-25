@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Col, Row, Form, Input, Button, message,Modal,Table,Descriptions } from 'antd';
 import axios from 'axios';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { SearchOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { FilterDropdownProps } from 'antd/lib/table/interface';

@@ -3,10 +3,10 @@ import { Card, Col, Row, Button, message, Modal, Table, Descriptions, Tooltip } 
 import axios from 'axios';
 import { LoadingOutlined,  } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import umbrella from 'umbrella-storage';
-import { APP_Server_URL } from '../../service/config';
+import { APP_Server_URL, Isolate_Data_API } from '../../service/config';
 
 
 interface MicroIsolationProps{
@@ -25,7 +25,7 @@ interface MicroIsolationStates{
 // 在MicroIsolation组件内部，可能在constructor或直接在state定义中
 const initialData = [
   {
-    key: '1',
+    // key: '1',
     id: 1,
     uuid: '192.168.1.1',
     encrypt_key: 'some_key_1',
@@ -35,7 +35,7 @@ const initialData = [
     encrypted_file_path: '/path/to/encrypted/report1.docx',
   },
   {
-    key: '2',
+    // key: '2',
     id: 2,
     uuid: '192.168.1.2',
     encrypt_key: 'some_key_2',
@@ -141,12 +141,12 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           ),
         },
         {
-          title: '可疑文件名称',
+          title: '文件名称',
           dataIndex: 'origin_filename',
           key: 'origin_filename',
         },
         {
-          title: '可疑文件路径',
+          title: '文件位置',
           dataIndex: 'origin_filepath',
           key: 'origin_filepath',
         },
@@ -338,38 +338,42 @@ renderEncryptModal=()=>{
             const {
               virusOriginData,
               isolationOriginData,} = context;
-
+            const virusData = virusOriginData===undefined?initialData:virusOriginData;
             return (
-                <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                <div style={{
+                  // fontFamily: "'YouYuan', sans-serif",
+                  fontWeight: 'bold' }}>
                   <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                     <Col md={24}>
                       <div className="gutter-box">
                         {this.renderEncryptModal()}
                         <Card bordered={false}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
+                            <h2 style={{
+                              fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
                           </div>
                           <DataDisplayTable
                               key={"spFileslist"}
-                              externalDataSource={virusOriginData}
+                              externalDataSource={virusData}
                               apiEndpoint="http://localhost:5000/api/FetchSpFile/all"
                               timeColumnIndex={[]}
                               columns={this.state.spFilesColumns}
                               currentPanel={"spFileslist"}
                               searchColumns={['uuid', 'origin_filename']}
                           />
-                          <Table dataSource={initialData} columns={this.state.spFilesColumns} />
+                          {/*<Table dataSource={initialData} columns={this.state.spFilesColumns} />*/}
 
                         </Card>
                         {this.renderDecryptModal()}
                         <Card bordered={false}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>隔离文件列表</h2>
+                            <h2 style={{
+                              fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>隔离文件列表</h2>
                           </div>
                           <DataDisplayTable
                               key={"isolate"}
                               externalDataSource={isolationOriginData}
-                              apiEndpoint="http://localhost:5000/api/isolate/all"
+                              apiEndpoint={Isolate_Data_API}
                               timeColumnIndex={[]}
                               columns={this.state.EncryptedFilesColumns}
                               currentPanel={"isolate"}

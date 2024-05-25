@@ -9,9 +9,10 @@ import {
     GenericDataItem, StatusItem,
     constRenderTable, monitoredColumns,
 } from '../Columns';
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Assets_Data_API, Fim_Data_API, Monitor_Data_API, Port_Data_API, Process_Data_API } from '../../service/config';
 
 
 type AssetFingerprintProps = {};
@@ -96,7 +97,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={fimOriginData}
-                        apiEndpoint="http://localhost:5000/api/FileIntegrityInfo/all"
+                        apiEndpoint={Fim_Data_API}
                         timeColumnIndex={['event_time']}
                         columns={fimColumns}
                         currentPanel={currentPanel}
@@ -108,7 +109,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={monitoredOriginData}
-                        apiEndpoint="http://localhost:5000/api/monitored/all"
+                        apiEndpoint={Monitor_Data_API}
                         timeColumnIndex={['timestamp']}
                         columns={monitoredColumns}
                         currentPanel={currentPanel}
@@ -120,7 +121,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={portOriginData}
-                        apiEndpoint="http://localhost:5000/api/portinfo/all"
+                        apiEndpoint={Port_Data_API}
                         timeColumnIndex={[]}
                         columns={openPortsColumns}
                         currentPanel={currentPanel}
@@ -132,7 +133,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 <DataDisplayTable
                     key={currentPanel}
                     externalDataSource={processOriginData}
-                    apiEndpoint="http://localhost:5000/api/process/all"
+                    apiEndpoint={Process_Data_API}
                     timeColumnIndex={['createTime']}
                     columns={runningProcessesColumns}
                     currentPanel={currentPanel}
@@ -144,7 +145,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                 <DataDisplayTable
                     key={currentPanel}
                     externalDataSource={assetOriginData}
-                    apiEndpoint="http://localhost:5000/api/asset_mapping/all"
+                    apiEndpoint={Assets_Data_API}
                     timeColumnIndex={[]}
                     columns={systemServicesColumns}
                     currentPanel={currentPanel}
@@ -186,6 +187,7 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
+                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                         fontSize: '18px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',

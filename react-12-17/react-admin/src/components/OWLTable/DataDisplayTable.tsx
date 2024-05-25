@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal, message } from 'antd';
-import { convertUnixTime, fetchDataFromAPI, handleDelete, handleExport } from '../ContextAPI/DataService';
-import { FilterDropdownProps, simplifiedTablePanel } from '../Columns';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Table, Button, Input, Card, Col, DatePicker, Row } from 'antd';
 import { ExclamationCircleOutlined, LoadingOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { FilterDropdownProps } from '../Columns';
+import { handleExport } from '../ContextAPI/DataService';
+import { Link } from 'react-router-dom';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
+import moment from 'moment';
 
+const { RangePicker } = DatePicker;
 
 interface GenericDataItem {
     [key: string]: any;
@@ -31,7 +32,7 @@ interface DataDisplayTableProps {
 interface DataDisplayTableState {
     lastUpdated: string | null;
     data: any[];
-    selectedDateRange: [string | null, string | null];
+    selectedDateRange: { [key: string]: [moment.Moment | null, moment.Moment | null] };
 
     selectedRowKeys: React.Key[];// 可选属性，代表被选中行的keys，用于控制独立的key
     selectedDeletedRows: any[];
@@ -54,21 +55,19 @@ interface DataDisplayTableState {
 
 
 class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDisplayTableState> {
+    private refreshInterval: NodeJS.Timeout | null = null;
     constructor(props: DataDisplayTableProps) {
         super(props);
         this.state = {
             showModal: false,
             user_character: 'admin',
-
             selectedRowKeys: [],
             selectedDeletedRows: [],
             lastUpdated: null,
-            selectedDateRange: [null, null],
-
+            selectedDateRange: {},
             searchQuery: '',
             selectedSearchField: '',
             selectrangequeryParams: '',
-
             currentPanelName: this.props.currentPanel,
             panelChangeCount: 0,
 
@@ -110,7 +109,9 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         // }
     }
 
-    generate_new_columns = (columns: any[], search_index = ['']): any[] => {
+
+
+    generate_new_columns = (columns: any[], search_index = [''], rangePickerColumns = ['']): any[] => {
         // 遍历this.props.columns中的每一列
         return columns.map((column: any) => {
             // 如果列名在search_index中
@@ -179,6 +180,58 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                             : false,
                 };
             }
+            // if (rangePickerColumns && rangePickerColumns.includes(column.dataIndex)) {
+            //     return {
+            //         ...column,
+            //         filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
+            //             <div style={{ padding: 8 }}>
+            //                 <RangePicker
+            //                     onChange={(dates) => {
+            //                         filterDropdownProps.setSelectedKeys(dates ? [dates] : []);
+            //                         this.setState(prevState => ({
+            //                             selectedDateRange: {
+            //                                 ...prevState.selectedDateRange,
+            //                                 [column.dataIndex]: dates,
+            //                             },
+            //                         }));
+            //                     }}
+            //                     value={filterDropdownProps.selectedKeys[0]}
+            //                     style={{ width: '100%' }}
+            //                 />
+            //                 <Button
+            //                     type="primary"
+            //                     onClick={() => filterDropdownProps.confirm()}
+            //                     size="small"
+            //                     style={{ width: 90, marginTop: 8 }}
+            //                 >
+            //                     筛选
+            //                 </Button>
+            //                 <Button
+            //                     disabled={filterDropdownProps.clearFilters === undefined}
+            //                     onClick={() => {
+            //                         filterDropdownProps.clearFilters?.();
+            //                         this.setState(prevState => ({
+            //                             selectedDateRange: {
+            //                                 ...prevState.selectedDateRange,
+            //                                 [column.dataIndex]: [null, null],
+            //                             },
+            //                         }));
+            //                     }}
+            //                     size="small"
+            //                     style={{ width: 90, marginTop: 8 }}
+            //                 >重置</Button>
+            //             </div>
+            //         ),
+            //         onFilter: (value: [any, any], record: { [x: string]: import('moment').MomentInput; }) => {
+            //             const [start, end] = value;
+            //             const date = moment(record[column.dataIndex]);
+            //             return start && end ? date.isBetween(start, end, 'day', '[]') : true;
+            //         },
+            //         sorter: (a: { [x: string]: moment.MomentInput; }, b: {
+            //             [x: string]: moment.MomentInput;
+            //         }) => moment(a[column.dataIndex]).unix() - moment(b[column.dataIndex]).unix(),
+            //     };
+            // }
             else {
                 // 如果不在search_index中，直接返回原列
                 return column;
@@ -217,71 +270,71 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
 
     };
 
-    toggleModal = () => {
-        this.setState(prevState => ({
-            showModal: !prevState.showModal,
-            // selectedRows: record, // 设置当前记录，以便后续操作
-        }));
-    };
-    handleRefresh_delete = (api: string) => {
-        // 这个方法将被用于调用context中的refreshDataFromAPI
-        this.setState({
-            lastUpdated: new Date().toLocaleString(),
-        });
-        this.context.refreshDataFromAPI(api);
-    };
-    handleOk = async () => {
-        // 处理忽略操作
-        console.log('selectedRows:', this.state.selectedDeletedRows);
-        if (this.state.selectedDeletedRows && this.state.selectedDeletedRows.length > 0 && this.state.selectedDeletedRows[0]) {
-            const record = this.state.selectedDeletedRows.map(row => row.uuid);
-            await handleDelete(this.props.currentPanel, record).then(
-                () => this.handleRefresh_delete(this.props.apiEndpoint));
-        } else {
-            message.info('selectedRows中没有有效数据');
-        }
-        this.toggleModal(); // 关闭模态框
-        // message.info('已刷新:' + this.props.apiEndpoint + '的数据');
-    };
-    handleCancel = () => {
-        this.toggleModal(); // 关闭模态框
-    };
-    renderModal = (rows: any[]) => {
-        return (
-            <>
-                <Modal
-                    title="确认操作"
-                    visible={this.state.showModal}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    footer={[
-                        <Button key="back" onClick={this.handleCancel}>
-                            取消
-                        </Button>,
-                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
-                                onClick={this.handleOk}>
-                            是
-                        </Button>,
-                    ]}
-                    //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
-                >
-                    确认删除选中的:
-                    {rows.map(row => (
-                    <span key={row.uuid}>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(row.uuid)}`} target="_blank">
-                        <Button style={{
-                            fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-                            padding: '0 0',
-                        }}>{row.uuid && row.uuid}</Button>
-                    </Link>
-                        {','}
-                    </span>
-                ))}
-                    条目?
-                </Modal>
-            </>
-        );
-    };
+    // toggleModal = () => {
+    //     this.setState(prevState => ({
+    //         showModal: !prevState.showModal,
+    //         // selectedRows: record, // 设置当前记录，以便后续操作
+    //     }));
+    // };
+    // handleRefresh_delete = (api: string) => {
+    //     // 这个方法将被用于调用context中的refreshDataFromAPI
+    //     this.setState({
+    //         lastUpdated: new Date().toLocaleString(),
+    //     });
+    //     this.context.refreshDataFromAPI(api);
+    // };
+    // handleOk = async () => {
+    //     // 处理忽略操作
+    //     console.log('selectedRows:', this.state.selectedDeletedRows);
+    //     if (this.state.selectedDeletedRows && this.state.selectedDeletedRows.length > 0 && this.state.selectedDeletedRows[0]) {
+    //         const record = this.state.selectedDeletedRows.map(row => row.uuid);
+    //         await handleDelete(this.props.currentPanel, record).then(
+    //             () => this.handleRefresh_delete(this.props.apiEndpoint));
+    //     } else {
+    //         message.info('selectedRows中没有有效数据');
+    //     }
+    //     this.toggleModal(); // 关闭模态框
+    //     // message.info('已刷新:' + this.props.apiEndpoint + '的数据');
+    // };
+    // handleCancel = () => {
+    //     this.toggleModal(); // 关闭模态框
+    // };
+    // renderModal = (rows: any[]) => {
+    //     return (
+    //         <>
+    //             <Modal
+    //                 title="确认操作"
+    //                 visible={this.state.showModal}
+    //                 onOk={this.handleOk}
+    //                 onCancel={this.handleCancel}
+    //                 footer={[
+    //                     <Button key="back" onClick={this.handleCancel}>
+    //                         取消
+    //                     </Button>,
+    //                     <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+    //                             onClick={this.handleOk}>
+    //                         是
+    //                     </Button>,
+    //                 ]}
+    //                 //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
+    //             >
+    //                 确认删除选中的:
+    //                 {rows.map(row => (
+    //                 <span key={row.uuid}>
+    //                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(row.uuid)}`} target="_blank">
+    //                     <Button style={{
+    //                         fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
+    //                         padding: '0 0',
+    //                     }}>{row.uuid && row.uuid}</Button>
+    //                 </Link>
+    //                     {','}
+    //                 </span>
+    //             ))}
+    //                 条目?
+    //             </Modal>
+    //         </>
+    //     );
+    // };
 
     render() {
         // rowSelection object indicates the need for row selection
@@ -294,7 +347,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             },
             // 如果需要，可以在这里添加 getCheckboxProps 来定制每一行复选框的行为
         };
-        const new_columns = this.generate_new_columns(this.props.columns, this.props.searchColumns);
+        const new_columns = this.generate_new_columns(this.props.columns, this.props.searchColumns, this.props.timeColumnIndex);
 
         const data = this.props.externalDataSource;
 
@@ -316,7 +369,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const { refreshDataFromAPI } = context;
-                    this.handleRefresh_delete = refreshDataFromAPI;
+                    // this.handleRefresh_delete = refreshDataFromAPI;
                     const handleRefresh = (api: string) => {
                         refreshDataFromAPI(api);
                         this.setState({
@@ -324,8 +377,12 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                         });
                     };
                     return (//Table的宽度被设置为1330px
-                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
-                            {this.renderModal(this.state.selectedDeletedRows)}
+                        <div style={{
+                            // fontFamily: '\'YouYuan\', sans-serif',
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold',
+                        }}>
+                            {/*{this.renderModal(this.state.selectedDeletedRows)}*/}
                             <Row gutter={[12, 6]} style={{ marginTop: '-10px' }}>
                                 <Col md={24}>
                                     <Card bordered={false} bodyStyle={{ padding: '4px' }}>
@@ -352,7 +409,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                                 新增任务
                                                             </Button>
                                                         </Link>)}
-                                                    {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist','memHorseList'].includes(this.props.currentPanel)) && (
+                                                    {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist', 'memHorseList'].includes(this.props.currentPanel)) && (
                                                         <Button
                                                             style={{
                                                                 backgroundColor: '#1664FF',
@@ -383,26 +440,26 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                     >
                                                         批量导出
                                                     </Button>
-                                                    {!["TaskDetail","TaskRecord",'memHorseList'].includes(this.props.currentPanel)&&(
-                                                        <Button
-                                                        style={{
-                                                            backgroundColor: isButtonDisabled ? '#f6c6cf' : '#fb1440',
-                                                            color: 'white',
-                                                            marginRight: '10px',
-                                                            transition: 'opacity 0.3s', // 添加过渡效果
-                                                            opacity: 1, // 初始透明度
-                                                        }}
-                                                        onMouseEnter={(e) => {
-                                                            e.currentTarget.style.opacity = 0.7;
-                                                        }} // 鼠标进入时将透明度设置为0.5
-                                                        onMouseLeave={(e) => {
-                                                            e.currentTarget.style.opacity = 1;
-                                                        }} // 鼠标离开时恢复透明度为1
-                                                        onClick={() => this.toggleModal()}
-                                                        disabled={isButtonDisabled}
-                                                    >
-                                                        批量删除
-                                                    </Button>)}
+                                                    {/*{!["TaskDetail","TaskRecord",'memHorseList'].includes(this.props.currentPanel)&&(*/}
+                                                    {/*    <Button*/}
+                                                    {/*    style={{*/}
+                                                    {/*        backgroundColor: isButtonDisabled ? '#f6c6cf' : '#fb1440',*/}
+                                                    {/*        color: 'white',*/}
+                                                    {/*        marginRight: '10px',*/}
+                                                    {/*        transition: 'opacity 0.3s', // 添加过渡效果*/}
+                                                    {/*        opacity: 1, // 初始透明度*/}
+                                                    {/*    }}*/}
+                                                    {/*    onMouseEnter={(e) => {*/}
+                                                    {/*        e.currentTarget.style.opacity = 0.7;*/}
+                                                    {/*    }} // 鼠标进入时将透明度设置为0.5*/}
+                                                    {/*    onMouseLeave={(e) => {*/}
+                                                    {/*        e.currentTarget.style.opacity = 1;*/}
+                                                    {/*    }} // 鼠标离开时恢复透明度为1*/}
+                                                    {/*    onClick={() => this.toggleModal()}*/}
+                                                    {/*    disabled={isButtonDisabled}*/}
+                                                    {/*>*/}
+                                                    {/*    批量删除*/}
+                                                    {/*</Button>)}*/}
                                                 </Col>
                                                 <Col flex="auto"
                                                      style={{ textAlign: 'left', marginLeft: 10, marginTop: '5px' }}>

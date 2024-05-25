@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import { Row, Col, Card } from 'antd';
+import { Row, Col, Card, message } from 'antd';
 import { constRenderTable, hostinventoryColumns, StatusItem } from '../Columns';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -268,6 +268,8 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
 };
 
 class HostInventory extends React.Component<HostInventoryProps, HostInventoryState> {
+    private refreshInterval: NodeJS.Timeout | null = null;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -278,21 +280,6 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
             fullDataSource: [], // 存储完整的数据源副本
         };
     }
-
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState(prevState => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) => (i === index ? index : val)),
-        }));
-    };
-
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
-
 
     render() {
 
@@ -338,7 +325,9 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     ];
 
                     return (
-                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: '\'YouYuan\', sans-serif',
+                            fontWeight: 'bold' }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
                                 <Col span={8}>
                                     <Card bordered={false} style={{ fontWeight: 'bolder', width: '100%', height: 300 }}>
@@ -349,6 +338,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                                             fontWeight: 'bold',
                                         }}>
                                             <h2 style={{
+                                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                 fontSize: '18px',
                                                 fontWeight: 'bold',
                                                 marginLeft: '0px',
@@ -383,6 +373,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                                             fontWeight: 'bold',
                                         }}>
                                             <h2 style={{
+                                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                                                 fontSize: '18px',
                                                 fontWeight: 'bold',
                                                 marginLeft: '0px',

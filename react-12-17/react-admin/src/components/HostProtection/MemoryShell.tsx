@@ -196,14 +196,14 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                         name="data"
                         rules={[{ required: true, message: '检测内容不能为空' }]}
                     >
-                        {/*<TextArea rows={8} placeholder="添加检测内容" />*/}
-                        <TextArea
-                            rows={8}
-                            placeholder="添加检测内容"
-                            value={uploadedFileContent || ''} // 如果有上传文件内容，则将TextArea的值设置为上传文件的内容
-                            onChange={(e) => this.setState({ uploadedFileContent: e.target.value })}
-                            disabled={!!uploadedFileContent} // 如果有上传文件内容，则禁用TextArea
-                        />
+                        <TextArea rows={8} placeholder="添加检测内容" />
+                        {/*<TextArea*/}
+                        {/*    rows={8}*/}
+                        {/*    placeholder="添加检测内容"*/}
+                        {/*    value={uploadedFileContent || ''} // 如果有上传文件内容，则将TextArea的值设置为上传文件的内容*/}
+                        {/*    onChange={(e) => this.setState({ uploadedFileContent: e.target.value })}*/}
+                        {/*    disabled={!!uploadedFileContent} // 如果有上传文件内容，则禁用TextArea*/}
+                        {/*/>*/}
                     </Form.Item>
                     {/*<Form.Item*/}
                     {/*    label={<span style={{ fontSize: '18px' }}>添加检测内容</span>}*/}
@@ -329,7 +329,10 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                     this.handleRefresh = refreshDataFromAPI;
 
                     return (
-                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: 'YouYuan, sans-serif',
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold' }}>
                             {this.renderMemoryShellModal()}
                             {this.renderDetailModal()}
                             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>

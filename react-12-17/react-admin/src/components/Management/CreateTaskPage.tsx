@@ -1,6 +1,6 @@
 import React, { createRef, useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, TimePicker, Col } from 'antd';
-import FetchDataForElkeidTable from '../ElkeidTable/FetchDataForElkeidTable';
+import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { createNewTaskColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
@@ -8,7 +8,7 @@ import { SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons
 
 import moment, { Moment } from 'moment';
 import { fetchDataFromAPI } from '../ContextAPI/DataService';
-import { Task_Data_API } from '../../service/config';
+import { Agent_Data_API, Task_Data_API } from '../../service/config';
 // import '../CustomAntd/CustomDatePicker.less'
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -284,7 +284,7 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
             <Card bordered={false} style={{ width: '90%', margin: '0px auto' }}>
               <Row style={{ margin: '0px auto', width: '100%' }}>
                 <FetchDataForElkeidTable
-                  apiEndpoint="http://localhost:5000/api/agent/all"
+                  apiEndpoint={Agent_Data_API}
                   timeColumnIndex={[]}
                   columns={createNewTaskColumns}
                   currentPanel={"createnewtask"} // 替换为你的 panel 名称

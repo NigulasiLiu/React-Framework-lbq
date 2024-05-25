@@ -2,14 +2,14 @@
 
 import React from 'react';
 import { Card, Col, Button, Row, Modal, Form, Input, Badge, message, Tooltip, Menu } from 'antd'
-import DataDisplayTable from '../ElkeidTable/DataDisplayTable';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import moment from 'moment';
 import axios from 'axios';
 import umbrella from 'umbrella-storage';
 import { useHistory } from 'react-router-dom';
-import { Task_Data_API } from '../../service/config';
+import { APP_Server_URL, Task_Data_API } from '../../service/config';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -359,7 +359,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
       };
 
     handleDelete = (job_id: string) => {
-        axios.delete(`http://localhost:5000/api/delete_task?job_id=${job_id}`,config)
+        axios.delete(`${APP_Server_URL}/api/delete_task?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务删除成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -376,7 +376,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handlePause = (job_id: string) => {
-        axios.post(`http://localhost:5000/api/pause_task?job_id=${job_id}`,config)
+        axios.post(`${APP_Server_URL}/api/pause_task?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -393,7 +393,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handleResume = (job_id: string) => {
-        axios.post(`http://localhost:5000/api/resume_task?job_id=${job_id}`,config)
+        axios.post(`${APP_Server_URL}/api/resume_task?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -465,7 +465,8 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                         style={{ backgroundColor: '#ffffff' }}>
                         <Row>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontWeight: 'bold' }}>
-                                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                                <h2 style={{
+                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
                             </div>
                         </Row>
                         <DataDisplayTable
@@ -533,7 +534,10 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                     // 将函数绑定到类组件的实例上
                     this.handleRefresh = refreshDataFromAPI;
                     return (
-                        <div style={{ fontFamily: "'YouYuan', sans-serif", fontWeight: 'bold' }}>
+                        <div style={{
+                            // fontFamily: "'YouYuan', sans-serif",
+                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontWeight: 'bold' }}>
                             {this.renderModal()}
                             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                 <Col md={24}>
