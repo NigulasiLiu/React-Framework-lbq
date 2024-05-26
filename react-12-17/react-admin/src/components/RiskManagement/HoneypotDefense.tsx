@@ -154,6 +154,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
           autoComplete="off"
         >
           <Form.Item
+            className="form-item-custom"  // 添加className
             label="蜜罐端口"
             name="honeypot_port"
             rules={[{ required: true, message: '请输入蜜罐设置的端口' }]}
@@ -161,6 +162,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
             <Input type="number" />
           </Form.Item>
           <Form.Item
+              className="form-item-custom"  // 添加className
             label="蜜罐类型"
             name="honeypot_type"
             rules={[{ required: true, message: '请输入蜜罐类型' }]}
@@ -168,11 +170,12 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
             <Input type="number" />
           </Form.Item>
           <Form.Item
+              className="form-item-custom"  // 添加className
             label="蜜罐状态"
             name="honeypot_status"
             rules={[{ required: true, message: '请输入蜜罐状态' }]}
           >
-            <Input type="number" />
+            <Input type={""} />
           </Form.Item>
         </Form>
         </Modal>);

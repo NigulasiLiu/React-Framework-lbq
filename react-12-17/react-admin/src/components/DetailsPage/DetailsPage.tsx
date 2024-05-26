@@ -25,6 +25,7 @@ import moment from 'moment';
 import { APP_Server_URL, Brute_TTPs_API, Defense_TTPs_API, Honey_API, Privilege_TTPs_API } from '../../service/config';
 import honeypotDefense from '../RiskManagement/HoneypotDefense';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
+import CustomNotification from '../ui/CustomNotification';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -487,7 +488,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         }
 
         return { data: filteredData, error: null };
-    }
+    };
 
     //对漏洞条目的操作
     toggleVulOperationModal = (record = null) => {
@@ -747,7 +748,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
-    renderTable = (filteredData: any[], title: string, columns: any[], currentPanel: string, api: string, searchIndex=['']) => {
+    renderTable = (filteredData: any[], title: string, columns: any[], currentPanel: string, api: string, searchIndex = ['']) => {
         return (
             <div>
                 {constRenderTable(filteredData, title, [],
@@ -783,6 +784,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         search={searchIndex}
                                         handleReload={
                                             () => {
+                                                CustomNotification.successNotification("BaseLine_Data_API");
                                                 console.log('baselineTableReloadCount:this.state.baselineTableReloadCount+1:' + this.state.baselineTableReloadCount);
                                                 this.setState({ baselineTableReloadCount: this.state.baselineTableReloadCount + 1 });
                                             }
@@ -806,7 +808,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     renderCurrentPanel = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
                           vulOriginData: any[],
                           HoneyPotOriginData: any[],
-                          bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[],defenseavoidanceTTPsOriginData: any[],
+                          bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[], defenseavoidanceTTPsOriginData: any[],
                           VirusOriginData: any[],
                           HoneyPotHostCount: number, TTPsHostCount: number, VirusHostCount: number) => {
 
@@ -1012,7 +1014,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             <div style={{ marginTop: '-20px' }}>
                                 <div style={{
                                     // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                    fontWeight: 'bold' }}>
+                                    fontWeight: 'bold',
+                                }}>
                                     <Col md={24}>
                                         <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
                                             <Col md={24}>
@@ -1031,7 +1034,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                         }}>告警概览</h2>
                                                     </div>
                                                     <Row gutter={[6, 6]}>
-                                                        <Col md={2}/>
+                                                        <Col md={2} />
                                                         <Col md={10}>
                                                             <Card
                                                                 bordered={false}
@@ -1063,7 +1066,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 </Row>
                                                             </Card>
                                                         </Col>
-                                                        <Col md={2}/>
+                                                        <Col md={2} />
                                                         <Col md={10}>
                                                             <Card
                                                                 bordered={false}
@@ -1118,41 +1121,41 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         <Row gutter={[12, 6]}/*(列间距，行间距)*/
                                              style={{ width: '100%', margin: '0 auto' }}>
                                             <Col md={24}>
-                                                    {/*<Card bordered={false}>*/}
-                                                    {/*    <div style={{*/}
-                                                    {/*        display: 'flex',*/}
-                                                    {/*        justifyContent: 'space-between',*/}
-                                                    {/*        marginBottom: 16,*/}
-                                                    {/*        fontWeight: 'bold',*/}
-                                                    {/*    }}>*/}
-                                                    {/*        <h2 style={{*/}
-                                                    {/*            fontWeight: 'bold',*/}
-                                                    {/*            marginLeft: '0px',*/}
-                                                    {/*        }}>告警内容</h2>*/}
-                                                    {/*        /!*<Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>*!/*/}
-                                                    {/*    </div>*/}
+                                                {/*<Card bordered={false}>*/}
+                                                {/*    <div style={{*/}
+                                                {/*        display: 'flex',*/}
+                                                {/*        justifyContent: 'space-between',*/}
+                                                {/*        marginBottom: 16,*/}
+                                                {/*        fontWeight: 'bold',*/}
+                                                {/*    }}>*/}
+                                                {/*        <h2 style={{*/}
+                                                {/*            fontWeight: 'bold',*/}
+                                                {/*            marginLeft: '0px',*/}
+                                                {/*        }}>告警内容</h2>*/}
+                                                {/*        /!*<Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>*!/*/}
+                                                {/*    </div>*/}
 
 
-                                                    {/*</Card>*/}
+                                                {/*</Card>*/}
 
                                                 {constRenderTable(
                                                     filteredHoneyPotData, '蜜罐信息', [],
-                                                    Honeypotcolumns, 'HoneypotDefenselistDetails', Honey_API, ['uuid']
+                                                    Honeypotcolumns, 'HoneypotDefenselistDetails', Honey_API, ['uuid'],
                                                 )}
                                                 {constRenderTable(
                                                     filteredTTPsData1, '威胁狩猎-暴力破解', [],
                                                     threatHuntingColumns, 'brute-force-details',
-                                                    Brute_TTPs_API, ['uuid', 'atk_ip']
+                                                    Brute_TTPs_API, ['uuid', 'atk_ip'],
                                                 )}
                                                 {constRenderTable(
                                                     filteredTTPsData2, '威胁狩猎-权限提升', [],
                                                     threatHuntingColumns_2, 'privilege-escalation-details',
-                                                    Privilege_TTPs_API, ['uuid', 'atk_ip']
+                                                    Privilege_TTPs_API, ['uuid', 'atk_ip'],
                                                 )}
                                                 {constRenderTable(
                                                     filteredTTPsData3, '威胁狩猎-防御规避', [],
                                                     threatHuntingColumns_2, 'defense-avoidance-details',
-                                                    Defense_TTPs_API, ['uuid', 'atk_ip']
+                                                    Defense_TTPs_API, ['uuid', 'atk_ip'],
                                                 )}
                                             </Col>
                                         </Row>
@@ -1205,12 +1208,15 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                     }}>
                                                         <CustomPieChart
                                                             data={
-                                                                [{
-                                                                    color: '#E63F3F',
-                                                                    label: '风险项',
-                                                                    value: totalExpResultCount,
-                                                                },
-                                                                    { color: '#468DFF', label: '通过项', value: 99 }]}
+                                                                [
+                                                                    {
+                                                                        color: '#E63F3F',
+                                                                        label: '风险项',
+                                                                        value: totalExpResultCount,
+                                                                    },
+                                                                    { color: '#468DFF', label: '通过项', value: 99 },
+                                                                ]
+                                                            }
                                                             innerRadius={27}
                                                             deltaRadius={2}
                                                             outerRadius={33}
@@ -1488,7 +1494,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         );
                     case 'honeyPot':
                         return (
-                            <div style={{fontWeight: 'bold' }}>
+                            <div style={{ fontWeight: 'bold' }}>
                                 <Row gutter={[12, 6]} style={{ marginTop: '0px' }}>
                                     <Col md={24}>
                                         {/*{this.renderTable(filteredHoneyPotData, '蜜罐信息', Honeypotcolumns,*/}
@@ -1496,8 +1502,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     </Col>
                                 </Row>
                             </div>
-                    )
-                        ;
+                        )
+                            ;
                     case 'performancemonitor':
                         return (
                             <div style={{ marginTop: '-20px' }}>
@@ -1535,7 +1541,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
                         agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                        vulnOriginData,honeyPotOriginData,virusOriginData,
+                        vulnOriginData, honeyPotOriginData, virusOriginData,
                         bruteforceTTPsOriginData,
                         privilegeescalationTTPsOriginData,
                         defenseavoidanceTTPsOriginData,
@@ -1581,12 +1587,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         >
                                             <Menu.Item key="hostoverview">主机概览</Menu.Item>
                                             <Menu.Item key="hostAlertInfo">安全告警（AlarmTotal）</Menu.Item>
+                                            <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
                                             <Menu.Item key="vulnerabilityDetailList">漏洞风险（VulnTotal）</Menu.Item>
-                                            <Menu.Item key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
+                                            <Menu.Item
+                                                key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
                                             {/*<Menu.Item key="honeyPot">蜜罐防御（HoneyPot）</Menu.Item>*/}
                                             {/*<Menu.Item key="TTPs">威胁狩猎（TTPs）</Menu.Item>*/}
                                             {/*<Menu.Item key="microIsolation">文件隔离（MicroIsolate）</Menu.Item>*/}
-                                            <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
                                             <Menu.Item key="performancemonitor">性能监控</Menu.Item>
                                             {/* <Menu.Item key="assetfingerprint">资产指纹</Menu.Item> */}
                                             {/* 可以根据需要添加更多的Menu.Item */}
@@ -1599,7 +1606,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                               style={{ backgroundColor: '#F6F7FB', margin: '0 auto', width: '90%' }}>
                                             {this.renderCurrentPanel(agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData, vulnOriginData,
                                                 honeyPotOriginData,
-                                                bruteforceTTPsOriginData,privilegeescalationTTPsOriginData,defenseavoidanceTTPsOriginData,
+                                                bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData,
                                                 virusOriginData,
                                                 HoneyPotHostCount,
                                                 TTPsHostCount,

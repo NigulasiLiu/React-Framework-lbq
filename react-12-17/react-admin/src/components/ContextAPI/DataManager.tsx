@@ -1,6 +1,7 @@
 // src/components/DataManager.tsx
 import React, { createContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { templateData } from './SeperateData';
+import CustomNotification from '../ui/CustomNotification';
 import useSortedData from './TopFiveDataProvider';
 import { convertAndFillData } from './SeperateData';
 import { DataItem } from '../Columns';
@@ -35,6 +36,7 @@ import {
     Isolate_Data_API,
     User_Data_API,
 } from '../../service/config';
+import ReactDOM from 'react-dom';
 
 
 export interface DataContextType {
@@ -143,6 +145,27 @@ export const DataContext = createContext<DataContextType | undefined>(undefined)
 interface SetDataFunctions {
     [key: string]: Dispatch<SetStateAction<any>>;
 }
+// API 端点和全局变量名称的映射表
+const apiEndpointToVariableName: { [key: string]: string } = {
+    [Agent_Data_API as string]: 'Agent_Data_API',
+    [Monitor_Data_API as string]: 'Monitor_Data_API',
+    [Fim_Data_API as string]: 'Fim_Data_API',
+    [Vul_Data_API as string]: 'Vul_Data_API',
+    [Port_Data_API as string]: 'Port_Data_API',
+    [Process_Data_API as string]: 'Process_Data_API',
+    [Assets_Data_API as string]: 'Assets_Data_API',
+    [BaseLine_linux_Data_API as string]: 'BaseLine_linux_Data_API',
+    [BaseLine_windows_Data_API as string]: 'BaseLine_windows_Data_API',
+    [Task_Data_API as string]: 'Task_Data_API',
+    [MemoryShell_API as string]: 'MemoryShell_API',
+    [Honey_API as string]: 'Honey_API',
+    [Brute_TTPs_API as string]: 'Brute_TTPs_API',
+    [Privilege_TTPs_API as string]: 'Privilege_TTPs_API',
+    [Defense_TTPs_API as string]: 'Defense_TTPs_API',
+    [User_Data_API as string]: 'User_Data_API',
+    [Virus_Data_API as string]: 'Virus_Data_API',
+    [Isolate_Data_API as string]: 'Isolate_Data_API',
+};
 
 
 const DataManager: React.FC = ({ children }) => {
@@ -202,15 +225,21 @@ const DataManager: React.FC = ({ children }) => {
             const data = await fetchDataFromAPI({ apiEndpoint });
             // 根据API端点调用对应的设置状态函数
             const setDataFunction = setDataFunctions[apiEndpoint];
+            //用于notification显示的字符串
+            const variableName = apiEndpointToVariableName[apiEndpoint];
             if (setDataFunction) {
                 setDataFunction(data); // 更新状态
-                message.success(apiEndpoint + ' Data refreshed successfully');
+                // message.success(apiEndpoint + ' Data refreshed successfully');
+                // CustomNotification.successNotification(variableName);
+
             } else {
                 console.error('No matching function found for the API endpoint');
+                CustomNotification.openNotification('error', `No matching function found for the API endpoint ${variableName}`);
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
-            message.error('获取接口' + { apiEndpoint } + '数据失败');
+            // message.error('获取接口' + { apiEndpoint } + '数据失败');
+            CustomNotification.openNotification2('error', `获取接口 ${apiEndpointToVariableName[apiEndpoint]} 数据失败`);
         }
     };
 
@@ -242,28 +271,44 @@ const DataManager: React.FC = ({ children }) => {
         refreshDataFromAPI(Virus_Data_API);
 
 
-        const interval = setInterval(() => {
+        const interval_60 = setInterval(() => {
             refreshDataFromAPI(Agent_Data_API);
             refreshDataFromAPI(Monitor_Data_API);
             refreshDataFromAPI(Fim_Data_API);
             refreshDataFromAPI(Port_Data_API);
             refreshDataFromAPI(Process_Data_API);
             refreshDataFromAPI(Assets_Data_API);
+            refreshDataFromAPI(User_Data_API);
+            refreshDataFromAPI(Task_Data_API);
+            // refreshDataFromAPI(BaseLine_linux_Data_API);
+            // refreshDataFromAPI(BaseLine_windows_Data_API);
+            // refreshDataFromAPI(Vul_Data_API);
+            // refreshDataFromAPI(Virus_Data_API);
+            // refreshDataFromAPI(MemoryShell_API);
+            // refreshDataFromAPI(Honey_API);
+            // refreshDataFromAPI(Brute_TTPs_API);
+            // refreshDataFromAPI(Privilege_TTPs_API);
+            // refreshDataFromAPI(Defense_TTPs_API);
+            // refreshDataFromAPI(Isolate_Data_API);
+        }, 60000); // 60s
+
+        const interval_120 = setInterval(() => {
             refreshDataFromAPI(BaseLine_linux_Data_API);
             refreshDataFromAPI(BaseLine_windows_Data_API);
             refreshDataFromAPI(Vul_Data_API);
-            refreshDataFromAPI(Task_Data_API);
+            refreshDataFromAPI(Virus_Data_API);
             refreshDataFromAPI(MemoryShell_API);
             refreshDataFromAPI(Honey_API);
             refreshDataFromAPI(Brute_TTPs_API);
             refreshDataFromAPI(Privilege_TTPs_API);
             refreshDataFromAPI(Defense_TTPs_API);
-            refreshDataFromAPI(User_Data_API);
             refreshDataFromAPI(Isolate_Data_API);
-            refreshDataFromAPI(Virus_Data_API);
-        }, 60000); // 60s
+        }, 120000); // 120s
 
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval_60);
+            clearInterval(interval_120);
+        };
 
     }, []);
 

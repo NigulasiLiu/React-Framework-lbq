@@ -43,6 +43,37 @@
 //   background-color: #E5E8EF;
 // }
 
+// 修改customTable复选框的边框颜色
+.customTable .ant-checkbox-inner {
+  border-color: #c8c8c8; /* 设置复选框边框颜色为灰色 */
+}
+
+// 配置Input组件的常态边框颜色
+.customInput {
+  .ant-input {
+    border-color: #c8c8c8; /* 设置常态边框颜色 */
+  }
+
+  .ant-input:focus,
+  .ant-input:hover {
+    border-color: #40a9ff; /* 设置聚焦和悬停时的边框颜色 */
+  }
+}
+
+// 如果你只想更改这三个具体的Input组件，可以给Form.Item加上一个className
+.form-item-custom {
+  .ant-input {
+    border-color: #c8c8c8; /* 设置常态边框颜色 */
+  }
+
+  .ant-input:focus,
+  .ant-input:hover {
+    border-color: #40a9ff; /* 设置聚焦和悬停时的边框颜色 */
+  }
+}
+
+
+
 
 
 

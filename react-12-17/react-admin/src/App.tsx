@@ -120,7 +120,7 @@ function App(props: AppProps) {
                     {!responsive.isMobile && isLogged && (
                         <SiderCustom collapsed={collapsed} />
                     )}
-                    {/* <ThemePicker /> */}
+                     <ThemePicker />
                     <Layout
                         className={classNames('app_layout', { 'app_layout-mobile': responsive.isMobile })}
                     >

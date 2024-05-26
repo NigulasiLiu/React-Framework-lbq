@@ -78,8 +78,8 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
         },
         {
           title: '原文件文件路径',
-          dataIndex: 'origin_file_path',
-          key: 'origin_file_path',
+          dataIndex: 'origin_filepath',
+          key: 'origin_filepath',
         },
         {
           title: '操作',
@@ -210,7 +210,7 @@ handleDecryptSubmit = async () => {
     filename: currentRecord.origin_filename,
     filepath: currentRecord.origin_file_path,
     encryptedfilename: currentRecord.encrypted_filename,
-    encryptedfilepath: currentRecord.encrypted_file_path,
+    encryptedfilepath: currentRecord.encrypted_filepath,
   };
   
   try {
@@ -248,9 +248,9 @@ renderDecryptModal=()=>{
         <Descriptions bordered column={1}>
         <Descriptions.Item label="Agent UUID">{this.state.currentRecord.uuid}</Descriptions.Item>
         <Descriptions.Item label="原文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
-        <Descriptions.Item label="原文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
+        <Descriptions.Item label="原文件路径">{this.state.currentRecord.origin_filepath}</Descriptions.Item>
         <Descriptions.Item label="加密文件名称">{this.state.currentRecord.encrypted_filename}</Descriptions.Item>
-        <Descriptions.Item label="加密文件路径">{this.state.currentRecord.encrypted_file_path}</Descriptions.Item>
+        <Descriptions.Item label="加密文件路径">{this.state.currentRecord.encrypted_filepath}</Descriptions.Item>
       </Descriptions>
     </Modal>
   );
@@ -280,7 +280,7 @@ handleEncryptSubmit = async () => {
   const postData = {
     uuid: currentRecord.uuid, // 假设agent_ip是表格中的一列
     filename: currentRecord.origin_filename,
-    filepath: currentRecord.origin_file_path,
+    filepath: currentRecord.origin_filepath,
   };
   
   try {
