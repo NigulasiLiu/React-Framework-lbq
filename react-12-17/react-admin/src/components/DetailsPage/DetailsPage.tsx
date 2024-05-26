@@ -26,6 +26,7 @@ import { APP_Server_URL, Brute_TTPs_API, Defense_TTPs_API, Honey_API, Privilege_
 import honeypotDefense from '../RiskManagement/HoneypotDefense';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import CustomNotification from '../ui/CustomNotification';
+import { vulDetectColumnsType } from '../RiskManagement/VulnerabilityList';
 
 // Define an interface for the individual status item
 interface StatusItem {
@@ -204,13 +205,48 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     dataIndex: 'id',
                     key: 'id',
                 },
+                // {
+                //     title: '主机名称',
+                //     dataIndex: 'uuid',
+                //     key: 'uuid',
+                //     filterIcon: (filtered: boolean) => <SearchOutlined
+                //         style={{ color: filtered ? '#1890ff' : undefined }} />,
+                //     render: (text: string, record: any) => (
+                //         <div>
+                //             <div>
+                //                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                //                     <Button style={{
+                //                         fontWeight: 'bold',
+                //                         border: 'transparent',
+                //                         backgroundColor: 'transparent',
+                //                         color: '#4086FF',
+                //                         padding: '0 0',
+                //                     }}>
+                //                         {record.uuid.slice(0, 5)}
+                //                     </Button>
+                //                 </Link>
+                //             </div>
+                //             <div style={{
+                //                 fontSize: 'small', // 字体更小
+                //                 background: '#f0f0f0', // 灰色背景
+                //                 padding: '2px 4px', // 轻微内边距
+                //                 borderRadius: '2px', // 圆角边框
+                //                 display: 'inline-block', // 使得背景色仅围绕文本
+                //                 marginTop: '4px', // 上边距
+                //             }}>
+                //                 <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                //             </div>
+                //         </div>
+                //     ),
+                // },
+
                 {
                     title: '主机名称',
                     dataIndex: 'uuid',
                     key: 'uuid',
                     filterIcon: (filtered: boolean) => <SearchOutlined
                         style={{ color: filtered ? '#1890ff' : undefined }} />,
-                    render: (text: string, record: any) => (
+                    render: (text: string, record: vulDetectColumnsType) => (
                         <div>
                             <div>
                                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
@@ -221,7 +257,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         color: '#4086FF',
                                         padding: '0 0',
                                     }}>
-                                        {record.uuid.slice(0, 5)}
+                                        <Tooltip title={record.uuid}>
+                                            <div style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '80px',
+                                            }}>
+                                                {record.uuid || '-'}
+                                            </div>
+                                        </Tooltip>
                                     </Button>
                                 </Link>
                             </div>
@@ -1182,6 +1227,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         }}>漏洞概览</h2>
                                     </div>
                                     <Row gutter={[6, 6]}>
+                                        <Col span={2}>
+                                        </Col>
                                         <Col span={10}>
                                             <Card
                                                 bordered={false}
@@ -1247,12 +1294,36 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         </Col>
                                         <Col span={1}>
                                         </Col>
-                                        <Col span={6}>
+                                        {/*<Col span={6}>*/}
+                                        {/*    <Card*/}
+                                        {/*        bordered={false}*/}
+                                        {/*        style={{*/}
+                                        {/*            height: '100px',*/}
+                                        {/*            width: '260px',*/}
+                                        {/*            minWidth: '200px', // 最小宽度300px，而非100px*/}
+                                        {/*            display: 'flex',*/}
+                                        {/*            alignItems: 'center',*/}
+                                        {/*            justifyContent: 'center',*/}
+                                        {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
+                                        {/*        }}*/}
+                                        {/*    >*/}
+                                        {/*        <Row>*/}
+                                        {/*            <Col pull={2} span={24} style={{ marginRight: '50px' }}>*/}
+                                        {/*                <Statistic title={<span*/}
+                                        {/*                    style={{ fontSize: '16px' }}>累计处理的漏洞</span>}*/}
+                                        {/*                           value={this.state.doneVulnerabilitiesCount} />*/}
+                                        {/*            </Col>*/}
+
+                                        {/*        </Row>*/}
+                                        {/*    </Card>*/}
+                                        {/*</Col>*/}
+
+                                        <Col span={10} style={{ marginLeft: '10px' }}>
                                             <Card
                                                 bordered={false}
                                                 style={{
                                                     height: '100px',
-                                                    width: '260px',
+                                                    width: '440px',
                                                     minWidth: '200px', // 最小宽度300px，而非100px
                                                     display: 'flex',
                                                     alignItems: 'center',
@@ -1261,31 +1332,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                 }}
                                             >
                                                 <Row>
-                                                    <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                        <Statistic title={<span
-                                                            style={{ fontSize: '16px' }}>累计处理的漏洞</span>}
-                                                                   value={this.state.doneVulnerabilitiesCount} />
-                                                    </Col>
-
-                                                </Row>
-                                            </Card>
-                                        </Col>
-
-                                        <Col span={6} style={{ marginLeft: '10px' }}>
-                                            <Card
-                                                bordered={false}
-                                                style={{
-                                                    height: '100px',
-                                                    width: '270px',
-                                                    minWidth: '200px', // 最小宽度300px，而非100px
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                }}
-                                            >
-                                                <Row>
-                                                    <Col pull={2} span={24} style={{ marginRight: '50px' }}>
+                                                    <Col pull={2} span={24}
+                                                         style={{ marginRight: '50px',
+                                                        transform: 'translateX(-50%)', }}>
                                                         <Statistic title={<span
                                                             style={{ fontSize: '16px' }}>累计忽略的漏洞</span>}
                                                                    value={this.state.ignoredVulnerabilitiesCount} />
