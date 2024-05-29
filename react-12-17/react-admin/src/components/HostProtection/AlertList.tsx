@@ -110,7 +110,7 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                     const alertHostPieChartData = [
                         { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 40 : VirusHostCount, color: '#846CCE' },
+                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
                     ];
                     return (
                         <div style={{

@@ -169,10 +169,10 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                             // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                             fontWeight: 'bold', width: '100%' }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>
-                                <Col className="gutter-row" span={24}>
+                                <Col span={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
-                                        <Col className="gutter-row" span={24}>
+                                        <Col span={24}>
                                             <Card bordered={false} /*title="主机状态分布" 产生分界线*/
                                                   style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
                                                 <div style={{
@@ -189,8 +189,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                     }}>病毒扫描</h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
-                                                    <Col className="gutter-row" span={4}
-                                                         style={{ marginLeft: '15px', marginTop: '10px' }}>
+                                                    <Col span={4} style={{ marginLeft: '15px', marginTop: '10px' }}>
                                                         <div className="container">
                                                             <Row gutter={24}>
                                                                 <h2 style={{ fontSize: '16px' }}>最近扫描时间: </h2>
@@ -212,7 +211,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                     onMouseLeave={(e) => {
                                                                         e.currentTarget.style.opacity = 1;
                                                                     }} // 鼠标离开时恢复透明度为1
-                                                                    onClick={this.toggleProcessSidebar}>扫描进度</Button>
+                                                                    onClick={this.toggleProcessSidebar}>立即扫描</Button>
                                                                 <Button style={{ marginLeft: '0px' }}
                                                                         onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
                                                             </Row>
@@ -245,7 +244,8 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             </div>
                                                         </div>
                                                     </Col>
-                                                    <Col className="gutter-row" span={9}>
+                                                    <Col span={1}/>
+                                                    <Col span={9}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
@@ -261,10 +261,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
                                                                 <Col span={8}
                                                                      style={{ paddingTop: '20px', width: '400px', height: '90px' }}>
-                                                                    <Statistic title={<span>待处理告警</span>} value={1} />
+                                                                    <Statistic title={<span style={{fontSize:'17px'}}>待处理告警</span>} value={1} />
                                                                 </Col>
                                                                 <Col span={9} style={{ width: '400px' }}>
-
                                                                     <CustomPieChart
                                                                         data={virusstatusData}
                                                                         innerRadius={24}
@@ -284,33 +283,34 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             </Row>
                                                         </Card>
                                                     </Col>
-                                                    <Col className="gutter-row" span={5}>
-                                                        <Card
-                                                            bordered={false}
-                                                            style={{
-                                                                height: '100px',
-                                                                width: '260px',
-                                                                minWidth: '200px', // 最小宽度300px，而非100px
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                            }}
-                                                        >
-                                                            <Row>
-                                                                <Col span={24} style={{ marginRight: '120px' }}>
-                                                                    <Statistic title={<span>累计处理告警</span>} value={0} />
-                                                                </Col>
+                                                    <Col span={1}/>
+                                                    {/*<Col span={5}>*/}
+                                                    {/*    <Card*/}
+                                                    {/*        bordered={false}*/}
+                                                    {/*        style={{*/}
+                                                    {/*            height: '100px',*/}
+                                                    {/*            width: '260px',*/}
+                                                    {/*            minWidth: '200px', // 最小宽度300px，而非100px*/}
+                                                    {/*            display: 'flex',*/}
+                                                    {/*            alignItems: 'center',*/}
+                                                    {/*            justifyContent: 'center',*/}
+                                                    {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
+                                                    {/*        }}*/}
+                                                    {/*    >*/}
+                                                    {/*        <Row>*/}
+                                                    {/*            <Col span={24} style={{ marginRight: '120px' }}>*/}
+                                                    {/*                <Statistic title={<span>累计处理告警</span>} value={0} />*/}
+                                                    {/*            </Col>*/}
 
-                                                            </Row>
-                                                        </Card>
-                                                    </Col>
-                                                    <Col className="gutter-row" span={5} style={{ marginLeft: '10px' }}>
+                                                    {/*        </Row>*/}
+                                                    {/*    </Card>*/}
+                                                    {/*</Col>*/}
+                                                    <Col span={5} style={{ marginLeft: '10px' }}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
                                                                 height: '100px',
-                                                                width: '240px',
+                                                                width: '440px',
                                                                 minWidth: '200px', // 最小宽度300px，而非100px
                                                                 display: 'flex',
                                                                 alignItems: 'center',
@@ -319,8 +319,8 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             }}
                                                         >
                                                             <Row>
-                                                                <Col span={24} style={{ marginRight: '100px' }}>
-                                                                    <Statistic title={<span>白名单规则数</span>} value={0} />
+                                                                <Col span={24} style={{ marginRight: '100px',transform: 'translateX(-40px)' }}>
+                                                                    <Statistic title={<span style={{fontSize:'17px'}}>白名单</span>} value={0} />
                                                                 </Col>
 
                                                             </Row>

@@ -32,32 +32,6 @@ interface WhiteListColumDataType {
     occurrenceTime: string;   // 发生时间
 }
 
-// interface StatusItem {
-//     color: string;
-//     label: string;
-//     value: number;
-// }
-
-// // Define an interface for the props expected by the StatusPanel component
-// interface StatusPanelProps {
-//     statusData: StatusItem[];
-// }
-// export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
-//     return (
-//         //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>      
-//         <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
-//             {statusData.map((status, index) => (
-//                 <div key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//                     <span style={{ height: '10px', width: '10px', backgroundColor: status.color, borderRadius: '50%', display: 'inline-block', marginRight: '16px' }}></span>
-//                     <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-//                     <span>{status.value}</span>
-//                 </div>
-//             ))}
-//         </div>//</div>
-
-//     );
-// };
-
 
 class WhiteList extends React.Component<WhiteListProps, WhiteListState> {
     constructor(props: any) {
@@ -260,12 +234,12 @@ class WhiteList extends React.Component<WhiteListProps, WhiteListState> {
                                 selectedRowKeys={this.state.selectedRowKeys}
                                 onSelectChange={(keys: any) => this.onSelectChange(keys)}
                             /> */}
-                                <FetchDataForElkeidTable
-                                    apiEndpoint={this.props.apiEndpoint}
-                                    timeColumnIndex={[]}
-                                    columns={this.columns}
-                                    currentPanel={this.props.currentPanel}
-                                    />
+                                {/*<FetchDataForElkeidTable*/}
+                                {/*    apiEndpoint={this.props.apiEndpoint}*/}
+                                {/*    timeColumnIndex={[]}*/}
+                                {/*    columns={this.columns}*/}
+                                {/*    currentPanel={this.props.currentPanel}*/}
+                                {/*    />*/}
                             </Card>
                         </div>
                     </Col>

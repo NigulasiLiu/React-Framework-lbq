@@ -1,21 +1,19 @@
 import zhCN from 'antd/es/locale/zh_CN';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Row, Col, Card, Input, Button, DatePicker, Statistic, Menu } from 'antd';
+import { Row, Col, Card, Input, Button, Statistic, Menu, Modal, Table, Tooltip } from 'antd';
 import BaseLineDetectScanSidebar from '../SideBar/ScanProcessSidebar';
-import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
-import { baselineDetectColumns, BaseLineDataType, StatusItem, fimColumns } from '../Columns';
+import { StatusItem } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { LoadingOutlined } from '@ant-design/icons';
-import { APP_Server_URL } from '../../service/config';
+import { APP_Server_URL, BaseLine_linux_Data_API, BaseLine_windows_Data_API, Vul_Data_API } from '../../service/config';
+import DataDisplayTable from '../OWLTable/DataDisplayTable';
 
-const { RangePicker } = DatePicker;
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
 
-type HostInventoryProps = {};
-type HostInventoryState = {
+type BaselineDetectListProps = {};
+type BaselineDetectListState = {
     count: number;
     deleteIndex: number | null;
     currentTime: string;
@@ -26,47 +24,33 @@ type HostInventoryState = {
     isSidebarOpen: boolean;
     riskItemCount: number;
     currentPanel: string;
+
+
+    ignoredBLCheckItem_array: { [uuid: string]: string[] }; // 修改为键值对形式存储
+    ignoredBLCheckItem: any[], // 添加被忽略的 check_name 数组
+    showIgnoredModal: boolean; // 新增
+    ignoredBLCheckItemData: { uuid: string; BLCheckItem: string }[]; // 新增
+    showModal: boolean, // 控制模态框显示
+
+    currentRecord: any, // 当前选中的记录
+    selectedVulnUuid: string;
+    baselineDetectColumns:any[];
 };
 
 
-// Define an interface for the props expected by the StatusPanel component
-interface StatusPanelProps {
-    statusData: StatusItem[];
-}
-
-export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData }) => {
-    return (
-        //<div style={{ border: '1px solid #d9d9d9', borderRadius: '4px' }}>
-        <div style={{ fontFamily: 'YouYuan, sans-serif' }}>
-            {statusData.map((status, index) => (
-                <div key={index} style={{
-                    marginBottom: '8px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}>
-                    <span style={{
-                        height: '10px',
-                        width: '10px',
-                        backgroundColor: status.color,
-                        borderRadius: '50%',
-                        display: 'inline-block',
-                        marginRight: '16px',
-                    }}></span>
-                    <span style={{ marginRight: 'auto', paddingRight: '8px' }}>{status.label}</span>
-                    <span>{status.value}</span>
-                </div>
-            ))}
-        </div>//</div>
-
-    );
-};
-
-class BaselineDetectList extends React.Component<HostInventoryProps, HostInventoryState> {
+class BaselineDetectList extends React.Component<BaselineDetectListProps, BaselineDetectListState> {
     constructor(props: any) {
         super(props);
-        this.columns = [];
+        const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
         this.state = {
+            ignoredBLCheckItem_array,
+            ignoredBLCheckItem: [], // 添加被忽略的 check_name 数组
+            showIgnoredModal: false, // 新增
+            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array),
+            currentRecord: null, // 当前选中的记录
+            selectedVulnUuid: '', // 添加状态来存储当前选中的基线检查项 id
+            showModal: false, // 控制模态框显示
+
             count: 0,
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
@@ -77,15 +61,313 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
             currentTime: new Date().toLocaleString(), // 添加用于存储当前时间的状态变量
             riskItemCount: 5,
             currentPanel: 'linux',
+            baselineDetectColumns : [
+                {
+                    title: 'ID',
+                    dataIndex: 'id',
+                    key: 'id',
+                    Maxwidth: '15px',
+                },
+                {
+                    title: '主机名',
+                    dataIndex: 'uuid',
+                    key: 'uuid',
+                    render: (text: string, record: any) => (
+                        <div>
+                            <div>
+                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                                    <Button style={{
+                                        fontWeight: 'bold',
+                                        border: 'transparent',
+                                        backgroundColor: 'transparent',
+                                        color: '#4086FF',
+                                        padding: '0 0',
+                                    }}>
+                                        <Tooltip title={record.uuid}>
+                                            <div style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '80px',
+                                            }}>
+                                                {record.uuid || '-'}
+                                            </div>
+                                        </Tooltip>
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div style={{
+                                fontSize: 'small', // 字体更小
+                                background: '#f0f0f0', // 灰色背景
+                                padding: '2px 4px', // 轻微内边距
+                                borderRadius: '2px', // 圆角边框
+                                display: 'inline-block', // 使得背景色仅围绕文本
+                                marginTop: '4px', // 上边距
+                            }}>
+                                <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                            </div>
+                        </div>
+                    ),
+                },
+                {
+                    title: '基线名称',
+                    dataIndex: 'check_name',
+                    render: (text: string, record: any) => (
+                        <Tooltip title={record.check_name}>
+                            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
+                                {record.check_name}
+                            </div>
+                        </Tooltip>
+                    ),
+                },
+                {
+                    title: '检查详情',
+                    dataIndex: 'details',
+                    render: (text: string, record: any) => (
+                        <Tooltip title={record.details}>
+                            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px' }}>
+                                {record.details}
+                            </div>
+                        </Tooltip>
+                    ),
+                },
+                {
+                    title: '调整建议',
+                    dataIndex: 'adjustment_requirement',
+                    filters: [
+                        { text: '建议调整', value: '建议调整' }, { text: '自行判断', value: '自行判断' },
+                    ],
+                    onFilter: (value: string | number | boolean, record: any) => record.adjustment_requirement.includes(value as string),
+                    render: (text: string, record: any) => (
+                        <Tooltip title={record.instruction}>
+                            {text}
+                        </Tooltip>
+                    ),
+                },
+                {
+                    title: '状态',
+                    dataIndex: 'status',
+                    filters: [{ text: 'true', value: 'true' }, { text: 'fail', value: 'fail' },
+                    ],
+                    onFilter: (value: string | number | boolean, record: any) => record.status.includes(value as string),
+                },
+                {
+                    title: '最新扫描时间',
+                    dataIndex: 'last_checked',
+                    // sorter: (a: any, b: any) => parseFloat(b.last_checked) - parseFloat(a.last_checked),
+                },
+                {
+                    title: '操作',
+                    dataIndex: 'operation',
+                    render: (text: string, record: any) => (
+                        <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
+                                disabled={
+                            (JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}')[record.uuid] || [])
+                                .includes(record.check_name)
+                        }
+                                style={{
+                                    fontWeight: 'bold',
+                                    border: 'transparent',
+                                    backgroundColor: 'transparent',
+                                    color: '#4086FF',
+                                }}>忽略</Button>
+                    ),
+                },
+            ],
         };
+
     }
 
-    columns: any;
-
-    handleReload = () => {
-        console.log("count:this.state.count+1:"+this.state.count)
-        this.setState({count:this.state.count+1})
+    getIgnoredBLCheckItemData = (ignoredBLCheckItem_array: { [uuid: string]: string[] }) => {
+        return Object.keys(ignoredBLCheckItem_array).map(uuid => ({
+            uuid,
+            BLCheckItem: ignoredBLCheckItem_array[uuid].join(', '),
+        }));
     };
+    getIgnoredBLItemCount = (ignoredBLCheckItem_array: { [uuid: string]: string[] }) => {
+        return Object.values(ignoredBLCheckItem_array).reduce((count, BLCheckItem) => count + BLCheckItem.length, 0);
+    };
+    handleIgnoreBLButtonClick = async (record: any) => {
+        try {
+            // message.info("handleIgnoreBLButtonClick:"+record.uuid);
+            const { ignoredBLCheckItem_array } = this.state;
+            if (!ignoredBLCheckItem_array[record.uuid]) {
+                ignoredBLCheckItem_array[record.uuid] = [];
+            }
+            // message.info("record.uuid:"+record.uuid)
+            ignoredBLCheckItem_array[record.uuid].push(record.check_name);
+            localStorage.setItem('ignoredBLCheckItem_array', JSON.stringify(ignoredBLCheckItem_array));
+
+            this.setState({
+                currentRecord: null,
+                ignoredBLCheckItem_array,
+                ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array),
+            });
+        } catch (error) {
+            console.error('请求错误:', error);
+        }
+    };
+    showIgnoredBLCheckItemsModal = () => {
+        const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
+        this.setState({
+            showIgnoredModal: true,
+            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array),
+        });
+    };
+    handleRemoveBLIgnored = (uuid: string) => {
+        const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
+        delete ignoredBLCheckItem_array[uuid];
+        localStorage.setItem('ignoredBLCheckItem_array', JSON.stringify(ignoredBLCheckItem_array));
+        this.setState({
+            ignoredBLCheckItem_array,
+            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array),
+        });
+    };
+    renderBLIgnoreModal = () => {
+        return (
+            <div>
+                <Modal
+                    wrapClassName="vertical-center-modal"
+                    visible={this.state.showIgnoredModal}
+                    title="忽略的检查项"
+                    onCancel={() => this.setState({ showIgnoredModal: false })}
+                    footer={null}
+                    width={600}
+                    style={{ top: 20 }}
+                >
+                    <Table
+                        className="customTable"
+                        dataSource={this.state.ignoredBLCheckItemData}
+                        rowKey="uuid"
+                        pagination={{ pageSize: 5 }}
+                        columns={[
+                            {
+                                title: 'UUID',
+                                dataIndex: 'uuid',
+                                key: 'uuid',
+                                render: (text: string, record: any) => (
+                                    <div>
+                                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                                            <Button
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                    border: 'transparent',
+                                                    backgroundColor: 'transparent',
+                                                    color: '#4086FF',
+                                                    padding: '0 0',
+                                                }}
+                                            >
+                                                <Tooltip title={record.uuid}>
+                                                    <div
+                                                        style={{
+                                                            whiteSpace: 'nowrap',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            maxWidth: '150px', // 调整最大宽度
+                                                        }}
+                                                    >
+                                                        {record.uuid || '-'}
+                                                    </div>
+                                                </Tooltip>
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                ),
+                            },
+                            {
+                                title: '检查项名称',
+                                dataIndex: 'BLCheckItem',
+                                key: 'BLCheckItem',
+                                render: (text: string) => (
+                                    <div>
+                                        <Tooltip title={text}>
+                                            <div
+                                                style={{
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    maxWidth: '150px', // 调整最大宽度
+                                                }}
+                                            >
+                                                {text || '-'}
+                                            </div>
+                                        </Tooltip>
+                                    </div>
+                                ),
+                            },
+                            {
+                                title: '操作',
+                                key: 'action',
+                                render: (_, record) => (
+                                    <Button
+                                        style={{
+                                            fontWeight: 'bold',
+                                            padding: '0 0',
+                                            border: 'transparent',
+                                            backgroundColor: 'transparent',
+                                            color: '#4086FF',
+                                        }}
+                                        onClick={() => this.handleRemoveBLIgnored(record.uuid)}
+                                    >
+                                        移出白名单
+                                    </Button>
+                                ),
+                            },
+                        ]}
+
+                        scroll={{ y: 240 }}
+                    />
+                </Modal>
+            </div>
+        );
+    };
+
+    toggleModal = (record = null) => {
+        this.setState(prevState => ({
+            showModal: !prevState.showModal,
+            currentRecord: record, // 设置当前记录，以便后续操作
+        }));
+    };
+
+    handleOk = async () => {
+        // 处理忽略操作
+        const record = this.state.currentRecord;
+        if (record) {
+            // 调用API
+            // 假设API调用的逻辑是放在handleIgnoreBLButtonClick方法中实现的
+            await this.handleIgnoreBLButtonClick(record);
+        }
+        this.toggleModal(); // 关闭模态框
+    };
+
+    handleCancel = () => {
+        this.toggleModal(); // 关闭模态框
+    };
+    renderModal = () => {
+        return (
+            <>
+                <Modal
+                    title="确认操作"
+                    visible={this.state.showModal}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    footer={[
+                        <Button key="back" onClick={this.handleCancel}>
+                            取消
+                        </Button>,
+                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+                                onClick={this.handleOk}>
+                            是
+                        </Button>,
+                    ]}
+                    //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
+                >
+                    确认忽略选中的基线基线检查项?
+                </Modal>
+            </>
+        );
+    };
+
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
@@ -109,39 +391,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         this.setState({ currentTime: formattedTime });
     };
 
-    onSelectChange = (selectedRowKeys: React.Key[]) => {
-        this.setState({
-            selectedRowKeys,
-            areRowsSelected: selectedRowKeys.length > 0,
-        });
-    };
-    // Define the rowSelection object inside the render method
-
-
-    renderRowSelection = () => {
-        return {
-            selectedRowKeys: this.state.selectedRowKeys,
-            onChange: (selectedRowKeys: React.Key[]) => {
-                this.setState({ selectedRowKeys });
-            },
-            // Add other rowSelection properties and methods as needed
-        };
-    };
-
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState(prevState => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) => (i === index ? index : val)),
-        }));
-    };
-
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
-
     renderCurrentPanel(linuxBaseLineCheckOriginData: any[], windowsBaseLineCheckOriginData: any[]) {
         if(linuxBaseLineCheckOriginData===undefined||windowsBaseLineCheckOriginData===undefined){
             return (
@@ -153,19 +402,32 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         else{
             const { currentPanel } = this.state;
             const data = currentPanel==="windows"?windowsBaseLineCheckOriginData:linuxBaseLineCheckOriginData
+            const originDataArray = Array.isArray(data) ? data : [data];
+            const api = currentPanel==="windows"?BaseLine_windows_Data_API:BaseLine_linux_Data_API;
             return (
-                <Row style={{ width: '100%' }}>
-                    <FetchDataForElkeidTable
+                <div>
+                    <DataDisplayTable
                         key={currentPanel+this.state.count}
-                        apiEndpoint={APP_Server_URL+'/api/baseline_check/' + currentPanel + '/all'}
+                        externalDataSource={originDataArray}
+                        apiEndpoint={api}
                         timeColumnIndex={['last_checked']}
-                        columns={baselineDetectColumns}
+                        columns={this.state.baselineDetectColumns}
                         currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}
-                        search={['uuid', 'check_name']}
-                        handleReload={this.handleReload}
+                        searchColumns={['uuid', 'check_name']}
                     />
-                </Row>
+                </div>
             );
+                // <Row style={{ width: '100%' }}>
+                    {/*<FetchDataForElkeidTable*/}
+                    {/*    key={currentPanel+this.state.count}*/}
+                    {/*    apiEndpoint={APP_Server_URL+'/api/baseline_check/' + currentPanel + '/all'}*/}
+                    {/*    timeColumnIndex={['last_checked']}*/}
+                    {/*    columns={this.state.baselineDetectColumns}*/}
+                    {/*    currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}*/}
+                    {/*    search={['uuid', 'check_name']}*/}
+                    {/*    handleReload={this.handleReload}*/}
+                    {/*/>*/}
+                {/*</Row>*/}
         }
     }
 
@@ -174,6 +436,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
         const { isSidebarOpen, selectedDateRange, currentTime } = this.state;
         // Conditional button style
 
+        const IgnoredBLItemCount = this.getIgnoredBLItemCount(this.state.ignoredBLCheckItem_array);
         return (
             <DataContext.Consumer>
                 {(context: DataContextType | undefined) => {
@@ -184,9 +447,6 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                     const {
                         linuxBaseLineCheckOriginData,
                         windowsBaseLineCheckOriginData,
-                        linuxBaseLineCheckMetaData_uuid,
-                        linuxBaseLineCheckMetaData_status,
-                        windowsBaseLineCheckMetaData_uuid,
                         blLinuxHostCount,
                         blWindowsHostCount,
                         blLinuxNeedAdjustmentItemCount,
@@ -213,6 +473,8 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
 
                     return (
                         <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                            {this.renderBLIgnoreModal()}
+                            {this.renderModal()}
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>
                                 <Col md={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
@@ -234,8 +496,7 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                     }}>基线概览</h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
-                                                    <Col md={6}
-                                                         style={{ marginLeft: '15px', marginTop: '10px' }}>
+                                                    <Col md={6} style={{ marginLeft: '15px', marginTop: '10px' }}>
                                                         <div className="container" style={{
                                                             // borderTop: '2px solid #E5E6EB',
                                                             // borderBottom: '2px solid #E5E6EB',
@@ -267,6 +528,8 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                                                 e.currentTarget.style.opacity = 1;
                                                                             }} // 鼠标离开时恢复透明度为1
                                                                             onClick={this.toggleSidebar}>立即扫描</Button>
+                                                                        <Button
+                                                                            onClick={this.showIgnoredBLCheckItemsModal}>白名单</Button>
                                                                     </Row>
                                                             </Row>
                                                                     <div
@@ -348,6 +611,28 @@ class BaselineDetectList extends React.Component<HostInventoryProps, HostInvento
                                                                 <Col pull={2} span={24}>
                                                                     <Statistic title={<span style={{fontSize:'18px'}}>检查项</span>}
                                                                                value={blWindowsCheckNameCount + blLinuxCheckNameCount} />
+                                                                </Col>
+
+                                                            </Row>
+                                                        </Card>
+                                                    </Col>
+                                                    <Col md={4}>
+                                                        <Card
+                                                            bordered={false}
+                                                            style={{
+                                                                height: '100px',
+                                                                width: '240px',
+                                                                minWidth: '200px', // 最小宽度300px，而非100px
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                backgroundColor: '#ffffff', // 设置Card的背景颜色
+                                                            }}
+                                                        >
+                                                            <Row>
+                                                                <Col pull={2} span={24}>
+                                                                    <Statistic title={<span style={{fontSize:'18px'}}>忽略项</span>}
+                                                                               value={IgnoredBLItemCount} />
                                                                 </Col>
 
                                                             </Row>

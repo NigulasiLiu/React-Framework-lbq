@@ -1,15 +1,7 @@
-// HostAlertList.tsx
 import React from 'react';
-import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { Menu, Row, Col, Card, Statistic, Typography, Button } from 'antd';
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
-import {
-    baseLineDetectCheckedItemColumns,
-    baseLineDetectHostItemColumns,
-    baseLineDetectScanResult1Columns,
-    baseLineDetectScanResult2Columns
-} from '../Columns'; // 假设列配置从某个文件导入
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { RouteComponentProps, withRouter } from 'react-router-dom';

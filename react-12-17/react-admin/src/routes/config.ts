@@ -59,11 +59,6 @@ const menus: {
                     title: '内存马检测',
                     component: 'MemoryHorseDetection'
                 },
-                // {
-                //     key: '/app/HostProtection/TotalWhiteList',
-                //     title: '白名单',
-                //     component: 'TotalWhiteList',
-                // },
             ],
         },
         {

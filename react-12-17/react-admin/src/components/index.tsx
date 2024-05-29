@@ -26,7 +26,6 @@ import ThreatHunting from './HostProtection/ThreatHunting';
 import MicroIsolation from './HostProtection/MicroIsolation';
 import ScheduleTask from './Management/ScheduleTask';
 import TotalAlertList from './HostProtection/TotalAlertList';
-import TotalWhiteList from './HostProtection/TotalWhiteList';
 
 
 const WysiwygBundle = Loadable({
@@ -45,7 +44,6 @@ export default {
     RouterEnter,
     WysiwygBundle,
     TotalAlertList,
-    TotalWhiteList,
     VirusScanning,
     VirusScanningWhiteList,
     Env,

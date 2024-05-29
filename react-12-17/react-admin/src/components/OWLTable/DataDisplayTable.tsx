@@ -28,7 +28,6 @@ interface DataDisplayTableProps {
     indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
     additionalButton?: () => void;
     additionalButtonTitile?: string;
-
 }
 
 interface DataDisplayTableState {
@@ -505,6 +504,14 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                             childrenColumnName={this.props.childrenColumnName}
                                             expandedRowRender={this.props.expandedRowRender}
                                             //indentSize={this.props.indentSize}
+                                            rowClassName={(record) => {
+                                                const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
+                                                const isIgnored = (uuid: string, check_name: any) => {
+                                                    const ignoredcheck_name = ignoredBLCheckItem_array[uuid] || [];
+                                                    return ignoredcheck_name.includes(check_name);
+                                                };
+                                                return isIgnored(record.uuid, record.check_name) ? 'ignored-row' : '';
+                                            }}
                                         />
                                     </Card>
                                 </Col>

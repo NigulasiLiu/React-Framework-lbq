@@ -311,7 +311,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         { label: '无告警主机', value: noAlertHostCount>0?noAlertHostCount:0, color: '#E5E8EF' },
                         { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:-1, color: '#FFBB28' },
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:-1, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount===0?40:VirusHostCount, color: '#846CCE' },
+                        { label: '病毒扫描告警', value: VirusHostCount===0?20:VirusHostCount, color: '#846CCE' },
                     ];
 
 

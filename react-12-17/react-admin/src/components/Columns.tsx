@@ -1484,6 +1484,19 @@ export const baselineDetectColumns = [
         dataIndex: 'last_checked',
         // sorter: (a: any, b: any) => parseFloat(b.last_checked) - parseFloat(a.last_checked),
     },
+    // {
+    //     title: '操作',
+    //     dataIndex: 'operation',
+    //     render: (text: string, record: any) => (
+    //         <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
+    //                 style={{
+    //                     fontWeight: 'bold',
+    //                     border: 'transparent',
+    //                     backgroundColor: 'transparent',
+    //                     color: '#4086FF',
+    //                 }}>忽略</Button>
+    //     ),
+    // },
 ];
 
 export const threatHuntingColumns = [

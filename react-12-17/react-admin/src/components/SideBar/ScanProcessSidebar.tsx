@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Button } from 'antd';
+import { Row, Col, Card, Button,Spin } from 'antd';
 import { StatusItem } from '../Columns';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import CustomLoader from '../CustomAntd/CustomLoader';
@@ -8,8 +8,6 @@ import scanguard from '../../style/imgs/scanguard.png'
 
 interface ScanProcessSidebarState {
   isSidebarOpen: boolean;
-  statusData: StatusItem[]
-
 
   isLoading: boolean; // 添加 isLoading 状态
   scanProgress: number; // 添加 scanProgress 状态
@@ -32,13 +30,6 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
       isLoading: false, // 初始化 isLoading 为 false
       scanProgress: 0, // 初始化 scanProgress 为 0
       isSidebarOpen: false,
-      statusData: [
-        { label: '通过项', value: 0, color: 'green' },
-        { label: '严重风险项', value: 2, color: '#E53F3F' },
-        { label: '高风险项', value: 3, color: 'orange' },
-        { label: '中风险项', value: 2, color: 'yellow' },
-        { label: '低风险项', value: 0, color: 'blue' },
-      ],
     };
   }
   componentDidMount() {
@@ -78,7 +69,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
   handleScanButtonClick = () => {
     // 开始扫描，设置 isLoading 为 true，scanProgress 为 0
     this.setState({ isLoading: true, scanProgress: 0 });
-    const randomInterval = Math.floor(Math.random()) + 150; // 生成 150 到 151 之间的随机时间间隔
+    const randomInterval = Math.floor(Math.random()) + 250; // 生成 150 到 151 之间的随机时间间隔
 
     // 模拟扫描进度增加
     const progressInterval = setInterval(() => {
@@ -88,7 +79,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
 
         // 有一定概率触发大跳变
         const shouldJump = Math.random() < 0.2; // 20% 的概率触发大跳变
-        const bigJump = Math.random() * 10 + 15; // 大跳变的增量在 5 到 15 之间
+        const bigJump = Math.random() * 2 + 2; // 大跳变的增量
 
         if (shouldJump) {
           this.setState((prevState) => ({
@@ -174,6 +165,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontWeight: 'bold' }}>
                         <h2 style={{ fontSize: '17px', fontWeight: 'bold', marginLeft: '0px' }}>{this.props.scanInfo[1]}</h2>
                       </div>
+                      <Spin style={{ transform: 'translateX(40%) translateY(10%)'}}/>
                     </Row>
                   </React.Fragment>)}
                 {!this.state.isLoading && (

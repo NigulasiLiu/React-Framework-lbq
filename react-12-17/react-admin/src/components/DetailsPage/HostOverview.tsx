@@ -12,7 +12,7 @@ import {
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { convertUnixTime } from '../ContextAPI/DataService';
+import { convertUnixTime, determineOS } from '../ContextAPI/DataService';
 import { Assets_Data_API, Fim_Data_API, Monitor_Data_API, Port_Data_API, Process_Data_API } from '../../service/config';
 
 const { Text } = Typography;
@@ -200,7 +200,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                 if (!filteredData) {
                     return <div>No data available for this host.</div>;
                 }
-                if (filteredData.os_version.includes('tu')) {
+                if (determineOS(filteredData)=="linux") {
                     if (linux !== undefined) {
                         // 确保OriginData总是作为数组处理
                         const array = Array.isArray(linux) ? linux : [linux];
@@ -209,8 +209,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         if (linuxData.length > 0) {
                             const baselineAlertData: StatusItem[] = [
                                 // 确保使用正确的方法来计数
-                                { label: '建议调整项', value: needAdjItemCounts, color: '#EA635F' },//RED
-                                { label: '自行判断项', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
+                                { label: '建议调整', value: needAdjItemCounts, color: '#EA635F' },//RED
+                                { label: '自行判断', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
                             ];
                             return (
                                 <div>
@@ -243,7 +243,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         );
                     }
                 }
-                else {
+                else if(determineOS(filteredData)=="windows"){
                     if (windows !== undefined) {
                         // 确保OriginData总是作为数组处理
                         const array = Array.isArray(windows) ? windows : [windows];
@@ -252,8 +252,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         if (linuxData.length > 0) {
                             const baselineAlertData: StatusItem[] = [
                                 // 确保使用正确的方法来计数
-                                { label: '建议调整项', value: needAdjItemCounts, color: '#EA635F' },//RED
-                                { label: '自行判断项', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
+                                { label: '建议调整', value: needAdjItemCounts, color: '#EA635F' },//RED
+                                { label: '自行判断', value: linuxData.length - needAdjItemCounts, color: '#468DFF' }//蓝
                             ];
                             return (
                                 <div>
@@ -458,7 +458,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     const AlertData_uuid = [
                         { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 40 : VirusHostCount, color: '#846CCE' },
+                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
                     ];
                     const agentversion = '1.7.0.24';
 

@@ -95,9 +95,6 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
   });
 };
 
-
-
-
 export const handleExport = (externalDataSource: any[], currentPanel: any,selectedRowKeys: string | any[]) => {
   // 确保 externalDataSource 是数组
   if (!Array.isArray(externalDataSource)) {
@@ -154,43 +151,6 @@ export const handleExport = (externalDataSource: any[], currentPanel: any,select
   document.body.removeChild(link);
 };
 
-// export const handleDelete = (currentPanel: string, selectedRowKeys: any[]) => {
-//   const panel_to_delete_api: Record<string, string> = {
-//     "agent": "http://localhost:5000/api/agent/delete",
-//     "hostinventory": "http://localhost:5000/api/agent/delete",
-//     "fim": "http://localhost:5000/api/fim/delete",
-//     "running_processes": "http://localhost:5000/api/process/delete",
-//     "open_ports": "http://localhost:5000/api/hostport/delete",
-//     "system_services": "http://localhost:5000/api/asset_mapping/delete",
-//     "baseline_check_linux": "http://localhost:5000/api/baseline_check/linux/delete",
-//     "baseline_check_windows": "http://localhost:5000/api/baseline_check/windows/delete",
-//   };
-//
-//   const apiUrl = panel_to_delete_api[currentPanel]; // 获取对应面板的 API 地址
-//   const token = umbrella.getLocalStorage('jwt_token');
-//   // 配置axios请求头部，包括JWT
-//   const config = {
-//     headers: {
-//       Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
-//     }
-//   };
-//   // 构造 DELETE 请求
-//   const deleteRequests = selectedRowKeys.map((key: string) => {
-//     const url = `${apiUrl}?uuid=${key}`; // 构造完整的 URL，包括选定行的键值
-//     return axios.delete(url,config)
-//         .then(() => {
-//           message.success(`成功删除条目: ${key}`); // 输出成功删除的消息
-//         })
-//         .catch(error => {
-//           message.error(`Failed to delete item ${key}: ${error.message}`); // 输出错误信息
-//           return Promise.reject(error); // 将错误继续传递给 Promise 链
-//         });
-//   });
-//
-//   // 返回所有 DELETE 请求的 Promise 数组
-//   return Promise.all(deleteRequests);
-// }
-
 export const convertUnixTime = (timestamp: number): string => {
   const date = new Date(timestamp * 1000);
   const year = date.getFullYear();
@@ -203,40 +163,17 @@ export const convertUnixTime = (timestamp: number): string => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-export const processVulnData = (data: GenericDataItem[]): GenericDataItem[] => {
-  return data.map(item => {
-    // 处理嵌套的JSON数据
-    if (item.vul_detection_exp_result) {
-      item.vul_detection_exp_result = item.vul_detection_exp_result.map((expItem: any) => {
-        return {
-          ...expItem,
-          bug_exp: expItem.bug_exp,
-        };
-      });
-    }
+export const determineOS = (filteredData: any) => {
+  // 将 os_version 字段转换为小写，并去除空格
+  const osVersion = filteredData.os_version.toLowerCase().trim();
 
-    if (item.vul_detection_finger_result) {
-      item.vul_detection_finger_result = item.vul_detection_finger_result.map((fingerItem: any) => {
-        return {
-          ...fingerItem,
-          finger: fingerItem.finger,
-        };
-      });
-    }
-
-    if (item.vul_detection_poc_result) {
-      item.vul_detection_poc_result = item.vul_detection_poc_result.map((pocItem: any) => {
-        return {
-          ...pocItem,
-          bug_poc: pocItem.bug_poc,
-        };
-      });
-    }
-    return item;
-  });
-};
-
-export const buildRangeQueryParams = (startDate: string, endDate: string, timeColumnDataIndex: string) => {
-  // 构建查询字符串或参数对象
-  return `/query_time?field=${timeColumnDataIndex}&start_time=${startDate}&end_time=${endDate}`;
-};
+  // 根据常见的操作系统版本信息判断操作系统类型
+  if (osVersion.includes('windows')) {
+    return 'windows';
+  } else if (osVersion.includes('ubuntu') || osVersion.includes('debian') || osVersion.includes('centos') || osVersion.includes('redhat')) {
+    return 'linux';
+  } else {
+    // 如果无法判断，默认为未知操作系统
+    return 'unknown';
+  }
+}
