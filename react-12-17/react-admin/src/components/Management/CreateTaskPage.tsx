@@ -1,15 +1,13 @@
-import React, { createRef, useState } from 'react';
-import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, TimePicker, Col } from 'antd';
+import React from 'react';
+import { Steps, Form, Input, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, Col } from 'antd';
 import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { createNewTaskColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
 import { SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
-
 import moment, { Moment } from 'moment';
 import { fetchDataFromAPI } from '../ContextAPI/DataService';
 import { Agent_Data_API, Task_Data_API } from '../../service/config';
-// import '../CustomAntd/CustomDatePicker.less'
 const { Step } = Steps;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -284,10 +282,11 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
             <Card bordered={false} style={{ width: '90%', margin: '0px auto' }}>
               <Row style={{ margin: '0px auto', width: '100%' }}>
                 <FetchDataForElkeidTable
+                  key={"createnewtask"}
                   apiEndpoint={Agent_Data_API}
                   timeColumnIndex={[]}
                   columns={createNewTaskColumns}
-                  currentPanel={"createnewtask"} // 替换为你的 panel 名称
+                  currentPanel={"createnewtask"}
                   keyIndex={1}
                   search={[]}
                   onSelectedRowKeysChange={this.handleSelectedRowKeysChange}
@@ -312,7 +311,6 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                 </Button>
               </Row>
             </Card>
-
           )}
           {currentStep === 1 && (
             <Card style={{ width: '90%', margin: '0px auto' }}>
@@ -358,10 +356,8 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                         >
                           <Input placeholder="请输入任务名称" />
                         </Form.Item>
-
                       </Col>
                       <Col span={2}>
-
                       </Col>
                       <Col span={11}>
                         <Form.Item
@@ -476,9 +472,6 @@ handleExcuteTimeChange = (date: Moment | null, dateString: string) => {
                       </Col>
                     </Row>
                   </Row>
-
-
-
                   <Row style={{
                     width: '100%', margin: '20px auto',
                     display: 'flex', justifyContent: 'center', alignItems: 'center'

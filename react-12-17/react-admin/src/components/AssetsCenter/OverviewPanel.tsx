@@ -3,7 +3,6 @@ import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd'
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../Columns';
-import DataCard from '../CustomAntd/DataCard';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager'
 import moment from 'moment/moment';
 interface OverviewPanelProps extends RouteComponentProps {

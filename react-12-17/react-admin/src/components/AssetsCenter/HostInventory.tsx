@@ -291,11 +291,6 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
             { label: '未安装', value: 1, color: '#E5E8EF' },//GREY
         ];
 
-        const riskData1: StatusItem[] = [
-            { color: '#E53F3F', label: '高风险 ', value: 1 },
-            { color: '#FEC746', label: '中风险 ', value: 1 },
-            { color: '#468DFF', label: '低风险 ', value: 2 },
-        ];
         return (
             <DataContext.Consumer>
                 {(context: DataContextType | undefined) => {

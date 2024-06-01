@@ -330,7 +330,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                                 backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                                             }}
                                                         >
-                                                            {this.renderPanelAndPieChart(vulnOriginData, '已狩猎威胁',
+                                                            {this.renderPanelAndPieChart(vulnOriginData, '已捕获威胁',
                                                                 '风险等级1', '风险等级2', '风险等级3')}
                                                         </Card>
                                                     </Col>

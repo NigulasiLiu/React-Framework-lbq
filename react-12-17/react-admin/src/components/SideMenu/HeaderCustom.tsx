@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAlita } from 'redux-alita';
 import umbrella from 'umbrella-storage';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useSwitch } from '../../utils/hooks';
 import {
     DownloadOutlined, LogoutOutlined, SettingOutlined,
@@ -207,17 +207,17 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                 }}>
                                     <img src={logo} alt="Logo"
                                          style={{ width: '60px', height: '60px', marginRight: '20px' }} />
-                                    <h2 style={{
-                                        // fontFamily: '\'YouYuan\', sans-serif',
-                                        fontWeight: 'bold',
-                                        // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                        padding: '22px,6px',
-                                        margin: '10px,0px',
-                                        color: 'rgba(0, 0, 0, 0.85)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        fontSize: '20px',
-                                    }}>Security Platform</h2>
+                                    <Link to="/app/dashboard" style={{ textDecoration: 'none' }}>
+                                        <h2 style={{
+                                            fontWeight: 'bold',
+                                            padding: '22px,6px',
+                                            margin: '10px,0px',
+                                            color: 'rgba(0, 0, 0, 0.85)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            fontSize: '20px',
+                                        }}>Security Platform</h2>
+                                    </Link>
                                 </div>
                             )}
                             <Menu

@@ -48,6 +48,14 @@ export interface DetailItem {
     createTime: string;
 }
 
+
+export interface VirusTaskDetail {
+    id: number;
+    uuid: string;
+    scanType: string;
+    status: string;
+}
+
 export interface BaseLineDataType {
     key: React.Key;
     ip: string;                // IP
@@ -59,7 +67,7 @@ export interface BaseLineDataType {
     instruction: string;       // 指令
 }
 
-export const simplifiedTablePanel = ['createnewtask', 'UserManagementlist'];
+export const TableWithoutTimestamp = ['createnewtask', 'UserManagementlist','createnewvirusscantask'];
 
 export interface checkedItemDataType {
     level: string;

@@ -25,6 +25,7 @@ interface VirusScanningState {
     isScanningProcessSidebarOpen: boolean;
     riskItemCount: number;
 
+    sidebarKey: number; // 添加这个状态
     // isLoading: boolean; // 添加 isLoading 状态
     // scanProgress: number; // 添加 scanProgress 状态
 };
@@ -89,6 +90,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
             isScanningProcessSidebarOpen: false,
             currentTime: new Date().toLocaleString(), // 添加用于存储当前时间的状态变量
             riskItemCount: 5, // 初始化风险项的数量
+            sidebarKey: 0, // 初始化 sidebarKey
 
 
             // isLoading: false, // 初始化 isLoading 为 false
@@ -109,9 +111,13 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
     };
 
     toggleTaskSidebar = () => {
-        this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
+        this.setState(prevState => ({
+            isSidebarOpen: !prevState.isSidebarOpen,
+            sidebarKey: prevState.sidebarKey + 1 // 更新 sidebarKey
+        }));
         this.setCurrentTime();
     };
+
     closeTaskSidebar = () => {
         this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
     };
@@ -212,6 +218,21 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                         e.currentTarget.style.opacity = 1;
                                                                     }} // 鼠标离开时恢复透明度为1
                                                                     onClick={this.toggleProcessSidebar}>立即扫描</Button>
+                                                                <Link to="/app/create_virusscan_task" target="_blank">
+                                                                    <Button
+                                                                        style={{
+                                                                            backgroundColor: '#1664FF',
+                                                                            color: 'white',
+                                                                            marginRight: '10px',
+                                                                            transition: 'opacity 0.3s', // 添加过渡效果
+                                                                            opacity: 1, // 初始透明度
+                                                                        }}
+                                                                        onMouseEnter={(e) => {
+                                                                            e.currentTarget.style.opacity = 0.7;
+                                                                        }} // 鼠标进入时将透明度设置为0.5
+                                                                        onMouseLeave={(e) => {
+                                                                            e.currentTarget.style.opacity = 1;
+                                                                        }}>创建扫描任务</Button></Link>
                                                                 <Button style={{ marginLeft: '0px' }}
                                                                         onClick={this.toggleTaskSidebar}>全部扫描任务</Button>
                                                             </Row>
@@ -237,10 +258,12 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                 <button onClick={this.toggleTaskSidebar}
                                                                         className="close-btn">&times;</button>
                                                                 <VirusScanningTaskSidebar
+                                                                    key={this.state.sidebarKey} // 使用 sidebarKey 作为 key
                                                                     isSidebarOpen={this.state.isSidebarOpen}
                                                                     toggleSidebar={this.toggleTaskSidebar}
                                                                     sidebarWidth={1000}
                                                                 />
+
                                                             </div>
                                                         </div>
                                                     </Col>

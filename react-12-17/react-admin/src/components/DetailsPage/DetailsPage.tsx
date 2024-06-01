@@ -217,7 +217,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         backgroundColor: 'transparent',
                                         color: '#4086FF',
                                         padding: '0 0',
-                                    }}>详情</Button>
+                                    }}
+                            >详情</Button>
                         </div>
                     ),
                 },

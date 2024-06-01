@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, Input, Card, Col, DatePicker, Row, Select, Form, Modal, message } from 'antd';
 import moment, { Moment } from 'moment';
-import { FilterDropdownProps, simplifiedTablePanel } from '../Columns';
+import { FilterDropdownProps, TableWithoutTimestamp } from '../Columns';
 import { ExclamationCircleOutlined, LoadingOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { handleExport } from '../ContextAPI/DataService';
 import { Link } from 'react-router-dom';
@@ -409,7 +409,7 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
                         }}
                     >
                         <Card bordered={false} bodyStyle={{ padding: '4px' }}>
-                            {!simplifiedTablePanel.includes(this.props.currentPanel) && (
+                            {!TableWithoutTimestamp.includes(this.props.currentPanel) && (
                                 <div style={{ marginBottom: '16px' }}>
                                     <Row gutter={[2, 2]}>
                                         <Col flex="none">
