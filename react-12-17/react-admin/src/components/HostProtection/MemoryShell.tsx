@@ -150,7 +150,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
 
             const response = await axios.post(APP_Server_URL+'/api/memoryshell/check', formData,config);
             console.log('response.data:' + JSON.stringify(response.data, null, 2));
-            message.success('成功发送待检测的poc内容');
+            message.success('已保存内存马信息');
             this.hideMemoryShellModal(); // 关闭Modal
 
             this.setState({
@@ -196,15 +196,13 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                         name="data"
                         rules={[{ required: true, message: '检测内容不能为空' }]}
                     >
-                        <TextArea rows={8} placeholder="添加检测内容" />
-                        {/*<TextArea*/}
-                        {/*    rows={8}*/}
-                        {/*    placeholder="添加检测内容"*/}
-                        {/*    value={uploadedFileContent || ''} // 如果有上传文件内容，则将TextArea的值设置为上传文件的内容*/}
-                        {/*    onChange={(e) => this.setState({ uploadedFileContent: e.target.value })}*/}
-                        {/*    disabled={!!uploadedFileContent} // 如果有上传文件内容，则禁用TextArea*/}
-                        {/*/>*/}
+                        <TextArea
+                            rows={8}
+                            placeholder="添加检测内容"
+                            style={{ border: '2px solid gray' }}
+                        />
                     </Form.Item>
+
                     {/*<Form.Item*/}
                     {/*    label={<span style={{ fontSize: '18px' }}>添加检测内容</span>}*/}
                     {/*    name="data"*/}
@@ -227,7 +225,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
     renderDetailModal = () => {
         return (
             <Modal
-                title="内存马检测结果"
+                title={<span style={{fontSize:'19px'}}>{"内存马检测结果"}</span>}
                 visible={this.state.detailModalVisible}
                 onCancel={() => this.setState({ detailModalVisible: false })}
                 footer={[
@@ -244,22 +242,23 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                 <Form
                     labelCol={{
                         xs: { span: 24 },
-                        sm: { span: 8, offset: 0},
+                        sm: { span: 5, offset: 0},
                     }}
                     wrapperCol={{
                         xs: { span: 24 },
-                        sm: { span: 16 },  // 增加内容列的宽度以便更好地展示内容
+                        sm: { span: 19, offset: 5 },  // 增加内容列的宽度以便更好地展示内容
                     }}
                     name="检测结果"
                 >
                     <Form.Item label="检测结果" name="resultDescription">
                         {this.state.responseData?.message.is_shell ?
-                            <span style={{ color: 'red' }}>检测到内存马</span> : '无内存马' || '检测功能异常'}
+                            <span style={{ color: 'red' }}>检测到内存马</span> :
+                            <span style={{ color: 'blue' }}>无内存马</span>}
                     </Form.Item>
                     <Form.Item label="内存马内容" name="shellDataDescription">
                         {this.state.responseData?.message.shell_data || '见输入'}
                     </Form.Item>
-                    <Form.Item label="内存马POC" name="shellPocDescription">
+                    <Form.Item label="POC" name="shellPocDescription">
                             {this.state.responseData?.message.is_shell ?
                                 <span style={{ color: 'red' }}>{this.state.responseData?.message.shell_poc}</span> : '无'}
                     </Form.Item>

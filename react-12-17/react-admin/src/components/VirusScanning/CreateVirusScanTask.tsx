@@ -27,81 +27,25 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
         super(props);
         this.state = {
             currentStep: 0,
-            selectedTaskType: 'terminalscan', // 默认选中的任务类型
+            selectedTaskType: 'folderscan', // 默认选中的任务类型
             selectedUuids: [],
         };
     }
 
-    handleSubmit1 = async (values: any) => {
-        const { selectedTaskType, selectedUuids } = this.state;
-
-        const sendPostRequest = async (uuid: string, id: number, createdTime: string) => {
-            let apiUrl = '';
-            if (selectedTaskType === 'fullscan') {
-                apiUrl = `/api/virusscan/full?uuid=${uuid}`;
-            } else if (selectedTaskType === 'quickscan') {
-                apiUrl = `/api/virusscan/quick?uuid=${uuid}`;
-            } else if (selectedTaskType === 'terminalscan') {
-                const { abspath } = values;
-                apiUrl = `/api/virusscan/path?uuid=${uuid}&path=${encodeURIComponent(abspath)}`;
-            }
-
-            try {
-                const response = await axios.post(apiUrl);
-                const taskDetail = {
-                    id,
-                    uuid,
-                    scanType: selectedTaskType,
-                    status: response.status === 200 ? '创建成功' : '创建失败',
-                    createdTime,
-                };
-                // 存储到 localStorage
-                const existingTasks = JSON.parse(localStorage.getItem('virusTaskDetail') || '[]');
-                existingTasks.push(taskDetail);
-                localStorage.setItem('virusTaskDetail', JSON.stringify(existingTasks));
-                if (response.status === 200) {
-                    message.success(`任务 ${uuid} 创建成功`);
-                } else {
-                    message.error(`任务 ${uuid} 创建失败`);
-                }
-            } catch (error) {
-                console.error(`Error creating task for ${uuid}:`, error);
-                const taskDetail = {
-                    id,
-                    uuid,
-                    scanType: selectedTaskType,
-                    status: '创建失败',
-                    createdTime,
-                };
-                // 存储到 localStorage
-                const existingTasks = JSON.parse(localStorage.getItem('virusTaskDetail') || '[]');
-                existingTasks.push(taskDetail);
-                localStorage.setItem('virusTaskDetail', JSON.stringify(existingTasks));
-                message.error(`任务 ${uuid} 创建失败`);
-            }
-        };
-
-        // 获取当前任务列表长度，生成新的ID
-        const existingTasks = JSON.parse(localStorage.getItem('virusTaskDetail') || '[]');
-        const nextId = existingTasks.length > 0 ? Math.max(existingTasks.map((task: VirusTaskDetail) => task.id)) + 1 : 1;
-
-        const createdTime = new Date().toLocaleString();
-        // 逐个发送请求并插入正确的id
-        for (const uuid of selectedUuids) {
-            await sendPostRequest(uuid.toString(), nextId, createdTime);
-        }
-    };
 
     handleSubmit = async (values: any) => {
         const { selectedTaskType, selectedUuids } = this.state;
-
+        let taskType:any;
         const sendPostRequest = async (uuid: string, id: number, createdTime: string) => {
             let apiUrl = '';
             if (selectedTaskType === 'fullscan') {
+                taskType = '全盘扫描';
                 apiUrl = `/api/virusscan/full?uuid=${uuid}`;
             } else if (selectedTaskType === 'quickscan') {
+                taskType = '快速扫描';
                 apiUrl = `/api/virusscan/quick?uuid=${uuid}`;
-            } else if (selectedTaskType === 'terminalscan') {
+            } else if (selectedTaskType === 'folderscan') {
+                taskType = '目录扫描';
                 const { abspath } = values;
                 apiUrl = `/api/virusscan/path?uuid=${uuid}&path=${encodeURIComponent(abspath)}`;
             }
@@ -111,7 +55,7 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
                 const taskDetail = {
                     id,
                     uuid,
-                    scanType: selectedTaskType,
+                    scanType: taskType,
                     status: response.status === 200 ? '创建成功' : '创建失败',
                     createdTime,
                 };
@@ -129,7 +73,7 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
                 const taskDetail = {
                     id,
                     uuid,
-                    scanType: selectedTaskType,
+                    scanType: taskType,
                     status: '创建失败',
                     createdTime,
                 };
@@ -319,9 +263,9 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
                                         </Row>
                                         <Row style={{ width: '100%' }}>
                                             <Form.Item label="任务类型" name="type" rules={[{ required: false }]}>
-                                                <Radio.Group defaultValue="terminalscan">
-                                                    <Radio.Button value="terminalscan"
-                                                                  onClick={() => this.setState({ selectedTaskType: 'terminalscan' })}>端上目录/文件扫描</Radio.Button>
+                                                <Radio.Group defaultValue="folderscan">
+                                                    <Radio.Button value="folderscan"
+                                                                  onClick={() => this.setState({ selectedTaskType: 'folderscan' })}>端上目录/文件扫描</Radio.Button>
                                                     <Radio.Button value="fullscan"
                                                                   onClick={() => this.setState({ selectedTaskType: 'fullscan' })}>全盘扫描</Radio.Button>
                                                     <Radio.Button value="quickscan"
@@ -329,7 +273,7 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
                                                 </Radio.Group>
                                             </Form.Item>
                                         </Row>
-                                            {this.state.selectedTaskType === 'terminalscan' && (<>
+                                            {this.state.selectedTaskType === 'folderscan' && (<>
                                                 <Form.Item
                                                     label="绝对路径"
                                                     name="abspath"

@@ -83,7 +83,6 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     };
 
     componentDidMount() {
-        this.fetchTTPs();
     }
 
 
@@ -118,15 +117,6 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
         }
     };
 
-    fetchTTPs = async () => {
-        // 替换成实际的后端API
-        try {
-            const { data } = await axios.get<TTP[]>('https://yourapi.com/ttps');
-            this.setState({ ttps: data });
-        } catch (error) {
-            message.error('获取TTPs信息失败');
-        }
-    };
 
     renderTTPsModal = () => {
         return (
@@ -437,11 +427,11 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                 </Card>
                                             </Card>
                                         </Col>
-                                    </Row>;
+                                    </Row>
                                 </Col>
                             </Row>
                         </div>
-                    );
+                    )
                 }}
 
             </DataContext.Consumer>

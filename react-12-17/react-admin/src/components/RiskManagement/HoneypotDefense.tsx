@@ -4,10 +4,8 @@ import axios from 'axios';
 import { constRenderTable, Honeypotcolumns, hostinventoryColumnsType } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import moment from 'moment/moment';
 import umbrella from 'umbrella-storage';
-import { Honey_API } from '../../service/config';
+import { APP_Server_URL, Honey_API } from '../../service/config';
 
 interface HoneypotDefenseProps{
 
@@ -127,7 +125,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
         }
       };
       // 直接将values作为POST请求的body发送
-      const response = await axios.post('/api/honeypot/setup', values,config);
+      const response = await axios.post(APP_Server_URL+'/api/honeypot/setup', values,config);
       console.log(response.data);
       message.success('蜜罐信息添加成功');
       this.hideHoneypotModal(); // 关闭Modal

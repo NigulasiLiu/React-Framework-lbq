@@ -12,7 +12,6 @@ import AssetFingerprint from './AssetsCenter/AssetFingerprint';
 import AuthBasic from './auth/Basic';
 import RouterEnter from './auth/RouterEnter';
 import VirusScanning from './VirusScanning/VirusScanning';
-import VirusScanningWhiteList from './VirusScanning/VirusScanningWhiteList';
 import Env from './env';
 import DetailsPage from './DetailsPage/DetailsPage';
 import CreateAgentTaskPage from './Management/CreateTaskPage'
@@ -25,7 +24,6 @@ import MemoryShell from './HostProtection/MemoryShell';
 import ThreatHunting from './HostProtection/ThreatHunting';
 import MicroIsolation from './HostProtection/MicroIsolation';
 import ScheduleTask from './Management/ScheduleTask';
-import TotalAlertList from './HostProtection/TotalAlertList';
 
 
 const WysiwygBundle = Loadable({
@@ -43,9 +41,7 @@ export default {
     AuthBasic,
     RouterEnter,
     WysiwygBundle,
-    TotalAlertList,
     VirusScanning,
-    VirusScanningWhiteList,
     Env,
     VulnerabilityList,
     BaselineDetectList,

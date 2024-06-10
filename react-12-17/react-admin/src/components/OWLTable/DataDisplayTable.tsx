@@ -504,14 +504,17 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                             childrenColumnName={this.props.childrenColumnName}
                                             expandedRowRender={this.props.expandedRowRender}
                                             //indentSize={this.props.indentSize}
-                                            rowClassName={(record) => {
+                                            rowClassName={(this.props.currentPanel.toLowerCase().includes("base") || this.props.currentPanel.toLowerCase().includes("virus")) ? (record) => {
                                                 const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
-                                                const isIgnored = (uuid: string, check_name: any) => {
-                                                    const ignoredcheck_name = ignoredBLCheckItem_array[uuid] || [];
-                                                    return ignoredcheck_name.includes(check_name);
+                                                const ignoredVirus_array = JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}');
+                                                const isIgnored = (uuid: string, check_name?: string, Virus?: string) => {
+                                                    const ignoredBLCheckItems = ignoredBLCheckItem_array[uuid] || [];
+                                                    const ignoredViruses = ignoredVirus_array[uuid] || [];
+                                                    return (check_name && ignoredBLCheckItems.includes(check_name)) ||
+                                                        (Virus && ignoredViruses.includes(Virus));
                                                 };
-                                                return isIgnored(record.uuid, record.check_name) ? 'ignored-row' : '';
-                                            }}
+                                                return isIgnored(record.uuid, record.check_name, record.Virus) ? 'ignored-row' : '';
+                                            } : undefined}
                                         />
                                     </Card>
                                 </Col>

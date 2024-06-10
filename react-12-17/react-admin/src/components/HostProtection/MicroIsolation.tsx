@@ -347,23 +347,6 @@ renderEncryptModal=()=>{
                     <Col md={24}>
                       <div className="gutter-box">
                         {this.renderEncryptModal()}
-                        <Card bordered={false}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                            <h2 style={{
-                              fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
-                          </div>
-                          <DataDisplayTable
-                              key={"spFileslist"}
-                              externalDataSource={virusData}
-                              apiEndpoint="http://localhost:5000/api/FetchSpFile/all"
-                              timeColumnIndex={[]}
-                              columns={this.state.spFilesColumns}
-                              currentPanel={"spFileslist"}
-                              searchColumns={['uuid', 'origin_filename']}
-                          />
-                          {/*<Table dataSource={initialData} columns={this.state.spFilesColumns} />*/}
-
-                        </Card>
                         {this.renderDecryptModal()}
                         <Card bordered={false}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
@@ -380,6 +363,23 @@ renderEncryptModal=()=>{
                               searchColumns={['uuid', 'encrypted_filename']}
                           />
                           {/*<Table dataSource={initialData} columns={this.state.EncryptedFilesColumns} />*/}
+
+                        </Card>
+                        <Card bordered={false}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
+                            <h2 style={{
+                              fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
+                          </div>
+                          <DataDisplayTable
+                              key={"spFileslist"}
+                              externalDataSource={virusData}
+                              apiEndpoint="http://localhost:5000/api/FetchSpFile/all"
+                              timeColumnIndex={[]}
+                              columns={this.state.spFilesColumns}
+                              currentPanel={"spFileslist"}
+                              searchColumns={['uuid', 'origin_filename']}
+                          />
+                          {/*<Table dataSource={initialData} columns={this.state.spFilesColumns} />*/}
 
                         </Card>
 

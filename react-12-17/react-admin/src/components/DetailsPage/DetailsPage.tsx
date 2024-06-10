@@ -1566,7 +1566,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                                 label: '风险项',
                                                                                 value: totalExpResultCount,
                                                                             },
-                                                                            { color: '#468DFF', label: '通过项', value: 99 },
+                                                                            // { color: '#caa26f', label: '中风险项', value: totalExpResultCount/2 },
+                                                                            // { color: '#468DFF', label: '通过项', value: 99 },
                                                                         ]
                                                                     }
                                                                     innerRadius={27}
@@ -1591,7 +1592,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                         value: totalExpResultCount,
                                                                         color: '#EA635F',
                                                                     },
-                                                                    { label: '通过项', value: 99, color: '#468DFF' },
+                                                                    // { label: '通过项', value: 99, color: '#468DFF' },
                                                                 ]} orientation="vertical" />
                                                             </Col>
                                                         </Row>
@@ -1866,8 +1867,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         return (
                             <div style={{ marginTop: '-20px' }}>
                                 <VirusScanning
-                                    hostID=""
-                                    pageWidth={1320}
+                                    hostID={this.state.host_uuid}
+                                    // pageWidth={1320}
                                 />
                             </div>
                         );
@@ -1881,8 +1882,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     </Col>
                                 </Row>
                             </div>
-                        )
-                            ;
+                        );
                     case 'performancemonitor':
                         return (
                             <div style={{ marginTop: '-20px' }}>
@@ -1972,7 +1972,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                             {/*<Menu.Item key="honeyPot">蜜罐防御（HoneyPot）</Menu.Item>*/}
                                             {/*<Menu.Item key="TTPs">威胁狩猎（TTPs）</Menu.Item>*/}
                                             {/*<Menu.Item key="microIsolation">文件隔离（MicroIsolate）</Menu.Item>*/}
-                                            <Menu.Item key="performancemonitor">性能监控</Menu.Item>
+                                            {/*<Menu.Item key="performancemonitor">性能监控</Menu.Item>*/}
                                             {/* <Menu.Item key="assetfingerprint">资产指纹</Menu.Item> */}
                                             {/* 可以根据需要添加更多的Menu.Item */}
                                             {/* 使用透明div作为flex占位符 */}

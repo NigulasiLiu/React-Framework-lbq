@@ -101,7 +101,9 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
             });
             const vulPieChartData: StatusItem[] = [
                 { color: '#E63F3F', label: panelDataTitle1, value: totalExpResultCount },
-                { color: '#468DFF', label: panelDataTitle2, value: 99 },];
+                // { color: '#caa26f', label: panelDataTitle2, value: totalExpResultCount/2 },
+                // { color: '#468DFF', label: panelDataTitle2, value: 99 },
+            ];
             return (
                 <div>
                     <Row>
@@ -537,7 +539,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                 </Row>
 
                                                 <Row gutter={0}>
-                                                    {this.renderVulPieChart(vulnOriginData, '待处理高可利用漏洞', '风险项', '通过项')}
+                                                    {this.renderVulPieChart(vulnOriginData, '待处理高可利用漏洞', '风险项', '中风险项')}
 
                                                 </Row>
 

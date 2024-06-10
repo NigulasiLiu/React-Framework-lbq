@@ -28,7 +28,7 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps, 
     componentDidMount() {
         const storedData = localStorage.getItem('virusTaskDetail');
         if (storedData) {
-            message.info(`localStorage data: ${storedData}`);
+            // message.info(`localStorage data: ${storedData}`);
         } else {
             message.info('localStorage is empty');
         }
@@ -94,11 +94,10 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps, 
         return (
             <div className={isSidebarOpen ? "Largersidebar open" : "Largersidebar"}>
                 <Col md={24} style={{ borderTop: '5px solid #4086FF' }}>
-                    <Row>
-                        <Card style={{ width: '100%', border:'2px solid #becffa', }}>
-                            <Row style={{ borderTop: '1px solid #E5E8EF' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 14, marginBottom: 10, fontWeight: 'bold' }}>
-                                    <h2 style={{ fontSize: '16px', fontWeight: 'bold', marginLeft: '0px' }}>全部扫描任务</h2>
+                        <Card style={{ width: '100%', minHeight:'700px',border:'2px solid #becffa', }}>
+                            <Row style={{ borderTop: '0px solid #E5E8EF' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2, marginBottom: 10, fontWeight: 'bold' }}>
+                                    <h2 style={{ fontSize: '19px', fontWeight: 'bold', marginLeft: '0px' }}>全部扫描任务</h2>
                                 </div>
                                 <div style={{ maxWidth: sidebartablewidth, width: '100%', margin: '0 auto' }}>
                                     <Table
@@ -111,7 +110,6 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps, 
                                 </div>
                             </Row>
                         </Card>
-                    </Row>
                 </Col>
             </div>
         );

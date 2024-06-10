@@ -257,7 +257,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         return acc + currentValue;
                     }, 0); // 初始化累加器为0
                     // 转换value为DataItem类型
-                    const vulProcessedData = vulAlertData.map(item => ({ ...item, Vuln: Number(item.value) }));
+                    const vulProcessedData = vulAlertData.map(item => ({ ...item, Vulnerability: Number(item.value) }));
 
 
                     const bruteforceTTPsCount = bruteforceTTPsOriginData?.flat().length;
@@ -294,23 +294,25 @@ class Dashboard extends React.Component<DashboardProps> {
                     const honeypotAlertData = generateAlertData(last7HoneyPotValue);
                     const honeypotProcessedData = honeypotAlertData.map(item => ({ ...item, HoneyPot: Number(item.value) }));
 
+                    const virusAlertData = generateAlertData(last7VirusValue);
+                    const virusProcessedData = virusAlertData.map(item => ({ ...item, Virus: Number(item.value) }));
                     // 假设两个数据数组长度相同且日期对应
                     const combinedData = ttpsProcessedData.map((item, index) => {
                         return {
                             day: item.day,  // 确保两个数据集中都有相同的日期格式
                             TTPs: item.TTPs,
                             HoneyPot: honeypotProcessedData[index].HoneyPot,
-                            virusValue: 0
+                            Virus: virusProcessedData[index].Virus,
                         };
                     });
 
 
-                    const noAlertHostCount =40+hostCount-HoneyPotHostCount-TTPsHostCount-VirusHostCount;
+                    const noAlertHostCount =20+hostCount-HoneyPotHostCount-TTPsHostCount-VirusHostCount;
                     // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
                     const alertHostPieChartData = [
                         { label: '无告警主机', value: noAlertHostCount>0?noAlertHostCount:0, color: '#E5E8EF' },
-                        { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:-1, color: '#FFBB28' },
-                        { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:-1, color: '#468DFF' },
+                        { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
+                        { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
                         { label: '病毒扫描告警', value: VirusHostCount===0?20:VirusHostCount, color: '#846CCE' },
                     ];
 
@@ -537,6 +539,14 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                         type="monotone"
                                                                         dataKey="HoneyPot"
                                                                     />
+                                                                    <Area
+                                                                        fillOpacity={0.5}
+                                                                        stroke="red"
+                                                                        strokeWidth={2} // 设置线条厚度为3px
+                                                                        fill="#F1F8FE" // 设置填充颜色为#4086FF
+                                                                        type="monotone"
+                                                                        dataKey="Virus"
+                                                                    />
                                                                 </AreaChart>
                                                             </ResponsiveContainer>
                                                         </div>
@@ -583,7 +593,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         />
                                                         <DataCard
                                                             title="病毒扫描告警"
-                                                            value={99}
+                                                            value={VirusHostCount}
                                                             valueItem={[
                                                                 {
                                                                     value: '0',
@@ -716,7 +726,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                         strokeWidth={2} // 设置线条厚度为3px
                                                                         fill="#F1F8FE" // 设置填充颜色为#4086FF
                                                                         type="monotone"
-                                                                        dataKey="Vuln"
+                                                                        dataKey="Vulnerability"
                                                                     />
                                                                 </AreaChart>
                                                             </ResponsiveContainer>

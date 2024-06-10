@@ -328,7 +328,6 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
             currentRecord: record, // 设置当前记录，以便后续操作
         }));
     };
-
     handleOk = async () => {
         // 处理忽略操作
         const record = this.state.currentRecord;
@@ -339,7 +338,6 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
         }
         this.toggleModal(); // 关闭模态框
     };
-
     handleCancel = () => {
         this.toggleModal(); // 关闭模态框
     };
@@ -472,7 +470,7 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                     ];
 
                     return (
-                        <div style={{ fontFamily: '\'YouYuan\', sans-serif', fontWeight: 'bold' }}>
+                        <div style={{ fontFamily: 'YouYuan, sans-serif', fontWeight: 'bold' }}>
                             {this.renderBLIgnoreModal()}
                             {this.renderModal()}
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>

@@ -15,7 +15,6 @@ import { FilteredDataResult_new } from './useFilterOriginData_new';
 import useTransformedData from '../HostProtection/useTransformedData';
 import useCalculateAverage from './useCalculateAverage';
 import { processData } from './DataService';
-import { message } from 'antd';
 import {
     Agent_Data_API,
     Monitor_Data_API,
@@ -104,7 +103,6 @@ export interface DataContextType {
 
     last7HoneyPotValue: number[];
 
-    //vulnFilteredData: Map<string, FilteredDataResult_new[]>;
     transformedData: FilteredDataResult_new[],
 
 
@@ -389,8 +387,6 @@ const DataManager: React.FC = ({ children }) => {
     const vulnMetaData_uuid = useExtractOrigin('uuid', vulnOriginData);
     const vulnMetaData_scanTime = useExtractOrigin('scanTime', vulnOriginData);
     const transformedData = useTransformedData(vulnOriginData);
-    //const vulnFilteredData = useFilterOriginData_new('ip', vulnOriginData);
-    //const agentSearchResults = useSearchOriginData(agentOriginData, ['host_name'], ['Host1'], ['os_version', 'status']);
 
     //病毒扫描
     const virusScanMetaData_uuid = useExtractOrigin('uuid', virusOriginData);
@@ -407,7 +403,9 @@ const DataManager: React.FC = ({ children }) => {
     const honeypot_atk_Time = useExtractOrigin('atk_time', honeyPotOriginData);
     const last7HoneyPotValue = getPastSevenDaysAlerts(honeypot_atk_Time);
 
-    const last7VirusValue = [1];
+    // const virus_scan_time = useExtractOrigin('scan_time', virusOriginData);
+    // const last7VirusValue = getPastSevenDaysAlerts(virus_scan_time);
+    const last7VirusValue = [1,1,1,1,1,1,1];
     //主机数量
     const hostCount = agentOriginData?.flat().length;
     const vulnHostCount = vulnMetaData_uuid.typeCount.size;

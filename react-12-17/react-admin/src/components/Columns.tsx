@@ -1203,7 +1203,6 @@ export const systemServicesColumns = [
     // },
 ];
 
-
 export interface AlertDataType {
     key: React.Key;
     alarmName: string;        // 告警名称
@@ -1285,43 +1284,6 @@ export interface DataType {
     os_version: string;
 
 }
-
-export const virusscanningColumns = [
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>告警名称</span>,
-        dataIndex: 'alarmName',
-        //width: '13%',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>影响资产</span>,
-        dataIndex: 'affectedAsset',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
-        dataIndex: 'tz',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>MD5</span>,
-        dataIndex: 'level',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-        dataIndex: 'status',
-        filters: [
-            { text: '已处理', value: '已处理' },
-            { text: '未处理', value: '未处理' },
-        ],
-        onFilter: (value: string | number | boolean, record: AlertDataType) => record.status.includes(value as string),
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>发生时间</span>,
-        dataIndex: 'occurrenceTime',
-    },
-    {
-        title: () => <span style={{ fontWeight: 'bold' }}>操作</span>,
-        dataIndex: 'operation',
-    },
-];
 
 export interface WhiteListColumDataType {
     key: React.Key;
