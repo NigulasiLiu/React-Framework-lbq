@@ -1380,13 +1380,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                         }}>告警概览</h2>
                                                     </div>
                                                     <Row gutter={[6, 6]}>
-                                                        <Col md={2} />
-                                                        <Col md={10}>
+                                                        <Col md={3} />
+                                                        <Col md={18}>
                                                             <Card
                                                                 bordered={false}
                                                                 style={{
                                                                     height: '100px',
-                                                                    width: '500px',
+                                                                    // width: '800px',
                                                                     minWidth: '150px',
                                                                     display: 'flex',
                                                                     alignItems: 'center',
@@ -1396,15 +1396,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             >
                                                                 <Row style={{ width: '100%' }}>
                                                                     <Col span={8}
-                                                                         style={{ transform: 'translateX(-90px) translateY(50px)' }}>
+                                                                         style={{ transform: 'translateX(-200%) translateY(50px)' }}>
                                                                         <Statistic title={<span
                                                                             style={{ fontSize: '16px' }}>待处理告警</span>}
                                                                                    value={HoneyPotHostCount + TTPsHostCount + 40} />
                                                                     </Col>
-                                                                    <Col span={12} style={{
+                                                                    <Col span={8}/>
+                                                                    <Col span={8} style={{
                                                                         height: '90px',
                                                                         minWidth: '200px',
-                                                                        transform: 'translateX(75px) translateY(-30px)',
+                                                                        transform: 'translateX(100%) translateY(-30px)',
                                                                     }}>
                                                                         <StatusPanel statusData={AlertData_uuid}
                                                                                      orientation="vertical" />
@@ -1412,30 +1413,30 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 </Row>
                                                             </Card>
                                                         </Col>
-                                                        <Col md={2} />
-                                                        <Col md={10}>
-                                                            <Card
-                                                                bordered={false}
-                                                                style={{
-                                                                    height: '100px',
-                                                                    width: '330px',
-                                                                    minWidth: '150px', // 最小宽度300px，而非100px
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center',
-                                                                    backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                                }}
-                                                            >
-                                                                <Row>
-                                                                    <Col style={{ marginRight: '250px' }} span={24}>
-                                                                        <Statistic title={<span
-                                                                            style={{ fontSize: '16px' }}>累计处理的告警</span>}
-                                                                                   value={0} />
-                                                                    </Col>
+                                                        <Col md={3} />
+                                                        {/*<Col md={10}>*/}
+                                                        {/*    <Card*/}
+                                                        {/*        bordered={false}*/}
+                                                        {/*        style={{*/}
+                                                        {/*            height: '100px',*/}
+                                                        {/*            width: '330px',*/}
+                                                        {/*            minWidth: '150px', // 最小宽度300px，而非100px*/}
+                                                        {/*            display: 'flex',*/}
+                                                        {/*            alignItems: 'center',*/}
+                                                        {/*            justifyContent: 'center',*/}
+                                                        {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
+                                                        {/*        }}*/}
+                                                        {/*    >*/}
+                                                        {/*        <Row>*/}
+                                                        {/*            <Col style={{ marginRight: '250px' }} span={24}>*/}
+                                                        {/*                <Statistic title={<span*/}
+                                                        {/*                    style={{ fontSize: '16px' }}>累计处理的告警</span>}*/}
+                                                        {/*                           value={0} />*/}
+                                                        {/*            </Col>*/}
 
-                                                                </Row>
-                                                            </Card>
-                                                        </Col>
+                                                        {/*        </Row>*/}
+                                                        {/*    </Card>*/}
+                                                        {/*</Col>*/}
                                                         {/*<Col md={7}>*/}
                                                         {/*    <Card*/}
                                                         {/*        bordered={false}*/}
@@ -1867,7 +1868,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         return (
                             <div style={{ marginTop: '-20px' }}>
                                 <VirusScanning
-                                    hostID={this.state.host_uuid}
+                                    hostuuid={this.state.host_uuid}
                                     // pageWidth={1320}
                                 />
                             </div>
@@ -1883,6 +1884,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 </Row>
                             </div>
                         );
+
                     case 'performancemonitor':
                         return (
                             <div style={{ marginTop: '-20px' }}>

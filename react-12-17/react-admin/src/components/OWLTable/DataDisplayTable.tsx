@@ -349,8 +349,8 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
             // 如果需要，可以在这里添加 getCheckboxProps 来定制每一行复选框的行为
         };
         const new_columns = this.generate_new_columns(this.props.columns, this.props.searchColumns, this.props.timeColumnIndex);
-
-        const data = this.props.externalDataSource;
+        const externalDataSource = this.props.externalDataSource;
+        const data = Array.isArray(externalDataSource) ? externalDataSource:[externalDataSource];
 
         const selectedTableStyle = 'customTable';
 

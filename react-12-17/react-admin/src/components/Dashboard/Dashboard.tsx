@@ -14,18 +14,6 @@ import DataCard from '../CustomAntd/DataCard';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 
 
-// const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
-//     if (active && payload && payload.length) {
-//       const data = payload[0].payload;
-//       return (
-//         <div style={{ backgroundColor: '#fff', padding: '5px', border: '1px solid #ddd' }}>
-//           <Text>{data.name}: {data.value}</Text>
-//         </div>
-//       );
-//     }
-
-//     return null;
-//   };
 interface ProgressPanelProps {
     labels: string[];
     values: number[];
@@ -251,18 +239,19 @@ class Dashboard extends React.Component<DashboardProps> {
 
                         agentAVGCPUUse, agentAVGMEMUse,
                     } = context;
-                    console.log('过去7日漏洞风险:'+last7VulValue);
+                    // console.log('过去7日漏洞风险:'+last7VulValue);
                     const vulAlertData = generateAlertData(last7VulValue);
-                    const last7totalVulSum = last7VulValue.reduce((acc, currentValue) => {
-                        return acc + currentValue;
-                    }, 0); // 初始化累加器为0
                     // 转换value为DataItem类型
                     const vulProcessedData = vulAlertData.map(item => ({ ...item, Vulnerability: Number(item.value) }));
 
+                    const last7totalVulSum = last7VulValue.reduce((acc, currentValue) => {
+                        return acc + currentValue;
+                    }, 0); // 初始化累加器为0
 
-                    const bruteforceTTPsCount = bruteforceTTPsOriginData?.flat().length;
-                    const privilegeescalationTTPsCount = privilegeescalationTTPsOriginData?.flat().length;
-                    const defenseavoidanceTTPsCount = defenseavoidanceTTPsOriginData?.flat().length;
+                    const bruteforceTTPsCount = Array.isArray(bruteforceTTPsOriginData) ? bruteforceTTPsOriginData.flat().length : 0;
+                    const privilegeescalationTTPsCount = Array.isArray(privilegeescalationTTPsOriginData) ? privilegeescalationTTPsOriginData.flat().length : 0;
+                    const defenseavoidanceTTPsCount = Array.isArray(defenseavoidanceTTPsOriginData) ? defenseavoidanceTTPsOriginData.flat().length : 0;
+
                     const ttpsClassData: StatusItem[] = [
                         { color: '#846CCE', label: '暴力破解捕获 ', value: bruteforceTTPsCount },
                         { color: '#FEC746', label: '权限提升捕获 ', value: privilegeescalationTTPsCount },
@@ -294,9 +283,19 @@ class Dashboard extends React.Component<DashboardProps> {
                     const honeypotAlertData = generateAlertData(last7HoneyPotValue);
                     const honeypotProcessedData = honeypotAlertData.map(item => ({ ...item, HoneyPot: Number(item.value) }));
 
+                    const last7totalHoneyPotSum = last7HoneyPotValue.reduce((acc, currentValue) => {
+                        return acc + currentValue;
+                    }, 0); // 初始化累加器为0
+
+
                     const virusAlertData = generateAlertData(last7VirusValue);
                     const virusProcessedData = virusAlertData.map(item => ({ ...item, Virus: Number(item.value) }));
-                    // 假设两个数据数组长度相同且日期对应
+
+                    const last7totalVirusSum = last7VirusValue.reduce((acc, currentValue) => {
+                        return acc + currentValue;
+                    }, 0); // 初始化累加器为0
+
+                    // 将三类威胁狩猎数据合并
                     const combinedData = ttpsProcessedData.map((item, index) => {
                         return {
                             day: item.day,  // 确保两个数据集中都有相同的日期格式
@@ -313,7 +312,7 @@ class Dashboard extends React.Component<DashboardProps> {
                         { label: '无告警主机', value: noAlertHostCount>0?noAlertHostCount:0, color: '#E5E8EF' },
                         { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount===0?20:VirusHostCount, color: '#846CCE' },
+                        { label: '病毒扫描告警', value: VirusHostCount?VirusHostCount:0, color: '#846CCE' },
                     ];
 
 
@@ -575,7 +574,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                     color: 'white',
                                                                 },
                                                                 {
-                                                                    value: 0,
+                                                                    value: '-',
                                                                     backgroundColor: '#fff',
                                                                     fontSize: '14px',
                                                                     color: 'white',
@@ -593,7 +592,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         />
                                                         <DataCard
                                                             title="病毒扫描告警"
-                                                            value={VirusHostCount}
+                                                            value={last7totalVirusSum}
                                                             valueItem={[
                                                                 {
                                                                     value: '0',
@@ -632,7 +631,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         />
                                                         <DataCard
                                                             title="蜜罐防御告警"
-                                                            value={honeyPotOriginData.flat().length}
+                                                            value={last7totalHoneyPotSum}
                                                             valueItem={[
                                                                 {
                                                                     value: 0,
@@ -762,8 +761,10 @@ class Dashboard extends React.Component<DashboardProps> {
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={24}>
-                                                        <ProgressPanel labels={labels} values={values}
-                                                                       colors={colors} />
+                                                        <ProgressPanel labels={labels}
+                                                                       values={values}
+                                                                       colors={colors}
+                                                        />
                                                     </Col>
                                                 </Row>
 
@@ -1026,7 +1027,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
-                                                    }}>威胁狩猎</h2>
+                                                    }}>威胁狩猎概览</h2>
                                                 </div>
                                                 <Row gutter={0}>
                                                     <Col span={12}>

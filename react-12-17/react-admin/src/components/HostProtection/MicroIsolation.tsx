@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import umbrella from 'umbrella-storage';
-import { APP_Server_URL, Isolate_Data_API } from '../../service/config';
+import { APP_Server_URL, Isolate_Data_API, Isolate_decrypt_Data } from '../../service/config';
 
 
 interface MicroIsolationProps{
@@ -221,7 +221,7 @@ handleDecryptSubmit = async () => {
         Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
       }
     };
-    const response = await axios.post(APP_Server_URL+'/api/isolate/decrypt', postData,config);
+    const response = await axios.post(Isolate_decrypt_Data, JSON.stringify(postData),config);
     if (response.data.code === 0) {
       message.success('文件解除隔离成功');
     } else {
@@ -372,8 +372,9 @@ renderEncryptModal=()=>{
                           </div>
                           <DataDisplayTable
                               key={"spFileslist"}
+                              // externalDataSource={virusData}
                               externalDataSource={virusData}
-                              apiEndpoint="http://localhost:5000/api/FetchSpFile/all"
+                              apiEndpoint={APP_Server_URL+"/api/FetchSpFile/all"}
                               timeColumnIndex={[]}
                               columns={this.state.spFilesColumns}
                               currentPanel={"spFileslist"}

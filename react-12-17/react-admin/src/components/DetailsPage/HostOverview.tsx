@@ -87,7 +87,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
         this.props.changePanel(panelName);
     };
-    renderVulPieChart = (OriginData: any[], title: string, panelDataTitle1: string, panelDataTitle2: string) => {
+    renderVulPieChart = (OriginData: any[], title: string, panelDataTitle1: string, panelDataTitle2: string, panelDataTitle3: string) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
@@ -101,9 +101,48 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
             });
             const vulPieChartData: StatusItem[] = [
                 { color: '#E63F3F', label: panelDataTitle1, value: totalExpResultCount },
-                // { color: '#caa26f', label: panelDataTitle2, value: totalExpResultCount/2 },
-                // { color: '#468DFF', label: panelDataTitle2, value: 99 },
+                { color: '#caa26f', label: panelDataTitle2, value: totalExpResultCount/2 },
+                { color: '#468DFF', label: panelDataTitle3, value: 9 },
             ];
+
+            let highRiskCount = 0;
+            let mediumRiskCount = 0;
+            let lowRiskCount = 0;
+
+            filteredvulData.forEach(item => {
+                if (item && Array.isArray(item.vul_detection_exp_result)) {
+                    item.vul_detection_exp_result.forEach((result: { type: any; }) => {
+                        if (result && typeof result.type === 'number') {
+                            switch (result.type) {
+                                case 0:
+                                    highRiskCount++;
+                                    break;
+                                case 1:
+                                    mediumRiskCount++;
+                                    break;
+                                case 2:
+                                    lowRiskCount++;
+                                    break;
+                                default:
+                                    console.warn(`Unexpected risk type: ${result.type}`);
+                                    break;
+                            }
+                        } else {
+                            console.warn('Invalid result or result.type', result);
+                        }
+                    });
+                } else {
+                    console.warn('Invalid item or item.vul_detection_exp_result', item);
+                }
+            });
+
+            const vulPieChartData1: StatusItem[] = [
+                { color: '#E63F3F', label: '高风险项', value: highRiskCount },
+                { color: '#caa26f', label: '中风险项', value: mediumRiskCount },
+                { color: '#468DFF', label: '低风险项', value: lowRiskCount },
+            ];
+
+
             return (
                 <div>
                     <Row>
@@ -539,7 +578,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                 </Row>
 
                                                 <Row gutter={0}>
-                                                    {this.renderVulPieChart(vulnOriginData, '待处理高可利用漏洞', '风险项', '中风险项')}
+                                                    {this.renderVulPieChart(vulnOriginData, '待处理高可利用漏洞',
+                                                        '高风险项', '中风险项', '低风险项')}
 
                                                 </Row>
 

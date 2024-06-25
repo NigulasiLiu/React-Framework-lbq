@@ -279,9 +279,9 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         privilegeescalationTTPsOriginData,
                         defenseavoidanceTTPsOriginData, vulnOriginData,
                     } = context;
-                    const brutCount = bruteforceTTPsOriginData===undefined?0:bruteforceTTPsOriginData.flat().length;
-                    const privCount = privilegeescalationTTPsOriginData===undefined?0:privilegeescalationTTPsOriginData.flat().length;
-                    const defensCount = defenseavoidanceTTPsOriginData===undefined?0:[defenseavoidanceTTPsOriginData].flat().length;
+                    const brutCount = Array.isArray(bruteforceTTPsOriginData) ? bruteforceTTPsOriginData.flat().length : 0;
+                    const privCount = Array.isArray(privilegeescalationTTPsOriginData) ? privilegeescalationTTPsOriginData.flat().length : 0;
+                    const defensCount = Array.isArray(defenseavoidanceTTPsOriginData) ? defenseavoidanceTTPsOriginData.flat().length : 0;
                     return (
                         <div>
                             {/* <Button onClick={this.openModal}>添加TTPs</Button> */}

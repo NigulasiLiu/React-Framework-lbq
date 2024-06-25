@@ -274,53 +274,6 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
         }
     }
 
-    renderPassRate = (OriginData: any) => {
-        if (OriginData !== undefined) {
-            // 确保OriginData总是作为数组处理
-            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-
-            // 确保filteredData不为空再访问它的属性
-            if (filteredData.length > 0) {
-                //message.info("filteredData.filter:"+(filteredData[0].uuid));
-
-                const alertData3_: StatusItem[] = [
-                    // 确保使用正确的方法来计数
-                    { label: 'Pending', value: filteredData.filter(item => item.status === 'Pending').length, color: '#EA635F' },//RED
-                    { label: '通过', value: 99 - filteredData.filter(item => item.status === 'Pending').length, color: '#468DFF' }//蓝
-                ];
-                return (
-                    <div>
-                        <Row>
-                            <Col span={12}>
-                                <CustomPieChart
-                                    data={alertData3_}
-                                    innerRadius={54}
-                                    deltaRadius={8}
-                                    outerRadius={80}
-                                    cardWidth={200}
-                                    cardHeight={200}
-                                    hasDynamicEffect={true}
-                                />
-                            </Col>
-                            <Col span={2}> </Col>
-                            <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                <StatusPanel statusData={alertData3_} orientation="vertical" />
-                            </div>
-                        </Row>
-                    </div>
-                );
-            }
-        }
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                <LoadingOutlined style={{ fontSize: '3em' }} />
-            </div>
-        );
-        return (
-            <Statistic title={<span>最近检查通过率</span>} value='100%' />
-        );
-    }
     render() {
 
         return (

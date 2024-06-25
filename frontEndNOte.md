@@ -1,8 +1,126 @@
+6/21
+
+dashboard:**TTPs告警**第四个方格中填写'-'
+
+
+
+6/19
+
+dashboard: 309line need be modified
+
+
+
+6/18
+
+**modified:**
+
+1. DataManager
+
+2. Dashboard
+
+3. VulList,ScanProgressbar，hostoverview
+4. 详情页：告警概览页面**去除**右侧“已处理告警”
+5. 病毒扫描：页面调整宽度，去除“病毒扫描任务详情”按键，hostID-->hostuuid
+
+**待分类字段**
+
+病毒扫描：告警类型
+
+漏洞扫描：风险等级
+
+文件完整性、文件监控：告警类型
+
+基线检查：调整建议、状态
+
+蜜罐信息：字段有些少？
+
+威胁狩猎：风险等级
+
+
+
+
+
+6/5
+
+样式调整
+
+整合文博的部分
+
+前端项目文档
+
+
+
+
+
+5/29
+
+详情页，不同主机判断对应uuid的操作系统
+
+
+
+5/26
+
+考虑用localstroage把漏洞名称存储下来，识别到该名称自动将该行样式改变
+
+注意：立即扫描之后，扫描结果需要先刷新接口获得的数据，再显示风险项个数
+
+刷新后，显示notification
+
+themePicker的配置
+
+
+
+
+
+5/25
+
+baselineCheck 时间换为Data类型才方便按时间排序
+
+关于“立刻扫描”：发送向定时任务框架发送信息，
+
+
+
+
+
+
+
+字体微软雅黑、宋体
+
+删除按键“删除”
+
+
+
+5/12
+
+后续全部使用umbrella storage，不使用localstorage
+
+
+
+
+
 5/10
 
 ![image-20240510095229908](C:\Users\Admin\AppData\Roaming\Typora\typora-user-images\image-20240510095229908.png)
 
 memShell shell_data shell_poc字段长度只少400
+
+
+
+**yarn info jwt-decode versions**
+
+**yarn add jwt-decode@3.1.2**
+
+**注意：const VirusMetaData_uuid = useExtractOrigin('uuid', vulnOriginData);**
+
+
+
+
+
+
+
+
+
+
 
 
 

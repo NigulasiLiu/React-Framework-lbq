@@ -1,0 +1,38 @@
+.file-upload-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.file-info span {
+    flex-grow: 1;
+    padding-right: 10px;
+    text-align: left;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.upload-status {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}

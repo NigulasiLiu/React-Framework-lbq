@@ -1,17 +1,20 @@
 import React from 'react';
-import { Row, Col, Card, Button, Statistic, Menu, Modal, Table, Tooltip, message } from 'antd';
+import { Row, Col, Card, Button, Statistic, Menu, Modal, Table, Tooltip, message, Descriptions } from 'antd';
 import { Link } from 'react-router-dom';
+import FileUpload from './FileUpload';
 import VirusScanningTaskSidebar from './VirusScanTableSidebar';
 import VirusScanProcessSidebar from '../SideBar/ScanProcessSidebar';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { AlertDataType, fimColumns, runningProcessesColumnsType, StatusItem } from '../Columns';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { LoadingOutlined } from '@ant-design/icons';
-import { Virus_Data_API } from '../../service/config';
+import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
+import { APP_Server_URL, Virus_Data_API, Virus_Scan } from '../../service/config';
+import umbrella from 'umbrella-storage';
+import axios from 'axios';
 
 interface VirusScanningProps {
-    hostID: string;
+    hostuuid: string;
     pageWidth?: number;
 };
 
@@ -28,7 +31,7 @@ interface VirusScanningState {
     sidebarKey: number; // 添加这个状态
     // isLoading: boolean; // 添加 isLoading 状态
     // scanProgress: number; // 添加 scanProgress 状态
-    virusscanningColumns:any[];
+    virusscanningColumns: any[];
 
 
     ignoredVirus_array: { [uuid: string]: string[] }; // 修改为键值对形式存储
@@ -36,6 +39,8 @@ interface VirusScanningState {
     showIgnoredModal: boolean; // 新增
     ignoredVirusData: { uuid: string; Virus: string }[]; // 新增
     showModal: boolean, // 控制模态框显示
+    encryptModalVisible: boolean,
+    showUpload: boolean,
 
     currentRecord: any, // 当前选中的记录
     selectedVulnUuid: string;
@@ -101,6 +106,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
             currentRecord: null, // 当前选中的记录
             selectedVulnUuid: '', // 添加状态来存储当前选中的基线风险项 id
             showModal: false, // 控制模态框显示
+            encryptModalVisible: false,
+
+            showUpload: false,
 
             count: 2,
             deleteIndex: -1,
@@ -201,17 +209,30 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     title: '操作',
                     dataIndex: 'operation',
                     render: (text: string, record: any) => (
-                        <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
-                                disabled={
-                                    (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
-                                        .includes(record.Virus)
-                                }
-                                style={{
-                                    fontWeight: 'bold',
-                                    border: 'transparent',
-                                    backgroundColor: 'transparent',
-                                    color: '#4086FF',
-                                }}>忽略</Button>
+                        <div>
+                            <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
+                                    disabled={
+                                        (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
+                                            .includes(record.Virus)
+                                    }
+                                    style={{
+                                        fontWeight: 'bold',
+                                        border: 'transparent',
+                                        backgroundColor: 'transparent',
+                                        color: '#000000',
+                                    }}>忽略</Button>
+                            <Button onClick={() => this.showEncryptModal(record)}
+                                    disabled={
+                                        (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
+                                            .includes(record.Virus)
+                                    }
+                                    style={{
+                                        fontWeight: 'bold',
+                                        border: 'transparent',
+                                        backgroundColor: 'transparent',
+                                        color: '#4086FF',
+                                    }}>隔离</Button>
+                        </div>
                     ),
                 },
             ],
@@ -236,7 +257,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
     toggleTaskSidebar = () => {
         this.setState(prevState => ({
             isSidebarOpen: !prevState.isSidebarOpen,
-            sidebarKey: prevState.sidebarKey + 1 // 更新 sidebarKey
+            sidebarKey: prevState.sidebarKey + 1, // 更新 sidebarKey
         }));
         this.setCurrentTime();
     };
@@ -325,7 +346,8 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                 key: 'uuid',
                                 render: (text: string, record: any) => (
                                     <div>
-                                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
+                                              target="_blank">
                                             <Button
                                                 style={{
                                                     fontWeight: 'bold',
@@ -442,6 +464,98 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
         );
     };
 
+// 隔离Modal，并设置当前行数据
+    showEncryptModal = (record: any) => {
+        this.setState({
+            encryptModalVisible: true,
+            currentRecord: record,
+        });
+    };
+
+// 隐藏Modal
+    hideEncryptModal = () => {
+        this.setState({
+            encryptModalVisible: false,
+            currentRecord: {},
+        });
+    };
+
+// 处理添加隔离提交
+    handleEncryptSubmit = async () => {
+        const { currentRecord } = this.state;
+        // 构建请求体，这里假设currentRecord中含有需要的所有信息
+        const postData = {
+            uuid: currentRecord.uuid, // 假设agent_ip是表格中的一列
+            filename: currentRecord.origin_filename,
+            filepath: currentRecord.origin_filepath,
+        };
+
+        try {
+            const token = umbrella.getLocalStorage('jwt_token');
+            // 配置axios请求头部，包括JWT
+            const config = {
+                headers: {
+                    Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+                },
+            };
+            const response = await axios.post(APP_Server_URL + '/api/isolate/encrypt', postData, config);
+            if (response.data.code === 0) {
+                message.success('文件隔离成功');
+            } else {
+                message.error('文件隔离失败: ' + response.data.message);
+            }
+        } catch (error) {
+            console.error('添加隔离请求错误:', error);
+            message.error('文件隔离请求发送失败');
+        }
+        this.hideEncryptModal();
+    };
+    renderEncryptModal = () => {
+        return (
+            <Modal
+                title="添加隔离文件"
+                visible={this.state.encryptModalVisible}
+                onOk={this.handleEncryptSubmit}
+                onCancel={this.hideEncryptModal}
+                okText="确认"
+                cancelText="取消"
+                okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+            >
+                <Descriptions bordered column={1}>
+                    <Descriptions.Item label="Agent UUID">{this.state.currentRecord.uuid}</Descriptions.Item>
+                    <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
+                    <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
+                </Descriptions>
+            </Modal>
+        );
+    };
+
+
+    handleOpenUpload = () => {
+        this.setState({ showUpload: true });
+    };
+
+    handleCloseUpload = () => {
+        this.setState({ showUpload: false });
+    };
+    handleScan = async () => {
+        try {
+            const token = umbrella.getLocalStorage('jwt_token');
+            const response = await axios.post(Virus_Scan,[],{
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: token ? `Bearer ${token}` : '',
+                },
+            });
+            if (response.data.status === 200) {
+                console.log('扫描任务创建成功');
+            } else {
+                console.log(`扫描任务创建失败: ${response.data.message}`);
+            }
+        } catch (error) {
+            console.log(`扫描任务创建失败: ${error.message}`);
+        }
+    };
 
     render() {
         const { isSidebarOpen, isScanningProcessSidebarOpen, currentTime } = this.state;
@@ -451,16 +565,58 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                 {(context: DataContextType | undefined) => {
                     if (!context) {
                         return (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <LoadingOutlined style={{ fontSize: '3em' }} />
                             </div>); // 或者其他的加载状态显示
                     }
-                    const { virusOriginData,VirusHostCount } = context;
+                    const { virusOriginData, VirusHostCount } = context;
+                    const originDataArray = Array.isArray(virusOriginData) ? virusOriginData : [virusOriginData];
+
+                    let totalCount = 0;
+                    let highRiskCount = 0;
+                    let mediumRiskCount = 0;
+                    let lowRiskCount = 0;
+                    if (this.props.hostuuid && this.props.hostuuid !== 'default' && virusOriginData !== undefined) {
+                        totalCount = originDataArray.filter(Item => Item.uuid === this.props.hostuuid).length;
+                    } else {
+                        totalCount = originDataArray.flat().length;
+                    }
+
+                    const DataArray = (this.props.hostuuid && this.props.hostuuid !== 'default') ?
+                        originDataArray.filter(Item => Item.uuid === this.props.hostuuid) : originDataArray;
+
+                    DataArray.forEach(item => {
+                        if (item && Array.isArray(item.vul_detection_exp_result)) {
+                            item.vul_detection_exp_result.forEach((result: { type: any; }) => {
+                                if (result && typeof result.type === 'number') {
+                                    switch (result.type) {
+                                        case 0:
+                                            highRiskCount++;
+                                            break;
+                                        case 1:
+                                            mediumRiskCount++;
+                                            break;
+                                        case 2:
+                                            lowRiskCount++;
+                                            break;
+                                        default:
+                                            console.warn(`Unexpected risk type: ${result.type}`);
+                                            break;
+                                    }
+                                } else {
+                                    console.warn('Invalid result or result.type', result);
+                                }
+                            });
+                        } else {
+                            console.warn('Invalid item or item.vul_detection_exp_result', item);
+                        }
+                    });
+
                     const virusstatusData: StatusItem[] = [
-                        { color: '#EA635F', label: '紧急 ', value: virusOriginData.flat().length },
-                        { color: '#846CCE', label: '高风险 ', value: 5 },
-                        { color: '#FEC746', label: '中风险 ', value: 2 },
-                        { color: '#468DFF', label: '低风险 ', value: 1 },
+                        { color: '#EA635F', label: '风险项', value: totalCount },
+                        { color: '#846CCE', label: '高风险 ', value: highRiskCount },
+                        { color: '#FEC746', label: '中风险 ', value: mediumRiskCount },
+                        { color: '#468DFF', label: '低风险 ', value: lowRiskCount },
                     ];
                     const virusScanningData = [
                         {
@@ -496,13 +652,20 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     return (
                         <div style={{
                             // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                            fontWeight: 'bold', width: '100%' }}>
+                            fontWeight: 'bold', width: '100%',
+                        }}>
+                            {/*{this.renderEncryptModal()}*/}
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/>
                                 <Col span={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
                                         {this.renderModal()}
                                         {this.renderVirusIgnoreModal()}
+                                        <FileUpload
+                                            uploadUrl="/api/antivirus/upload"
+                                            visible={this.state.showUpload}
+                                            onClose={this.handleCloseUpload}
+                                        />
                                         <Col span={24}>
                                             <Card bordered={false} /*title="主机状态分布" 产生分界线*/
                                                   style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
@@ -528,24 +691,11 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                     marginRight: '10px',
                                                                     marginBottom: '8px',
                                                                 }}>{currentTime}</span>
-                                                                {/*<Button*/}
-                                                                {/*    style={{*/}
-                                                                {/*        backgroundColor: '#1664FF',*/}
-                                                                {/*        color: 'white',*/}
-                                                                {/*        marginRight: '10px',*/}
-                                                                {/*        transition: 'opacity 0.3s', // 添加过渡效果*/}
-                                                                {/*        opacity: 1, // 初始透明度*/}
-                                                                {/*    }}*/}
-                                                                {/*    onMouseEnter={(e) => {*/}
-                                                                {/*        e.currentTarget.style.opacity = 0.7;*/}
-                                                                {/*    }} // 鼠标进入时将透明度设置为0.5*/}
-                                                                {/*    onMouseLeave={(e) => {*/}
-                                                                {/*        e.currentTarget.style.opacity = 1;*/}
-                                                                {/*    }} // 鼠标离开时恢复透明度为1*/}
-                                                                {/*    onClick={this.toggleProcessSidebar}>立即扫描</Button>*/}
                                                                 <Row>
-                                                                    <Link to="/app/create_virusscan_task" target="_blank">
+                                                                    <Link to="/app/create_virusscan_task"
+                                                                          target="_blank">
                                                                         <Button
+                                                                            // onClick={this.handleScan}
                                                                             style={{
                                                                                 backgroundColor: '#1664FF',
                                                                                 color: 'white',
@@ -558,12 +708,25 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                             }} // 鼠标进入时将透明度设置为0.5
                                                                             onMouseLeave={(e) => {
                                                                                 e.currentTarget.style.opacity = 1;
-                                                                            }}>立即扫描</Button></Link>
+                                                                            }}>立即扫描</Button>
+                                                                    </Link>
                                                                     <Button style={{
-                                                                        marginRight: '10px',}}
+                                                                        marginRight: '10px',
+                                                                    }}
                                                                             onClick={this.showIgnoredVirusModal}>白名单</Button>
-                                                                    <Button style={{ }}
+                                                                    <Button style={{}}
                                                                             onClick={this.toggleTaskSidebar}>扫描记录</Button>
+                                                                </Row>
+                                                                <Row>
+                                                                    <Button
+                                                                        style={{
+                                                                            marginLeft: '0px',
+                                                                            marginTop: '10px',
+                                                                        }}
+                                                                        onClick={this.handleOpenUpload}
+                                                                    >
+                                                                        上传并扫描单个文件
+                                                                    </Button>
                                                                 </Row>
                                                             </Row>
                                                             <div
@@ -597,8 +760,8 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             </div>
                                                         </div>
                                                     </Col>
-                                                    {/*<Col span={1}/>*/}
-                                                    <Col span={9}>
+                                                    <Col span={1} />
+                                                    <Col span={8}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
@@ -611,24 +774,51 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                 backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                                             }}
                                                         >
-                                                            <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
+                                                            <Row style={{
+                                                                width: '100%',
+                                                                marginTop: '0px',
+                                                                paddingRight: '10px',
+                                                            }}>
                                                                 <Col span={8}
-                                                                     style={{ paddingTop: '20px', width: '400px', height: '90px' }}>
-                                                                    <Statistic title={<span style={{fontSize:'17px'}}>待处理告警</span>} value={virusOriginData.flat().length} />
+                                                                     style={{
+                                                                         paddingTop: '20px',
+                                                                         width: '400px',
+                                                                         height: '90px',
+                                                                     }}>
+                                                                    <Statistic title={<span
+                                                                        style={{ fontSize: '17px' }}>待处理风险项</span>}
+                                                                               value={Array.isArray(virusOriginData) ? virusOriginData.flat().length : 0} />
                                                                 </Col>
-                                                                <Col span={9} style={{ width: '400px' }}>
+
+                                                                <Col span={7}
+                                                                     style={{ width: '400px', marginTop: '10px' }}>
                                                                     <CustomPieChart
                                                                         data={virusstatusData}
-                                                                        innerRadius={24}
-                                                                        outerRadius={30}
+                                                                        innerRadius={27}
                                                                         deltaRadius={2}
-                                                                        //cardWidth={200}
+                                                                        outerRadius={33}
+                                                                        cardWidth={90}
                                                                         cardHeight={90}
                                                                         hasDynamicEffect={true}
                                                                     />
                                                                 </Col>
+                                                                {/*<Col span={9} style={{ width: '400px' }}>*/}
+                                                                {/*    <CustomPieChart*/}
+                                                                {/*        data={virusstatusData}*/}
+                                                                {/*        innerRadius={24}*/}
+                                                                {/*        outerRadius={30}*/}
+                                                                {/*        deltaRadius={2}*/}
+                                                                {/*        //cardWidth={200}*/}
+                                                                {/*        cardHeight={90}*/}
+                                                                {/*        hasDynamicEffect={true}*/}
+                                                                {/*    />*/}
+                                                                {/*</Col>*/}
                                                                 <Col span={7}
-                                                                     style={{ width: '400px', height: '100px', paddingTop: '5px' }}>
+                                                                     style={{
+                                                                         width: '400px',
+                                                                         height: '100px',
+                                                                         paddingTop: '5px',
+                                                                     }}>
                                                                     <StatusPanel statusData={virusstatusData}
                                                                                  orientation="vertical" />
                                                                 </Col>
@@ -636,7 +826,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             </Row>
                                                         </Card>
                                                     </Col>
-                                                    <Col span={1}/>
+                                                    <Col span={1} />
                                                     <Col span={5} style={{ marginLeft: '10px' }}>
                                                         <Card
                                                             bordered={false}
@@ -651,8 +841,13 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                             }}
                                                         >
                                                             <Row>
-                                                                <Col span={24} style={{ marginRight: '100px',transform: 'translateX(-80px)' }}>
-                                                                    <Statistic title={<span style={{fontSize:'17px'}}>忽略项</span>} value={IgnoredVirusCount} />
+                                                                <Col span={24} style={{
+                                                                    marginRight: '100px',
+                                                                    transform: 'translateX(-80px)',
+                                                                }}>
+                                                                    <Statistic title={<span
+                                                                        style={{ fontSize: '17px' }}>忽略项</span>}
+                                                                               value={IgnoredVirusCount} />
                                                                 </Col>
 
                                                             </Row>
@@ -674,8 +869,11 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                 fontWeight: 'bold',
                                             }}>
                                                 <h2 style={{
-                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize:'18px',
-                                                    fontWeight: 'bold', marginLeft: '0px' }}>扫描结果</h2>
+                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                    fontSize: '18px',
+                                                    fontWeight: 'bold',
+                                                    marginLeft: '0px',
+                                                }}>扫描结果</h2>
                                             </div>
                                             {/*<FetchDataForElkeidTable*/}
                                             {/*    apiEndpoint="http://localhost:5000/api/files/vulnerability"*/}
@@ -684,40 +882,37 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                             {/*    currentPanel="virusScanList"*/}
                                             {/*/>*/}
                                             <DataDisplayTable
-                                                key={"VirusScanning"}
+                                                key={'VirusScanning'}
                                                 externalDataSource={virusOriginData}
                                                 apiEndpoint={Virus_Data_API}
                                                 timeColumnIndex={[]}
                                                 columns={this.state.virusscanningColumns}
-                                                currentPanel={"VirusScanning"}
+                                                currentPanel={'VirusScanning'}
                                                 searchColumns={['uuid']}
                                             />
                                             <Table
-                                                key={"VirusScanning"}
-                                                className={"customTable"}
+                                                key={'VirusScanning'}
+                                                className={'customTable'}
                                                 dataSource={virusScanningData}
                                                 columns={this.state.virusscanningColumns}
                                                 rowClassName={(record) => {
                                                     const ignoredVirus_array = JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}');
-                                                    const isIgnored = (uuid: string, Virus:any) => {
+                                                    const isIgnored = (uuid: string, Virus: any) => {
                                                         const ignoredViruses = ignoredVirus_array[uuid] || [];
                                                         return ignoredViruses.includes(Virus);
                                                     };
                                                     return isIgnored(record.uuid, record.Virus) ? 'ignored-row' : '';
                                                 }}
-                                                />
+                                            />
                                         </Card>
                                     </div>
                                 </Col>
-                                <Link to="/app/virusscan_detail" target="_blank">
-                                    <Button type="link" style={{ color: '#4086f4' }}>病毒扫描任务详情</Button>
-                                </Link>
                             </Row>
                         </div>
                     );
                 }}
             </DataContext.Consumer>
-        )
+        );
     }
 }
 

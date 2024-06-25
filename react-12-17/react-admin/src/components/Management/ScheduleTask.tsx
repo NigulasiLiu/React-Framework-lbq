@@ -9,7 +9,7 @@ import moment from 'moment';
 import axios from 'axios';
 import umbrella from 'umbrella-storage';
 import { useHistory } from 'react-router-dom';
-import { APP_Server_URL, Task_Data_API } from '../../service/config';
+import { APP_Server_URL, Del_Task_API, Pause_Task_API, Resume_Task_API, Task_Data_API } from '../../service/config';
 
 export interface ScheduleTaskType {
     key: React.Key;
@@ -359,7 +359,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
       };
 
     handleDelete = (job_id: string) => {
-        axios.delete(`${APP_Server_URL}/api/delete_task?job_id=${job_id}`,config)
+        axios.delete(`${Del_Task_API}?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务删除成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -376,7 +376,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handlePause = (job_id: string) => {
-        axios.post(`${APP_Server_URL}/api/pause_task?job_id=${job_id}`,config)
+        axios.post(`${Pause_Task_API}?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -393,7 +393,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handleResume = (job_id: string) => {
-        axios.post(`${APP_Server_URL}/api/resume_task?job_id=${job_id}`,config)
+        axios.post(`${Resume_Task_API}?job_id=${job_id}`,config)
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据

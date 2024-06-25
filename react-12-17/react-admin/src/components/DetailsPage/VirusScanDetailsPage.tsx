@@ -5,6 +5,7 @@ import { Menu, Row, Col, Card, Statistic, Typography, Button, Progress } from 'a
 import BreadcrumbCustom from '../widget/BreadcrumbCustom';
 import { baselineDetectColumns, virusscandetailscolumns } from '../Columns';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
+import { APP_Server_URL } from '../../service/config';
 
 
 const { Text } = Typography;
@@ -105,7 +106,7 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
 
   render() {
     // 定义或从外部获取API端点
-    const apiEndpoint = "http://localhost:5000/api/files/BaseLineDetectDetails";
+    const apiEndpoint = APP_Server_URL+"/api/files/BaseLineDetectDetails";
     const finished = 3;
     const total = 5;
 

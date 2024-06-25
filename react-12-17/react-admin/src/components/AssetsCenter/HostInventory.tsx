@@ -11,7 +11,6 @@ import { Agent_Data_API } from '../../service/config';
 //const { Search } = Input;
 
 interface HostInventoryProps {
-
     host_number: number;
     host_in_alert: number;
     host_with_vul: number;
@@ -20,8 +19,6 @@ interface HostInventoryProps {
     host_status_error: number;
     host_status_offline: number;
     host_status_uninstall: number;
-
-
 };
 
 interface HostInventoryState {
@@ -29,9 +26,7 @@ interface HostInventoryState {
     riskData: StatusItem[];
     fullDataSource: any[], // 存储完整的数据源副本
     deleteIndex: number | null;
-
     activeIndex: any;
-
 };
 
 
@@ -176,7 +171,7 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
                 return acc;
             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
 
-            const noAlertHostCount = 40 + hostCount - HoneyPotHostCount - TTPsHostCount - VirusHostCount;
+            const noAlertHostCount = 20 + hostCount - HoneyPotHostCount - TTPsHostCount - VirusHostCount;
             // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
             const alertHostPieChartData = [
                 { label: '无告警主机', value: noAlertHostCount > 0 ? noAlertHostCount : 0, color: '#E5E8EF' },
@@ -268,8 +263,6 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
 };
 
 class HostInventory extends React.Component<HostInventoryProps, HostInventoryState> {
-    private refreshInterval: NodeJS.Timeout | null = null;
-
     constructor(props: any) {
         super(props);
         this.state = {
@@ -282,14 +275,6 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
     }
 
     render() {
-
-        //扇形图数据
-        const alertDataOne: StatusItem[] = [
-            { label: '运行中', value: 7, color: '#22BC44' },//GREEN
-            { label: '运行异常', value: 2, color: '#FBB12E' },//ORANGE
-            { label: '离线', value: 5, color: '#EA635F' },//RED
-            { label: '未安装', value: 1, color: '#E5E8EF' },//GREY
-        ];
 
         return (
             <DataContext.Consumer>

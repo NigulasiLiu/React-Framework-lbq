@@ -167,17 +167,17 @@ const apiEndpointToVariableName: { [key: string]: string } = {
 
 
 const DataManager: React.FC = ({ children }) => {
-    const [agentOriginData, setAgentOriginData] = useState<any>();
-    const [taskDetailsOriginData, settaskDetailsOriginData] = useState<any>({});
+    const [agentOriginData, setAgentOriginData] = useState<any>([]);
+    const [taskDetailsOriginData, settaskDetailsOriginData] = useState<any>([]);
 
-    const [monitoredOriginData, setMonitoredOriginData] = useState<any>({});
-    const [fimOriginData, setFimOriginData] = useState<any>({});
+    const [monitoredOriginData, setMonitoredOriginData] = useState<any>([]);
+    const [fimOriginData, setFimOriginData] = useState<any>([]);
 
-    const [portOriginData, setPortOriginData] = useState<any>({});
-    const [processOriginData, setProcessOriginData] = useState<any>({});
-    const [assetOriginData, setAssetOriginData] = useState<any>({});
-    const [linuxBaseLineCheckOriginData, setlinuxBLCheckOriginData] = useState<any>({});
-    const [windowsBaseLineCheckOriginData, setwindowsBLCheckOriginData] = useState<any>({});
+    const [portOriginData, setPortOriginData] = useState<any>([]);
+    const [processOriginData, setProcessOriginData] = useState<any>([]);
+    const [assetOriginData, setAssetOriginData] = useState<any>([]);
+    const [linuxBaseLineCheckOriginData, setlinuxBLCheckOriginData] = useState<any>([]);
+    const [windowsBaseLineCheckOriginData, setwindowsBLCheckOriginData] = useState<any>([]);
 
     const [vulnOriginData, setVulnOriginData] = useState<any>([]);
 
@@ -405,9 +405,9 @@ const DataManager: React.FC = ({ children }) => {
 
     // const virus_scan_time = useExtractOrigin('scan_time', virusOriginData);
     // const last7VirusValue = getPastSevenDaysAlerts(virus_scan_time);
-    const last7VirusValue = [1,1,1,1,1,1,1];
+    const last7VirusValue = [0,0,0,0,0,0,0];
     //主机数量
-    const hostCount = agentOriginData?.flat().length;
+    const hostCount = (Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData]).flat().length;
     const vulnHostCount = vulnMetaData_uuid.typeCount.size;
 
     //告警相关，首先计算各类告警涉及到的主机数量
@@ -444,91 +444,172 @@ const DataManager: React.FC = ({ children }) => {
             fetchLatestData,
             refreshDataFromAPI,
 
-            topFiveFimData,
-            //agentSearchResults,
-            agentCPUuseMetaData,
-            agentAVGCPUUse,
-            agentMEMuseMetaData,
-            agentAVGMEMUse,
+            topFiveFimData: topFiveFimData || [],
+            agentCPUuseMetaData: agentCPUuseMetaData || { typeCount: new Map(), tupleCount: 0 },
+            agentAVGCPUUse: agentAVGCPUUse || '0%',
+            agentMEMuseMetaData: agentMEMuseMetaData || { typeCount: new Map(), tupleCount: 0 },
+            agentAVGMEMUse: agentAVGMEMUse || '0GB',
 
-            agentOriginData,
-            processOriginData,
-            assetOriginData,
-            portOriginData,
-            windowsBaseLineCheckOriginData,
-            linuxBaseLineCheckOriginData,
-            fimOriginData,
-            monitoredOriginData,
-            vulnOriginData,
-            taskDetailsOriginData,
-            memHorseOriginData,
-            honeyPotOriginData,
+            agentOriginData: agentOriginData || [],
+            processOriginData: processOriginData || [],
+            assetOriginData: assetOriginData || [],
+            portOriginData: portOriginData || [],
+            windowsBaseLineCheckOriginData: windowsBaseLineCheckOriginData || [],
+            linuxBaseLineCheckOriginData: linuxBaseLineCheckOriginData || [],
+            fimOriginData: fimOriginData || [],
+            monitoredOriginData: monitoredOriginData || [],
+            vulnOriginData: vulnOriginData || [],
+            taskDetailsOriginData: taskDetailsOriginData || [],
+            memHorseOriginData: memHorseOriginData || [],
+            honeyPotOriginData: honeyPotOriginData || [],
+            bruteforceTTPsOriginData: bruteforceTTPsOriginData || [],
+            privilegeescalationTTPsOriginData: privilegeescalationTTPsOriginData || [],
+            defenseavoidanceTTPsOriginData: defenseavoidanceTTPsOriginData || [],
+            usersOriginData: usersOriginData || [],
+            virusOriginData: virusOriginData || [],
+            isolationOriginData: isolationOriginData || [],
 
-            bruteforceTTPsOriginData,
-            privilegeescalationTTPsOriginData,
-            defenseavoidanceTTPsOriginData,
+            agentMetaData_status: agentMetaData_status || { typeCount: new Map(), tupleCount: 0 },
+            agentOnlineCount: agentOnlineCount || 0,
+            fimMetaData_hostname: fimMetaData_hostname || { typeCount: new Map(), tupleCount: 0 },
+            portMetaData_port_state: portMetaData_port_state || { typeCount: new Map(), tupleCount: 0 },
+            portMetaData_port_number: portMetaData_port_number || { typeCount: new Map(), tupleCount: 0 },
+            topFivePortCounts: topFivePortCounts || [],
+            processMetaData_userName: processMetaData_userName || { typeCount: new Map(), tupleCount: 0 },
+            topFiveProcessCounts: topFiveProcessCounts || [],
+            topFiveUserCounts: topFiveUserCounts || [],
+            assetMetaData_service: assetMetaData_service || { typeCount: new Map(), tupleCount: 0 },
+            assetMetaData_product: assetMetaData_product || { typeCount: new Map(), tupleCount: 0 },
+            assetMetaData_os_version: assetMetaData_os_version || { typeCount: new Map(), tupleCount: 0 },
+            topFiveServiceCounts: topFiveServiceCounts || [],
+            topFiveProductCounts: topFiveProductCounts || [],
+            linuxBaseLineCheckMetaData_uuid: linuxBaseLineCheckMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            linuxBaseLineCheckMetaData_status: linuxBaseLineCheckMetaData_status || { typeCount: new Map(), tupleCount: 0 },
+            windowsBaseLineCheckMetaData_uuid: windowsBaseLineCheckMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            vulnMetaData_uuid: vulnMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            last7VulValue: last7VulValue || [0, 0, 0, 0, 0, 0, 0],
+            last7brutForceValue: last7brutForceValue || [0, 0, 0, 0, 0, 0, 0],
+            last7privValue: last7privValue || [0, 0, 0, 0, 0, 0, 0],
+            last7defenceForceValue: last7defenceForceValue || [0, 0, 0, 0, 0, 0, 0],
+            last7VirusValue: last7VirusValue || [0, 0, 0, 0, 0, 0, 0],
+            last7HoneyPotValue: last7HoneyPotValue || [0, 0, 0, 0, 0, 0, 0],
 
-            usersOriginData,
-            virusOriginData,
-            isolationOriginData,
+            transformedData: transformedData || [],
 
+            hostCount: hostCount || 0,
+            vulnHostCount: vulnHostCount || 0,
+            blLinuxHostCount: blLinuxHostCount || 0,
+            blWindowsHostCount: blWindowsHostCount || 0,
 
-            agentMetaData_status,
-            agentOnlineCount,
-            fimMetaData_hostname,
-            portMetaData_port_state,
-            portMetaData_port_number,
-            topFivePortCounts,
-            processMetaData_userName,
-            topFiveProcessCounts,
-            topFiveUserCounts,
-            assetMetaData_service,
-            assetMetaData_product,
-            assetMetaData_os_version,
-            topFiveServiceCounts,
-            topFiveProductCounts,
-            linuxBaseLineCheckMetaData_uuid,
-            linuxBaseLineCheckMetaData_status,
-            windowsBaseLineCheckMetaData_uuid,
+            TTPsHostCount: TTPsHostCount || 0,
+            VirusHostCount: VirusHostCount || 0,
+            HoneyPotHostCount: HoneyPotHostCount || 0,
 
-            //vulnOriginDataReconstruct,
-            vulnMetaData_uuid,//vulnFilteredData,
+            blLinuxNeedAdjustmentItemCount: blLinuxNeedAdjustmentItemCount || 0,
+            blWindowsNeedAdjustmentItemCount: blWindowsNeedAdjustmentItemCount || 0,
+            blLinuxNeedAdjustmentItemCount_pass: blLinuxNeedAdjustmentItemCount_pass || 0,
+            blWindowsNeedAdjustmentItemCount_pass: blWindowsNeedAdjustmentItemCount_pass || 0,
 
-            last7VulValue,
-            last7brutForceValue,
-            last7privValue,
-            last7defenceForceValue,
-            last7VirusValue,
-            last7HoneyPotValue,
+            blLinuxCheckNameCount: blLinuxCheckNameCount || 0,
+            blWindowsCheckNameCount: blWindowsCheckNameCount || 0,
 
-            transformedData,
-
-            hostCount,
-            vulnHostCount,
-            blLinuxHostCount,
-            blWindowsHostCount,
-
-            TTPsHostCount,
-            VirusHostCount,
-            HoneyPotHostCount,
-
-            blLinuxNeedAdjustmentItemCount,
-            blWindowsNeedAdjustmentItemCount,
-            blLinuxNeedAdjustmentItemCount_pass,
-            blWindowsNeedAdjustmentItemCount_pass,
-
-            blLinuxCheckNameCount,
-            blWindowsCheckNameCount,
-
-            bruteforceTTPsMetaData_uuid,
-            privilegeescalationTTPsMetaData_uuid,
-            defenseavoidanceTTPsMetaData_uuid,
-            VirusMetaData_uuid,
-            HoneyPotMetaData_uuid,
-
+            bruteforceTTPsMetaData_uuid: bruteforceTTPsMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            privilegeescalationTTPsMetaData_uuid: privilegeescalationTTPsMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            defenseavoidanceTTPsMetaData_uuid: defenseavoidanceTTPsMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            VirusMetaData_uuid: VirusMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            HoneyPotMetaData_uuid: HoneyPotMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
         }}>
             {children}
         </DataContext.Provider>
+        // <DataContext.Provider value={{
+        //     fetchLatestData,
+        //     refreshDataFromAPI,
+        //
+        //     topFiveFimData,
+        //     //agentSearchResults,
+        //     agentCPUuseMetaData,
+        //     agentAVGCPUUse,
+        //     agentMEMuseMetaData,
+        //     agentAVGMEMUse,
+        //
+        //     agentOriginData,
+        //     processOriginData,
+        //     assetOriginData,
+        //     portOriginData,
+        //     windowsBaseLineCheckOriginData,
+        //     linuxBaseLineCheckOriginData,
+        //     fimOriginData,
+        //     monitoredOriginData,
+        //     vulnOriginData,
+        //     taskDetailsOriginData,
+        //     memHorseOriginData,
+        //     honeyPotOriginData,
+        //
+        //     bruteforceTTPsOriginData,
+        //     privilegeescalationTTPsOriginData,
+        //     defenseavoidanceTTPsOriginData,
+        //
+        //     usersOriginData,
+        //     virusOriginData,
+        //     isolationOriginData,
+        //
+        //
+        //     agentMetaData_status,
+        //     agentOnlineCount,
+        //     fimMetaData_hostname,
+        //     portMetaData_port_state,
+        //     portMetaData_port_number,
+        //     topFivePortCounts,
+        //     processMetaData_userName,
+        //     topFiveProcessCounts,
+        //     topFiveUserCounts,
+        //     assetMetaData_service,
+        //     assetMetaData_product,
+        //     assetMetaData_os_version,
+        //     topFiveServiceCounts,
+        //     topFiveProductCounts,
+        //     linuxBaseLineCheckMetaData_uuid,
+        //     linuxBaseLineCheckMetaData_status,
+        //     windowsBaseLineCheckMetaData_uuid,
+        //
+        //     //vulnOriginDataReconstruct,
+        //     vulnMetaData_uuid,//vulnFilteredData,
+        //
+        //     last7VulValue,
+        //     last7brutForceValue,
+        //     last7privValue,
+        //     last7defenceForceValue,
+        //     last7VirusValue,
+        //     last7HoneyPotValue,
+        //
+        //     transformedData,
+        //
+        //     hostCount,
+        //     vulnHostCount,
+        //     blLinuxHostCount,
+        //     blWindowsHostCount,
+        //
+        //     TTPsHostCount,
+        //     VirusHostCount,
+        //     HoneyPotHostCount,
+        //
+        //     blLinuxNeedAdjustmentItemCount,
+        //     blWindowsNeedAdjustmentItemCount,
+        //     blLinuxNeedAdjustmentItemCount_pass,
+        //     blWindowsNeedAdjustmentItemCount_pass,
+        //
+        //     blLinuxCheckNameCount,
+        //     blWindowsCheckNameCount,
+        //
+        //     bruteforceTTPsMetaData_uuid,
+        //     privilegeescalationTTPsMetaData_uuid,
+        //     defenseavoidanceTTPsMetaData_uuid,
+        //     VirusMetaData_uuid,
+        //     HoneyPotMetaData_uuid,
+        //
+        // }}>
+        //     {children}
+        // </DataContext.Provider>
     );
 };
 
