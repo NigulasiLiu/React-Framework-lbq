@@ -38,6 +38,27 @@ export const Isolate_decrypt_Data = APP_Server_URL + '/api/isolate/decrypt';
 export const User_Data_API = APP_Server_URL + '/api/users/all';
 
 
+export const Provenance_Get_Host_UUID_API = APP_Server_URL + '/api/provenance/get_host_uuid';
+export const Provenance_Select_Host_API = APP_Server_URL + '/api/provenance/select_host';
+export const Provenance_New_Graph_Data_Event_API = APP_Server_URL + '/api/provenance/new_graph_data_event';
+export const Provenance_Update_Time_Range_API = APP_Server_URL + '/api/provenance/update_time_range';
+export const Provenance_Get_Filter_API = APP_Server_URL + '/api/provenance/get_filter';
+export const Provenance_Update_Filter_API = APP_Server_URL + '/api/provenance/update_filter';
+export const Provenance_Apply_Filter_API = APP_Server_URL + '/api/provenance/apply_filter';
+export const Provenance_Get_Log_Str_API = APP_Server_URL + '/api/provenance/get_log_str';
+export const Provenance_Upload_Camflow_Config_API = APP_Server_URL + '/api/provenance/upload_camflow_config'
+export const Process_Get_Tack_Info_API = APP_Server_URL + '/api/provenance/get_track_info'
+export const Provenance_Get_Track_Info_API = APP_Server_URL + '/api/provenance/get_track_info'
+export const Provenance_Delete_Tracker_API = APP_Server_URL + '/api/provenance/delete_tracker'
+export const Provenance_Add_Tracker_API = APP_Server_URL + '/api/provenance/add_tracker'
+export const Provenance_Get_Alert_API = APP_Server_URL + '/api/provenance/get_alert';
+
+
+export const interval_fast = 240000;
+export const interval_slow = 960000;
+
+
+
 
 
 

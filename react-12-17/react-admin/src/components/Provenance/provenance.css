@@ -1,0 +1,193 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.main {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    background-color: rgb(255, 255, 255);
+    width: 100% !important;
+    height: 900px !important;
+    zoom: 0.9; /* 将页面缩放为原来的90% */
+    scale: 1;
+    /*width: 1480px !important;*/
+    /*height: 1100px !important;*/
+    padding: 1% 1% !important; /* 上下内边距10px，左右内边距15px */
+
+}
+.head {
+    display: flex;
+    width: 100% !important;
+    height: 4% !important; 
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0% 0% !important; /* 上下内边距10px，左右内边距15px */
+}
+
+.body {
+    display: flex;
+    width: 100% !important;
+    height: 95% !important;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    margin: 1px;  /* 外边距 */
+    padding: 10px;  /* 内边距 */
+}
+
+
+.info_left {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    background-color: rgb(255, 255, 255);
+    width: 35% !important;
+    height: 90% !important;
+    justify-content:space-between;
+    align-items: center;
+    padding: 1% 1% !important; /* 上下内边距10px，左右内边距15px */
+}
+
+.graph_right {
+    display: flex;
+    flex-grow: 1;
+    border: 3px solid black;
+    width: 60% !important;
+    height: 90% !important;
+}
+
+.custom-modal {
+    background-color: #bbbdc0 !important;
+    font-size: 20px; /* 设置字体大小为20px */
+    width: 14%;
+    height: 100%;
+    align-items: center; /* 垂直居中对齐 */
+    font-weight: bold; /* 设置字体粗细为粗体 */
+    font-family: "Microsoft YaHei", sans-serif; /* 设置字体家族 */
+
+}
+
+/* 修改Modal取消按钮的颜色 */
+.ant-modal-footer .ant-btn {
+    background-color: #ffffff !important;
+    border-color: #bbbdc0 !important;
+    color: #000000;
+}
+
+
+/* 修改Popover按钮的颜色 */
+.popover-button.alert {
+    background-color: red !important;
+    width: 14%;
+    height: 100%;
+    font-size: 20px; /* 设置字体大小为20px */
+    align-items: center; /* 垂直居中对齐 */
+    font-weight: bold; /* 设置字体粗细为粗体 */
+    font-family: "Microsoft YaHei", sans-serif; /* 设置字体家族 */
+}
+
+.ant-select-selector { /* 选择主机按钮 */
+    width: 14%;
+    height: 47px !important;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+
+.upload-button { /*上传文件*/
+    background-color: #bbbdc0 !important;
+    color: #ffffff !important;
+    width: 210px;
+    height: 47px !important;
+    font-size: 20px; /* 设置字体大小为20px */
+    align-items: center; /* 垂直居中对齐 */
+    font-weight: bold; /* 设置字体粗细为粗体 */
+    font-family: "Microsoft YaHei", sans-serif; /* 设置字体家族 */
+
+}
+
+.upload-button:hover {
+    background-color: #ffffff ; /* 鼠标悬停时的背景颜色 */
+}
+
+.short-custom-button { /* 过滤按钮 */
+    background-color: #bbbdc0 !important;
+    color: #ffffff !important;
+    width: 252px !important;
+    height: 100% !important;
+    font-size: 18px !important; /* 设置为您希望的字体大小 */
+    font-weight: bold; /* 设置字体粗细为粗体 */
+    font-family: "Microsoft YaHei", sans-serif; /* 设置字体家族 */
+}
+
+.long-custom-button { /* 更新时间按钮 */
+    background-color: #bbbdc0 !important;
+    color: #ffffff !important;
+    width: 100% !important;
+    height: 50% !important;
+    font-size: 20px !important; /* 设置为您希望的字体大小 */
+    font-weight: bold; /* 设置字体粗细为粗体 */
+    font-family: "Microsoft YaHei", sans-serif; /* 设置字体家族 */
+}
+
+
+.time_range .ant-picker-range {
+    width: 100%; /* 或您希望的任何宽度 */
+    height: 100%;
+    font-size: 20px;
+    margin-top: -12px;
+    margin-bottom: 5px;
+}
+
+.time_range .ant-picker-range .ant-picker-input input {
+    font-size: 20px; /* 设置为您希望的字体大小 */
+    font-weight: bold; /* 设置字体粗细为粗体 */
+    /* font-style: italic; 设置字体样式为斜体 */
+    font-family: "Microsoft YaHei", sans-serif; /* 设置字体家族 */
+}
+
+/* 调整列表宽度 */
+.ant-transfer-list {
+    width: 100% !important; /* 单个列表的宽度 */
+    height: 200px !important;
+    font-size: 12px;
+}
+  
+/* 调整操作按钮宽度 */
+.ant-transfer-operation {
+    width: 50px !important; /* 操作按钮的宽度 */
+}
+
+ant-space ant-space-vertical time_range {
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.track_table {
+    font-family: 'Microsoft YaHei', sans-serif; /* 指定字体 */
+    font-size: 4px; /* 指定字体大小 */
+    /* height: 100%; */
+    color: #000000;
+}
+
+.track-object-form {
+    font-family: 'Microsoft YaHei', sans-serif;
+    font-size: 4px;
+    width: 480px;
+    /* padding: 20px; */
+    /* border-radius: 4px; */
+}

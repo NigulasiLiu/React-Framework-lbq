@@ -33,7 +33,7 @@ import {
     Defense_TTPs_API,
     Virus_Data_API,
     Isolate_Data_API,
-    User_Data_API,
+    User_Data_API, interval_slow, interval_fast,
 } from '../../service/config';
 import ReactDOM from 'react-dom';
 
@@ -269,7 +269,7 @@ const DataManager: React.FC = ({ children }) => {
         refreshDataFromAPI(Virus_Data_API);
 
 
-        const interval_60 = setInterval(() => {
+        const interval_1 = setInterval(() => {
             refreshDataFromAPI(Agent_Data_API);
             refreshDataFromAPI(Monitor_Data_API);
             refreshDataFromAPI(Fim_Data_API);
@@ -288,9 +288,9 @@ const DataManager: React.FC = ({ children }) => {
             // refreshDataFromAPI(Privilege_TTPs_API);
             // refreshDataFromAPI(Defense_TTPs_API);
             // refreshDataFromAPI(Isolate_Data_API);
-        }, 60000); // 60s
+        }, interval_fast); // 240s,4min
 
-        const interval_120 = setInterval(() => {
+        const interval_2 = setInterval(() => {
             refreshDataFromAPI(BaseLine_linux_Data_API);
             refreshDataFromAPI(BaseLine_windows_Data_API);
             refreshDataFromAPI(Vul_Data_API);
@@ -301,11 +301,11 @@ const DataManager: React.FC = ({ children }) => {
             refreshDataFromAPI(Privilege_TTPs_API);
             refreshDataFromAPI(Defense_TTPs_API);
             refreshDataFromAPI(Isolate_Data_API);
-        }, 120000); // 120s
+        }, interval_slow); // 960s,16min
 
         return () => {
-            clearInterval(interval_60);
-            clearInterval(interval_120);
+            clearInterval(interval_1);
+            clearInterval(interval_2);
         };
 
     }, []);

@@ -10,7 +10,7 @@ import BaselineDetectList from './RiskManagement/BaselineDetectList';
 import HostInventory from './AssetsCenter/HostInventory';
 import AssetFingerprint from './AssetsCenter/AssetFingerprint';
 import AuthBasic from './auth/Basic';
-import RouterEnter from './auth/RouterEnter';
+import Provenance from './Provenance/ProvenanceMain';
 import VirusScanning from './VirusScanning/VirusScanning';
 import Env from './env';
 import DetailsPage from './DetailsPage/DetailsPage';
@@ -37,9 +37,8 @@ export default {
     Dashboard,
     AssetFingerprint,
     HostInventory,
-
+    Provenance,
     AuthBasic,
-    RouterEnter,
     WysiwygBundle,
     VirusScanning,
     Env,

@@ -98,6 +98,12 @@ const menus: {
             component: 'ThreatHunting'
         },
         {
+            key: '/app/Provenance',
+            title: '攻击溯源',
+            icon: 'provenance',
+            component: 'Provenance'
+        },
+        {
             key: '/app/Management',
             title: '系统管理',
             icon: 'setting',
