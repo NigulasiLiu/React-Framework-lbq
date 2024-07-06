@@ -4,6 +4,7 @@ import { Button, Modal, Form, Input } from 'antd';
 import './provenance.css';
 import axios from 'axios';
 import { Provenance_Add_Tracker_API } from '../../service/config';
+import { buttonStyle } from './ProvenanceMain';
 
 const App: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -59,7 +60,8 @@ const App: React.FC = () => {
 
     return (
         <>
-            <Button onClick={showModal} className="short-custom-button">
+            <Button onClick={showModal} className="short-custom-button"
+                    {...buttonStyle}>
                 添加跟踪目标
             </Button>
             <Modal

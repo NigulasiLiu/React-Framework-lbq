@@ -1,9 +1,12 @@
 
 
-export const APP_Server_IP = 'localhost';
-export const APP_Server_PORT = 5000;
+export const APP_Server_IP = '8.137.86.6';
+export const APP_Server_PORT = 5001;
 
 export const APP_Server_URL = 'http://'+APP_Server_IP+':'+APP_Server_PORT;
+export const APP_Server_IP111 = '113.54.157.7';
+export const APP_Server_IP1 = 'localhost';
+
 export const Login_API = APP_Server_URL + '/api/login';
 export const Agent_Data_API = APP_Server_URL + '/api/agent/all';
 export const Monitor_Data_API = APP_Server_URL + '/api/monitored/all';

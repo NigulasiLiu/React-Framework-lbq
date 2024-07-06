@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Col, DatePicker } from 'antd';
-import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
+import FetchDataForTaskTable from '../OWLTable/FetchDataForTaskTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { createNewTaskColumns, VirusTaskDetail } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
@@ -202,7 +202,7 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
                     {currentStep === 0 && (
                         <Card bordered={false} style={{ width: '90%', margin: '0px auto' }}>
                             <Row style={{ margin: '0px auto', width: '100%' }}>
-                                <FetchDataForElkeidTable
+                                <FetchDataForTaskTable
                                     key={'createnewvirusscantask'}
                                     apiEndpoint={Agent_Data_API}
                                     timeColumnIndex={[]}

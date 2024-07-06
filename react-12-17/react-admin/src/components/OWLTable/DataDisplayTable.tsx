@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
+import { blueButton } from '../../style/config';
 
 const { RangePicker } = DatePicker;
 
@@ -393,39 +394,15 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                     {(this.props.currentPanel === 'TaskDetail') && (
                                                         <Link to="/app/create_agent_task" target="_blank">
                                                             <Button
-                                                                style={{
-                                                                    backgroundColor: '#1664FF',
-                                                                    color: 'white',
-                                                                    marginRight: '10px',
-                                                                    transition: 'opacity 0.3s', // 添加过渡效果
-                                                                    opacity: 1, // 初始透明度
-                                                                }}
-                                                                onMouseEnter={(e) => {
-                                                                    e.currentTarget.style.opacity = 0.7;
-                                                                }} // 鼠标进入时将透明度设置为0.5
-                                                                onMouseLeave={(e) => {
-                                                                    e.currentTarget.style.opacity = 1;
-                                                                }} // 鼠标离开时恢复透明度为1
+                                                                {...blueButton}
                                                             >
                                                                 新增任务
                                                             </Button>
                                                         </Link>)}
                                                     {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist', 'memHorseList'].includes(this.props.currentPanel)) && (
                                                         <Button
-                                                            style={{
-                                                                backgroundColor: '#1664FF',
-                                                                color: 'white',
-                                                                marginRight: '10px',
-                                                                transition: 'opacity 0.3s', // 添加过渡效果
-                                                                opacity: 1, // 初始透明度
-                                                            }}
                                                             onClick={this.props.additionalButton}
-                                                            onMouseEnter={(e) => {
-                                                                e.currentTarget.style.opacity = 0.7;
-                                                            }} // 鼠标进入时将透明度设置为0.5
-                                                            onMouseLeave={(e) => {
-                                                                e.currentTarget.style.opacity = 1;
-                                                            }} // 鼠标离开时恢复透明度为1
+                                                            {...blueButton}
                                                         >
                                                             {this.props.additionalButtonTitile}
                                                         </Button>

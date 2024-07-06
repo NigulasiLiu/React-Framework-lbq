@@ -4,6 +4,7 @@ import { UploadFile } from 'antd/lib/upload/interface';
 import { Provenance_Upload_Camflow_Config_API } from '../../service/config';
 
 import './provenance.css';
+import { buttonStyle } from './ProvenanceMain';
 
 
 const App: React.FC = () => {
@@ -46,7 +47,8 @@ const App: React.FC = () => {
 
   return (
     <Upload {...props}>
-      <Button className='upload-button'>上传配置文件</Button>
+      <Button className='upload-button'
+              {...buttonStyle}>上传配置文件</Button>
     </Upload>
   );
 };

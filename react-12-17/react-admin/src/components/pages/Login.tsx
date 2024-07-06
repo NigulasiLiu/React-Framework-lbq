@@ -1,5 +1,6 @@
-import React from 'react';
+import React , { useRef } from 'react';
 import { Button, Form, Input, message } from 'antd';
+
 import { PwaInstaller } from '../widget';
 import { connectAlita } from 'redux-alita';
 import axios from 'axios';
@@ -94,6 +95,8 @@ class Login extends React.Component<LoginProps> {
     };
 
     render() {
+        // const userNameRef = useRef<Input>(null);
+        // const passwordRef = useRef<Input>(null);
         return (
             <div className="login">
                 <div className="login-form">
@@ -106,7 +109,16 @@ class Login extends React.Component<LoginProps> {
                             name="userName"
                             rules={[{ required: true, message: '请输入用户名!' }]}
                         >
-                            <Input prefix={<UserOutlined />} placeholder="Username" />
+                            <Input
+                                prefix={<UserOutlined />}
+                                placeholder="Username"
+                                // ref={userNameRef}
+                                // onChange={(e) => {
+                                //     if (userNameRef.current) {
+                                //         userNameRef.current.input.style.backgroundColor = e.target.value ? 'gray' : 'white';
+                                //     }
+                                // }}
+                            />
                         </FormItem>
                         <FormItem
                             name="password"
@@ -122,9 +134,9 @@ class Login extends React.Component<LoginProps> {
                             {/*    忘记密码*/}
                             {/*</span>*/}
                             <Button
-                                type="primary"
                                 htmlType="submit"
                                 //className="login-form-button"
+
                                 style={{
                                     width: '100%',
                                     marginBottom: '10px',
@@ -133,7 +145,14 @@ class Login extends React.Component<LoginProps> {
                                     backgroundColor: 'rgba(0, 0, 0,0.6)',
                                     border: 'none',
                                     color: 'white',
+                                    transition: 'opacity 0.3s', // 添加过渡效果
+                                    opacity: 1, // 初始透明度
                                 }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.opacity = 0.7;
+                                }} // 鼠标进入时将透明度设置为0.5
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.opacity = 1;}}
                             >
                                 登录
                             </Button>

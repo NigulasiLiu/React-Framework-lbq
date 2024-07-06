@@ -8,6 +8,7 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { constRenderTable } from '../Columns';
 import umbrella from 'umbrella-storage';
 import { APP_Server_URL, MemoryShell_API, Task_Data_API } from '../../service/config';
+import { blueButton } from '../../style/config';
 
 const { TextArea } = Input;
 
@@ -182,7 +183,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                 onCancel={this.hideMemoryShellModal}
                 okText="确认"
                 cancelText="取消"
-                okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+                okButtonProps={{...blueButton}}
                 // style={{ backgroundColor: '#E5E8EF', padding:'28px' }}
             >
                 <Form

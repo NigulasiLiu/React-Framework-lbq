@@ -1,6 +1,6 @@
 import React from 'react';
 import { Steps, Form, Input, Button, Row, Alert, Radio, Card, message, Switch, DatePicker, Col } from 'antd';
-import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
+import FetchDataForTaskTable from '../OWLTable/FetchDataForTaskTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { createNewTaskColumns } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
@@ -291,7 +291,7 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
                     {currentStep === 0 && (
                         <Card bordered={false} style={{ width: '90%', margin: '0px auto' }}>
                             <Row style={{ margin: '0px auto', width: '100%' }}>
-                                <FetchDataForElkeidTable
+                                <FetchDataForTaskTable
                                     key={'createnewtask'}
                                     apiEndpoint={Agent_Data_API}
                                     timeColumnIndex={[]}

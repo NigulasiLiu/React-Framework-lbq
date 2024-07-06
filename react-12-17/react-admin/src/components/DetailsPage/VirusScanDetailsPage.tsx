@@ -195,7 +195,7 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
               <Col md={2} />
             </Row>
             <Row style={{ marginTop: '20px' }}>
-              {/*<FetchDataForElkeidTable*/}
+              {/*<FetchDataForTaskTable*/}
               {/*  apiEndpoint="http://localhost:5000/api/files/diskinfo"*/}
               {/*  timeColumnIndex={[]}*/}
               {/*  columns={virusscandetailscolumns}*/}

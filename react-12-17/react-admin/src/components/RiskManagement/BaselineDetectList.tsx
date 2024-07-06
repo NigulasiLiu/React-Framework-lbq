@@ -8,6 +8,7 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { APP_Server_URL, BaseLine_linux_Data_API, BaseLine_windows_Data_API, Vul_Data_API } from '../../service/config';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
+import { blueButton, cancelButton } from '../../style/config';
 
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -350,10 +351,11 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={[
-                        <Button key="back" onClick={this.handleCancel}>
+                        <Button key="back"
+                                onClick={this.handleCancel} {...blueButton}>
                             取消
                         </Button>,
-                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+                        <Button key="submit"
                                 onClick={this.handleOk}>
                             是
                         </Button>,
@@ -416,7 +418,7 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                 </div>
             );
                 // <Row style={{ width: '100%' }}>
-                    {/*<FetchDataForElkeidTable*/}
+                    {/*<FetchDataForTaskTable*/}
                     {/*    key={currentPanel+this.state.count}*/}
                     {/*    apiEndpoint={APP_Server_URL+'/api/baseline_check/' + currentPanel + '/all'}*/}
                     {/*    timeColumnIndex={['last_checked']}*/}

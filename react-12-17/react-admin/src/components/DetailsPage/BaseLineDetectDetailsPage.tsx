@@ -131,7 +131,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card >
-                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*<FetchDataForTaskTable*/}
                                     {/*    timeColumnIndex={[]}*/}
                                     {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
                                     {/*    columns={baseLineDetectCheckedItemColumns}*/}
@@ -169,7 +169,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                             </Text>
                                         </Row>
                                         <Row style={{ width: '100%', margin: '0 auto' }}>
-                                            {/*<FetchDataForElkeidTable*/}
+                                            {/*<FetchDataForTaskTable*/}
                                             {/*    apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"*/}
                                             {/*    timeColumnIndex={[]}*/}
                                             {/*    columns={baseLineDetectScanResult1Columns}*/}
@@ -188,7 +188,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card bordered={false}>
-                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*<FetchDataForTaskTable*/}
                                     {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
                                     {/*    timeColumnIndex={[]}*/}
                                     {/*    columns={baseLineDetectHostItemColumns}*/}
@@ -203,7 +203,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontWeight: 'bold' }}>
                                         <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>检查结果</h2>
                                     </div>
-                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*<FetchDataForTaskTable*/}
                                     {/*    timeColumnIndex={[]}*/}
                                     {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
                                     {/*    columns={baseLineDetectScanResult2Columns}*/}
@@ -220,7 +220,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card >
-                                    {/*<FetchDataForElkeidTable*/}
+                                    {/*<FetchDataForTaskTable*/}
                                     {/*    timeColumnIndex={[]}*/}
                                     {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
                                     {/*    columns={baseLineDetectCheckedItemColumns}*/}
@@ -258,7 +258,7 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                             </Text>
                                         </Row>
                                         <Row style={{ width: '100%', margin: '0 auto' }}>
-                                            {/*<FetchDataForElkeidTable*/}
+                                            {/*<FetchDataForTaskTable*/}
                                             {/*    apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"*/}
                                             {/*    timeColumnIndex={[]}*/}
                                             {/*    columns={baseLineDetectScanResult1Columns}*/}

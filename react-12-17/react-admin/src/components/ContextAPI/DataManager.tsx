@@ -36,6 +36,7 @@ import {
     User_Data_API, interval_slow, interval_fast,
 } from '../../service/config';
 import ReactDOM from 'react-dom';
+import useExpCounts from './useExpCounts';
 
 
 export interface DataContextType {
@@ -385,14 +386,20 @@ const DataManager: React.FC = ({ children }) => {
 
     //漏洞 信息
     const vulnMetaData_uuid = useExtractOrigin('uuid', vulnOriginData);
-    const vulnMetaData_scanTime = useExtractOrigin('scanTime', vulnOriginData);
+    // const vulnMetaData_scanTime = useExtractOrigin('scanTime', vulnOriginData);
+
+
     const transformedData = useTransformedData(vulnOriginData);
 
     //病毒扫描
     const virusScanMetaData_uuid = useExtractOrigin('uuid', virusOriginData);
 
     //last7信息
-    const last7VulValue = getPastSevenDaysAlerts(vulnMetaData_scanTime);
+    // const last7VulValue1 = getPastSevenDaysAlerts(vulnMetaData_scanTime);
+
+
+    const last7VulValue = useExpCounts(vulnOriginData);
+
     const brutForce_scan_time = useExtractOrigin('scan_time', bruteforceTTPsOriginData);
     const priv_atk_Time = useExtractOrigin('atk_time', privilegeescalationTTPsOriginData);
     const defence_atk_Time = useExtractOrigin('atk_time', defenseavoidanceTTPsOriginData);

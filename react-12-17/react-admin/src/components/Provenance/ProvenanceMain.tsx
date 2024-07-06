@@ -12,6 +12,20 @@ import TimeRangeAndButton from './TimeRangeAndButton';
 import { Divider, Row } from 'antd';
 import './provenance.css'
 
+export const buttonStyle = {
+    style: {
+        borderStyle: 'hidden',
+        transition: 'opacity 0.3s', // 添加过渡效果
+        opacity: 1, // 初始透明度
+    },
+    onMouseEnter: (e: { currentTarget: { style: { opacity: number; }; }; }) => {
+        e.currentTarget.style.opacity = 0.7; // 鼠标进入时将透明度设置为0.7
+    },
+    onMouseLeave: (e: { currentTarget: { style: { opacity: number; }; }; }) => {
+        e.currentTarget.style.opacity = 1; // 鼠标离开时恢复透明度
+    }
+};
+
 
 class Provenance extends Component {
     render() {
@@ -32,7 +46,7 @@ class Provenance extends Component {
                             <TransforBox useVertexData={true} />
                             <TransforBox useVertexData={false} />
                             <div className='two_button)'>
-                                <ShortButton buttonText="节点/边过滤配置修改" />
+                                <ShortButton buttonText="节点/边过滤配置修改"/>
                                 <CollectTrackObject />
                             </div>
                             <TrackedFileTable />

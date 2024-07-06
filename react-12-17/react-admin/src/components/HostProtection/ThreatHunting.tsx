@@ -234,7 +234,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         <Statistic title={<span style={{ fontSize: '16px' }}>{title}</span>}
                                    value={totalExpResultCount} />
                     </Col>
-                    <Col span={5} style={{ width: '300px', marginTop: '10px' }}>
+                    <Col span={5} style={{ width: '300px', marginTop: '10px',
+                        transform: 'translateX(-5px) translateY(-5px)',}}>
                         <CustomPieChart
                             data={scanPanelData}
                             innerRadius={27}
@@ -246,7 +247,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         />
                     </Col>
                     <Col span={1} style={{ width: '300px', marginTop: '10px' }} />
-                    <Col span={8} style={{ width: '450px', height: '100px', paddingTop: '5px', marginTop: '15px' }}>
+                    <Col span={8} style={{ width: '450px', height: '100px', paddingTop: '5px', marginTop: '15px',
+                        transform: 'translateX(10px) translateY(-5px)', }}>
                         <StatusPanel scanPanelData={scanPanelData} orientation="vertical" />
                     </Col>
 

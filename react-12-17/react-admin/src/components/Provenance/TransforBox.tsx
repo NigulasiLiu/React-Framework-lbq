@@ -1,5 +1,5 @@
 // 节点过滤/边过滤配置器
-import { Transfer } from 'antd';
+import { Row, Transfer } from 'antd';
 import type { TransferDirection } from 'antd/es/transfer';
 import React, { useEffect, useState } from 'react';
 import LocaleProvider from 'antd/lib/locale-provider';
@@ -89,23 +89,25 @@ const App: React.FC<DataProps> = ({useVertexData}) => {
   
   return (
     <LocaleProvider locale={zh_CN}>
-      <Transfer
-        dataSource={TypeData}
-        showSearch
-        titles={titles}
-        filterOption={filterOption}
-        targetKeys={targetKeys}
-        onChange={handleChange}
-        onSearch={handleSearch}
-        render={item => item.title || ''}
+      <Row style={{marginBottom:'10px'}}>
+        <Transfer
+            dataSource={TypeData}
+            showSearch
+            titles={titles}
+            filterOption={filterOption}
+            targetKeys={targetKeys}
+            onChange={handleChange}
+            onSearch={handleSearch}
+            render={item => item.title || ''}
 
-        // filterOption={(inputValue, item) =>
-        //   item.title.indexOf(inputValue) !== -1
-        // }
-        // searchProps={{
-        //   placeholder: '自定义搜索文字', // 为搜索框设置占位符
-        // }}
-      />
+            // filterOption={(inputValue, item) =>
+            //   item.title.indexOf(inputValue) !== -1
+            // }
+            // searchProps={{
+            //   placeholder: '自定义搜索文字', // 为搜索框设置占位符
+            // }}
+        />
+      </Row>
     </LocaleProvider>
     
   );

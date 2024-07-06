@@ -13,7 +13,6 @@ import {
     threatHuntingColumns_2,
 } from '../Columns';
 import VirusScanning from '../VirusScanning/VirusScanning';
-import PerformanceMonitor from './PerformanceMonitor';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
@@ -32,6 +31,7 @@ import { StatusItem } from '../Columns';
 import BaseLineDetectScanSidebar from '../SideBar/ScanProcessSidebar';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { determineOS } from '../ContextAPI/DataService';
+import { blueButton } from '../../style/config';
 
 
 interface DetailsPageProps extends RouteComponentProps<{ uuid: string }> {
@@ -306,7 +306,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         color: '#4086FF',
                                         padding: '0 0',
                                     }}>
-                                        {record.uuid.slice(0, 5)}
+                                        {record.uuid?record.uuid.slice(0, 5):'-'}
                                     </Button>
                                 </Link>
                             </div>
@@ -626,10 +626,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={[
-                        <Button key="back" onClick={this.handleCancel}>
+                        <Button key="back" onClick={this.handleCancel} {...blueButton}>
                             取消
                         </Button>,
-                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+                        <Button key="submit"
                                 onClick={this.handleOk}>
                             是
                         </Button>,
@@ -791,10 +791,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     onOk={this.handleblOk}
                     onCancel={this.handleblCancel}
                     footer={[
-                        <Button key="back" onClick={this.handleblCancel}>
+                        <Button key="back" onClick={this.handleblCancel} {...blueButton}>
                             取消
                         </Button>,
-                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+                        <Button key="submit"
                                 onClick={this.handleblOk}>
                             是
                         </Button>,
@@ -1124,7 +1124,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     }
                 }
             }
-            // <FetchDataForElkeidTable
+            // <FetchDataForTaskTable
             //     key={currentPanel + this.state.baselineTableReloadCount}
             //     apiEndpoint={apiEndpoint + uuid}
             //     timeColumnIndex={timeColumnIndex}
@@ -1396,16 +1396,26 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             >
                                                                 <Row style={{ width: '100%' }}>
                                                                     <Col span={8}
-                                                                         style={{ transform: 'translateX(-200%) translateY(50px)' }}>
+                                                                         style={{ transform: 'translateX(-180%) translateY(60px)' }}>
                                                                         <Statistic title={<span
                                                                             style={{ fontSize: '16px' }}>待处理告警</span>}
                                                                                    value={HoneyPotHostCount + TTPsHostCount + 40} />
                                                                     </Col>
-                                                                    <Col span={8}/>
+                                                                    <Col span={8} style={{ transform: 'translateX(-130%) translateY(45px)' }}>
+                                                                        <CustomPieChart
+                                                                            data={AlertData_uuid}
+                                                                            innerRadius={30}
+                                                                            deltaRadius={2}
+                                                                            outerRadius={36}
+                                                                            cardWidth={90}
+                                                                            cardHeight={90}
+                                                                            hasDynamicEffect={true}
+                                                                        />
+                                                                    </Col>
                                                                     <Col span={8} style={{
                                                                         height: '90px',
                                                                         minWidth: '200px',
-                                                                        transform: 'translateX(100%) translateY(-30px)',
+                                                                        transform: 'translateX(100%) translateY(-40px)',
                                                                     }}>
                                                                         <StatusPanel statusData={AlertData_uuid}
                                                                                      orientation="vertical" />
@@ -1419,7 +1429,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                         {/*        bordered={false}*/}
                                                         {/*        style={{*/}
                                                         {/*            height: '100px',*/}
-                                                        {/*            width: '330px',*/}
+                                                        {/*            width: '360px',*/}
                                                         {/*            minWidth: '150px', // 最小宽度300px，而非100px*/}
                                                         {/*            display: 'flex',*/}
                                                         {/*            alignItems: 'center',*/}
@@ -1553,7 +1563,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                  style={{ paddingTop: '20px', width: '400px', height: '90px' }}>
                                                                 <Statistic
                                                                     title={<span style={{ fontSize: '16px' }}>待处理漏洞</span>}
-                                                                    value={totalExpResultCount} />
+                                                                    value={totalExpResultCount-ignoredVulnerabilitiesCount} />
                                                             </Col>
                                                             <Col span={9} style={{
                                                                 width: '400px',
@@ -1571,9 +1581,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                             // { color: '#468DFF', label: '通过项', value: 99 },
                                                                         ]
                                                                     }
-                                                                    innerRadius={27}
+                                                                    innerRadius={30}
                                                                     deltaRadius={2}
-                                                                    outerRadius={33}
+                                                                    outerRadius={36}
                                                                     cardWidth={90}
                                                                     cardHeight={90}
                                                                     hasDynamicEffect={true}
@@ -1766,6 +1776,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 width: '100px',
                                                                 alignItems: 'center',
                                                                 justifyContent: 'center',
+                                                                transform: 'translateX(-10px) translateY(5px)',
                                                             }}>
                                                                 <CustomPieChart
                                                                     data={[
@@ -1780,9 +1791,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                             color: '#468DFF',
                                                                         },
                                                                     ]}
-                                                                    innerRadius={24}
+                                                                    innerRadius={30}
                                                                     deltaRadius={2}
-                                                                    outerRadius={30}
+                                                                    outerRadius={36}
                                                                     cardWidth={130}
                                                                     cardHeight={90}
                                                                     hasDynamicEffect={true}
@@ -1792,6 +1803,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 paddingTop: '15px',
                                                                 width: '450px',
                                                                 height: '100px',
+                                                                transform: 'translateY(5px)',
                                                             }}>
                                                                 <StatusPanel statusData={[
                                                                     {
@@ -1888,7 +1900,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     case 'performancemonitor':
                         return (
                             <div style={{ marginTop: '-20px' }}>
-                                <PerformanceMonitor />
+                                {/*<PerformanceMonitor />*/}
                             </div>
                         );
                     default:

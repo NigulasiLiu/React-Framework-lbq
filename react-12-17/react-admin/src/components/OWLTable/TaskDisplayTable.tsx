@@ -73,7 +73,7 @@ interface ElkeidDisplayTableState {
 }
 
 
-class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, ElkeidDisplayTableState> {
+class TaskDisplayTable extends React.Component<ElkeidDisplayTableProps, ElkeidDisplayTableState> {
     constructor(props: ElkeidDisplayTableProps) {
         super(props);
         this.state = {
@@ -481,4 +481,4 @@ class ElkeidDisplayTable extends React.Component<ElkeidDisplayTableProps, Elkeid
     }
 }
 
-export default ElkeidDisplayTable;
+export default TaskDisplayTable;

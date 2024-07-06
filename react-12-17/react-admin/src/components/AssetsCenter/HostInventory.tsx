@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card, message } from 'antd';
 import { constRenderTable, hostinventoryColumns, StatusItem } from '../Columns';
-import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
+import FetchDataForTaskTable from '../OWLTable/FetchDataForTaskTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -376,7 +376,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                         <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
                       </div>
-                      <FetchDataForElkeidTable
+                      <FetchDataForTaskTable
                         apiEndpoint="http://localhost:5000/api/agent/all"//后续更换为agent表
                         timeColumnIndex={[]}
                         columns={hostinventoryColumns}//hostinventoryColumns

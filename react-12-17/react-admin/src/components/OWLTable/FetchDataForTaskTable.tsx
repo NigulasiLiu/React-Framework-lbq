@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import ElkeidDisplayTable from './ElkeidDisplayTable';
+import TaskDisplayTable from './TaskDisplayTable';
 import { DataContext } from '../ContextAPI/DataManager';
 
 interface FetchAPIDataTableProps {
@@ -17,7 +17,7 @@ interface FetchAPIDataTableProps {
     handleReload?: () => void;
 }
 
-export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
+export const FetchDataForTaskTable: React.FC<FetchAPIDataTableProps> = ({
                                                                               table_type,
                                                                               apiEndpoint,
                                                                               columns,
@@ -53,7 +53,7 @@ export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
 
     return (
         <div style={{ width: '100%', margin: '0px auto' }}>
-            <ElkeidDisplayTable
+            <TaskDisplayTable
                 apiEndpoint={apiEndpoint}
                 externalDataSource={data}
                 columns={columns}
@@ -71,12 +71,12 @@ export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
     );
 };
 
-export default FetchDataForElkeidTable;
+export default FetchDataForTaskTable;
 
 
-// // FetchDataForElkeidTable.tsx
+// // FetchDataForTaskTable.tsx
 // import React, { useState, useEffect, useContext } from 'react';
-// import ElkeidDisplayTable from './ElkeidDisplayTable';
+// import TaskDisplayTable from './TaskDisplayTable';
 // import { DataContext } from '../ContextAPI/DataManager'
 //
 // import axios from 'axios';
@@ -104,7 +104,7 @@ export default FetchDataForElkeidTable;
 // }
 //
 //
-// export const FetchDataForElkeidTable: React.FC<FetchAPIDataTableProps> = ({
+// export const FetchDataForTaskTable: React.FC<FetchAPIDataTableProps> = ({
 //   table_type,
 //   apiEndpoint, columns, timeColumnIndex, currentPanel, childrenColumnName, indentSize, expandedRowRender,
 //   onSelectedRowKeysChange, keyIndex, search, handleReload,...otherProps }) => {
@@ -137,7 +137,7 @@ export default FetchDataForElkeidTable;
 //
 //   return (
 //     <div style={{ width: '100%', margin: '0px auto' }}>
-//       <ElkeidDisplayTable
+//       <TaskDisplayTable
 //         // key={currentPanel}
 //         apiEndpoint={apiEndpoint}
 //         externalDataSource={data}
@@ -163,4 +163,4 @@ export default FetchDataForElkeidTable;
 //   );
 // };
 //
-// export default FetchDataForElkeidTable;//标题相同的Table可以复用DataFecther,但调用不同的接口，保持colums不变的同时筛选数据
+// export default FetchDataForTaskTable;//标题相同的Table可以复用DataFecther,但调用不同的接口，保持colums不变的同时筛选数据

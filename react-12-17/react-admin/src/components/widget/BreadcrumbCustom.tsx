@@ -23,7 +23,9 @@ const BreadcrumbCustom = (props: BreadcrumbCustomProps) => {
 
     const hash = window.location.hash; // 获取URL的哈希部分
     const queryParamsString = hash.substring(hash.indexOf('?') + 1); // 提取查询字符串
-    const queryParams = new URLSearchParams(queryParamsString); // 使用查询字符串创建URLSearchParams实例
+    // const queryParams = new URLSearchParams(queryParamsString); // 使用查询字符串创建URLSearchParams实例
+    // const host_uuid = queryParams.get('uuid') || 'defaultUUID'; // 尝试获取uuid，如果未找到则使用默认值
+    const queryParams = queryParamsString ? new URLSearchParams(queryParamsString) : new URLSearchParams();
     const host_uuid = queryParams.get('uuid') || 'defaultUUID'; // 尝试获取uuid，如果未找到则使用默认值
 
     console.log(host_uuid); // 输出uuid的值或者'defaultUUID'
@@ -70,8 +72,12 @@ const BreadcrumbCustom = (props: BreadcrumbCustomProps) => {
                     // 确保agentOriginData总是作为数组处理
                     const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
                     if (originDataArray && originDataArray.length > 0) {
-                        const filteredData = originDataArray.find(item => item.uuid === host_uuid);
-                        const os_version = determineOS(filteredData);
+                        // const filteredData = originDataArray.find(item => item.uuid === host_uuid);
+                        const filteredData = originDataArray.find(item => item.uuid === host_uuid) || {};
+
+                        // const os_version = determineOS(filteredData);
+                        const os_version = determineOS(filteredData) || 'Unknown OS Version';
+
                         return (
                             <div style={{
                                 width: '110%', backgroundColor: '#FFFFFF', //height:'40px',
@@ -106,7 +112,7 @@ const BreadcrumbCustom = (props: BreadcrumbCustomProps) => {
                                                                     marginLeft: '0px',
                                                                     paddingTop: '18px',
                                                                 }}>
-                                                            {host_uuid} : {filteredData.os_version}({os_version})
+                                                                    {host_uuid} : {filteredData?.os_version || 'Unknown OS Version'} ({os_version || 'Unknown Version'})
                                                         </span>)}
                                                         </Row>
                                                     </div>

@@ -59,15 +59,17 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
         },
         {
           title: "UUID",
-          dataIndex: 'uuid', key: 'uuid',
-  
+          dataIndex: 'uuid',
+          key: 'uuid',
           render: (text: string) => (
               // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
               <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
                   <Button style={{
                       fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
                       padding: '0 0'
-                  }}>{text.slice(0, 5)}</Button>
+                  }}>
+                    {text!==undefined?text.slice(0, 5) : '-'}
+                  </Button>
               </Link>
           ),
         },

@@ -27,10 +27,10 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
 
         notification[typeName]({
             message: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '16px' }}>Data Refresh Tried</span>
+                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried</span>
     ),
             description: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>
+                <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
                     {descriptionContent}
                 </span>
             ),
@@ -59,13 +59,13 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
                 <Badge
                     count={notificationCountMap[key]}
                     offset={[10, 0]}
-                    style={{ backgroundColor: '#ff4d4f', color: 'white', fontSize: '12px', lineHeight: '18px' }}
+                    style={{ backgroundColor: '#ff4d4f', color: 'white', fontSize: '12px', lineHeight: '16px' }}
                 >
-                    <span style={{ fontFamily: 'youyuan', fontSize: '16px' }}>Data Refresh Tried</span>
+                    <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried</span>
                 </Badge>
             ),
             description: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>
+                <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
                     {descriptionContent}
                 </span>
             ),
@@ -110,10 +110,10 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
 
         notification.open({
             message: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '16px' }}>Data Refresh Tried</span>
+                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried</span>
             ),
             description: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>
+                <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
                     {panel} 数据已刷新
                 </span>
             ),

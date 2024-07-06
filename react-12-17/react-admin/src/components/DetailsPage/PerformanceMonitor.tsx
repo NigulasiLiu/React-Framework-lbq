@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Row, Col, Card } from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, } from 'recharts';
-import FetchDataForElkeidTable from '../OWLTable/FetchDataForElkeidTable';
+import FetchDataForTaskTable from '../OWLTable/FetchDataForTaskTable';
 import { hostperformanceColumns, StatusItem } from '../Columns';
 
 //const { Search } = Input;
@@ -147,7 +147,7 @@ class PerformanceMonitor extends React.Component<PerformanceMonitorProps, Perfor
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                                     <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主機監控記錄</h2>
                                 </div>
-                                <FetchDataForElkeidTable
+                                <FetchDataForTaskTable
                                     apiEndpoint=""
                                     timeColumnIndex={[]}
                                     columns={hostperformanceColumns}

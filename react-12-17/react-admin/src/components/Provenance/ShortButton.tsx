@@ -4,6 +4,7 @@ import React from 'react';
 import './provenance.css'
 import axios from 'axios';
 import { Provenance_Apply_Filter_API } from '../../service/config';
+import { buttonStyle } from './ProvenanceMain';
 
 
 const App: React.FC<{ buttonText: string }> = ({ buttonText }) => {
@@ -25,7 +26,8 @@ const App: React.FC<{ buttonText: string }> = ({ buttonText }) => {
   
   return (
     <>
-      <Button onClick={handleClick} block className="short-custom-button" >
+      <Button onClick={handleClick} block className="short-custom-button"
+              {...buttonStyle}>
         {buttonText}
       </Button>
     </>

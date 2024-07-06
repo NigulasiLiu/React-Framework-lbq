@@ -249,7 +249,7 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                                             <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>用户管理</h2>
                                         </div>
-                                        <FetchDataForElkeidTable
+                                        <FetchDataForTaskTable
                                             apiEndpoint="http://localhost:5000/api/usermanagement"
                                             timeColumnIndex={[]}
                                             columns={this.userManagementColumns}

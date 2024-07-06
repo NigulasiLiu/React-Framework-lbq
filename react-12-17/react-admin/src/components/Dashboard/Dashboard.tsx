@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import DataCard from '../CustomAntd/DataCard';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
+import DisplaySettingsGuide from './DisplaySettingsGuide';
 
 
 interface ProgressPanelProps {
@@ -287,7 +288,6 @@ class Dashboard extends React.Component<DashboardProps> {
                         return acc + currentValue;
                     }, 0); // 初始化累加器为0
 
-
                     const virusAlertData = generateAlertData(last7VirusValue);
                     const virusProcessedData = virusAlertData.map(item => ({ ...item, Virus: Number(item.value) }));
 
@@ -304,8 +304,6 @@ class Dashboard extends React.Component<DashboardProps> {
                             Virus: virusProcessedData[index].Virus,
                         };
                     });
-
-
                     const noAlertHostCount =20+hostCount-HoneyPotHostCount-TTPsHostCount-VirusHostCount;
                     // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
                     const alertHostPieChartData = [
@@ -314,17 +312,11 @@ class Dashboard extends React.Component<DashboardProps> {
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
                         { label: '病毒扫描告警', value: VirusHostCount?VirusHostCount:0, color: '#846CCE' },
                     ];
-
-
                     //漏洞检测
                     const vulAlertPieChartData = [
                         { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
                         { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
                     ];
-
-
-
-
                     //基线检查，进度条型展示时，使用一个各项值为1的panel
                     const baselineLineChartLabelUseData: StatusItem[] = [
                         { color: '#faad14', label: '建议调整 ', value: 1 },//蓝色E53F3F
@@ -337,6 +329,10 @@ class Dashboard extends React.Component<DashboardProps> {
 
                     return (
                         <div>
+                            <div>
+                                <DisplaySettingsGuide />
+                                {/* 你现有的 Dashboard 内容 */}
+                            </div>
                             <Row gutter={[12, 6]}>
                                 <Col md={17}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
@@ -495,10 +491,10 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         marginLeft: '0px',
                                                     }}>主机告警</h2>
                                                     <h2 style={{
-                                                    fontSize: '15px',color:'grey',
-                                                    marginLeft: '0px',
-                                                    marginRight: 'auto',
-                                                    marginTop: '5px',
+                                                        fontSize: '15px', color: 'grey',
+                                                        marginLeft: '0px',
+                                                        marginRight: 'auto',
+                                                        marginTop: '5px',
                                                     }}>(近7日)</h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
@@ -521,7 +517,8 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                     <XAxis dataKey="day" hide={true} />
                                                                     {/* <YAxis /> */}
                                                                     <Tooltip />
-                                                                    <Legend align="left" verticalAlign="top" wrapperStyle={{ left: 0, top: 0 }} />
+                                                                    <Legend align="left" verticalAlign="top"
+                                                                            wrapperStyle={{ left: 0, top: 0 }} />
                                                                     <Area
                                                                         fillOpacity={0.5}
                                                                         stroke="#4086FF" // 设置线条颜色为#4086FF
@@ -718,7 +715,8 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                     <XAxis dataKey="day" hide={true} />
                                                                     {/* <YAxis /> */}
                                                                     <Tooltip />
-                                                                    <Legend align="left" verticalAlign="top" wrapperStyle={{ left: 0, top: 0 }} />
+                                                                    <Legend align="left" verticalAlign="top"
+                                                                            wrapperStyle={{ left: 0, top: 0 }} />
                                                                     <Area
                                                                         fillOpacity={0.5}
                                                                         stroke="#4086FF" // 设置线条颜色为#4086FF
@@ -733,7 +731,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         </div>
                                                     </Col>
                                                     <Col span={6}>
-                                                        {this.renderDataCard(vulnOriginData,last7totalVulSum)}
+                                                        {this.renderDataCard(vulnOriginData, last7totalVulSum)}
                                                     </Col>
                                                 </Row>
 
@@ -757,7 +755,8 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         marginLeft: '0px',
                                                         marginBottom: '10px',
                                                     }}>基线风险</h2>
-                                                    <StatusPanel statusData={baselineLineChartLabelUseData} orientation="horizontal" />
+                                                    <StatusPanel statusData={baselineLineChartLabelUseData}
+                                                                 orientation="horizontal" />
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={24}>
@@ -824,7 +823,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         security(Intrusion detection and risk identification)solution
                                                     </h2>
                                                 </div>
-                                                <div style={{ marginBottom: 3 }}>
+                                                <div style={{ marginBottom: '3px',transform: 'translateY(-8px)' }}>
                                                     <div style={{
                                                         display: 'flex',
                                                         justifyContent: 'space-between',

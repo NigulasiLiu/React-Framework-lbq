@@ -169,7 +169,7 @@ export const createNewTaskColumns = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -177,7 +177,7 @@ export const createNewTaskColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -265,7 +265,7 @@ export const hostinventoryColumns = [
         render: (text: string, record: hostinventoryColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -273,7 +273,7 @@ export const hostinventoryColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -407,7 +407,7 @@ export const fimColumns = [
             <div>
                 <div>
                     {/*{record.uuid.slice(0, 5)}*/}
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -415,7 +415,7 @@ export const fimColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -553,7 +553,7 @@ export const monitoredColumns = [
             <div>
                 <div>
                     {/*{record.uuid.slice(0, 5)}*/}
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -561,7 +561,7 @@ export const monitoredColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -665,7 +665,7 @@ export const openPortsColumns = [
         render: (text: string, record: openPortsColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -673,7 +673,7 @@ export const openPortsColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -813,7 +813,7 @@ export const runningProcessesColumns = [
         render: (text: string, record: runningProcessesColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -821,7 +821,7 @@ export const runningProcessesColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -1017,7 +1017,7 @@ export const systemServicesColumns = [
         render: (text: string, record: systemServicesColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1025,7 +1025,7 @@ export const systemServicesColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -1373,7 +1373,7 @@ export const baselineDetectColumns = [
         render: (text: string, record: baselineDetectColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1381,7 +1381,7 @@ export const baselineDetectColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
@@ -1484,7 +1484,7 @@ export const threatHuntingColumns = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1492,7 +1492,7 @@ export const threatHuntingColumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
                                     {record.uuid || '-'}
                                 </div>
@@ -1547,7 +1547,7 @@ export const threatHuntingColumns_2 = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1555,7 +1555,7 @@ export const threatHuntingColumns_2 = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
                                     {record.uuid || '-'}
                                 </div>
@@ -2077,7 +2077,7 @@ export const Honeypotcolumns = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -2085,7 +2085,7 @@ export const Honeypotcolumns = [
                             color: '#4086FF',
                             padding: '0 0',
                         }}>
-                            <Tooltip title={record.uuid}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
                                 <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
                                     {record.uuid || '-'}
                                 </div>

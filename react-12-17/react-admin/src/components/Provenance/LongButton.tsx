@@ -4,6 +4,7 @@ import React from 'react';
 import './provenance.css'
 import axios from 'axios';
 import { Provenance_Update_Time_Range_API } from '../../service/config'
+import { buttonStyle } from './ProvenanceMain';
 
 interface UpdateButtonProps {
   buttonText:string
@@ -33,7 +34,8 @@ const App: React.FC<UpdateButtonProps> = ({ time_range, buttonText }) => {
 
   return (
     <>
-      <Button onClick={handleClick} block className="long-custom-button">
+      <Button onClick={handleClick} block className="long-custom-button"
+              {...buttonStyle}>
         {buttonText}
       </Button>
     </>

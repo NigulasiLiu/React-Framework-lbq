@@ -9,9 +9,10 @@ import { AlertDataType, fimColumns, runningProcessesColumnsType, StatusItem } fr
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
-import { APP_Server_URL, Virus_Data_API, Virus_Scan } from '../../service/config';
+import { APP_Server_URL, Virus_Data_API, Virus_Scan, Virus_Upload_File } from '../../service/config';
 import umbrella from 'umbrella-storage';
 import axios from 'axios';
+import { blueButton, cancelButton } from '../../style/config';
 
 interface VirusScanningProps {
     hostuuid: string;
@@ -32,6 +33,7 @@ interface VirusScanningState {
     // isLoading: boolean; // 添加 isLoading 状态
     // scanProgress: number; // 添加 scanProgress 状态
     virusscanningColumns: any[];
+    columns: any[];
 
 
     ignoredVirus_array: { [uuid: string]: string[] }; // 修改为键值对形式存储
@@ -135,7 +137,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     render: (text: string, record: runningProcessesColumnsType) => (
                         <div>
                             <div>
-                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
+                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
                                     <Button style={{
                                         fontWeight: 'bold',
                                         border: 'transparent',
@@ -236,7 +238,33 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     ),
                 },
             ],
-
+            columns:[
+                {
+                    title: 'ID',
+                    dataIndex: 'id',
+                    key: 'id'
+                },
+                {
+                    title: 'Filename',
+                    dataIndex: 'filename',
+                    key: 'filename'
+                },
+                {
+                    title: 'MD5',
+                    dataIndex: 'md5',
+                    key: 'md5'
+                },
+                {
+                    title: 'Time',
+                    dataIndex: 'time',
+                    key: 'time'
+                },
+                {
+                    title: 'Alert',
+                    dataIndex: 'alert',
+                    key: 'alert'
+                }
+            ],
 
             // isLoading: false, // 初始化 isLoading 为 false
             // scanProgress: 0, // 初始化 scanProgress 为 0
@@ -448,10 +476,10 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={[
-                        <Button key="back" onClick={this.handleCancel}>
+                        <Button key="back" onClick={this.handleCancel} {...blueButton}>
                             取消
                         </Button>,
-                        <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
+                        <Button key="submit"
                                 onClick={this.handleOk}>
                             是
                         </Button>,
@@ -579,7 +607,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     if (this.props.hostuuid && this.props.hostuuid !== 'default' && virusOriginData !== undefined) {
                         totalCount = originDataArray.filter(Item => Item.uuid === this.props.hostuuid).length;
                     } else {
-                        totalCount = originDataArray.flat().length;
+                        totalCount = Array.isArray(virusOriginData) ?originDataArray.flat().length:0;
                     }
 
                     const DataArray = (this.props.hostuuid && this.props.hostuuid !== 'default') ?
@@ -662,7 +690,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                         {this.renderModal()}
                                         {this.renderVirusIgnoreModal()}
                                         <FileUpload
-                                            uploadUrl="/api/antivirus/upload"
+                                            uploadUrl={Virus_Upload_File}
                                             visible={this.state.showUpload}
                                             onClose={this.handleCloseUpload}
                                         />
@@ -692,24 +720,28 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                     marginBottom: '8px',
                                                                 }}>{currentTime}</span>
                                                                 <Row>
-                                                                    <Link to="/app/create_virusscan_task"
-                                                                          target="_blank">
-                                                                        <Button
-                                                                            // onClick={this.handleScan}
-                                                                            style={{
-                                                                                backgroundColor: '#1664FF',
-                                                                                color: 'white',
-                                                                                marginRight: '10px',
-                                                                                transition: 'opacity 0.3s', // 添加过渡效果
-                                                                                opacity: 1, // 初始透明度
-                                                                            }}
-                                                                            onMouseEnter={(e) => {
-                                                                                e.currentTarget.style.opacity = 0.7;
-                                                                            }} // 鼠标进入时将透明度设置为0.5
-                                                                            onMouseLeave={(e) => {
-                                                                                e.currentTarget.style.opacity = 1;
-                                                                            }}>立即扫描</Button>
-                                                                    </Link>
+                                                                    <Button
+                                                                        onClick={this.handleScan}
+                                                                        {...blueButton}>
+                                                                        立即扫描</Button>
+                                                                    {/*<Link to="/app/create_virusscan_task"*/}
+                                                                    {/*      target="_blank">*/}
+                                                                    {/*    <Button*/}
+                                                                    {/*        // onClick={this.handleScan}*/}
+                                                                    {/*        style={{*/}
+                                                                    {/*            backgroundColor: '#1664FF',*/}
+                                                                    {/*            color: 'white',*/}
+                                                                    {/*            marginRight: '10px',*/}
+                                                                    {/*            transition: 'opacity 0.3s', // 添加过渡效果*/}
+                                                                    {/*            opacity: 1, // 初始透明度*/}
+                                                                    {/*        }}*/}
+                                                                    {/*        onMouseEnter={(e) => {*/}
+                                                                    {/*            e.currentTarget.style.opacity = 0.7;*/}
+                                                                    {/*        }} // 鼠标进入时将透明度设置为0.5*/}
+                                                                    {/*        onMouseLeave={(e) => {*/}
+                                                                    {/*            e.currentTarget.style.opacity = 1;*/}
+                                                                    {/*        }}>立即扫描</Button>*/}
+                                                                    {/*</Link>*/}
                                                                     <Button style={{
                                                                         marginRight: '10px',
                                                                     }}
@@ -787,7 +819,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                      }}>
                                                                     <Statistic title={<span
                                                                         style={{ fontSize: '17px' }}>待处理风险项</span>}
-                                                                               value={Array.isArray(virusOriginData) ? virusOriginData.flat().length : 0} />
+                                                                               value={totalCount-IgnoredVirusCount} />
                                                                 </Col>
 
                                                                 <Col span={7}
@@ -875,21 +907,15 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                     marginLeft: '0px',
                                                 }}>扫描结果</h2>
                                             </div>
-                                            {/*<FetchDataForElkeidTable*/}
-                                            {/*    apiEndpoint="http://localhost:5000/api/files/vulnerability"*/}
+                                            {/*<DataDisplayTable*/}
+                                            {/*    key={'VirusScanning'}*/}
+                                            {/*    externalDataSource={virusOriginData}*/}
+                                            {/*    apiEndpoint={Virus_Data_API}*/}
                                             {/*    timeColumnIndex={[]}*/}
-                                            {/*    columns={virusscanningColumns}*/}
-                                            {/*    currentPanel="virusScanList"*/}
+                                            {/*    columns={this.state.columns}*/}
+                                            {/*    currentPanel={'VirusScanning'}*/}
+                                            {/*    searchColumns={['uuid']}*/}
                                             {/*/>*/}
-                                            <DataDisplayTable
-                                                key={'VirusScanning'}
-                                                externalDataSource={virusOriginData}
-                                                apiEndpoint={Virus_Data_API}
-                                                timeColumnIndex={[]}
-                                                columns={this.state.virusscanningColumns}
-                                                currentPanel={'VirusScanning'}
-                                                searchColumns={['uuid']}
-                                            />
                                             <Table
                                                 key={'VirusScanning'}
                                                 className={'customTable'}

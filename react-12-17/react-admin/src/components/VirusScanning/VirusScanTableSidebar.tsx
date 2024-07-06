@@ -30,7 +30,7 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps, 
         if (storedData) {
             // message.info(`localStorage data: ${storedData}`);
         } else {
-            message.info('localStorage is empty');
+            message.info('没有扫描记录。');
         }
     }
 

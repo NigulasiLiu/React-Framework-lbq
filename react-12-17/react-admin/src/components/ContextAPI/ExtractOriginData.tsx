@@ -14,13 +14,18 @@ export const filterDataByAttribute = (data:any[], attributeName:string, attribut
 }
 // 获取最大的五个typeCount的值和对应的valueName
 export const getTopFiveTypeCounts = (result: MetaDataResult): [string, number][] => {
+  if (!result || !result.typeCount) {
+    return []; // 返回空数组以防止 result 或 typeCount 为空
+  }
+
   // 将 typeCount Map 转换为数组，然后排序
   const sortedTypeCounts = Array.from(result.typeCount)
-    .sort((a, b) => b[1] - a[1]) // 根据计数降序排序
-    .slice(0, 5); // 获取前五个
+      .sort((a, b) => b[1] - a[1]) // 根据计数降序排序
+      .slice(0, 5); // 获取前五个
 
   return sortedTypeCounts;
 };
+
 export const getCountPastSevenDays = (result: MetaDataResult, columnName: string): number => {
   const now = new Date(); // 当前时间
   const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7天前的时间

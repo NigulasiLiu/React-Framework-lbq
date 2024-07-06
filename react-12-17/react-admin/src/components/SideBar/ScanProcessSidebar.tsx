@@ -124,20 +124,28 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
   render() {
     const { isSidebarOpen, toggleSidebar } = this.props;
     const returnButton = {
-      width: '350px',
-      height: '45px',
-      color: '#527ED5',
-      border: '1px solid #527ED5',
-      backgroundColor: 'white',
-      // 由于按钮高度较小，可能需要调整字体大小或内边距来改善显示
-      fontSize: '14px', // 根据需要调整字体大小
-      lineHeight: '14px', // 根据按钮高度调整行高以垂直居中文本
-      padding: '1px 6px', // 根据需要调整内边距以确保文本垂直居中
-      // 可能还需要其他样式，如圆角、字体族等
-      borderRadius: '4px', // 如果您想要圆角边框
-      fontFamily: 'Arial, sans-serif', // 根据需要设置字体
-      cursor: 'pointer', // 显示为可点击的手型光标
-      outline: 'none', // 移除焦点时的轮廓
+      style:{
+        width: '350px',
+        height: '45px',
+        color: '#527ED5',
+        border: '1px solid #527ED5',
+        backgroundColor: 'white',
+        // 由于按钮高度较小，可能需要调整字体大小或内边距来改善显示
+        fontSize: '14px', // 根据需要调整字体大小
+        lineHeight: '14px', // 根据按钮高度调整行高以垂直居中文本
+        padding: '1px 6px', // 根据需要调整内边距以确保文本垂直居中
+        // 可能还需要其他样式，如圆角、字体族等
+        borderRadius: '4px', // 如果您想要圆角边框
+        fontFamily: 'Arial, sans-serif', // 根据需要设置字体
+        cursor: 'pointer', // 显示为可点击的手型光标
+        outline: 'none', // 移除焦点时的轮廓
+      },
+      onMouseEnter: (e: { currentTarget: { style: { opacity: number; }; }; }) => {
+        e.currentTarget.style.opacity = 0.7; // 鼠标进入时将透明度设置为0.7
+      },
+      onMouseLeave: (e: { currentTarget: { style: { opacity: number; }; }; }) => {
+        e.currentTarget.style.opacity = 1; // 鼠标离开时恢复透明度
+      }
       // 添加一些边距来避免文本紧贴边框
     }
 
@@ -209,7 +217,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
                 </Row>
                 <Row gutter={15} style={{ marginLeft: '6px' }}>
                   <div style={{ margin: '12px auto', alignItems: 'center' }}>
-                    <button style={returnButton} onClick={toggleSidebar}>{this.props.scanInfo[2]}</button>
+                    <Button {...returnButton} onClick={toggleSidebar}>{this.props.scanInfo[2]}</Button>
                   </div>
                 </Row>
                 {this.renderStatusList()}
