@@ -1,11 +1,11 @@
 
 
-export const APP_Server_IP = '8.137.86.6';
-export const APP_Server_PORT = 5001;
+export const APP_Server_IP1 = '8.137.86.6';
+export const APP_Server_PORT = 5000;
 
-export const APP_Server_URL = 'http://'+APP_Server_IP+':'+APP_Server_PORT;
 export const APP_Server_IP111 = '113.54.157.7';
-export const APP_Server_IP1 = 'localhost';
+export const APP_Server_IP = 'localhost';
+export const APP_Server_URL = 'http://'+APP_Server_IP+':'+APP_Server_PORT;
 
 export const Login_API = APP_Server_URL + '/api/login';
 export const Agent_Data_API = APP_Server_URL + '/api/agent/all';
@@ -38,6 +38,7 @@ export const Isolate_encrypt_Data = APP_Server_URL + '/api/isolate/encrypt';
 export const Isolate_decrypt_Data = APP_Server_URL + '/api/isolate/decrypt';
 
 
+export const Once_Task_API = APP_Server_URL + '/api/send/command';
 export const User_Data_API = APP_Server_URL + '/api/users/all';
 
 
@@ -61,7 +62,21 @@ export const interval_fast = 240000;
 export const interval_slow = 960000;
 
 
+export const Agent_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/agent/query_uuid?uuid=${uuid}`;
+export const Monitor_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/monitored/query_uuid?uuid=${uuid}`;
+export const Fim_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/FileIntegrityInfo/query_uuid?uuid=${uuid}`;
+export const Vul_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/vulndetetion/query_uuid?uuid=${uuid}`;
+export const Port_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/hostport/query_uuid?uuid=${uuid}`;
+export const Process_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/process/query_uuid?uuid=${uuid}`;
+export const BaseLine_linux_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/baseline_check/linux/query_uuid?uuid=${uuid}`;
+export const BaseLine_windows_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/baseline_check/windows/query_uuid?uuid=${uuid}`;
+export const Honey_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/honeypot/query_uuid?uuid=${uuid}`;
 
+
+export const Brute_TTPs_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/brute_ttps/query_uuid?uuid=${uuid}`;
+export const Privilege_TTPs_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/privilege_ttps/query_uuid?uuid=${uuid}`;
+export const Defense_TTPs_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/defense_ttps/query_uuid?uuid=${uuid}`;
+export const Assets_uuid_Data_API = (uuid: string) => `${APP_Server_URL}/api/assets/query_uuid?uuid=${uuid}`;
 
 
 

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import umbrella from 'umbrella-storage';
-import { APP_Server_URL, Isolate_Data_API, Isolate_decrypt_Data } from '../../service/config';
+import { APP_Server_URL, Isolate_Data_API, Isolate_decrypt_Data, Isolate_encrypt_Data } from '../../service/config';
 
 
 interface MicroIsolationProps{
@@ -216,7 +216,7 @@ handleDecryptSubmit = async () => {
   };
   
   try {
-    const token = umbrella.getLocalStorage('jwt_token');
+    const token = localStorage.getItem('jwt_token');
     // 配置axios请求头部，包括JWT
     const config = {
       headers: {
@@ -286,14 +286,14 @@ handleEncryptSubmit = async () => {
   };
   
   try {
-    const token = umbrella.getLocalStorage('jwt_token');
+    const token = localStorage.getItem('jwt_token');
     // 配置axios请求头部，包括JWT
     const config = {
       headers: {
         Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
       }
     };
-    const response = await axios.post(APP_Server_URL+'/api/isolate/encrypt', postData,config);
+    const response = await axios.post(Isolate_encrypt_Data, postData,config);
     if (response.data.code === 0) {
       message.success('文件隔离成功');
     } else {
@@ -320,7 +320,7 @@ renderEncryptModal=()=>{
         <Descriptions bordered column={1}>
         <Descriptions.Item label="Agent UUID">{this.state.currentRecord.uuid}</Descriptions.Item>
         <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
-        <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_file_path}</Descriptions.Item>
+        <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_filepath}</Descriptions.Item>
       </Descriptions>
     </Modal>
   );
@@ -375,8 +375,8 @@ renderEncryptModal=()=>{
                           <DataDisplayTable
                               key={"spFileslist"}
                               // externalDataSource={virusData}
-                              externalDataSource={virusData}
-                              apiEndpoint={APP_Server_URL+"/api/FetchSpFile/all"}
+                              externalDataSource={isolationOriginData}
+                              apiEndpoint={Isolate_Data_API}
                               timeColumnIndex={[]}
                               columns={this.state.spFilesColumns}
                               currentPanel={"spFileslist"}

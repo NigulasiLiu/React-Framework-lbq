@@ -12,11 +12,11 @@ import { User_Data_API } from '../../service/config';
 
 const { Option } = Select;
 interface UserManagementProps {
-   
+
 }
 
 interface UserManagementState {
-  
+
     showModal: boolean;
     user_character: string;
 }
@@ -221,7 +221,7 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
 
 
     render() {
-        
+
     return (
         <DataContext.Consumer>
             {(context: DataContextType | undefined) => {
@@ -232,7 +232,7 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
                         </div>); // 或者其他的加载状态显示
                 }
                 // 从 context 中解构出 topFiveFimData 和 n
-                const { usersOriginData} = context;
+                const { } = context;
 
                 return (
                     <div style={{
@@ -242,8 +242,8 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
                         {this.renderModal()}
                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                             <Col md={24}>
-                            {constRenderTable(usersOriginData, '用户列表', [], 
-                                          this.userManagementColumns, 'UserManagementlist',User_Data_API,[''],this.showModal,"添加用户")}
+                            {/*{constRenderTable(usersOriginData, '用户列表', [], */}
+                            {/*              this.userManagementColumns, 'UserManagementlist',User_Data_API,[''],this.showModal,"添加用户")}*/}
                                 {/* <div className="gutter-box">
                                     <Card bordered={false}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
@@ -258,7 +258,7 @@ class UserManagement extends React.Component<UserManagementProps, UserManagement
                                     </Card>
                                 </div> */}
                             </Col>
-        
+
                         </Row>
                     </div>
                 );

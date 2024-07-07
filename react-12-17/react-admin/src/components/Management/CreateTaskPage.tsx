@@ -187,7 +187,7 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
 
             // 输出调试信息
             message.info(`准备发送 ${postDataArray.length} 个任务...`);
-            const token = umbrella.getLocalStorage('jwt_token');
+            const token = localStorage.getItem('jwt_token');
             const responses = await Promise.all(postDataArray.map((postData) => {
                     message.info(`准备发送 ${JSON.stringify(postData)}`);
                     return fetch(Add_Task_API, {
@@ -203,6 +203,7 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
 
             responses.forEach(async (response, index) => {
                 const responseData = await response.json();
+                message.info("responseData:"+JSON.stringify(responseData));
                 if (response.ok) {
                     console.log(`Task ${index + 1} sent successfully:`, responseData);
                     message.success(`任务${index + 1}已成功发送！`);

@@ -99,7 +99,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     };
     handleTTPsSubmit = async (values: any) => {
         try {
-            const token = umbrella.getLocalStorage('jwt_token');
+            const token = localStorage.getItem('jwt_token');
             // 配置axios请求头部，包括JWT
             const config = {
                 headers: {

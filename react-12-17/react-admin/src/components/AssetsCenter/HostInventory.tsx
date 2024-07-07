@@ -1,16 +1,16 @@
 import React from 'react';
-import axios from 'axios';
-import { Row, Col, Card, message } from 'antd';
-import { constRenderTable, hostinventoryColumns, StatusItem } from '../Columns';
-import FetchDataForTaskTable from '../OWLTable/FetchDataForTaskTable';
+import { Row, Col, Card, message, Button, Tooltip, Badge, Dropdown, Menu } from 'antd';
+import { constRenderTable, extractNumberFromPercentString, hostinventoryColumnsType, StatusItem } from '../Columns';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Agent_Data_API } from '../../service/config';
+import { Link,withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
 
 //const { Search } = Input;
 
-interface HostInventoryProps {
+interface HostInventoryProps extends RouteComponentProps{
     host_number: number;
     host_in_alert: number;
     host_with_vul: number;
@@ -27,6 +27,8 @@ interface HostInventoryState {
     fullDataSource: any[], // 存储完整的数据源副本
     deleteIndex: number | null;
     activeIndex: any;
+    hostinventoryColumns: any[];
+    taskKey:string;
 };
 
 
@@ -35,46 +37,47 @@ interface StatusPanelProps {
     statusData: StatusItem[];
     orientation: 'vertical' | 'horizontal'; // 添加方向属性
 }
+
 export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientation }) => {
-  const containerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: orientation === 'vertical' ? 'column' : 'row',
-    alignItems: 'flex-start',
-    gap: orientation === 'horizontal' ? '7px' : '0', // 设置水平方向的间隔
-  };
+    const containerStyle: React.CSSProperties = {
+        display: 'flex',
+        flexDirection: orientation === 'vertical' ? 'column' : 'row',
+        alignItems: 'flex-start',
+        gap: orientation === 'horizontal' ? '7px' : '0', // 设置水平方向的间隔
+    };
 
-  const itemStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: orientation === 'vertical' ? 'space-between' : 'flex-start',
-    alignItems: 'center',
-    width: orientation === 'vertical' ? '100%' : undefined,
-    margin: '3px',
-  };
+    const itemStyle: React.CSSProperties = {
+        display: 'flex',
+        justifyContent: orientation === 'vertical' ? 'space-between' : 'flex-start',
+        alignItems: 'center',
+        width: orientation === 'vertical' ? '100%' : undefined,
+        margin: '3px',
+    };
 
-  const valueStyle: React.CSSProperties = {
-    marginLeft: orientation === 'vertical' ? '40px' : '0', // 设置垂直方向的间隔
-  };
+    const valueStyle: React.CSSProperties = {
+        marginLeft: orientation === 'vertical' ? '40px' : '0', // 设置垂直方向的间隔
+    };
 
-  return (
-      <div style={containerStyle}>
-        {statusData.map((status, index) => (
-            <div key={index} style={itemStyle}>
+    return (
+        <div style={containerStyle}>
+            {statusData.map((status, index) => (
+                <div key={index} style={itemStyle}>
           <span style={{
-            height: '10px',
-            width: '10px',
-            backgroundColor: status.color,
-            borderRadius: '50%',
-            display: 'inline-block',
-            marginRight: '8px',
+              height: '10px',
+              width: '10px',
+              backgroundColor: status.color,
+              borderRadius: '50%',
+              display: 'inline-block',
+              marginRight: '8px',
           }}></span>
-              <span style={{ flexGrow: 1 }}>{status.label}</span>
-              {orientation === 'vertical' && (
-                  <span style={valueStyle}>{status.value}</span>
-              )}
-            </div>
-        ))}
-      </div>
-  );
+                    <span style={{ flexGrow: 1 }}>{status.label}</span>
+                    {orientation === 'vertical' && (
+                        <span style={valueStyle}>{status.value}</span>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
 };
 
 const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
@@ -180,14 +183,18 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
                 { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
             ];
             const vulAlertData = [
-            { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
-            { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
-          ];
-          const baselinePieChartData: StatusItem[] = [
-            // 确保使用正确的方法来计数
-            { label: '无基线风险主机', value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
-            { label: '存在高危基线主机', value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' },//BLUE
-          ];
+                { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
+                { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
+            ];
+            const baselinePieChartData: StatusItem[] = [
+                // 确保使用正确的方法来计数
+                { label: '无基线风险主机', value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
+                {
+                    label: '存在高危基线主机',
+                    value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+                    color: '#4086FF',
+                },//BLUE
+            ];
 
             const riskStatusPanelData: StatusItem[] = [
                 { color: '#E5E8EF', label: '主机总数 ', value: wholeCount },
@@ -203,7 +210,6 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
                     value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
                 },
             ];
-
 
 
             return (
@@ -233,16 +239,16 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
                         />
                     </Col>
                     <Col span={5}>
-                      <CustomPieChart
-                          data={baselinePieChartData}
-                          innerRadius={54}
-                          deltaRadius={8}
-                          outerRadius={80}
-                          cardHeight={200}
-                          cardWidth={200}
-                          hasDynamicEffect={true}
-                          title={'基线风险'}
-                      />
+                        <CustomPieChart
+                            data={baselinePieChartData}
+                            innerRadius={54}
+                            deltaRadius={8}
+                            outerRadius={80}
+                            cardHeight={200}
+                            cardWidth={200}
+                            hasDynamicEffect={true}
+                            title={'基线风险'}
+                        />
                         {/*{renderBLPieChart(linuxOriginData, winOriginData, '无基线风险主机', '存在高危基线主机', blLinuxHostCount + blWindowsHostCount)}*/}
                     </Col>
                     <Col span={2}> </Col>
@@ -266,12 +272,181 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
     constructor(props: any) {
         super(props);
         this.state = {
+            taskKey:'',
             runningStatusData: [],
             riskData: [],
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
             fullDataSource: [], // 存储完整的数据源副本
+            hostinventoryColumns: [
+                {
+                    title: 'ID',
+                    dataIndex: 'id',
+                    key: 'id',
+                    width: '15px', // 修正 Maxwidth 为 width
+                    // render:(text:string)=>(
+                    //     <Button className="custom-button">{text}</Button>
+                    // ),
+                },
+                {
+                    title: '主机名',
+                    dataIndex: 'uuid',
+                    key: 'uuid',
+                    render: (text: string, record: hostinventoryColumnsType) => (
+                        <div>
+                            <div>
+                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                                      target="_blank">
+                                    <Button style={{
+                                        fontWeight: 'bold',
+                                        border: 'transparent',
+                                        backgroundColor: 'transparent',
+                                        color: '#4086FF',
+                                        padding: '0 0',
+                                    }}>
+                                        <Tooltip title={record.uuid || 'Unknown UUID'}>
+                                            <div style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '80px',
+                                            }}>
+                                                {record.uuid || '-'}
+                                            </div>
+                                        </Tooltip>
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div style={{
+                                fontSize: 'small', // 字体更小
+                                background: '#f0f0f0', // 灰色背景
+                                padding: '2px 4px', // 轻微内边距
+                                borderRadius: '2px', // 圆角边框
+                                display: 'inline-block', // 使得背景色仅围绕文本
+                                marginTop: '4px', // 上边距
+                            }}>
+                                <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip_address}
+                            </div>
+                        </div>
+                    ),
+                },
+                {
+                    title: '操作系统',
+                    dataIndex: 'os_version',
+                },
+                {
+                    title: '状态',
+                    dataIndex: 'status',
+                    onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
+                    filters: [
+                        {
+                            text: 'Online',
+                            value: 'Online',
+                        },
+                        {
+                            text: 'Offline',
+                            value: 'Offline',
+                        },
+                    ],
+                    // 修改这里使用record参数，确保函数能访问到当前行的数据
+                    render: (text: string, record: hostinventoryColumnsType) => (
+                        <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
+                    ),
+                },
+                {
+                    title: 'CPU使用率',
+                    dataIndex: 'cpu_use',
+                    render: (text: string, record: any) => (
+                        <div style={{
+                            fontSize: 'small', // 字体更小
+                        }}>
+                <span style={{
+                    border: '2px solid #f0f0f0',
+                    fontWeight: 'bold',
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                }}>CPU</span> {record.cpu_use}
+                        </div>
+                    ),
+                    sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
+                },
+                {
+                    title: '内存使用量',
+                    dataIndex: 'mem_use',
+                    render: (text: string, record: any) => (
+                        <div style={{
+                            fontSize: 'small', // 字体更小
+                        }}>
+                <span style={{
+                    border: '2px solid #f0f0f0',
+                    fontWeight: 'bold',
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                }}>内存</span> {record.mem_use}
+                        </div>
+                    ),
+                    sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
+                },
+                {
+                    title: '操作',
+                    dataIndex: 'operation',
+                    render: (text: string, record: any) => (
+                        <Dropdown overlay={this.renderTaskMenu()} trigger={['click']}>
+                            <Button
+                                style={{
+                                    fontWeight: 'bold',
+                                    padding: '0 0',
+                                    border: 'transparent',
+                                    backgroundColor: 'transparent',
+                                }}
+                                disabled={record.status !== 'Online'}
+                            >
+                                下发任务
+                            </Button>
+                        </Dropdown>
+                    ),
+                },
+            ],
         };
+    }
+
+    // 处理任务菜单点击事件
+    handleMenuClick = (e: any) => {
+        this.setState({taskKey:e.key});
+    };
+    renderTaskMenu() {
+        return (
+            <Menu onClick={this.handleMenuClick}
+                  selectedKeys={[this.state.taskKey]}>
+                <Menu.Item key="scheduled">
+                    <Link to="/app/create_agent_task" target="_blank">
+                    <Button
+                        style={{
+                            fontWeight: 'bold',
+                            padding: '0 0',
+                            border: 'transparent',
+                            backgroundColor: 'transparent',
+                        }}
+                    >
+                        定时任务
+                    </Button>
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="instant">
+                    <Button
+                        style={{
+                            fontWeight: 'bold',
+                            padding: '0 0',
+                            border: 'transparent',
+                            backgroundColor: 'transparent',
+                        }}
+                        onClick={() => this.props.history.push('/app/Management/InstantTask')}
+                    >
+                        即时任务
+                    </Button>
+                </Menu.Item>
+            </Menu>
+        );
     }
 
     render() {
@@ -307,7 +482,8 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     return (
                         <div style={{
                             // fontFamily: '\'YouYuan\', sans-serif',
-                            fontWeight: 'bold' }}>
+                            fontWeight: 'bold',
+                        }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
                                 <Col span={8}>
                                     <Card bordered={false} style={{ fontWeight: 'bolder', width: '100%', height: 300 }}>
@@ -369,7 +545,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '0px' }}>
                                 <Col md={24}>
                                     {constRenderTable(agentOriginData, '主机内容', [],
-                                        hostinventoryColumns, 'hostinventory', Agent_Data_API,
+                                        this.state.hostinventoryColumns, 'hostinventory', Agent_Data_API,
                                         ['uuid', 'os_version'])}
                                     {/* <div className="gutter-box">
                     <Card bordered={false}>
@@ -398,4 +574,4 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
     }
 }
 
-export default HostInventory;
+export default withRouter(HostInventory);

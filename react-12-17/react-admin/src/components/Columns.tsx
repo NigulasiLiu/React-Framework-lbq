@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Button, Badge, Input, Menu, Card, Row } from 'antd';
+import { Tooltip, Button, Badge, Input, Menu, Card, Row, Dropdown } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import '../Style.css';
@@ -242,13 +242,161 @@ export interface hostinventoryColumnsType {
     mem_use: string;
     cpu_use: string;
 }
+// const hostinventoryColumns = [
+//     {
+//         title: 'ID',
+//         dataIndex: 'id',
+//         key: 'id',
+//         width: '15px', // 修正 Maxwidth 为 width
+//         // render:(text:string)=>(
+//         //     <Button className="custom-button">{text}</Button>
+//         // ),
+//     },
+//     {
+//         title: '主机名',
+//         dataIndex: 'uuid',
+//         key: 'uuid',
+//         render: (text: string, record: hostinventoryColumnsType) => (
+//             <div>
+//                 <div>
+//                     <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+//                         <Button style={{
+//                             fontWeight: 'bold',
+//                             border: 'transparent',
+//                             backgroundColor: 'transparent',
+//                             color: '#4086FF',
+//                             padding: '0 0',
+//                         }}>
+//                             <Tooltip title={record.uuid || 'Unknown UUID'}>
+//                                 <div style={{
+//                                     whiteSpace: 'nowrap',
+//                                     overflow: 'hidden',
+//                                     textOverflow: 'ellipsis',
+//                                     maxWidth: '80px',
+//                                 }}>
+//                                     {record.uuid || '-'}
+//                                 </div>
+//                             </Tooltip>
+//                         </Button>
+//                     </Link>
+//                 </div>
+//                 <div style={{
+//                     fontSize: 'small', // 字体更小
+//                     background: '#f0f0f0', // 灰色背景
+//                     padding: '2px 4px', // 轻微内边距
+//                     borderRadius: '2px', // 圆角边框
+//                     display: 'inline-block', // 使得背景色仅围绕文本
+//                     marginTop: '4px', // 上边距
+//                 }}>
+//                     <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip_address}
+//                 </div>
+//             </div>
+//         ),
+//     },
+//     {
+//         title: '操作系统',
+//         dataIndex: 'os_version',
+//     },
+//     {
+//         title: '状态',
+//         dataIndex: 'status',
+//         onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
+//         filters: [
+//             {
+//                 text: 'Online',
+//                 value: 'Online',
+//             },
+//             {
+//                 text: 'Offline',
+//                 value: 'Offline',
+//             },
+//         ],
+//         // 修改这里使用record参数，确保函数能访问到当前行的数据
+//         render: (text: string, record: hostinventoryColumnsType) => (
+//             <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
+//         ),
+//     },
+//     {
+//         title: 'CPU使用率',
+//         dataIndex: 'cpu_use',
+//         render: (text: string, record: any) => (
+//             <div style={{
+//                 fontSize: 'small', // 字体更小
+//             }}>
+//                 <span style={{
+//                     border: '2px solid #f0f0f0',
+//                     fontWeight: 'bold',
+//                     padding: '2px 4px', // 轻微内边距
+//                     borderRadius: '2px', // 圆角边框
+//                 }}>CPU</span> {record.cpu_use}
+//             </div>
+//         ),
+//         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
+//     },
+//     {
+//         title: '内存使用量',
+//         dataIndex: 'mem_use',
+//         render: (text: string, record: any) => (
+//             <div style={{
+//                 fontSize: 'small', // 字体更小
+//             }}>
+//                 <span style={{
+//                     border: '2px solid #f0f0f0',
+//                     fontWeight: 'bold',
+//                     padding: '2px 4px', // 轻微内边距
+//                     borderRadius: '2px', // 圆角边框
+//                 }}>内存</span> {record.mem_use}
+//             </div>
+//         ),
+//         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
+//     },
+//     {
+//         title: '操作',
+//         dataIndex: 'operation',
+//         render: (text: string, record: any) => (
+//             <Dropdown overlay={renderTaskMenu(record)} trigger={['click']}>
+//                 <Button
+//                     style={{
+//                         fontWeight: 'bold',
+//                         padding: '0 0',
+//                         border: 'transparent',
+//                         backgroundColor: 'transparent',
+//                     }}
+//                     disabled={record.status !== 'Online'}
+//                 >
+//                     下发任务
+//                 </Button>
+//             </Dropdown>
+//         ),
+//     },
+// ];
+//
+// // 渲染任务菜单
+// const renderTaskMenu = (record: any) => (
+//     <Menu onClick={handleMenuClick}>
+//         <Menu.Item key="scheduled">定时任务</Menu.Item>
+//         <Menu.Item key="instant">即时任务</Menu.Item>
+//     </Menu>
+// );
+//
+// // 处理任务菜单点击事件
+// const handleMenuClick = (e: any) => {
+//     const key = e.key;
+//     if (key === 'scheduled') {
+//         // Link到creat_agent_task
+//         window.open("/app/create_agent_task", '_blank');
+//     } else if (key === 'instant') {
+//         // 切换到路由/app/Management/InstantTask
+//         window.location.href = '/app/Management/InstantTask';
+//     }
+// };
 
 // 先定义一个辅助函数，用于从带百分比的字符串中提取数字，主机列表中的cpu,内存占用等信息的显示
-const extractNumberFromPercentString = (percentString: string): number => {
+export const extractNumberFromPercentString = (percentString: string): number => {
     return parseFloat(percentString.replace('%', ''));
 };
 
-export const hostinventoryColumns = [
+const hostinventoryColumns = [
     {
         title: 'ID',
         dataIndex: 'id',

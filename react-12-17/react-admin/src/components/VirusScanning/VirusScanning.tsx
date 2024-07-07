@@ -519,7 +519,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
         };
 
         try {
-            const token = umbrella.getLocalStorage('jwt_token');
+            const token = localStorage.getItem('jwt_token');
             // 配置axios请求头部，包括JWT
             const config = {
                 headers: {
@@ -568,7 +568,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
     };
     handleScan = async () => {
         try {
-            const token = umbrella.getLocalStorage('jwt_token');
+            const token = localStorage.getItem('jwt_token');
             const response = await axios.post(Virus_Scan,[],{
                 headers: {
                     'Content-Type': 'multipart/form-data',

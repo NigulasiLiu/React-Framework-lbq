@@ -1,3 +1,26 @@
+7/7
+
+操作系统判定：determineOS函数目前只区分：
+
+```javascript
+osVersion.includes('ubuntu') ||
+osVersion.includes('debian') ||
+osVersion.includes('centos') ||
+osVersion.includes('redhat')
+```
+
+和
+
+```javascript
+if (osVersion.includes('windows')) {
+```
+
+
+
+
+
+
+
 6/29
 
 重新处理所有colunm里面存在的slice问题

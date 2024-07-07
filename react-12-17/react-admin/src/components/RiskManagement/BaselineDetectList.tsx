@@ -1,14 +1,21 @@
 import zhCN from 'antd/es/locale/zh_CN';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Row, Col, Card, Input, Button, Statistic, Menu, Modal, Table, Tooltip } from 'antd';
+import { Row, Col, Card, Input, Button, Statistic, Menu, Modal, Table, Tooltip, message } from 'antd';
 import BaseLineDetectScanSidebar from '../SideBar/ScanProcessSidebar';
 import { StatusItem } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
-import { APP_Server_URL, BaseLine_linux_Data_API, BaseLine_windows_Data_API, Vul_Data_API } from '../../service/config';
+import {
+    APP_Server_URL,
+    BaseLine_linux_Data_API,
+    BaseLine_windows_Data_API,
+    Once_Task_API,
+    Vul_Data_API,
+} from '../../service/config';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { blueButton, cancelButton } from '../../style/config';
+import axios from 'axios';
 
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -375,6 +382,64 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
         this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
         this.setCurrentTime();
     };
+
+    send_command = (agentOriginData:any[],) => {
+        // 模拟从 agentOriginData 中获取 uuid 和自定义 name_string 的过程
+        const agentOriginData1 = [
+            { uuid: 'uuid1', name: 'NameString1' },
+            { uuid: 'uuid2', name: 'NameString2' },
+            // 添加更多需要的 uuid 和 name_string 组合
+        ];
+
+        const selectedUuids = agentOriginData.map(item => item.uuid);
+        const selectedIPs = agentOriginData.map(item => item.ip_address);
+        const selectedUuidNameStrings = ['vuln_scan_start'];
+
+        // 执行发送 POST 请求的方法
+        this.handleSubmit(selectedUuids, selectedUuidNameStrings,selectedIPs);
+    };
+
+    handleSubmit = (selectedUuids: string[], selectedUuidNameStrings: string[],selectedIPs:string[]) => {
+        const token = localStorage.getItem('jwt_token');
+
+
+        // 遍历选中的每个 uuid
+        selectedUuids.forEach((uuid,index) => {
+            // 遍历选中的每个 func
+
+            if (selectedUuidNameStrings[0]) {
+                // 构造请求体
+                const requestBody = {
+                    // command: item.func,
+                    data: {ip:selectedIPs[index],uuid:uuid},
+                };
+
+                // 构造 job_id
+                const job_id = `${uuid}:${selectedUuidNameStrings[0]}`;
+
+                // 发送单独的 POST 请求
+                axios.post(Once_Task_API + `?job_id=${job_id}`, requestBody, {
+                    headers: {
+                        Authorization: token ? `Bearer ${token}` : undefined,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => {
+                        console.log(`POST请求成功，job_id为 ${job_id}:`, response.data);
+                        // 在此处输出消息或者进行其他处理
+                        message.info(`POST请求成功，job_id为 ${job_id}`);
+                    })
+                    .catch(error => {
+                        console.error(`POST请求失败，job_id为 ${job_id}:`, error);
+                        // 在此处输出错误消息或者进行其他错误处理
+                        message.error(`POST请求失败，job_id为 ${job_id}`);
+                    });
+                message.info(JSON.stringify(requestBody));
+            }
+        });
+    };
+
+
     closeSidebar = () => {
         this.setState((prevState) => ({ isSidebarOpen: !prevState.isSidebarOpen }));
     };

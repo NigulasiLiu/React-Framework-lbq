@@ -30,8 +30,7 @@ interface ScheduleTaskState {
 }
 
 
-const token = umbrella.getLocalStorage('jwt_token');
-// 配置axios请求头部，包括JWT
+const token = localStorage.getItem('jwt_token');
 const config = {
     headers: {
         Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
@@ -368,7 +367,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .catch(error => {
                 if (error.response && error.response.status === 401) {
                     // 检测到401未授权错误
-                    message.error('Session expired, please login again.');
+                    message.error('Session expired, please login again:'+JSON.stringify(error.response));
                 } else {
                     message.error('任务删除失败');
                     console.error('删除任务时出错：', error);
@@ -376,7 +375,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handlePause = (job_id: string) => {
-        axios.post(`${Pause_Task_API}?job_id=${job_id}`,config)
+        axios.post(`${Pause_Task_API}?job_id=${job_id}`,{},config)
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
@@ -393,7 +392,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             });
     };
     handleResume = (job_id: string) => {
-        axios.post(`${Resume_Task_API}?job_id=${job_id}`,config)
+        axios.post(`${Resume_Task_API}?job_id=${job_id}`,{},config)
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据

@@ -42,34 +42,35 @@ class Login extends React.Component<LoginProps> {
         umbrella.setLocalStorage("user", userInfo);
         // message.info("username:"+umbrella.getLocalStorage("user"));
         try {
-            const token = umbrella.getLocalStorage('jwt_token');
+            // const token = localStorage.getItem('jwt_token');
+            const token = localStorage.getItem('jwt_token');
             // 配置axios请求头部，包括JWT
             const config = {
                 headers: {
-                    Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
+                    Authorization: token ? `Bearer ${token}` : '11', // 如果存在token则发送，否则不发送Authorization头部
                 }
             };
             const response = await axios.post(Login_API, requestBody,config);
 
             // 检查 response.data 是否符合预期格式和内容
-            // if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
-            //     // 更新状态和本地存储
-            //     this.props.setAlitaState({
-            //         //funcName: 'login',
-            //         stateName: 'auth',
-            //         data: response.data,
-            //     });
-            //     localStorage.setItem("user", JSON.stringify(response.data));
-            //     //this.props.history.push("/");
-            //     this.props.history.push('/app/Dashboard');
-            // } else {
-            //     // 处理意外的响应或显示错误消息
-            // }
+            if (response.data && response.data.message === 'Accept' && response.data.token === 'fake-jwt-token') {
+                // 更新状态和本地存储
+                this.props.setAlitaState({
+                    //funcName: 'login',
+                    stateName: 'auth',
+                    data: response.data,
+                });
+                localStorage.setItem("user", JSON.stringify(response.data));
+                //this.props.history.push("/");
+                this.props.history.push('/app/Dashboard');
+            } else {
+                // 处理意外的响应或显示错误消息
+            }
             if (response.data && response.data.access_token) {
                 console.log("Received JWT:", response.data.access_token); // 输出接收到的JWT
                 // 存储JWT到localStorage
-                // localStorage.setItem("jwt_token", response.data.access_token);
-                umbrella.setLocalStorage("jwt_token", response.data.access_token)
+                localStorage.setItem("jwt_token", response.data.access_token);
+                // umbrella.setLocalStorage("jwt_token", response.data.access_token)
                 // 更新redux状态
                 this.props.setAlitaState({
                     stateName: 'auth',

@@ -38,7 +38,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ uploadUrl, visible, onClose }) 
         formData.append('file', selectedFile);
 
         try {
-            const token = umbrella.getLocalStorage('jwt_token');
+            const token = localStorage.getItem('jwt_token');
             const response = await axios.post(uploadUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',

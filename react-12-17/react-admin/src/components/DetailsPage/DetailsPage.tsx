@@ -18,12 +18,13 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import moment from 'moment';
 import {
-    APP_Server_URL,
-    Brute_TTPs_API,
-    Defense_TTPs_API,
-    Honey_API,
-    Privilege_TTPs_API,
-    Vul_Data_API,
+    Agent_uuid_Data_API,
+    APP_Server_URL, Assets_uuid_Data_API, BaseLine_linux_uuid_Data_API, BaseLine_windows_uuid_Data_API,
+    Brute_TTPs_API, Brute_TTPs_uuid_Data_API,
+    Defense_TTPs_API, Defense_TTPs_uuid_Data_API, Fim_uuid_Data_API,
+    Honey_API, Honey_uuid_Data_API, Monitor_uuid_Data_API, Port_uuid_Data_API,
+    Privilege_TTPs_API, Privilege_TTPs_uuid_Data_API, Process_uuid_Data_API,
+    Vul_Data_API, Vul_uuid_Data_API,
 } from '../../service/config';
 import CustomNotification from '../ui/CustomNotification';
 import { vulDetectColumnsType } from '../RiskManagement/VulnerabilityList';
@@ -40,6 +41,10 @@ interface DetailsPageProps extends RouteComponentProps<{ uuid: string }> {
 
 interface DetailsPageState {
     host_uuid: string;
+    dataInitialized: boolean;
+    refreshCounter: number;
+
+
     dataSource: any[];
 
     currentRecord: any,
@@ -93,6 +98,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
         this.state = {
             host_uuid,
+            dataInitialized: false,
+            refreshCounter: 0,
+
             dataSource: [],
             statusData: [], // 初始状态
 
@@ -425,9 +433,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
     componentDidMount() {
         const queryParams = new URLSearchParams(this.props.location.search);
-        const host_uuid = queryParams.get('uuid');
+        const host_uuid = queryParams.get('uuid')||'default';
         this.setState({
-            host_uuid: host_uuid ? host_uuid : 'default',
+            host_uuid,
         });
 
     }
@@ -1164,14 +1172,14 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid);
 
                 if (!filteredData) {
-                    // return <div>No data available for this host.</div>;
-                    return (
-                        <div>
-                            <Alert message="No data available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
+                    console.error("No data available for this host.");
+                    // return (
+                    //     <div>
+                    //         <Alert message="No data available for this host." type="warning" showIcon />
+                    //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                    //         {/* <Empty description="No data available for this host." /> */}
+                    //     </div>
+                    // );
                 }
 
                 // const os_version = filteredData.os_version.toLowerCase().includes('ubuntu') ? 'linux' : 'windows';
@@ -1182,73 +1190,48 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
                 //针对基线检查数据的筛选
                 if (baselineOriginData === undefined) {
-                    return (
-                        <div>
-                            <Alert message="No baselineOriginData available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
+                    console.error("No baselineOriginData available for this host.");
+                    // return (
+                    //     <div>
+                    //         <Alert message="No baselineOriginData available for this host." type="warning" showIcon />
+                    //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                    //         {/* <Empty description="No data available for this host." /> */}
+                    //     </div>
+                    // );
                 }
                 const blDataArray = Array.isArray(baselineOriginData) ? baselineOriginData : [baselineOriginData];
                 if (blDataArray.length === 0) {
-                    return (
-                        <div>
-                            <Alert message="No blDataArray available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
+                    // return (
+                    //     <div>
+                    //         <Alert message="No blDataArray available for this host." type="warning" showIcon />
+                    //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                    //         {/* <Empty description="No data available for this host." /> */}
+                    //     </div>
+                    // );
                 }
                 const filteredBLData = blDataArray.filter(Item => Item.uuid === this.state.host_uuid);
                 if (!filteredBLData) {
-                    return (
-                        <div>
-                            <Alert message="No filteredBLData available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
+                    console.error("No filteredBLData available for this host.");
+                    // return (
+                    //     <div>
+                    //         <Alert message="No filteredBLData available for this host." type="warning" showIcon />
+                    //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                    //         {/* <Empty description="No data available for this host." /> */}
+                    //     </div>
+                    // );
                 }
                 const filteredAdjData = filteredBLData.filter(Item => Item.adjustment_requirement === '建议调整');
                 if (!filteredAdjData) {
-                    return (
-                        <div>
-                            <Alert message="No filteredAdjData available for this host." type="warning" showIcon />
-                            {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                            {/* <Empty description="No data available for this host." /> */}
-                        </div>
-                    );
+                    console.error("No filteredAdjData available for this host.");
+                    // return (
+                    //     <div>
+                    //         <Alert message="No filteredAdjData available for this host." type="warning" showIcon />
+                    //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
+                    //         {/* <Empty description="No data available for this host." /> */}
+                    //     </div>
+                    // );
                 }
 
-                //针对漏洞数据的筛选
-                // if (vulOriginData === undefined) {
-                //     return (
-                //         <div>
-                //             <Alert message="No vulOriginData available for this host." type="warning" showIcon />
-                //         </div>
-                //     );
-                // }
-                // const vulOriginDataArray = Array.isArray(vulOriginData) ? vulOriginData : [vulOriginData];
-                // if (vulOriginDataArray.length === 0) {
-                //     return (
-                //         <div>
-                //             <Alert message="No vulOriginDataArray available for this host." type="warning" showIcon />
-                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                //             {/* <Empty description="No data available for this host." /> */}
-                //         </div>
-                //     );
-                // }
-                // const filteredvulData = vulOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
-                // if (!filteredvulData) {
-                //     return (
-                //         <div>
-                //             <Alert message="No filteredvulData available for this host." type="warning" showIcon />
-                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                //             {/* <Empty description="No data available for this host." /> */}
-                //         </div>
-                //     );
-                // }
 
                 const vulResult = this.filteredData(vulOriginData, 'Vuln');
                 // if (vulResult.error) {
@@ -1261,34 +1244,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 });
 
 
-                // //针对蜜罐数据的筛选
-                // if (HoneyPotOriginData === undefined) {
-                //     return (
-                //         <div>
-                //             <Alert message="No vulOriginData available for this host." type="warning" showIcon />
-                //         </div>
-                //     );
-                // }
-                // const honeyPotOriginDataArray = Array.isArray(HoneyPotOriginData) ? HoneyPotOriginData : [HoneyPotOriginData];
-                // if (honeyPotOriginDataArray.length === 0) {
-                //     return (
-                //         <div>
-                //             <Alert message="No honeyPotOriginDataArray available for this host." type="warning" showIcon />
-                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                //             {/* <Empty description="No data available for this host." /> */}
-                //         </div>
-                //     );
-                // }
-                // const filteredHoneyPotData = honeyPotOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
-                // if (!filteredHoneyPotData) {
-                //     return (
-                //         <div>
-                //             <Alert message="No filteredhoneyPotData available for this host." type="warning" showIcon />
-                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                //             {/* <Empty description="No data available for this host." /> */}
-                //         </div>
-                //     );
-                // }
                 const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
                 // if (honeyPotResult.error) {
                 //     return honeyPotResult.error; // 显示错误消息
@@ -1312,35 +1267,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 //     return ttpsResult3.error; // 显示错误消息
                 // }
                 const filteredTTPsData3 = ttpsResult3.data;
-
-                //针对病毒扫描数据的筛选
-                // if (VirusOriginData === undefined) {
-                //     return (
-                //         <div>
-                //             <Alert message="No VirusOriginData available for this host." type="warning" showIcon />
-                //         </div>
-                //     );
-                // }
-                // const virusOriginDataArray = Array.isArray(VirusOriginData) ? VirusOriginData : [VirusOriginData];
-                // if (virusOriginDataArray.length === 0) {
-                //     return (
-                //         <div>
-                //             <Alert message="No virusOriginDataArray available for this host." type="warning" showIcon />
-                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                //             {/* <Empty description="No data available for this host." /> */}
-                //         </div>
-                //     );
-                // }
-                // const filteredVirusData = virusOriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
-                // if (!filteredVirusData) {
-                //     return (
-                //         <div>
-                //             <Alert message="No filteredVirusData available for this host." type="warning" showIcon />
-                //             {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-                //             {/* <Empty description="No data available for this host." /> */}
-                //         </div>
-                //     );
-                // }
 
                 const AlertData_uuid = [
                     { label: '蜜罐告警', value: HoneyPotHostCount ? HoneyPotHostCount : 0, color: '#FFBB28' },
@@ -1920,6 +1846,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         }
     };
 
+    setTimerForUuidData = () =>{
+        this.setState({dataInitialized:true});
+        setInterval(() => {
+            this.setState({ dataInitialized: false });
+        }, 4 * 60 * 1000); // 4 minutes
+    }
+
     render() {
         return (
             <DataContext.Consumer>
@@ -1931,9 +1864,24 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const {
-                        agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                        vulnOriginData, honeyPotOriginData, virusOriginData,
+                    const {refreshDataFromAPIWithUuid,
+                        agentUuidOriginData,
+                        monitorUuidOriginData,
+                        fimUuidOriginData,
+                        vulnUuidOriginData,
+                        portUuidOriginData,
+                        processUuidOriginData,
+                        linuxBaseLineUuidOriginData,
+                        windowsBaseLineUuidOriginData,
+                        honeyUuidOriginData,
+                        // bruteTTPsUuidOriginData,
+                        // privilegeTTPsUuidOriginData,
+                        // defenseTTPsUuidOriginData,
+                        // assetsUuidOriginData,
+
+                        // linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
+                        // vulnOriginData, honeyPotOriginData,
+                        virusOriginData,
                         bruteforceTTPsOriginData,
                         privilegeescalationTTPsOriginData,
                         defenseavoidanceTTPsOriginData,
@@ -1943,6 +1891,41 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         VirusMetaData_uuid,
                         HoneyPotMetaData_uuid,
                     } = context;
+                    const dataInitialized = this.state.dataInitialized;
+                    const host_uuid = this.state.host_uuid;
+                    console.log("DetailsPage refreshDataFromAPIWithUuid");
+                    if (refreshDataFromAPIWithUuid && !dataInitialized) {
+                        console.log("DetailsPage refreshDataFromAPIWithUuid_2");
+                        refreshDataFromAPIWithUuid(Agent_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Monitor_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Fim_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Vul_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Port_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Process_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(BaseLine_linux_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(BaseLine_windows_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Honey_uuid_Data_API, host_uuid);
+                        // refreshDataFromAPIWithUuid(Assets_uuid_Data_API, host_uuid);
+                        // refreshDataFromAPIWithUuid(Brute_TTPs_uuid_Data_API, host_uuid);
+                        // refreshDataFromAPIWithUuid(Privilege_TTPs_uuid_Data_API, host_uuid);
+                        // refreshDataFromAPIWithUuid(Defense_TTPs_uuid_Data_API, host_uuid);
+                        this.setTimerForUuidData();
+                    }
+                    //用xxUuidOriginData代替xxOriginData,
+                    const agentOriginData = agentUuidOriginData;
+                    const vulnOriginData = vulnUuidOriginData;
+                    const linuxBaseLineCheckOriginData = linuxBaseLineUuidOriginData;
+                    const windowsBaseLineCheckOriginData = windowsBaseLineUuidOriginData;
+                    const honeyPotOriginData = honeyUuidOriginData;
+                    const monitorOriginData = monitorUuidOriginData;
+                    const fimOriginData = fimUuidOriginData;
+                    const portOriginData = portUuidOriginData;
+                    const processOriginData = processUuidOriginData;
+
+
+
+
+
 
 
                     const HoneyPotHostCount = (HoneyPotMetaData_uuid && HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;

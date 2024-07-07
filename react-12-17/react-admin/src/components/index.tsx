@@ -24,6 +24,7 @@ import MemoryShell from './HostProtection/MemoryShell';
 import ThreatHunting from './HostProtection/ThreatHunting';
 import MicroIsolation from './HostProtection/MicroIsolation';
 import ScheduleTask from './Management/ScheduleTask';
+import InstantTask from './Management/InstantTask';
 
 
 const WysiwygBundle = Loadable({
@@ -34,6 +35,7 @@ const WysiwygBundle = Loadable({
 
 export default {
     UserManagement,
+    InstantTask,
     Dashboard,
     AssetFingerprint,
     HostInventory,

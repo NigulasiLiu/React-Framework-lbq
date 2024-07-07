@@ -115,11 +115,16 @@ const menus: {
                     component: 'ScheduleTask',
                 },
                 {
-                    key: '/app/Management/UserManagement',
-                    title: '用户管理',
-                    icon: 'user',
-                    component: 'UserManagement',
+                    key: '/app/Management/InstantTask',
+                    title: '一次性任务',
+                    component: 'InstantTask',
                 },
+                // {
+                //     key: '/app/Management/UserManagement',
+                //     title: '用户管理',
+                //     icon: 'user',
+                //     component: 'UserManagement',
+                // },
             ],
         },
         // {

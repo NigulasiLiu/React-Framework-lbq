@@ -33,7 +33,22 @@ import {
     Defense_TTPs_API,
     Virus_Data_API,
     Isolate_Data_API,
-    User_Data_API, interval_slow, interval_fast,
+    User_Data_API,
+    interval_slow,
+    interval_fast,
+    Defense_TTPs_uuid_Data_API,
+    Agent_uuid_Data_API,
+    Monitor_uuid_Data_API,
+    Fim_uuid_Data_API,
+    Vul_uuid_Data_API,
+    Port_uuid_Data_API,
+    Process_uuid_Data_API,
+    Assets_uuid_Data_API,
+    BaseLine_linux_uuid_Data_API,
+    BaseLine_windows_uuid_Data_API,
+    Honey_uuid_Data_API,
+    Brute_TTPs_uuid_Data_API,
+    Privilege_TTPs_uuid_Data_API,
 } from '../../service/config';
 import ReactDOM from 'react-dom';
 import useExpCounts from './useExpCounts';
@@ -69,7 +84,7 @@ export interface DataContextType {
     privilegeescalationTTPsOriginData: any[];
     defenseavoidanceTTPsOriginData: any[];
 
-    usersOriginData: any[];
+    // usersOriginData: any[];
     virusOriginData: any[];
     isolationOriginData: any[];
 
@@ -137,13 +152,30 @@ export interface DataContextType {
     VirusMetaData_uuid: MetaDataResult;
     HoneyPotMetaData_uuid: MetaDataResult;
 
-    //agentOriginData_2:Map<string, AgentInfoType>|undefined;
+    refreshDataFromAPIWithUuid: (apiEndpoint: (uuid: string) => string, uuid: string) => Promise<void>;
+
+    agentUuidOriginData: any[],
+    monitorUuidOriginData: any[],
+    fimUuidOriginData: any[],
+    vulnUuidOriginData: any[],
+    portUuidOriginData: any[],
+    processUuidOriginData: any[],
+    assetsUuidOriginData: any[],
+    linuxBaseLineUuidOriginData: any[],
+    windowsBaseLineUuidOriginData: any[],
+    honeyUuidOriginData: any[],
+    bruteTTPsUuidOriginData: any[],
+    privilegeTTPsUuidOriginData: any[],
+    defenseTTPsUuidOriginData: any[],
+
+
 };
 export const DataContext = createContext<DataContextType | undefined>(undefined);
 
 interface SetDataFunctions {
     [key: string]: Dispatch<SetStateAction<any>>;
 }
+
 // API 端点和全局变量名称的映射表
 const apiEndpointToVariableName: { [key: string]: string } = {
     [Agent_Data_API as string]: 'Agent_Data_API',
@@ -161,11 +193,26 @@ const apiEndpointToVariableName: { [key: string]: string } = {
     [Brute_TTPs_API as string]: 'Brute_TTPs_API',
     [Privilege_TTPs_API as string]: 'Privilege_TTPs_API',
     [Defense_TTPs_API as string]: 'Defense_TTPs_API',
-    [User_Data_API as string]: 'User_Data_API',
+    // [User_Data_API as string]: 'User_Data_API',
     [Virus_Data_API as string]: 'Virus_Data_API',
     [Isolate_Data_API as string]: 'Isolate_Data_API',
 };
-
+// UUID API 端点和全局变量名称的映射表
+const apiEndpointToVariableNameUUID: { [key: string]: string } = {
+    [Agent_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Agent_uuid_Data_API',
+    [Monitor_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Monitor_uuid_Data_API',
+    [Fim_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Fim_uuid_Data_API',
+    [Vul_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Vul_uuid_Data_API',
+    [Port_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Port_uuid_Data_API',
+    [Process_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Process_uuid_Data_API',
+    [Assets_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Assets_uuid_Data_API',
+    [BaseLine_linux_uuid_Data_API('').replace(/uuid=.*/, '')]: 'BaseLine_linux_uuid_Data_API',
+    [BaseLine_windows_uuid_Data_API('').replace(/uuid=.*/, '')]: 'BaseLine_windows_uuid_Data_API',
+    [Honey_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Honey_uuid_Data_API',
+    [Brute_TTPs_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Brute_TTPs_uuid_Data_API',
+    [Privilege_TTPs_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Privilege_TTPs_uuid_Data_API',
+    [Defense_TTPs_uuid_Data_API('').replace(/uuid=.*/, '')]: 'Defense_TTPs_uuid_Data_API',
+};
 
 const DataManager: React.FC = ({ children }) => {
     const [agentOriginData, setAgentOriginData] = useState<any>([]);
@@ -189,9 +236,26 @@ const DataManager: React.FC = ({ children }) => {
     const [privilegeescalationTTPsOriginData, setprivilegeescalationTTPsOriginData] = useState<any>([]);
     const [defenseavoidanceTTPsOriginData, setdefenseavoidanceTTPsOriginData] = useState<any>([]);
 
-    const [usersOriginData, setUsersOriginData] = useState<any>([]);
+    // const [usersOriginData, setUsersOriginData] = useState<any>([]);
     const [virusOriginData, setVirusOriginData] = useState<any>([]);
     const [isolationOriginData, setIsolationOriginData] = useState<any>([]);
+
+
+    const [agentUuidOriginData, setAgentUuidOriginData] = useState<any>([]);
+    const [monitorUuidOriginData, setMonitorUuidOriginData] = useState<any>([]);
+    const [fimUuidOriginData, setFimUuidOriginData] = useState<any>([]);
+    const [vulnUuidOriginData, setVulnUuidOriginData] = useState<any>([]);
+    const [portUuidOriginData, setPortUuidOriginData] = useState<any>([]);
+    const [processUuidOriginData, setProcessUuidOriginData] = useState<any>([]);
+    const [assetsUuidOriginData, setAssetsUuidOriginData] = useState<any>([]);
+    const [linuxBaseLineUuidOriginData, setLinuxBaseLineUuidOriginData] = useState<any>([]);
+    const [windowsBaseLineUuidOriginData, setWindowsBaseLineUuidOriginData] = useState<any>([]);
+    const [honeyUuidOriginData, setHoneyUuidOriginData] = useState<any>([]);
+    const [bruteTTPsUuidOriginData, setBruteTTPsUuidOriginData] = useState<any>([]);
+    const [privilegeTTPsUuidOriginData, setPrivilegeTTPsUuidOriginData] = useState<any>([]);
+    const [defenseTTPsUuidOriginData, setDefenseTTPsUuidOriginData] = useState<any>([]);
+
+
     // 数据更新函数映射表
     const setDataFunctions: SetDataFunctions = {
         [Agent_Data_API as string]: setAgentOriginData,
@@ -211,13 +275,47 @@ const DataManager: React.FC = ({ children }) => {
         [Privilege_TTPs_API as string]: setprivilegeescalationTTPsOriginData,
         [Defense_TTPs_API as string]: setdefenseavoidanceTTPsOriginData,
 
-        [User_Data_API as string]: setUsersOriginData,
+        // [User_Data_API as string]: setUsersOriginData,
 
         [Virus_Data_API as string]: setVirusOriginData,
         [Isolate_Data_API as string]: setIsolationOriginData,
         // 添加其他API端点和对应的设置函数
     };
-
+// UUID 数据更新函数映射表
+    const setDataFunctionsUUID: SetDataFunctions = {
+        [Agent_uuid_Data_API('').replace(/uuid=.*/, '')]: setAgentUuidOriginData,
+        [Monitor_uuid_Data_API('').replace(/uuid=.*/, '')]: setMonitorUuidOriginData,
+        [Fim_uuid_Data_API('').replace(/uuid=.*/, '')]: setFimUuidOriginData,
+        [Vul_uuid_Data_API('').replace(/uuid=.*/, '')]: setVulnUuidOriginData,
+        [Port_uuid_Data_API('').replace(/uuid=.*/, '')]: setPortUuidOriginData,
+        [Process_uuid_Data_API('').replace(/uuid=.*/, '')]: setProcessUuidOriginData,
+        [Assets_uuid_Data_API('').replace(/uuid=.*/, '')]: setAssetsUuidOriginData,
+        [BaseLine_linux_uuid_Data_API('').replace(/uuid=.*/, '')]: setLinuxBaseLineUuidOriginData,
+        [BaseLine_windows_uuid_Data_API('').replace(/uuid=.*/, '')]: setWindowsBaseLineUuidOriginData,
+        [Honey_uuid_Data_API('').replace(/uuid=.*/, '')]: setHoneyUuidOriginData,
+        [Brute_TTPs_uuid_Data_API('').replace(/uuid=.*/, '')]: setBruteTTPsUuidOriginData,
+        [Privilege_TTPs_uuid_Data_API('').replace(/uuid=.*/, '')]: setPrivilegeTTPsUuidOriginData,
+        [Defense_TTPs_uuid_Data_API('').replace(/uuid=.*/, '')]: setDefenseTTPsUuidOriginData,
+    };
+    const refreshDataFromAPIWithUuid = async (apiEndpoint: (uuid: string) => string, uuid: string) => {
+        try {
+            const endpointString = apiEndpoint(uuid).toString();
+            // console.log('N1231231:' + endpointString.replace(/uuid=.*/, ''));
+            const data = await fetchDataFromAPI({ apiEndpoint: endpointString });
+            const setDataFunction = setDataFunctionsUUID[endpointString.replace(/uuid=.*/, '')];
+            if (setDataFunction) {
+                // console.log('N1231231:setDataFunction');
+                setDataFunction(data); // 更新状态
+            } else {
+                console.error('No matching function found for the API endpoint');
+                CustomNotification.openNotification2('error', `获取接口 ${apiEndpointToVariableNameUUID[endpointString]} 数据失败`);
+            }
+        } catch (error) {
+            const endpointString = apiEndpoint(uuid).toString();
+            console.error('Failed to fetch data:', error);
+            CustomNotification.openNotification2('error', `获取接口 ${apiEndpointToVariableNameUUID[endpointString]} 数据失败`);
+        }
+    };
     // 通用的数据刷新函数
     const refreshDataFromAPI = async (apiEndpoint: string) => {
         try {
@@ -230,7 +328,6 @@ const DataManager: React.FC = ({ children }) => {
                 setDataFunction(data); // 更新状态
                 // message.success(apiEndpoint + ' Data refreshed successfully');
                 // CustomNotification.successNotification(variableName);
-
             } else {
                 console.error('No matching function found for the API endpoint');
                 CustomNotification.openNotification('error', `No matching function found for the API endpoint ${variableName}`);
@@ -264,7 +361,7 @@ const DataManager: React.FC = ({ children }) => {
         refreshDataFromAPI(Defense_TTPs_API);
 
 
-        refreshDataFromAPI(User_Data_API);
+        // refreshDataFromAPI(User_Data_API);
         refreshDataFromAPI(Isolate_Data_API);
 
         refreshDataFromAPI(Virus_Data_API);
@@ -412,7 +509,7 @@ const DataManager: React.FC = ({ children }) => {
 
     // const virus_scan_time = useExtractOrigin('scan_time', virusOriginData);
     // const last7VirusValue = getPastSevenDaysAlerts(virus_scan_time);
-    const last7VirusValue = [0,0,0,0,0,0,0];
+    const last7VirusValue = [0, 0, 0, 0, 0, 0, 0];
     //主机数量
     const hostCount = (Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData]).flat().length;
     const vulnHostCount = vulnMetaData_uuid.typeCount.size;
@@ -472,7 +569,7 @@ const DataManager: React.FC = ({ children }) => {
             bruteforceTTPsOriginData: bruteforceTTPsOriginData || [],
             privilegeescalationTTPsOriginData: privilegeescalationTTPsOriginData || [],
             defenseavoidanceTTPsOriginData: defenseavoidanceTTPsOriginData || [],
-            usersOriginData: usersOriginData || [],
+            // usersOriginData: usersOriginData || [],
             virusOriginData: virusOriginData || [],
             isolationOriginData: isolationOriginData || [],
 
@@ -491,8 +588,14 @@ const DataManager: React.FC = ({ children }) => {
             topFiveServiceCounts: topFiveServiceCounts || [],
             topFiveProductCounts: topFiveProductCounts || [],
             linuxBaseLineCheckMetaData_uuid: linuxBaseLineCheckMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
-            linuxBaseLineCheckMetaData_status: linuxBaseLineCheckMetaData_status || { typeCount: new Map(), tupleCount: 0 },
-            windowsBaseLineCheckMetaData_uuid: windowsBaseLineCheckMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            linuxBaseLineCheckMetaData_status: linuxBaseLineCheckMetaData_status || {
+                typeCount: new Map(),
+                tupleCount: 0,
+            },
+            windowsBaseLineCheckMetaData_uuid: windowsBaseLineCheckMetaData_uuid || {
+                typeCount: new Map(),
+                tupleCount: 0,
+            },
             vulnMetaData_uuid: vulnMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
             last7VulValue: last7VulValue || [0, 0, 0, 0, 0, 0, 0],
             last7brutForceValue: last7brutForceValue || [0, 0, 0, 0, 0, 0, 0],
@@ -521,10 +624,33 @@ const DataManager: React.FC = ({ children }) => {
             blWindowsCheckNameCount: blWindowsCheckNameCount || 0,
 
             bruteforceTTPsMetaData_uuid: bruteforceTTPsMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
-            privilegeescalationTTPsMetaData_uuid: privilegeescalationTTPsMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
-            defenseavoidanceTTPsMetaData_uuid: defenseavoidanceTTPsMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+            privilegeescalationTTPsMetaData_uuid: privilegeescalationTTPsMetaData_uuid || {
+                typeCount: new Map(),
+                tupleCount: 0,
+            },
+            defenseavoidanceTTPsMetaData_uuid: defenseavoidanceTTPsMetaData_uuid || {
+                typeCount: new Map(),
+                tupleCount: 0,
+            },
             VirusMetaData_uuid: VirusMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
             HoneyPotMetaData_uuid: HoneyPotMetaData_uuid || { typeCount: new Map(), tupleCount: 0 },
+
+
+            refreshDataFromAPIWithUuid,
+            agentUuidOriginData: agentUuidOriginData || [],
+            monitorUuidOriginData: monitorUuidOriginData || [],
+            fimUuidOriginData: fimUuidOriginData || [],
+            vulnUuidOriginData: vulnUuidOriginData || [],
+            portUuidOriginData: portUuidOriginData || [],
+            processUuidOriginData: processUuidOriginData || [],
+            assetsUuidOriginData: assetsUuidOriginData || [],
+            linuxBaseLineUuidOriginData: linuxBaseLineUuidOriginData || [],
+            windowsBaseLineUuidOriginData: windowsBaseLineUuidOriginData || [],
+            honeyUuidOriginData: honeyUuidOriginData || [],
+            bruteTTPsUuidOriginData: bruteTTPsUuidOriginData || [],
+            privilegeTTPsUuidOriginData: privilegeTTPsUuidOriginData || [],
+            defenseTTPsUuidOriginData: defenseTTPsUuidOriginData || [],
+
         }}>
             {children}
         </DataContext.Provider>

@@ -17,7 +17,7 @@ export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', reque
   let endpoint = `${apiEndpoint}`;
   // 从localStorage获取JWT
   // const token1 = localStorage.getItem('jwt_token'); // 假设JWT存储在localStorage的'jwtToken'键下
-  const token = umbrella.getLocalStorage('jwt_token');
+  const token = localStorage.getItem('jwt_token');
   // 配置axios请求头部，包括JWT
   const config = {
     headers: {
