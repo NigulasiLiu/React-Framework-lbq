@@ -1,11 +1,11 @@
 import React, { createRef } from 'react';
-import { Card, Col, Row, Modal, Form, Input, Button, message, Tooltip } from 'antd';
+import { Card, Col, Row, Modal, Form, Input, Button, message, Tooltip, Select } from 'antd';
 import axios from 'axios';
 import { constRenderTable, Honeypotcolumns, hostinventoryColumnsType } from '../Columns';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import umbrella from 'umbrella-storage';
-import { APP_Server_URL, Honey_API } from '../../service/config';
+import { APP_Server_URL, Honey_API, Once_Task_API } from '../../service/config';
 
 interface HoneypotDefenseProps{
 
@@ -125,7 +125,8 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
         }
       };
       // 直接将values作为POST请求的body发送
-      const response = await axios.post(APP_Server_URL+'/api/honeypot/setup', values,config);
+      const job_id = `${values.selected_uuid}:start_honeypot`; // 构造job_id
+      const response = await axios.post(Once_Task_API + `?job_id=${job_id}`, {data:values.honeypot_port},config);
       console.log(response.data);
       message.success('蜜罐信息添加成功');
       this.hideHoneypotModal(); // 关闭Modal
@@ -134,49 +135,92 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
       message.error('蜜罐信息添加失败，请稍后再试');
     }
   };
-  renderHoneyPotModal=()=>{
+  // renderHoneyPotModal=()=>{
+  //   return (
+  //     <Modal
+  //         title="添加蜜罐信息"
+  //         visible={this.state.modalVisible}
+  //         onOk={() => document.getElementById('honeypotInfoForm')?.dispatchEvent(new Event('submit', { cancelable: true }))}
+  //         onCancel={this.hideHoneypotModal}
+  //         okText="确认"
+  //         cancelText="取消"
+  //         okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+  //       >
+  //       <Form
+  //         name="honeypotInfoForm"
+  //         onFinish={this.handleHoneypotSubmit}
+  //         layout="vertical"
+  //         autoComplete="off"
+  //       >
+  //         <Form.Item
+  //           className="form-item-custom"  // 添加className
+  //           label="蜜罐端口"
+  //           name="honeypot_port"
+  //           rules={[{ required: true, message: '请输入蜜罐设置的端口' }]}
+  //         >
+  //           <Input type="number" />
+  //         </Form.Item>
+  //         {/*<Form.Item*/}
+  //         {/*    className="form-item-custom"  // 添加className*/}
+  //         {/*  label="蜜罐类型"*/}
+  //         {/*  name="honeypot_type"*/}
+  //         {/*  rules={[{ required: true, message: '请输入蜜罐类型' }]}*/}
+  //         {/*>*/}
+  //         {/*  <Input type="number" />*/}
+  //         {/*</Form.Item>*/}
+  //         {/*<Form.Item*/}
+  //         {/*    className="form-item-custom"  // 添加className*/}
+  //         {/*  label="蜜罐状态"*/}
+  //         {/*  name="honeypot_status"*/}
+  //         {/*  rules={[{ required: true, message: '请输入蜜罐状态' }]}*/}
+  //         {/*>*/}
+  //         {/*  <Input type={""} />*/}
+  //         {/*</Form.Item>*/}
+  //       </Form>
+  //       </Modal>);
+  // }
+  renderHoneyPotModal = (agentOriginData:any[]) => {
+
     return (
-      <Modal
-          title="添加蜜罐信息"
-          visible={this.state.modalVisible}
-          onOk={() => document.getElementById('honeypotInfoForm')?.dispatchEvent(new Event('submit', { cancelable: true }))}
-          onCancel={this.hideHoneypotModal}
-          okText="确认"
-          cancelText="取消"
-          okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
+        <Modal
+            title="添加蜜罐信息"
+            visible={this.state.modalVisible}
+            onOk={() => document.getElementById('honeypotInfoForm')?.dispatchEvent(new Event('submit', { cancelable: true }))}
+            onCancel={this.hideHoneypotModal}
+            okText="确认"
+            cancelText="取消"
+            okButtonProps={{ style: { backgroundColor: '#1664FF', borderColor: '#1890ff', color: '#fff' } }}
         >
-        <Form
-          name="honeypotInfoForm"
-          onFinish={this.handleHoneypotSubmit}
-          layout="vertical"
-          autoComplete="off"
-        >
-          <Form.Item
-            className="form-item-custom"  // 添加className
-            label="蜜罐端口"
-            name="honeypot_port"
-            rules={[{ required: true, message: '请输入蜜罐设置的端口' }]}
+          <Form
+              id="honeypotInfoForm"
+              name="honeypotInfoForm"
+              onFinish={this.handleHoneypotSubmit}
+              layout="vertical"
+              autoComplete="off"
           >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-              className="form-item-custom"  // 添加className
-            label="蜜罐类型"
-            name="honeypot_type"
-            rules={[{ required: true, message: '请输入蜜罐类型' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-              className="form-item-custom"  // 添加className
-            label="蜜罐状态"
-            name="honeypot_status"
-            rules={[{ required: true, message: '请输入蜜罐状态' }]}
-          >
-            <Input type={""} />
-          </Form.Item>
-        </Form>
-        </Modal>);
+            <Form.Item
+                className="form-item-custom"
+                label="选择主机"
+                name="selected_uuid"
+                rules={[{ required: true, message: '请选择一个UUID' }]}
+            >
+              <Select>
+                {agentOriginData.map(item => (
+                    <Select.Option key={item.uuid} value={item.uuid}>{item.uuid}</Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+                className="form-item-custom"
+                label="蜜罐端口"
+                name="honeypot_port"
+                rules={[{ required: true, message: '请输入蜜罐设置的端口' }]}
+            >
+              <Input type="number" />
+            </Form.Item>
+          </Form>
+        </Modal>
+    );
   }
 
     render() {
@@ -190,13 +234,13 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const { honeyPotOriginData} = context;
+                    const { honeyPotOriginData,agentOriginData} = context;
                     // 将函数绑定到类组件的实例上
       
 
                     return (
                       <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
-                        {this.renderHoneyPotModal()}
+                        {this.renderHoneyPotModal(agentOriginData)}
                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                             <Col md={24}>
                             {constRenderTable(honeyPotOriginData, '蜜罐信息', [],

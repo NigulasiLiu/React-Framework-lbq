@@ -393,7 +393,7 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
 
         const selectedUuids = agentOriginData.map(item => item.uuid);
         const selectedIPs = agentOriginData.map(item => item.ip_address);
-        const selectedUuidNameStrings = ['vuln_scan_start'];
+        const selectedUuidNameStrings = ['start_check_scan'];
 
         // 执行发送 POST 请求的方法
         this.handleSubmit(selectedUuids, selectedUuidNameStrings,selectedIPs);
@@ -406,12 +406,11 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
         // 遍历选中的每个 uuid
         selectedUuids.forEach((uuid,index) => {
             // 遍历选中的每个 func
-
             if (selectedUuidNameStrings[0]) {
                 // 构造请求体
                 const requestBody = {
                     // command: item.func,
-                    data: {ip:selectedIPs[index],uuid:uuid},
+                    // data: {ip:selectedIPs[index],uuid:uuid},
                 };
 
                 // 构造 job_id
@@ -509,7 +508,7 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                         return <div>Loading...</div>; // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const {
+                    const {agentOriginData,
                         linuxBaseLineCheckOriginData,
                         windowsBaseLineCheckOriginData,
                         blLinuxHostCount,
@@ -592,7 +591,11 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                                                                             onMouseLeave={(e) => {
                                                                                 e.currentTarget.style.opacity = 1;
                                                                             }} // 鼠标离开时恢复透明度为1
-                                                                            onClick={this.toggleSidebar}>立即扫描</Button>
+                                                                            onClick={() => {
+                                                                                this.toggleSidebar();
+                                                                                this.send_command(agentOriginData);
+                                                                            }}
+                                                                        >立即扫描</Button>
                                                                         <Button
                                                                             onClick={this.showIgnoredBLCheckItemsModal}>白名单</Button>
                                                                     </Row>

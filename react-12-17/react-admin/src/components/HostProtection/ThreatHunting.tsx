@@ -9,7 +9,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import umbrella from 'umbrella-storage';
-import { Brute_TTPs_API, Defense_TTPs_API, Privilege_TTPs_API } from '../../service/config';
+import { Brute_TTPs_API, Defense_TTPs_API, Once_Task_API, Privilege_TTPs_API } from '../../service/config';
 
 
 interface StatusPanelProps {
@@ -93,6 +93,61 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     openModal = () => {
         this.setState({ isModalOpen: true });
     };
+    send_command = (agentOriginData:any[],index:number) => {
+        // 模拟从 agentOriginData 中获取 uuid 和自定义 name_string 的过程
+        const agentOriginData1 = [
+            { uuid: 'uuid1', name: 'NameString1' },
+            { uuid: 'uuid2', name: 'NameString2' },
+            // 添加更多需要的 uuid 和 name_string 组合
+        ];
+
+        const selectedUuids = agentOriginData.map(item => item.uuid);
+        const selectedUuidNameStrings = ['ssh_log_filter','command_hunting_job'];
+
+        // 执行发送 POST 请求的方法
+        this.handleSubmit(selectedUuids, selectedUuidNameStrings,index);
+    };
+
+    handleSubmit = (selectedUuids: string[], selectedUuidNameStrings: string[],ind:number) => {
+        const token = localStorage.getItem('jwt_token');
+
+
+        // 遍历选中的每个 uuid
+        selectedUuids.forEach((uuid,index) => {
+            // 遍历选中的每个 func
+
+            if (selectedUuidNameStrings[ind]) {
+                // 构造请求体
+                const requestBody = {
+                    // command: item.func,
+                    data: {uuid:uuid,},
+                };
+                message.info(JSON.stringify(requestBody));
+                // 构造 job_id
+                const job_id = `${uuid}:${selectedUuidNameStrings[ind]}`;
+
+                // 发送单独的 POST 请求
+                axios.post(Once_Task_API + `?job_id=${job_id}`, requestBody, {
+                    headers: {
+                        Authorization: token ? `Bearer ${token}` : undefined,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => {
+                        console.log(`POST请求成功，job_id为 ${job_id}:`, response.data);
+                        // 在此处输出消息或者进行其他处理
+                        message.info(`POST请求成功，job_id为 ${job_id}`);
+                    })
+                    .catch(error => {
+                        console.error(`POST请求失败，job_id为 ${job_id}:`, error);
+                        // 在此处输出错误消息或者进行其他错误处理
+                        message.error(`POST请求失败，job_id为 ${job_id}`);
+                    });
+                message.info(JSON.stringify(requestBody));
+            }
+        });
+    };
+
 
     closeModal = () => {
         this.setState({ isModalOpen: false });
@@ -162,7 +217,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     };
 
     // 渲染当前激活的子面板
-    renderCurrentPanel(
+    renderCurrentPanel(agentOriginData:any[],
         bruteforceTTPsOriginData: any[],
         privilegeescalationTTPsOriginData: any[],
         defenseavoidanceTTPsOriginData: any[]) {
@@ -180,8 +235,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         columns={threatHuntingColumns}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
-                        additionalButton={this.openModal}
-                        additionalButtonTitile={'添加TTPs'}
+                        additionalButton={()=>this.send_command(agentOriginData,0)}
+                        additionalButtonTitile={'暴力破解'}
                     />
                 );
             case 'privilege-escalation':
@@ -194,8 +249,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
-                        additionalButton={this.openModal}
-                        additionalButtonTitile={'添加TTPs'}
+                        additionalButton={()=>this.send_command(agentOriginData,1)}
+                        additionalButtonTitile={'狩猎权限提升'}
                     />
                 );
             case 'defense-avoidance':
@@ -208,8 +263,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
-                        additionalButton={this.openModal}
-                        additionalButtonTitile={'添加TTPs'}
+                        additionalButton={()=>this.send_command(agentOriginData,1)}
+                        additionalButtonTitile={'狩猎防御规避'}
                     />
                 );
         }
@@ -276,7 +331,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const {
+                    const {agentOriginData,
+
                         bruteforceTTPsOriginData,
                         privilegeescalationTTPsOriginData,
                         defenseavoidanceTTPsOriginData, vulnOriginData,
@@ -425,7 +481,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                     <div style={{ flexGrow: 1 }}></div>
                                                 </Menu>
                                                 <Card bordered={false}>{
-                                                    this.renderCurrentPanel(bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData)}
+                                                    this.renderCurrentPanel(agentOriginData,bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData)}
                                                 </Card>
                                             </Card>
                                         </Col>

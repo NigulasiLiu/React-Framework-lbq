@@ -135,6 +135,8 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
             { func: 'start_honeypot', name: 'start_honeypot' },
             { func: 'micro_isolate_encrypt', name: 'micro_isolate_encrypt' },
             { func: 'micro_isolate_decrypt', name: 'micro_isolate_decrypt' },
+            { func: 'ssh_log_filter', name: 'ssh_log_filter' },
+            { func: 'command_hunting_job', name: 'command_hunting_job' },
         ];
         return (
             <DataContext.Consumer>

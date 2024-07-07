@@ -399,7 +399,8 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                                 新增任务
                                                             </Button>
                                                         </Link>)}
-                                                    {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist', 'memHorseList'].includes(this.props.currentPanel)) && (
+                                                    {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist', 'memHorseList',
+                                                        'brute-force','privilege-escalation','defense-avoidance'].includes(this.props.currentPanel)) && (
                                                         <Button
                                                             onClick={this.props.additionalButton}
                                                             {...blueButton}
