@@ -53,6 +53,28 @@ export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', reque
   throw new Error('No data received from endpoint');
 };
 
+//切割绝对路径为‘路径’+‘文件名’
+export const splitFilePath = (filePath: any): { filepath: string; filename: string } => {
+  // 将 filePath 转换为字符串
+  const filePathString = filePath != null ? String(filePath) : '';
+
+  if (!filePathString) {
+    return { filepath: '', filename: '' };
+  }
+
+  // 判断应该根据 '/' 还是 '\' 进行切割
+  const separator = filePathString.includes('/') ? '/' : '\\';
+
+  // 获取文件名
+  const filename = filePathString.split(separator).pop() || '';
+  // 获取文件路径
+  const filepath = filePathString.slice(0, filePathString.lastIndexOf(separator));
+
+  return { filepath, filename };
+};
+
+
+
 // processData 函数
 export const processData = (data: GenericDataItem[], timeColumnIndex?: string[]): GenericDataItem[] => {
   return data.map(item => {
@@ -165,13 +187,13 @@ export const convertUnixTime = (timestamp: number): string => {
 
 export const determineOS = (filteredData: any) => {
   // 检查输入数据是否存在以及是否包含 os_version 字段
-  if (!filteredData || typeof filteredData.os_version !== 'string') {
+  if (!filteredData || typeof filteredData.host_name !== 'string') {
     return 'unknown';
   }
 
   try {
     // 将 os_version 字段转换为小写，并去除空格
-    const osVersion = filteredData.os_version.toLowerCase().trim();
+    const osVersion = filteredData.host_name.toLowerCase().trim();
 
     // 根据常见的操作系统版本信息判断操作系统类型
     if (osVersion.includes('windows')) {

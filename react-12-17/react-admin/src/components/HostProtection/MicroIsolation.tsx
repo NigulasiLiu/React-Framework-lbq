@@ -1,12 +1,21 @@
 import React from 'react';
-import { Card, Col, Row, Button, message, Modal, Table, Descriptions, Tooltip } from 'antd';
+import { Card, Col, Row, Button, message, Modal, Table, Descriptions, Tooltip, Badge } from 'antd';
 import axios from 'axios';
 import { LoadingOutlined,  } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import umbrella from 'umbrella-storage';
-import { APP_Server_URL, Isolate_Data_API, Isolate_decrypt_Data, Isolate_encrypt_Data } from '../../service/config';
+import {
+  APP_Server_URL,
+  Isolate_Data_API,
+  Isolate_decrypt_Data,
+  Isolate_encrypt_Data,
+  Monitor_Data_API,
+} from '../../service/config';
+import { monitoredColumns } from '../Columns';
+import moment from 'moment/moment';
+import { splitFilePath } from '../ContextAPI/DataService';
 
 
 interface MicroIsolationProps{
@@ -51,52 +60,167 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
   constructor(props:any) {
     super(props);
     this.state = {
-      spFilesColumns:[
+      // spFilesColumns:[
+      //   {
+      //     title: 'ID',
+      //     dataIndex: 'id',
+      //     key: 'id',
+      //   },
+      //   {
+      //     title: "UUID",
+      //     dataIndex: 'uuid',
+      //     key: 'uuid',
+      //     render: (text: string) => (
+      //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
+      //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
+      //             <Button style={{
+      //                 fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
+      //                 padding: '0 0'
+      //             }}>
+      //               {text!==undefined?text.slice(0, 5) : '-'}
+      //             </Button>
+      //         </Link>
+      //     ),
+      //   },
+      //   {
+      //     title: '原文件文件名',
+      //     dataIndex: 'origin_filename',
+      //     key: 'origin_filename',
+      //   },
+      //   {
+      //     title: '原文件文件路径',
+      //     dataIndex: 'origin_filepath',
+      //     key: 'origin_filepath',
+      //   },
+      //   {
+      //     title: '操作',
+      //     key: 'operation',
+      //     render: (text:string, record:any) => (
+      //       <Button
+      //           style={{
+      //             fontWeight: 'bold', padding: '0 0',
+      //             border: 'transparent',
+      //             backgroundColor: 'transparent',
+      //           }}
+      //           onClick={() => this.showEncryptModal(record)}>隔离</Button>
+      //     ),
+      //   }
+      //
+      // ],
+      spFilesColumns:  [
         {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
+          Maxwidth: '15px',
         },
         {
-          title: "UUID",
+          title: '主机名',
           dataIndex: 'uuid',
           key: 'uuid',
-          render: (text: string) => (
-              // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-              <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-                  <Button style={{
-                      fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-                      padding: '0 0'
-                  }}>
-                    {text!==undefined?text.slice(0, 5) : '-'}
-                  </Button>
-              </Link>
+          render: (text: string, record: any) => (
+              <div>
+                <div>
+                  {/*{record.uuid.slice(0, 5)}*/}
+                  <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Button style={{
+                      fontWeight: 'bold',
+                      border: 'transparent',
+                      backgroundColor: 'transparent',
+                      color: '#4086FF',
+                      padding: '0 0',
+                    }}>
+                      <Tooltip title={record.uuid || 'Unknown UUID'}>
+                        <div style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: '80px',
+                        }}>
+                          {record.uuid || '-'}
+                        </div>
+                      </Tooltip>
+                    </Button>
+                  </Link>
+                </div>
+                <div style={{
+                  fontSize: 'small', // 字体更小
+                  background: '#f0f0f0', // 灰色背景
+                  padding: '2px 4px', // 轻微内边距
+                  borderRadius: '2px', // 圆角边框
+                  display: 'inline-block', // 使得背景色仅围绕文本
+                  marginTop: '4px', // 上边距
+                }}>
+                  <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agentIP}
+                </div>
+              </div>
           ),
         },
         {
-          title: '原文件文件名',
-          dataIndex: 'origin_filename',
-          key: 'origin_filename',
+          title: '文件名',
+          dataIndex: 'file_path',
+          onHeaderCell: () => ({
+            style: {
+              maxWidth: 200, // 最大宽度200px
+            },
+          }),
         },
         {
-          title: '原文件文件路径',
-          dataIndex: 'origin_filepath',
-          key: 'origin_filepath',
-        },
-        {
-          title: '操作',
-          key: 'operation',
-          render: (text:string, record:any) => (
-            <Button
-                style={{
-                  fontWeight: 'bold', padding: '0 0',
-                  border: 'transparent',
-                  backgroundColor: 'transparent',
-                }}
-                onClick={() => this.showEncryptModal(record)}>隔离</Button>
+          title: '告警类型',
+          dataIndex: 'change_type',
+          onFilter: (value: string | number | boolean, record: any) => record.change_type.includes(value as string),
+          filters: [
+            {
+              text: 'created',
+              value: 'created',
+            },
+            {
+              text: 'deleted',
+              value: 'deleted',
+            },
+            {
+              text: 'modified',
+              value: 'modified',
+            },
+          ],
+          // 修改这里使用record参数，确保函数能访问到当前行的数据
+          render: (text: string, record: any) => (
+              <Badge
+                  status={record.change_type === 'deleted' ? 'error' : (record.change_type === 'modified' ? 'warning' : 'processing')}
+                  text={record.change_type} />
           ),
-        }
-        
+
+
+          onHeaderCell: () => ({
+            style: {
+              minWidth: 80, // 最小宽度100px
+              //maxWidth: 170, // 最大宽度200px
+            },
+          }),
+        },
+        {
+          title: '文件类型',
+          dataIndex: 'file_type',
+        },
+        {
+          title: '告警时间',
+          dataIndex: 'timestamp',
+          render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+          sorter: (a: any, b: any) => parseFloat(b.timestamp) - parseFloat(a.timestamp),
+        },
+          {
+            title: '操作',
+            key: 'operation',
+            render: (text:string, record:any) => (
+              <Button
+                  style={{
+                    fontWeight: 'bold', padding: '0 0',
+                    border: 'transparent',
+                    backgroundColor: 'transparent',
+                  }}
+                  onClick={() => this.showEncryptModal(record)}>隔离</Button>
+            ),
+          }
       ],
       decryptModalVisible: false,
       encryptModalVisible: false,
@@ -152,11 +276,11 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
           dataIndex: 'origin_filepath',
           key: 'origin_filepath',
         },
-        {
-          title: '加密密钥',
-          dataIndex: 'aes_key',
-          key: 'aes_key',
-        },
+        // {
+        //   title: '加密密钥',
+        //   dataIndex: 'aes_key',
+        //   key: 'aes_key',
+        // },
         {
           title: '隔离文件名',
           dataIndex: 'encrypted_filename',
@@ -179,7 +303,8 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
                   // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
                   // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
                 }}
-                onClick={() => this.showDecryptModal(record)}>解除隔离</Button>
+                onClick={() => this.showDecryptModal(record)}>解除隔离
+            </Button>
           ),
         }
         
@@ -210,7 +335,7 @@ handleDecryptSubmit = async () => {
   const postData = {
     uuid: currentRecord.uuid, // 假设agent_ip是表格中的一列
     filename: currentRecord.origin_filename,
-    filepath: currentRecord.origin_file_path,
+    filepath: currentRecord.origin_filepath,
     encryptedfilename: currentRecord.encrypted_filename,
     encryptedfilepath: currentRecord.encrypted_filepath,
   };
@@ -223,7 +348,7 @@ handleDecryptSubmit = async () => {
         Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
       }
     };
-    const response = await axios.post(Isolate_decrypt_Data, JSON.stringify(postData),config);
+    const response = await axios.post(Isolate_decrypt_Data, postData,config);
     if (response.data.code === 0) {
       message.success('文件解除隔离成功');
     } else {
@@ -279,10 +404,13 @@ hideEncryptModal = () => {
 handleEncryptSubmit = async () => {
   const { currentRecord } = this.state;
   // 构建请求体，这里假设currentRecord中含有需要的所有信息
+  const filePath = currentRecord.file_path;
+  const { filepath, filename } = splitFilePath(filePath);
   const postData = {
     uuid: currentRecord.uuid, // 假设agent_ip是表格中的一列
-    filename: currentRecord.origin_filename,
-    filepath: currentRecord.origin_filepath,
+// 使用字符串处理方法获取文件名和路径
+    filename : filename, // 获取文件名
+    filepath : filepath, // 获取文件所在的路径
   };
   
   try {
@@ -307,6 +435,10 @@ handleEncryptSubmit = async () => {
 };
 
 renderEncryptModal=()=>{
+// 假设 this.state.currentRecord.file_path 可能不是字符串
+  const filePath = this.state.currentRecord.file_path;
+  const { filepath, filename } = splitFilePath(filePath);
+// 获取文件所在的路径
   return (
       <Modal
       title="添加隔离文件"
@@ -319,8 +451,8 @@ renderEncryptModal=()=>{
     >
         <Descriptions bordered column={1}>
         <Descriptions.Item label="Agent UUID">{this.state.currentRecord.uuid}</Descriptions.Item>
-        <Descriptions.Item label="文件名称">{this.state.currentRecord.origin_filename}</Descriptions.Item>
-        <Descriptions.Item label="文件路径">{this.state.currentRecord.origin_filepath}</Descriptions.Item>
+        <Descriptions.Item label="文件名称">{filename}</Descriptions.Item>
+        <Descriptions.Item label="文件路径">{filepath}</Descriptions.Item>
       </Descriptions>
     </Modal>
   );
@@ -337,7 +469,7 @@ renderEncryptModal=()=>{
                   </div>); // 或者其他的加载状态显示
             }
             // 从 context 中解构出 topFiveFimData 和 n
-            const {
+            const {monitoredOriginData,
               virusOriginData,
               isolationOriginData,} = context;
             const virusData = virusOriginData===undefined?initialData:virusOriginData;
@@ -350,6 +482,24 @@ renderEncryptModal=()=>{
                       <div className="gutter-box">
                         {this.renderEncryptModal()}
                         {this.renderDecryptModal()}
+                        <Card bordered={false}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
+                            <h2 style={{
+                              fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
+                          </div>
+                          <DataDisplayTable
+                              key={"spFileslist"}
+                              // externalDataSource={virusData}
+                              externalDataSource={monitoredOriginData}
+                              apiEndpoint={Monitor_Data_API}
+                              timeColumnIndex={[]}
+                              columns={this.state.spFilesColumns}
+                              currentPanel={"spFileslist"}
+                              searchColumns={['uuid', 'filepath']}
+                          />
+                          {/*<Table dataSource={initialData} columns={this.state.spFilesColumns} />*/}
+
+                        </Card>
                         <Card bordered={false}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
                             <h2 style={{
@@ -367,25 +517,6 @@ renderEncryptModal=()=>{
                           {/*<Table dataSource={initialData} columns={this.state.EncryptedFilesColumns} />*/}
 
                         </Card>
-                        <Card bordered={false}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                            <h2 style={{
-                              fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>可疑文件列表</h2>
-                          </div>
-                          <DataDisplayTable
-                              key={"spFileslist"}
-                              // externalDataSource={virusData}
-                              externalDataSource={isolationOriginData}
-                              apiEndpoint={Isolate_Data_API}
-                              timeColumnIndex={[]}
-                              columns={this.state.spFilesColumns}
-                              currentPanel={"spFileslist"}
-                              searchColumns={['uuid', 'origin_filename']}
-                          />
-                          {/*<Table dataSource={initialData} columns={this.state.spFilesColumns} />*/}
-
-                        </Card>
-
                       </div>
                     </Col>
                   </Row>

@@ -27,7 +27,7 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
 
         notification[typeName]({
             message: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried</span>
+                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried-Notification-open</span>
     ),
             description: (
                 <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
@@ -61,7 +61,7 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
                     offset={[10, 0]}
                     style={{ backgroundColor: '#ff4d4f', color: 'white', fontSize: '12px', lineHeight: '16px' }}
                 >
-                    <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried</span>
+                    <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried-Notification-2</span>
                 </Badge>
             ),
             description: (
@@ -110,7 +110,7 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
 
         notification.open({
             message: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried</span>
+                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried-Notification-static</span>
             ),
             description: (
                 <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>

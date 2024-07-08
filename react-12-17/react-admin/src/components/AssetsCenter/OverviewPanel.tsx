@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Table, Card, Row, Col, Statistic, Progress, Button, Empty } from 'antd';
+import { Table, Card, Row, Col, Statistic, Progress, Button, Empty, Tooltip } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { StatusItem, GenericDataItem, BaseItem, DataItem } from '../Columns';
@@ -103,12 +103,8 @@ const colorOrder = baseDataItems.map((item) => item.color); // Keep original col
 //显示从接口得到stime数据时，去除进度条
 const generateColumns = (divValue: number, tableName: string, tbName_Right: string, tableName_list: string[], goToPanel: (panelName: string) => void) => {
     const showProgress = tableName !== '文件完整性校验-最新变更二进制文件 TOP5'; // 判断是否要显示进度条
-
     return [
         {
-            // title: () => <span style={{ fontWeight: 'bold', cursor: 'pointer' }}
-            //     onClick={() => goToPanel(tbName[tableName])}>{tableName}</span>,
-
             title: () => <div>
                 <Button
                     style={{
@@ -128,7 +124,7 @@ const generateColumns = (divValue: number, tableName: string, tbName_Right: stri
             render: (text: any, record: DataItem, index: number) => {
                 const textColor = index < 3 ? 'white' : 'grey'; // 根据index决定文字颜色 style={{ cursor: 'pointer' }} onClick={() => goToPanel(record.id)}
                 return (
-                    <div >
+                    <Row>
                         <span
                             style={{
                                 lineHeight: '15px',
@@ -142,12 +138,23 @@ const generateColumns = (divValue: number, tableName: string, tbName_Right: stri
                                 textAlign: 'center',
                                 fontSize: '12px',
                                 color: textColor,
+                                transform: 'translateY(4px)',
                             }}
                         >
                             {index + 1} {/* 在圆形中显示index + 1 */}
                         </span>
-                        {record.id}
-                    </div>
+
+                        <Tooltip title={record.id || 'Unknown id'}>
+                            <div style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '330px',
+                            }}>
+                                {record.id || '-'}
+                            </div>
+                        </Tooltip>
+                    </Row>
                 );
             },
         },

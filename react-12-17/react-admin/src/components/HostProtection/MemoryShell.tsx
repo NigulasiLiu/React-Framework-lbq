@@ -1,11 +1,24 @@
 import React from 'react';
 import axios from 'axios';
-import { Col, Row, Card, Input, Button, Tooltip, Modal, Form, message, Upload, message as AntMessage } from 'antd';
+import {
+    Col,
+    Row,
+    Card,
+    Input,
+    Button,
+    Tooltip,
+    Modal,
+    Form,
+    message,
+    Upload,
+    message as AntMessage,
+    Badge,
+} from 'antd';
 import { LoadingOutlined,  } from '@ant-design/icons';
 import moment from 'moment';
 import CustomUpload from '../CustomAntd/CustomUpload'
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { constRenderTable } from '../Columns';
+import { constRenderTable, hostinventoryColumnsType } from '../Columns';
 import umbrella from 'umbrella-storage';
 import { APP_Server_URL, MemoryShell_API, Task_Data_API } from '../../service/config';
 import { blueButton } from '../../style/config';
@@ -109,17 +122,20 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
         {
             title: '是否高危',
             dataIndex: 'is_shell',
-            onFilter: (value: string | number | boolean, record: any) => record.is_shell.includes(value as string),
+            onFilter: (value: string | number | boolean, record: any) => record.is_shell == value,
             filters: [
                 {
-                    text: 'yes ',
-                    value: 'yes',
+                    text: 'Yes',
+                    value: '1',
                 },
                 {
-                    text: 'no',
-                    value: 'no',
+                    text: 'No',
+                    value: '0',
                 },
             ],
+            render: (text: string, record: any) => (
+                <Badge status={record.is_shell === '1' ? 'success' : 'error'} text={record.is_shell === '1' ? 'Yes' : 'No'} />
+            ),
         },
     ];
     // 显示Modal

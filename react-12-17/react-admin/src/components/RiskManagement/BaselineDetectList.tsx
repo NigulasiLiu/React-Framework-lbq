@@ -155,7 +155,10 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                 {
                     title: '状态',
                     dataIndex: 'status',
-                    filters: [{ text: 'true', value: 'true' }, { text: 'fail', value: 'fail' },
+                    filters: [
+                        { text: 'TRUE', value: 'TRUE' },
+                        { text: 'FAIL', value: 'FAIL' },
+                        { text: 'MANUAL', value: 'MANUAL' },
                     ],
                     onFilter: (value: string | number | boolean, record: any) => record.status.includes(value as string),
                 },
@@ -383,23 +386,21 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
         this.setCurrentTime();
     };
 
-    send_command = (agentOriginData:any[],) => {
-        // 模拟从 agentOriginData 中获取 uuid 和自定义 name_string 的过程
-        const agentOriginData1 = [
-            { uuid: 'uuid1', name: 'NameString1' },
-            { uuid: 'uuid2', name: 'NameString2' },
-            // 添加更多需要的 uuid 和 name_string 组合
-        ];
+    send_command = (agentOriginData: any[]) => {
+        if (!agentOriginData || agentOriginData.length === 0) {
+            console.error('agentOriginData is empty or undefined');
+            return;
+        }
 
         const selectedUuids = agentOriginData.map(item => item.uuid);
-        const selectedIPs = agentOriginData.map(item => item.ip_address);
         const selectedUuidNameStrings = ['start_check_scan'];
 
         // 执行发送 POST 请求的方法
-        this.handleSubmit(selectedUuids, selectedUuidNameStrings,selectedIPs);
+        this.handleSubmit(selectedUuids, selectedUuidNameStrings);
     };
 
-    handleSubmit = (selectedUuids: string[], selectedUuidNameStrings: string[],selectedIPs:string[]) => {
+
+    handleSubmit = (selectedUuids: string[], selectedUuidNameStrings: string[]) => {
         const token = localStorage.getItem('jwt_token');
 
 

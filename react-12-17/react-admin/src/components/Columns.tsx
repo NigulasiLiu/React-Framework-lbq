@@ -67,7 +67,7 @@ export interface BaseLineDataType {
     instruction: string;       // 指令
 }
 
-export const TableWithoutTimestamp = ['createnewtask', 'UserManagementlist','createnewvirusscantask'];
+export const TableWithoutTimestamp = ['createnewtask', 'UserManagementlist', 'createnewvirusscantask'];
 
 export interface checkedItemDataType {
     level: string;
@@ -169,7 +169,8 @@ export const createNewTaskColumns = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -242,6 +243,7 @@ export interface hostinventoryColumnsType {
     mem_use: string;
     cpu_use: string;
 }
+
 // const hostinventoryColumns = [
 //     {
 //         title: 'ID',
@@ -413,7 +415,8 @@ const hostinventoryColumns = [
         render: (text: string, record: hostinventoryColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -481,10 +484,10 @@ const hostinventoryColumns = [
                 // marginTop: '4px', // 上边距
             }}>
                 <span style={{
-                    border:'2px solid #f0f0f0',fontWeight: 'bold',
+                    border: '2px solid #f0f0f0', fontWeight: 'bold',
                     padding: '2px 4px', // 轻微内边距
                     borderRadius: '2px', // 圆角边框
-                    }}>CPU</span> {record.cpu_use}
+                }}>CPU</span> {record.cpu_use}
             </div>
         ),
         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
@@ -555,7 +558,8 @@ export const fimColumns = [
             <div>
                 <div>
                     {/*{record.uuid.slice(0, 5)}*/}
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -592,11 +596,20 @@ export const fimColumns = [
     {
         title: '文件名',
         dataIndex: 'filename',
-        onHeaderCell: () => ({
-            style: {
-                maxWidth: 200, // 最大宽度200px
-            },
-        }),
+        render: (text: string, record: FimDataType) => (
+            <div>
+                <Tooltip title={record.filename || 'Unknown filename'}>
+                        <div style={{
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '340px',
+                        }}>
+                            {record.filename || '-'}
+                        </div>
+                    </Tooltip>
+            </div>
+        ),
     },
     {
         title: '告警类型',
@@ -701,7 +714,8 @@ export const monitoredColumns = [
             <div>
                 <div>
                     {/*{record.uuid.slice(0, 5)}*/}
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -735,14 +749,24 @@ export const monitoredColumns = [
             </div>
         ),
     },
+
     {
         title: '文件名',
         dataIndex: 'file_path',
-        onHeaderCell: () => ({
-            style: {
-                maxWidth: 200, // 最大宽度200px
-            },
-        }),
+        render: (text: string, record: any) => (
+            <div>
+                <Tooltip title={record.file_path || 'Unknown filename'}>
+                    <div style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '340px',
+                    }}>
+                        {record.file_path || '-'}
+                    </div>
+                </Tooltip>
+            </div>
+        ),
     },
     {
         title: '告警类型',
@@ -805,7 +829,6 @@ export const openPortsColumns = [
         key: 'id',
         Maxwidth: '15px',
     },
-
     {
         title: '主机名',
         dataIndex: 'uuid',
@@ -813,7 +836,8 @@ export const openPortsColumns = [
         render: (text: string, record: openPortsColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -850,7 +874,6 @@ export const openPortsColumns = [
     {
         title: '端口号',
         dataIndex: 'port_number',
-
         onHeaderCell: () => ({
             style: {
                 //minWidth: 80, // 最小宽度100px
@@ -961,7 +984,8 @@ export const runningProcessesColumns = [
         render: (text: string, record: runningProcessesColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1073,7 +1097,7 @@ export const runningProcessesColumns = [
                     border: '2px solid #f0f0f0', fontWeight: 'bold',
                     padding: '2px 4px', // 轻微内边距
                     borderRadius: '2px', // 圆角边框
-                }}>CPU</span> {record.cpuPercent}
+                }}>CPU</span> {String(record.cpuPercent).slice(0,4)+"%"}
             </div>
         ),
         // render: (text: string, record: any) => (
@@ -1098,7 +1122,7 @@ export const runningProcessesColumns = [
                     border: '2px solid #f0f0f0', fontWeight: 'bold',
                     padding: '2px 4px', // 轻微内边距
                     borderRadius: '2px', // 圆角边框
-                }}>内存</span> {record.memoryPercent}
+                }}>内存</span> {String(record.memoryPercent).slice(0,4)+"%"}
             </div>
         ),
         // render: (text: string, record: any) => (
@@ -1165,7 +1189,8 @@ export const systemServicesColumns = [
         render: (text: string, record: systemServicesColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1361,57 +1386,6 @@ export interface AlertDataType {
     occurTimestamp: string;
 }
 
-export const hostalertColumns = [
-    {
-        title: '告警名称',
-        dataIndex: 'alertName',
-        key: 'alertName',
-        // render: (text: string, record: AlertDataType) => (
-        //     <a
-        //         href={'/login'}
-        //         target="_blank"
-        //         rel="noopener noreferrer"
-        //         style={{ color: '#1964F5' }}// 添加颜色样式
-        //     >
-        //         {text}
-        //     </a>
-        // ),
-    },
-    {
-        title: '影响资产',
-        dataIndex: 'affectedAssets',
-        key: 'affectedAssets',
-    },
-    {
-        title: '告警类型',
-        dataIndex: 'alert_type',
-        key: 'alert_type',
-
-        onFilter: (value: string | number | boolean, record: AlertDataType) => record.alert_type.includes(value as string),
-    },
-    {
-        title: '级别',
-        dataIndex: 'level',
-        key: 'level',
-    },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-
-        onFilter: (value: string | number | boolean, record: AlertDataType) => record.status.includes(value as string),
-    },
-    {
-        title: '发生时间',
-        dataIndex: 'occurTimestamp',
-        key: 'occurTimestamp',
-    },
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        key: 'operation',
-    },
-];
 
 export interface DataType {
     key: React.Key;
@@ -1521,7 +1495,8 @@ export const baselineDetectColumns = [
         render: (text: string, record: baselineDetectColumnsType) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1632,7 +1607,8 @@ export const threatHuntingColumns = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1641,7 +1617,12 @@ export const threatHuntingColumns = [
                             padding: '0 0',
                         }}>
                             <Tooltip title={record.uuid || 'Unknown UUID'}>
-                                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                                <div style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '80px',
+                                }}>
                                     {record.uuid || '-'}
                                 </div>
                             </Tooltip>
@@ -1677,6 +1658,11 @@ export const threatHuntingColumns = [
         title: '告警类型',
         dataIndex: 'atk_type',
         key: 'atk_type',
+        render: (text: string, record: any) => (
+            <Badge
+                status={'error'}
+                text={'Brute-Force'} />
+        ),
     },
     // 其他需要的列
 ];
@@ -1695,7 +1681,8 @@ export const threatHuntingColumns_2 = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -1704,7 +1691,12 @@ export const threatHuntingColumns_2 = [
                             padding: '0 0',
                         }}>
                             <Tooltip title={record.uuid || 'Unknown UUID'}>
-                                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                                <div style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '80px',
+                                }}>
                                     {record.uuid || '-'}
                                 </div>
                             </Tooltip>
@@ -1740,6 +1732,11 @@ export const threatHuntingColumns_2 = [
         title: '告警类型',
         dataIndex: 'atk_type',
         key: 'atk_type',
+        render: (text: string, record: any) => (
+            <Badge
+                status={'error'}
+                text={record.atk_type === 1 ? 'Privilege-Escalation' : 'Defense-Avoidance'} />
+        ),
     },
     // 其他需要的列
 ];
@@ -2225,7 +2222,8 @@ export const Honeypotcolumns = [
         render: (text: string, record: any) => (
             <div>
                 <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
                         <Button style={{
                             fontWeight: 'bold',
                             border: 'transparent',
@@ -2234,7 +2232,12 @@ export const Honeypotcolumns = [
                             padding: '0 0',
                         }}>
                             <Tooltip title={record.uuid || 'Unknown UUID'}>
-                                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                                <div style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '80px',
+                                }}>
                                     {record.uuid || '-'}
                                 </div>
                             </Tooltip>
@@ -2287,7 +2290,11 @@ export const constRenderTable = (OriginData: any[], title: string,
                             fontWeight: 'bold',
                         }}>
                             <h2 style={{
-                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>{title}</h2>
+                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                marginLeft: '0px',
+                            }}>{title}</h2>
                         </div>
                     </Row>
                     <DataDisplayTable

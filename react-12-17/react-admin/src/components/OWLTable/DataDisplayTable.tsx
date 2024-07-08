@@ -24,6 +24,8 @@ interface DataDisplayTableProps {
     externalDataSource: any[];
     columns: any[]; // 根据实际列数据结构定义更明确的类型
     apiEndpoint: string;
+    apiUuid?: (uuid: string) => string;
+    uuid?:string;
     childrenColumnName?: string; // 作为可选属性
     expandedRowRender?: (record: any) => React.ReactNode; // 添加expandedRowRender属性
     indentSize?: number; // 也可以声明为可选属性，如果您希望为其提供默认值
@@ -370,10 +372,17 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const { refreshDataFromAPI } = context;
+                    const { refreshDataFromAPI,refreshDataFromAPIWithUuid } = context;
+
+                    const {apiEndpoint, apiUuid, uuid} = this.props;
                     // this.handleRefresh_delete = refreshDataFromAPI;
-                    const handleRefresh = (api: string) => {
-                        refreshDataFromAPI(api);
+                    const handleRefresh = (api: string,apiUuid?: (uuid: string) => string,uuid?:string) => {
+                        if(apiUuid && uuid) {
+                            refreshDataFromAPIWithUuid(apiUuid,uuid);
+                        }
+                        else {
+                            refreshDataFromAPI(api);
+                        }
                         this.setState({
                             lastUpdated: new Date().toLocaleString(),
                         });
@@ -447,7 +456,14 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                 <Col style={{ textAlign: 'left', marginLeft: 10, marginRight: '0px' }}>
                                                     <Button icon={<ReloadOutlined />}
                                                         // onClick={() => refreshDataFromAPI(this.props.apiEndpoint)}
-                                                            onClick={() => handleRefresh(this.props.apiEndpoint)}
+                                                            onClick={() => {
+                                                                if(apiUuid && uuid) {
+                                                                    handleRefresh('',apiUuid,uuid)
+                                                                }
+                                                                else{
+                                                                    handleRefresh(this.props.apiEndpoint);
+                                                                }
+                                                            }}
                                                     >刷新</Button>
                                                 </Col>
                                             </Row>
@@ -477,7 +493,6 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                             columns={new_columns}
                                             pagination={{
                                                 showQuickJumper: true,
-                                                pageSize: (this.props.currentPanel.includes('_details') ? 5 : 8),
                                             }}
                                             childrenColumnName={this.props.childrenColumnName}
                                             expandedRowRender={this.props.expandedRowRender}

@@ -4,14 +4,14 @@ import { blueButton } from '../../style/config';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { Once_Task_API } from '../../service/config';
+import { Once_Task_API, Task_Data_API } from '../../service/config';
 
 
 interface InstantTaskProps {
 }
 interface InstantTaskState {
     selectedUuids: string[];
-    selectedFunctions: { func: string, data: string }[];
+    selectedFunctions: { func: string, data: string, parseAsJson: boolean }[];
 }
 
 class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
@@ -42,16 +42,24 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
             });
         } else {
             this.setState({
-                selectedFunctions: [...selectedFunctions, { func, data: '' }],
+                selectedFunctions: [...selectedFunctions, { func, data: '', parseAsJson: false }],
             });
         }
     };
 
-    handleFunctionDataChange = (func: string, data: string) => {
+    handleFunctionDataChange = (func: string, data: string, parseAsJson: boolean) => {
         const { selectedFunctions } = this.state;
+        let parsedData = data;
+        if (parseAsJson) {
+            try {
+                parsedData = JSON.parse(data);
+            } catch (error) {
+                console.error('Failed to parse JSON:', error);
+            }
+        }
         const updatedFunctions = selectedFunctions.map(item => {
             if (item.func === func) {
-                return { ...item, data };
+                return { ...item, data: parsedData };
             }
             return item;
         });
@@ -59,6 +67,7 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
             selectedFunctions: updatedFunctions,
         });
     };
+
 
     handleSubmit = () => {
         const { selectedUuids, selectedFunctions } = this.state;
@@ -72,8 +81,10 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
                 if (item.func && item.data) {
                     // 构造请求体
                     const requestBody = {
-                        // command: item.func,
+                        // data: item.parseAsJson ? item.data : { value: item.data },
                         data: item.data,
+                        uuid: uuid,
+                        func: item.func,
                     };
 
                     // 构造 job_id
@@ -87,9 +98,10 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
                         },
                     })
                         .then(response => {
+                            message.success(`POST请求成功，job_id为 ${job_id}`);
+                            // 这里可以根据需要刷新页面或者重新加载数据
                             console.log(`POST请求成功，job_id为 ${job_id}:`, response.data);
                             // 在此处输出消息或者进行其他处理
-                            message.info(`POST请求成功，job_id为 ${job_id}`);
                         })
                         .catch(error => {
                             console.error(`POST请求失败，job_id为 ${job_id}:`, error);
@@ -191,7 +203,7 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
                                                         <Checkbox
                                                             checked={selectedUuids.includes(item.uuid)}
                                                             onChange={() => this.handleUuidCheckboxChange(item.uuid)}
-                                                            style={{ display: 'inline-block', width: 'calc(100% - 24px)' }}
+                                                            style={{ fontSize:'16px',display: 'inline-block', width: 'calc(100% - 24px)', borderBottom:'solid 1px #ccc', paddingRight: '5px' }}
                                                         >
                                                             {item.name}
                                                         </Checkbox>
@@ -213,18 +225,42 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
                                                         <Checkbox
                                                             checked={selectedFunctions.some(f => f.func === item.func)}
                                                             onChange={() => this.handleFunctionCheckboxChange(item.func)}
-                                                            style={{ display: 'inline-block', width: 'calc(100% - 24px)' }}
+                                                            style={{ fontSize:'16px',display: 'inline-block', borderBottom:'solid 1px #ccc', width: 'calc(100% - 24px)' }}
                                                         >
                                                             {item.name}
                                                         </Checkbox>
-                                                        {selectedFunctions.some(f => f.func === item.func) && (
+                                                        {/*{selectedFunctions.some(f => f.func === item.func) && (*/}
+                                                        {/*    <Input*/}
+                                                        {/*        placeholder={`输入${item.name}的执行参数`}*/}
+                                                        {/*        onChange={(e) => this.handleFunctionDataChange(item.func, e.target.value)}*/}
+                                                        {/*        value={selectedFunctions.find(f => f.func === item.func)?.data || ''}*/}
+                                                        {/*        style={{ marginTop: '8px', width: '100%' }}*/}
+                                                        {/*    />*/}
+                                                        {/*)}*/}{selectedFunctions.some(f => f.func === item.func) && (
+                                                        <div>
+                                                            <Checkbox
+                                                                checked={selectedFunctions.find(f => f.func === item.func)?.parseAsJson || false}
+                                                                onChange={(e) => {
+                                                                    const updatedFunctions = selectedFunctions.map(f => {
+                                                                        if (f.func === item.func) {
+                                                                            return { ...f, parseAsJson: e.target.checked };
+                                                                        }
+                                                                        return f;
+                                                                    });
+                                                                    this.setState({ selectedFunctions: updatedFunctions });
+                                                                }}
+                                                            >
+                                                                解析为 JSON
+                                                            </Checkbox>
                                                             <Input
                                                                 placeholder={`输入${item.name}的执行参数`}
-                                                                onChange={(e) => this.handleFunctionDataChange(item.func, e.target.value)}
+                                                                onChange={(e) => this.handleFunctionDataChange(item.func, e.target.value, selectedFunctions.find(f => f.func === item.func)?.parseAsJson || false)}
                                                                 value={selectedFunctions.find(f => f.func === item.func)?.data || ''}
                                                                 style={{ marginTop: '8px', width: '100%' }}
                                                             />
-                                                        )}
+                                                        </div>
+                                                    )}
+
                                                     </div>
                                                 ))}
                                             </div>
@@ -249,178 +285,3 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
 }
 
 export default InstantTask;
-
-// import React, { useState } from 'react';
-// import { Checkbox, Button, Card, Row, Col, Input } from 'antd';
-// import { blueButton } from '../../style/config';
-//
-// interface InstantTaskProps {
-//     hosts: { uuid: string, name: string }[];
-//     functions: { func: string, name: string }[];
-// }
-// const InstantTask: React.FC<InstantTaskProps> = ({ hosts, functions }) => {
-//     const [selectedUuids, setSelectedUuids] = useState<string[]>([]);
-//     const [selectedFunctions, setSelectedFunctions] = useState<{ func: string, data: string }[]>([]);
-//     const [inputData, setInputData] = useState<string>('');
-//     const uuidData = [
-//         { uuid: 'uuid1', name: 'UUID 1' },
-//         { uuid: 'uuid2', name: 'UUID 2' },
-//         { uuid: 'uuid3', name: 'UUID 3' },
-//         { uuid: 'uuid11', name: 'UUID 1' },
-//         { uuid: 'uuid22', name: 'UUID 2' },
-//         { uuid: 'uuid33', name: 'UUID 3' },
-//         { uuid: 'uuid14', name: 'UUID 1' },
-//         { uuid: 'uuid25', name: 'UUID 2' },
-//         { uuid: 'uuid36', name: 'UUID 3' },
-//         { uuid: 'uuid17', name: 'UUID 1' },
-//         { uuid: 'uuid28', name: 'UUID 2' },
-//         { uuid: 'uuid39', name: 'UUID 3' },
-//     ];
-//
-//     const functionData = [
-//         { func: 'func11', name: 'Function 1' },
-//         { func: 'func22', name: 'Function 2' },
-//         { func: 'func33', name: 'Function 3' },
-//         { func: 'func14', name: 'Function 1' },
-//         { func: 'func25', name: 'Function 2' },
-//         { func: 'func35', name: 'Function 3' },
-//         { func: 'func16', name: 'Function 1' },
-//         { func: 'func27', name: 'Function 2' },
-//         { func: 'func38', name: 'Function 3' },
-//         { func: 'func19', name: 'Function 1' },
-//         { func: 'func20', name: 'Function 2' },
-//         { func: 'func3-', name: 'Function 3' },
-//     ];
-//     const handleUuidCheckboxChange = (uuid: string) => {
-//         const newSelectedUuids = [...selectedUuids];
-//         if (newSelectedUuids.includes(uuid)) {
-//             newSelectedUuids.splice(newSelectedUuids.indexOf(uuid), 1);
-//         } else {
-//             newSelectedUuids.push(uuid);
-//         }
-//         setSelectedUuids(newSelectedUuids);
-//     };
-//
-//     const handleFunctionCheckboxChange = (func: string) => {
-//         const newSelectedFunctions = [...selectedFunctions];
-//         const index = newSelectedFunctions.findIndex(item => item.func === func);
-//         if (index !== -1) {
-//             newSelectedFunctions.splice(index, 1);
-//         } else {
-//             newSelectedFunctions.push({ func, data: '' });
-//         }
-//         setSelectedFunctions(newSelectedFunctions);
-//     };
-//
-//     const handleFunctionDataChange = (func: string, data: string) => {
-//         const newSelectedFunctions = [...selectedFunctions];
-//         const index = newSelectedFunctions.findIndex(item => item.func === func);
-//         if (index !== -1) {
-//             newSelectedFunctions[index].data = data;
-//             setSelectedFunctions(newSelectedFunctions);
-//         }
-//     };
-//
-//
-//     const handleSubmit = () => {
-//         const requests = selectedUuids.map(uuid => {
-//             const functions = selectedFunctions
-//                 .filter(item => item.func && item.data) // Filter out functions without data
-//                 .map(item => ({
-//                     command: item.func,
-//                     data: item.data,
-//                 }));
-//             return { uuid, functions };
-//         });
-//
-//         console.log('Generated request bodies:', requests);
-//         // Perform further actions with requests, such as sending them to a server
-//     };
-//     return (
-//         <div style={{ fontWeight: 'bolder', width: '100%',marginTop: '13px' }}>
-//             <Card bordered={true}>
-//                 <Row>
-//                     <div style={{
-//                         display: 'flex',
-//                         justifyContent: 'space-between',
-//                         marginBottom: 8,
-//                         fontWeight: 'bold',
-//                     }}>
-//                         <h2 style={{
-//                             fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-//                             fontSize: '18px',
-//                             fontWeight: 'bold',
-//                             marginLeft: '0px',
-//                         }}>{"执行单次任务"}</h2>
-//                     </div>
-//                 </Row>
-//                 <div style={{ padding: '20px',backgroundColor:'#F6F7FB' }} >
-//                     <Row>
-//                         <Col span={1}/>
-//                         <Col span={9}>
-//                             <h2 style={{fontWeight:'bold'}}>选择主机</h2>
-//                             <div style={{
-//                                 height: '300px',
-//                                 overflowY: 'scroll',
-//                                 borderRight: '1px solid #ccc',
-//                                 paddingRight: '20px',
-//                             }}>
-//                                 {uuidData.map((item) => (
-//                                     <div key={item.uuid} style={{ marginBottom: '10px' }}>
-//                                         <Checkbox
-//                                             checked={selectedUuids.includes(item.uuid)}
-//                                             onChange={() => handleUuidCheckboxChange(item.uuid)}
-//                                             style={{ display: 'inline-block', width: 'calc(100% - 24px)' }}
-//                                         >
-//                                             {item.name}
-//                                         </Checkbox>
-//                                     </div>
-//                                 ))}
-//                             </div>
-//                         </Col>
-//                         <Col span={2} />
-//                         <Col span={11}>
-//                             <div style={{
-//                                 height: '300px',
-//                                 overflowY: 'scroll',
-//                                 borderRight: '1px solid #ccc',
-//                                 paddingRight: '20px',
-//                             }}>
-//                                 <h2 style={{fontWeight:'bold'}}>选择功能</h2>
-//                                 {functionData.map((item) => (
-//                                     <div key={item.func} style={{ marginBottom: '10px' }}>
-//                                         <Checkbox
-//                                             checked={selectedFunctions.some(f => f.func === item.func)}
-//                                             onChange={() => handleFunctionCheckboxChange(item.func)}
-//                                             style={{ display: 'inline-block', width: 'calc(100% - 24px)' }}
-//                                         >
-//                                             {item.name}
-//                                         </Checkbox>
-//                                         {selectedFunctions.some(f => f.func === item.func) && (
-//                                             <Input
-//                                                 placeholder={`输入${item.name}的执行参数`}
-//                                                 onChange={(e) => handleFunctionDataChange(item.func, e.target.value)}
-//                                                 value={selectedFunctions.find(f => f.func === item.func)?.data || ''}
-//                                                 style={{ marginTop: '8px', width: '100%' }}
-//                                             />
-//                                         )}
-//                                     </div>
-//                                 ))}
-//                             </div>
-//                         </Col>
-//
-//                         <Col span={1} />
-//                     </Row>
-//
-//                 </div>
-//                 <div style={{ marginTop: '20px', alignItems: 'center', justifyContent: 'center' }}>
-//                     <Button {...blueButton} onClick={handleSubmit}>
-//                         提交任务
-//                     </Button>
-//                 </div>
-//             </Card>
-//         </div>
-//     );
-// };
-//
-// export default InstantTask;

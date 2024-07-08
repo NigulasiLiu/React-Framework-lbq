@@ -93,34 +93,32 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     openModal = () => {
         this.setState({ isModalOpen: true });
     };
-    send_command = (agentOriginData:any[],index:number) => {
-        // 模拟从 agentOriginData 中获取 uuid 和自定义 name_string 的过程
-        const agentOriginData1 = [
-            { uuid: 'uuid1', name: 'NameString1' },
-            { uuid: 'uuid2', name: 'NameString2' },
-            // 添加更多需要的 uuid 和 name_string 组合
-        ];
+    send_command = (agentOriginData: any[], index: number) => {
+        if (!agentOriginData || agentOriginData.length === 0) {
+            console.error('agentOriginData is empty or undefined');
+            return;
+        }
 
         const selectedUuids = agentOriginData.map(item => item.uuid);
-        const selectedUuidNameStrings = ['ssh_log_filter','command_hunting_job'];
+        const selectedUuidNameStrings = ['ssh_log_filter', 'command_hunting_job'];
 
         // 执行发送 POST 请求的方法
-        this.handleSubmit(selectedUuids, selectedUuidNameStrings,index);
+        this.handleSubmit(selectedUuids, selectedUuidNameStrings, index);
     };
 
-    handleSubmit = (selectedUuids: string[], selectedUuidNameStrings: string[],ind:number) => {
+    handleSubmit = (selectedUuids: string[], selectedUuidNameStrings: string[], ind: number) => {
         const token = localStorage.getItem('jwt_token');
 
 
         // 遍历选中的每个 uuid
-        selectedUuids.forEach((uuid,index) => {
+        selectedUuids.forEach((uuid, index) => {
             // 遍历选中的每个 func
 
             if (selectedUuidNameStrings[ind]) {
                 // 构造请求体
                 const requestBody = {
                     // command: item.func,
-                    data: {uuid:uuid,},
+                    data: { uuid: uuid },
                 };
                 message.info(JSON.stringify(requestBody));
                 // 构造 job_id
@@ -159,10 +157,10 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
             const config = {
                 headers: {
                     Authorization: token ? `Bearer ${token}` : undefined, // 如果存在token则发送，否则不发送Authorization头部
-                }
+                },
             };
             // 直接将values作为POST请求的body发送
-            const response = await axios.post('/api/getTTPs', values,config);
+            const response = await axios.post('/api/getTTPs', values, config);
             console.log(response.data);
             message.success('TTPs添加成功');
             this.closeModal(); // 关闭Modal
@@ -217,10 +215,10 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
     };
 
     // 渲染当前激活的子面板
-    renderCurrentPanel(agentOriginData:any[],
-        bruteforceTTPsOriginData: any[],
-        privilegeescalationTTPsOriginData: any[],
-        defenseavoidanceTTPsOriginData: any[]) {
+    renderCurrentPanel(agentOriginData: any[],
+                       bruteforceTTPsOriginData: any[],
+                       privilegeescalationTTPsOriginData: any[],
+                       defenseavoidanceTTPsOriginData: any[]) {
         const { currentPanel } = this.state;
         console.log('this.state.currentPanel:' + currentPanel);
 
@@ -235,7 +233,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         columns={threatHuntingColumns}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
-                        additionalButton={()=>this.send_command(agentOriginData,0)}
+                        additionalButton={() => this.send_command(agentOriginData, 0)}//0代表使用暴力破解
                         additionalButtonTitile={'暴力破解'}
                     />
                 );
@@ -249,7 +247,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
-                        additionalButton={()=>this.send_command(agentOriginData,1)}
+                        additionalButton={() => this.send_command(agentOriginData, 1)}//1代表防御规避和权限提升
                         additionalButtonTitile={'狩猎权限提升'}
                     />
                 );
@@ -263,60 +261,50 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         columns={threatHuntingColumns_2}
                         currentPanel={currentPanel}
                         searchColumns={['uuid', 'atk_ip']}
-                        additionalButton={()=>this.send_command(agentOriginData,1)}
+                        additionalButton={() => this.send_command(agentOriginData, 1)}
                         additionalButtonTitile={'狩猎防御规避'}
                     />
                 );
         }
     }
 
-    renderPanelAndPieChart = (OriginData: any[], title: string,
+    renderPanelAndPieChart = (brutCount: number, privCount: number, defensCount: number, title: string,
                               panelDataTitle1: string, panelDataTitle2: string, panelDataTitle3: string) => {
-        if (OriginData !== undefined) {
-            // 确保OriginData总是作为数组处理
-            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-            let totalExpResultCount = 0;
-            originDataArray.forEach(item => {
-                totalExpResultCount += item.vul_detection_exp_result.length;
-            });
-            const scanPanelData: StatusItem[] = [
-                { color: '#E63F3F', label: panelDataTitle1, value: 1 },
-                { color: '#f38b47', label: panelDataTitle2, value: 1 },
-                { color: '#468DFF', label: panelDataTitle3, value: 1 }];
-            return (
-                <Row style={{ width: '100%', marginTop: '20px', paddingRight: '10px' }}>
-                    <Col span={7} style={{ paddingTop: '20px', width: '400px', height: '90px', marginLeft: '20px' }}>
-                        <Statistic title={<span style={{ fontSize: '16px' }}>{title}</span>}
-                                   value={totalExpResultCount} />
-                    </Col>
-                    <Col span={5} style={{ width: '300px', marginTop: '10px',
-                        transform: 'translateX(-5px) translateY(-5px)',}}>
-                        <CustomPieChart
-                            data={scanPanelData}
-                            innerRadius={27}
-                            deltaRadius={2}
-                            outerRadius={33}
-                            cardWidth={90}
-                            cardHeight={90}
-                            hasDynamicEffect={true}
-                        />
-                    </Col>
-                    <Col span={1} style={{ width: '300px', marginTop: '10px' }} />
-                    <Col span={8} style={{ width: '450px', height: '100px', paddingTop: '5px', marginTop: '15px',
-                        transform: 'translateX(10px) translateY(-5px)', }}>
-                        <StatusPanel scanPanelData={scanPanelData} orientation="vertical" />
-                    </Col>
+        let totalExpResultCount = brutCount + defensCount + privCount;
+        const scanPanelData: StatusItem[] = [
+            { color: '#E63F3F', label: panelDataTitle1, value: brutCount },
+            { color: '#f38b47', label: panelDataTitle2, value: privCount },
+            { color: '#468DFF', label: panelDataTitle3, value: defensCount }];
+        return (
+            <Row style={{ width: '100%', marginTop: '20px', paddingRight: '10px' }}>
+                <Col span={7} style={{ paddingTop: '20px', width: '400px', height: '90px', marginLeft: '20px' }}>
+                    <Statistic title={<span style={{ fontSize: '16px' }}>{title}</span>}
+                               value={totalExpResultCount} />
+                </Col>
+                <Col span={5} style={{
+                    width: '300px', marginTop: '10px',
+                    transform: 'translateX(-5px) translateY(-5px)',
+                }}>
+                    <CustomPieChart
+                        data={scanPanelData}
+                        innerRadius={27}
+                        deltaRadius={2}
+                        outerRadius={33}
+                        cardWidth={90}
+                        cardHeight={90}
+                        hasDynamicEffect={true}
+                    />
+                </Col>
+                <Col span={1} style={{ width: '300px', marginTop: '10px' }} />
+                <Col span={8} style={{
+                    width: '450px', height: '100px', paddingTop: '5px', marginTop: '15px',
+                    transform: 'translateX(10px) translateY(-5px)',
+                }}>
+                    <StatusPanel scanPanelData={scanPanelData} orientation="vertical" />
+                </Col>
 
-                </Row>);
-        } else {
-            return (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                    <Card bordered={true}
-                          style={{ backgroundColor: '#ffffff', width: '100%' }}>
-                        <LoadingOutlined style={{ fontSize: '3em' }} />
-                    </Card>
-                </div>);
-        }
+            </Row>);
+
     };
 
 
@@ -331,7 +319,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const {agentOriginData,
+                    const {
+                        agentOriginData,
 
                         bruteforceTTPsOriginData,
                         privilegeescalationTTPsOriginData,
@@ -344,7 +333,6 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                         <div>
                             {/* <Button onClick={this.openModal}>添加TTPs</Button> */}
                             <Row gutter={[12, 6]} style={{ marginTop: '0px' }}>
-                                {this.renderTTPsModal()}
                                 <Col md={24}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         <Col span={24}>
@@ -378,8 +366,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                                 backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                                             }}
                                                         >
-                                                            {this.renderPanelAndPieChart(vulnOriginData, '已捕获威胁',
-                                                                '风险等级1', '风险等级2', '风险等级3')}
+                                                            {this.renderPanelAndPieChart(brutCount, privCount, defensCount, '已捕获威胁',
+                                                                '暴力破解', '权限提升', '防御规避')}
                                                         </Card>
                                                     </Col>
                                                     <Col span={5} style={{ marginLeft: '0px' }}>
@@ -397,7 +385,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span style={{fontSize:'16px'}}>暴力破解</span>}
+                                                                    <Statistic title={<span
+                                                                        style={{ fontSize: '16px' }}>暴力破解</span>}
                                                                                value={brutCount}
                                                                     />
                                                                 </Col>
@@ -420,7 +409,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span style={{fontSize:'16px'}}>权限提升</span>}
+                                                                    <Statistic title={<span
+                                                                        style={{ fontSize: '16px' }}>权限提升</span>}
                                                                                value={privCount} />
                                                                 </Col>
 
@@ -442,7 +432,8 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                         >
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span style={{fontSize:'16px'}}>防御规避</span>}
+                                                                    <Statistic title={<span
+                                                                        style={{ fontSize: '16px' }}>防御规避</span>}
                                                                                value={defensCount} />
                                                                 </Col>
 
@@ -481,7 +472,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                     <div style={{ flexGrow: 1 }}></div>
                                                 </Menu>
                                                 <Card bordered={false}>{
-                                                    this.renderCurrentPanel(agentOriginData,bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData)}
+                                                    this.renderCurrentPanel(agentOriginData, bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData)}
                                                 </Card>
                                             </Card>
                                         </Col>
@@ -489,7 +480,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                 </Col>
                             </Row>
                         </div>
-                    )
+                    );
                 }}
 
             </DataContext.Consumer>

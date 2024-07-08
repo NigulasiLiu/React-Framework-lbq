@@ -337,20 +337,19 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                 {
                     title: '状态',
                     dataIndex: 'status',
-                    onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
+                    onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status == value,
                     filters: [
                         {
                             text: 'Online',
-                            value: 'Online',
+                            value: '1',
                         },
                         {
                             text: 'Offline',
-                            value: 'Offline',
+                            value: '0',
                         },
                     ],
-                    // 修改这里使用record参数，确保函数能访问到当前行的数据
                     render: (text: string, record: hostinventoryColumnsType) => (
-                        <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
+                        <Badge status={record.status === '1' ? 'success' : 'error'} text={record.status === '1' ? 'Online' : 'Offline'} />
                     ),
                 },
                 {
@@ -469,8 +468,8 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                         vulnHostCount, hostCount,
                         HoneyPotHostCount, TTPsHostCount, VirusHostCount,
                     } = context;
-                    const hostOnlineCount = agentMetaData_status.typeCount.get('Online') || 0;
-                    const hostOfflineCount = agentMetaData_status.typeCount.get('Offline') || 0;
+                    const hostOnlineCount = agentMetaData_status.typeCount.get('1') || 0;
+                    const hostOfflineCount = agentMetaData_status.typeCount.get('0') || 0;
                     //StatusLabel数据
                     const runningStatusData: StatusItem[] = [
                         { color: '#22BC44', label: '运行中 ', value: Number(hostOnlineCount) },

@@ -167,31 +167,37 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                             }}
                     >
                         <Row>
-                            {hideSiderMenu ? null : (responsive?.isMobile ? (
-                                <Popover
-                                    content={<SiderCustom popoverHide={turn.turnOff} />}
-                                    trigger="click"
-                                    placement="bottomLeft"
-                                    visible={visible}
-                                    onVisibleChange={(visible) => (visible ? turn.turnOn() : turn.turnOff())}
-                                >
-                                    <BarsOutlined className="header-row" />
-                                </Popover>
-                            ) : props.collapsed ? (
-                                <Tooltip title="展开"> {/* 添加Tooltip并设置title为"展开" */}
-                                    <MenuUnfoldOutlined
-                                        className="header-row"
-                                        onClick={props.toggle}
-                                    />
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title="收起"> {/* 添加Tooltip并设置title为"收起" */}
-                                    <MenuFoldOutlined
-                                        className="header-row"
-                                        onClick={props.toggle}
-                                    />
-                                </Tooltip>
-                            ))}
+                            {/*{hideSiderMenu ? null : (responsive?.isMobile ? (*/}
+                            {/*    <Popover*/}
+                            {/*        content={<SiderCustom popoverHide={turn.turnOff} />}*/}
+                            {/*        trigger="click"*/}
+                            {/*        placement="bottomLeft"*/}
+                            {/*        visible={visible}*/}
+                            {/*        onVisibleChange={(newVisible) => {*/}
+                            {/*            console.log('Popover visibility changed:', newVisible);*/}
+                            {/*            if (newVisible !== visible) {*/}
+                            {/*                newVisible ? turn.turnOn() : turn.turnOff();*/}
+                            {/*            }*/}
+                            {/*        }}*/}
+                            {/*    >*/}
+                            {/*        <BarsOutlined className="header-row" />*/}
+                            {/*    </Popover>*/}
+
+                            {/*) : props.collapsed ? (*/}
+                            {/*    <Tooltip title="展开"> /!* 添加Tooltip并设置title为"展开" *!/*/}
+                            {/*        <MenuUnfoldOutlined*/}
+                            {/*            className="header-row"*/}
+                            {/*            onClick={props.toggle}*/}
+                            {/*        />*/}
+                            {/*    </Tooltip>*/}
+                            {/*) : (*/}
+                            {/*    <Tooltip title="收起"> /!* 添加Tooltip并设置title为"收起" *!/*/}
+                            {/*        <MenuFoldOutlined*/}
+                            {/*            className="header-row"*/}
+                            {/*            onClick={props.toggle}*/}
+                            {/*        />*/}
+                            {/*    </Tooltip>*/}
+                            {/*))}*/}
                             {!hideSiderMenu && (//backgroundColor:'#F6F7FB',
                                 <div style={{ color: '#000', marginLeft: '15px' }}>
                                     Community Edition v1.9.1

@@ -15,7 +15,7 @@ import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { convertUnixTime, determineOS } from '../ContextAPI/DataService';
 import {
     Agent_uuid_Data_API,
-    Assets_Data_API, BaseLine_linux_uuid_Data_API, BaseLine_windows_uuid_Data_API,
+    Assets_Data_API, Assets_uuid_Data_API, BaseLine_linux_uuid_Data_API, BaseLine_windows_uuid_Data_API,
     Fim_Data_API, Fim_uuid_Data_API, Honey_uuid_Data_API,
     Monitor_Data_API, Monitor_uuid_Data_API,
     Port_Data_API, Port_uuid_Data_API,
@@ -360,7 +360,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     'UUID': filteredData.uuid,
                     '主机名称': filteredData.host_name,
                     '操作系统': filteredData.os_version,
-                    '在线状态': filteredData.status,
+                    '在线状态': filteredData.status==='1'?"Online":"Offline",
                     '最后一次上线': filteredData.last_seen,//convertUnixTime(filteredData.last_seen),
                     '磁盘大小': filteredData.disk_total,
                     '内存大小': filteredData.mem_total,
@@ -383,8 +383,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                             <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
                                 <Text style={{ color: '#686E7A' }} strong>{key}: </Text>
                                 {key === '在线状态' ? (
-                                    <Badge status={filteredData.status === 'Online' ? 'success' : 'error'}
-                                           text={filteredData.status} />
+                                    <Badge status={filteredData.status === '1' ? 'success' : 'error'}
+                                           text={filteredData.status==='1'?"Online":"Offline"} />
                                 ) : (
                                     <Text>{value}</Text>
                                 )}
@@ -403,46 +403,10 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
     };
 
 
-    renderTable = (OriginData: any[], api: string, title: string, timeColumnIndex: string[], column: any[], currentPanel: string,
+    renderTable = (OriginData: any[], apiUuid: (uuid: string) => string, uuid:string,title: string, timeColumnIndex: string[], column: any[], currentPanel: string,
                    searchIndex: string[],
     ) => {
-        if (OriginData !== undefined) {
-            // 确保OriginData总是作为数组处理
-            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-            if (filteredData.length > 0) {
-                return (
-                    <div style={{ fontWeight: 'bolder', width: '100%' }}>
-                        <Card bordered={true}
-                              style={{ backgroundColor: '#ffffff' }}>
-                            <Row>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    marginBottom: 8,
-                                    fontWeight: 'bold',
-                                }}>
-                                    <h2 style={{
-                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
-                                        marginLeft: '0px',
-                                    }}>{title}</h2>
-                                </div>
-                            </Row>
-                            <DataDisplayTable
-                                externalDataSource={filteredData}
-                                apiEndpoint={api}
-                                timeColumnIndex={timeColumnIndex}
-                                columns={column}
-                                currentPanel={currentPanel}
-                                searchColumns={searchIndex}
-                            />
-                        </Card>
-                    </div>
-                );
-            }
-        }
+        const filteredData = (Array.isArray(OriginData) ? OriginData : [OriginData]);
         return (
             <div style={{ fontWeight: 'bolder', width: '100%' }}>
                 <Card bordered={true}
@@ -463,8 +427,10 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         </div>
                     </Row>
                     <DataDisplayTable
-                        externalDataSource={[]}
-                        apiEndpoint={api}
+                        externalDataSource={filteredData}
+                        apiEndpoint={''}
+                        apiUuid={apiUuid}
+                        uuid={uuid}
                         timeColumnIndex={timeColumnIndex}
                         columns={column}
                         currentPanel={currentPanel}
@@ -474,6 +440,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
             </div>
         );
     };
+
 
     renderDataCard = (OriginData: any[], title: string) => {
         if (OriginData !== undefined) {
@@ -516,8 +483,8 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
-                        refreshDataFromAPIWithUuid,
                         agentUuidOriginData,
+                        assetsUuidOriginData,
                         monitorUuidOriginData,
                         fimUuidOriginData,
                         vulnUuidOriginData,
@@ -525,15 +492,17 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         processUuidOriginData,
                         linuxBaseLineUuidOriginData,
                         windowsBaseLineUuidOriginData,
-                        honeyUuidOriginData, monitoredOriginData,
-                        assetOriginData,
+                        honeyUuidOriginData,
+
+                        // monitoredOriginData,
+                        // assetOriginData,
                         // fimOriginData,
                         // agentOriginData,
                         // linuxBaseLineCheckOriginData,
                         // windowsBaseLineCheckOriginData,
                         // vulnOriginData, portOriginData,
                         // processOriginData,
-                        portOriginData,
+                        // portOriginData,
 
                         bruteforceTTPsMetaData_uuid,
                         privilegeescalationTTPsMetaData_uuid,
@@ -562,15 +531,17 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     //     // this.setTimerForUuidData();
                     // }
                     const agentOriginData = agentUuidOriginData;
+                    const assetOriginData = assetsUuidOriginData;
+                    const monitoredOriginData = monitorUuidOriginData;
+                    const fimOriginData = fimUuidOriginData;
+
+                    const portOriginData = portUuidOriginData;
+                    const processOriginData = processUuidOriginData;
+
+
                     const vulnOriginData = vulnUuidOriginData;
                     const linuxBaseLineCheckOriginData = linuxBaseLineUuidOriginData;
                     const windowsBaseLineCheckOriginData = windowsBaseLineUuidOriginData;
-                    const honeyPotOriginData = honeyUuidOriginData;
-                    const monitorOriginData = monitorUuidOriginData;
-                    const fimOriginData = fimUuidOriginData;
-
-                    // const portOriginData = portUuidOriginData;
-                    const processOriginData = processUuidOriginData;
 
 
                     const HoneyPotHostCount = (HoneyPotMetaData_uuid && HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
@@ -980,27 +951,27 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Card>
                                     </Row>
                                     <Row ref={this.openPortsRef} gutter={[8, 16]}>
-                                        {this.renderTable(portOriginData, Port_Data_API, '开放端口', [], openPortsColumns, 'open_ports_' + this.state.host_uuid + '_details',
+                                        {this.renderTable(portOriginData, Port_uuid_Data_API, host_uuid,'开放端口', [], openPortsColumns, 'open_ports_' + this.state.host_uuid + '_details',
                                             ['port_number', 'port_name'],
                                         )}
                                     </Row>
                                     <Row ref={this.processRef} gutter={[8, 16]}>
-                                        {this.renderTable(processOriginData, Process_Data_API, '运行进程', ['createTime'], runningProcessesColumns, 'process_' + this.state.host_uuid + '_details'
+                                        {this.renderTable(processOriginData, Process_uuid_Data_API, host_uuid,'运行进程', ['createTime'], runningProcessesColumns, 'process_' + host_uuid + '_details'
                                             , ['pid', 'name', 'userName', 'cmdline'],
                                         )}
                                     </Row>
                                     <Row ref={this.assetRef} gutter={[8, 16]}>
-                                        {this.renderTable(assetOriginData, Assets_Data_API, '系统服务', [], systemServicesColumns, 'services_' + this.state.host_uuid + '_details'
+                                        {this.renderTable(assetOriginData, Assets_uuid_Data_API, host_uuid,'系统服务', [], systemServicesColumns, 'services_' + host_uuid + '_details'
                                             , ['service', 'port', 'ostype'],
                                         )}
                                     </Row>
                                     <Row ref={this.MonitorRef} gutter={[8, 16]}>
-                                        {this.renderTable(monitoredOriginData, Monitor_Data_API, '文件监控', ['timestamp'], monitoredColumns, 'monitored_' + this.state.host_uuid + '_details'
+                                        {this.renderTable(monitoredOriginData, Monitor_uuid_Data_API,host_uuid, '文件监控', ['timestamp'], monitoredColumns, 'monitored_' + host_uuid + '_details'
                                             , ['file_path'],
                                         )}
                                     </Row>
                                     <Row ref={this.fimRef} gutter={[8, 16]}>
-                                        {this.renderTable(fimOriginData, Fim_Data_API, '文件完整性检验', ['event_time'], fimColumns, 'fim_' + this.state.host_uuid + '_details'
+                                        {this.renderTable(fimOriginData, Fim_uuid_Data_API, host_uuid,'文件完整性检验', ['event_time'], fimColumns, 'fim_' + host_uuid + '_details'
                                             , ['filename'],
                                         )}
                                     </Row>

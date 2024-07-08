@@ -307,7 +307,7 @@ const DataManager: React.FC = ({ children }) => {
                 // console.log('N1231231:setDataFunction');
                 setDataFunction(data); // 更新状态
             } else {
-                console.error('No matching function found for the API endpoint');
+                console.error('refreshDataFromAPIWithUuid:No matching function found for the API endpoint');
                 CustomNotification.openNotification2('error', `获取接口 ${apiEndpointToVariableNameUUID[endpointString]} 数据失败`);
             }
         } catch (error) {
@@ -329,8 +329,10 @@ const DataManager: React.FC = ({ children }) => {
                 // message.success(apiEndpoint + ' Data refreshed successfully');
                 // CustomNotification.successNotification(variableName);
             } else {
-                console.error('No matching function found for the API endpoint');
-                CustomNotification.openNotification('error', `No matching function found for the API endpoint ${variableName}`);
+                if (!apiEndpoint.includes('?')) {
+                    console.error('refreshDataFromAPI:No matching function found for the API endpoint');
+                    CustomNotification.openNotification('error', `refreshDataFromAPI:No matching function found for the API endpoint ${variableName}`);
+                }
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -360,11 +362,9 @@ const DataManager: React.FC = ({ children }) => {
         refreshDataFromAPI(Privilege_TTPs_API);
         refreshDataFromAPI(Defense_TTPs_API);
 
-
-        // refreshDataFromAPI(User_Data_API);
         refreshDataFromAPI(Isolate_Data_API);
-
-        refreshDataFromAPI(Virus_Data_API);
+        // refreshDataFromAPI(Virus_Data_API);
+        // refreshDataFromAPI(User_Data_API);
 
 
         const interval_1 = setInterval(() => {

@@ -303,7 +303,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     key: 'uuid',
                     filterIcon: (filtered: boolean) => <SearchOutlined
                         style={{ color: filtered ? '#1890ff' : undefined }} />,
-                    render: (text: string, record: baselineDetectColumnsType) => (
+                    render: (text: string, record: vulDetectColumnsType) => (
                         <div>
                             <div>
                                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
@@ -314,7 +314,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         color: '#4086FF',
                                         padding: '0 0',
                                     }}>
-                                        {record.uuid?record.uuid.slice(0, 5):'-'}
+                                        <Tooltip title={record.uuid}>
+                                            <div style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '80px',
+                                            }}>
+                                                {record.uuid || '-'}
+                                            </div>
+                                        </Tooltip>
                                     </Button>
                                 </Link>
                             </div>
@@ -377,10 +386,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 {
                     title: '最新扫描时间',
                     dataIndex: 'last_checked',
-                    sorter: (a: { occurrenceTime: string | number | Date; }, b: {
-                        occurrenceTime: string | number | Date;
-                    }) => new Date(a.occurrenceTime).getTime() - new Date(b.occurrenceTime).getTime(),
-                    sortDirections: ['ascend', 'descend'],
+                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    sorter: (a: any, b: any) => parseFloat(a.last_checked) - parseFloat(b.last_checked),
                 },
                 {
                     title: '操作',
@@ -433,7 +440,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
     componentDidMount() {
         const queryParams = new URLSearchParams(this.props.location.search);
-        const host_uuid = queryParams.get('uuid')||'default';
+        const host_uuid = queryParams.get('uuid') || 'default';
         this.setState({
             host_uuid,
         });
@@ -1005,7 +1012,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         this.setState({ currentPanel: e.key });
     };
     renderVulOrBLTable = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string, searchIndex: string[],
-                          VulOriginData: any[], WinBLOriginData: any[], LinuxBLOriginData: any[],os_type:string) => {
+                          VulOriginData: any[], WinBLOriginData: any[], LinuxBLOriginData: any[], os_type: string) => {
         if (uuid !== undefined) {
             if (currentPanel == 'vulnerabilityDetailList') {
                 if (VulOriginData !== undefined) {
@@ -1051,7 +1058,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 }
             }
             if (currentPanel == 'baseLineDetectDetailList') {
-                if(os_type=="windows"){
+                if (os_type == 'windows') {
                     if (WinBLOriginData !== undefined) {
                         const originDataArray = Array.isArray(WinBLOriginData) ? WinBLOriginData : [WinBLOriginData];
                         const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
@@ -1091,7 +1098,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         );
                     }
                 }
-                if(os_type=="linux"){
+                if (os_type == 'linux') {
                     if (LinuxBLOriginData !== undefined) {
                         const originDataArray = Array.isArray(LinuxBLOriginData) ? LinuxBLOriginData : [LinuxBLOriginData];
                         const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
@@ -1152,6 +1159,45 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             // />
         }
     };
+
+    renderTable = (OriginData: any[], apiUuid: (uuid: string) => string, uuid:string,title: string, timeColumnIndex: string[], column: any[], currentPanel: string,
+                   searchIndex: string[],
+    ) => {
+        const filteredData = (Array.isArray(OriginData) ? OriginData : [OriginData]);
+        return (
+            <div style={{ fontWeight: 'bolder', width: '100%' }}>
+                <Card bordered={true}
+                      style={{ backgroundColor: '#ffffff' }}>
+                    <Row>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: 8,
+                            fontWeight: 'bold',
+                        }}>
+                            <h2 style={{
+                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                marginLeft: '0px',
+                            }}>{title}</h2>
+                        </div>
+                    </Row>
+                    <DataDisplayTable
+                        externalDataSource={filteredData}
+                        apiEndpoint={''}
+                        apiUuid={apiUuid}
+                        uuid={uuid}
+                        timeColumnIndex={timeColumnIndex}
+                        columns={column}
+                        currentPanel={currentPanel}
+                        searchColumns={searchIndex}
+                    />
+                </Card>
+            </div>
+        );
+    };
+
     renderCurrentPanel = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
                           vulOriginData: any[],
                           HoneyPotOriginData: any[],
@@ -1172,7 +1218,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid);
 
                 if (!filteredData) {
-                    console.error("No data available for this host.");
+                    console.error('No data available for this host.');
                     // return (
                     //     <div>
                     //         <Alert message="No data available for this host." type="warning" showIcon />
@@ -1190,7 +1236,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
                 //针对基线检查数据的筛选
                 if (baselineOriginData === undefined) {
-                    console.error("No baselineOriginData available for this host.");
+                    console.error('No baselineOriginData available for this host.');
                     // return (
                     //     <div>
                     //         <Alert message="No baselineOriginData available for this host." type="warning" showIcon />
@@ -1211,7 +1257,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 }
                 const filteredBLData = blDataArray.filter(Item => Item.uuid === this.state.host_uuid);
                 if (!filteredBLData) {
-                    console.error("No filteredBLData available for this host.");
+                    console.error('No filteredBLData available for this host.');
                     // return (
                     //     <div>
                     //         <Alert message="No filteredBLData available for this host." type="warning" showIcon />
@@ -1222,7 +1268,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 }
                 const filteredAdjData = filteredBLData.filter(Item => Item.adjustment_requirement === '建议调整');
                 if (!filteredAdjData) {
-                    console.error("No filteredAdjData available for this host.");
+                    console.error('No filteredAdjData available for this host.');
                     // return (
                     //     <div>
                     //         <Alert message="No filteredAdjData available for this host." type="warning" showIcon />
@@ -1327,7 +1373,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                             style={{ fontSize: '16px' }}>待处理告警</span>}
                                                                                    value={HoneyPotHostCount + TTPsHostCount + 40} />
                                                                     </Col>
-                                                                    <Col span={8} style={{ transform: 'translateX(-130%) translateY(45px)' }}>
+                                                                    <Col span={8}
+                                                                         style={{ transform: 'translateX(-130%) translateY(45px)' }}>
                                                                         <CustomPieChart
                                                                             data={AlertData_uuid}
                                                                             innerRadius={30}
@@ -1350,52 +1397,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             </Card>
                                                         </Col>
                                                         <Col md={3} />
-                                                        {/*<Col md={10}>*/}
-                                                        {/*    <Card*/}
-                                                        {/*        bordered={false}*/}
-                                                        {/*        style={{*/}
-                                                        {/*            height: '100px',*/}
-                                                        {/*            width: '360px',*/}
-                                                        {/*            minWidth: '150px', // 最小宽度300px，而非100px*/}
-                                                        {/*            display: 'flex',*/}
-                                                        {/*            alignItems: 'center',*/}
-                                                        {/*            justifyContent: 'center',*/}
-                                                        {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
-                                                        {/*        }}*/}
-                                                        {/*    >*/}
-                                                        {/*        <Row>*/}
-                                                        {/*            <Col style={{ marginRight: '250px' }} span={24}>*/}
-                                                        {/*                <Statistic title={<span*/}
-                                                        {/*                    style={{ fontSize: '16px' }}>累计处理的告警</span>}*/}
-                                                        {/*                           value={0} />*/}
-                                                        {/*            </Col>*/}
-
-                                                        {/*        </Row>*/}
-                                                        {/*    </Card>*/}
-                                                        {/*</Col>*/}
-                                                        {/*<Col md={7}>*/}
-                                                        {/*    <Card*/}
-                                                        {/*        bordered={false}*/}
-                                                        {/*        style={{*/}
-                                                        {/*            height: '100px',*/}
-                                                        {/*            width: '300px',*/}
-                                                        {/*            minWidth: '150px', // 最小宽度300px，而非100px*/}
-                                                        {/*            display: 'flex',*/}
-                                                        {/*            alignItems: 'center',*/}
-                                                        {/*            justifyContent: 'center',*/}
-                                                        {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
-                                                        {/*        }}*/}
-                                                        {/*    >*/}
-                                                        {/*        <Row>*/}
-                                                        {/*            <Col style={{ marginRight: '250px' }} span={24}>*/}
-                                                        {/*                <Statistic title={<span*/}
-                                                        {/*                    style={{ fontSize: '16px' }}>白名单规则数</span>}*/}
-                                                        {/*                           value={0} />*/}
-                                                        {/*            </Col>*/}
-                                                        {/*        */}
-                                                        {/*        </Row>*/}
-                                                        {/*    </Card>*/}
-                                                        {/*</Col>*/}
                                                     </Row>
 
                                                 </Card>
@@ -1404,42 +1405,33 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         <Row gutter={[12, 6]}/*(列间距，行间距)*/
                                              style={{ width: '100%', margin: '0 auto' }}>
                                             <Col md={24}>
-                                                {/*<Card bordered={false}>*/}
-                                                {/*    <div style={{*/}
-                                                {/*        display: 'flex',*/}
-                                                {/*        justifyContent: 'space-between',*/}
-                                                {/*        marginBottom: 16,*/}
-                                                {/*        fontWeight: 'bold',*/}
-                                                {/*    }}>*/}
-                                                {/*        <h2 style={{*/}
-                                                {/*            fontWeight: 'bold',*/}
-                                                {/*            marginLeft: '0px',*/}
-                                                {/*        }}>告警内容</h2>*/}
-                                                {/*        /!*<Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>*!/*/}
-                                                {/*    </div>*/}
-
-
-                                                {/*</Card>*/}
-
-                                                {constRenderTable(
-                                                    filteredHoneyPotData, '蜜罐信息', [],
-                                                    Honeypotcolumns, 'HoneypotDefenselistDetails', Honey_API, ['uuid'],
-                                                )}
-                                                {constRenderTable(
-                                                    filteredTTPsData1, '威胁狩猎-暴力破解', [],
-                                                    threatHuntingColumns, 'brute-force-details',
-                                                    Brute_TTPs_API, ['uuid', 'atk_ip'],
-                                                )}
-                                                {constRenderTable(
-                                                    filteredTTPsData2, '威胁狩猎-权限提升', [],
-                                                    threatHuntingColumns_2, 'privilege-escalation-details',
-                                                    Privilege_TTPs_API, ['uuid', 'atk_ip'],
-                                                )}
-                                                {constRenderTable(
-                                                    filteredTTPsData3, '威胁狩猎-防御规避', [],
-                                                    threatHuntingColumns_2, 'defense-avoidance-details',
-                                                    Defense_TTPs_API, ['uuid', 'atk_ip'],
-                                                )}
+                                                {this.renderTable(HoneyPotOriginData,Honey_uuid_Data_API,host_uuid,"蜜罐信息",[],
+                                                Honeypotcolumns,'HoneypotDefenselistDetails',['uuid'])}
+                                                {this.renderTable(bruteforceTTPsOriginData,Brute_TTPs_uuid_Data_API,host_uuid,"威胁狩猎-暴力破解",[],
+                                                    threatHuntingColumns, 'brute-force-details',['uuid','atk_ip'])}
+                                                {this.renderTable(privilegeescalationTTPsOriginData,Privilege_TTPs_uuid_Data_API,host_uuid,'威胁狩猎-权限提升', [],
+                                                    threatHuntingColumns_2, 'privilege-escalation-details', ['uuid', 'atk_ip'])}
+                                                {this.renderTable(defenseavoidanceTTPsOriginData,Defense_TTPs_uuid_Data_API,host_uuid,"威胁狩猎-防御规避",[],
+                                                    threatHuntingColumns_2, 'defense-avoidance-details',['uuid', 'atk_ip'])}
+                                                {/*{constRenderTable(*/}
+                                                {/*    filteredHoneyPotData, '蜜罐信息', [],*/}
+                                                {/*    Honeypotcolumns, 'HoneypotDefenselistDetails', Honey_API, ['uuid'],*/}
+                                                {/*)}*/}
+                                                {/*{constRenderTable(*/}
+                                                {/*    filteredTTPsData1, '威胁狩猎-暴力破解', [],*/}
+                                                {/*    threatHuntingColumns, 'brute-force-details',*/}
+                                                {/*    Brute_TTPs_API, ['uuid', 'atk_ip'],*/}
+                                                {/*)}*/}
+                                                {/*{constRenderTable(*/}
+                                                {/*    filteredTTPsData2, '威胁狩猎-权限提升', [],*/}
+                                                {/*    threatHuntingColumns_2, 'privilege-escalation-details',*/}
+                                                {/*    Privilege_TTPs_API, ['uuid', 'atk_ip'],*/}
+                                                {/*)}*/}
+                                                {/*{constRenderTable(*/}
+                                                {/*    filteredTTPsData3, '威胁狩猎-防御规避', [],*/}
+                                                {/*    threatHuntingColumns_2, 'defense-avoidance-details',*/}
+                                                {/*    Defense_TTPs_API, ['uuid', 'atk_ip'],*/}
+                                                {/*)}*/}
                                             </Col>
                                         </Row>
                                     </Col>
@@ -1484,12 +1476,21 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             backgroundColor: '#F6F7FB', // 设置Card的背景颜色
                                                         }}
                                                     >
-                                                        <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
+                                                        <Row style={{
+                                                            width: '100%',
+                                                            marginTop: '0px',
+                                                            paddingRight: '10px',
+                                                        }}>
                                                             <Col span={8}
-                                                                 style={{ paddingTop: '20px', width: '400px', height: '90px' }}>
+                                                                 style={{
+                                                                     paddingTop: '20px',
+                                                                     width: '400px',
+                                                                     height: '90px',
+                                                                 }}>
                                                                 <Statistic
-                                                                    title={<span style={{ fontSize: '16px' }}>待处理漏洞</span>}
-                                                                    value={totalExpResultCount-ignoredVulnerabilitiesCount} />
+                                                                    title={<span
+                                                                        style={{ fontSize: '16px' }}>待处理漏洞</span>}
+                                                                    value={totalExpResultCount - ignoredVulnerabilitiesCount} />
                                                             </Col>
                                                             <Col span={9} style={{
                                                                 width: '400px',
@@ -1566,9 +1567,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                     </Card>
                                                 </Col>
                                                 <div className="container">
-                                                    <div className={this.state.isSidebarOpen ? 'overlay open' : 'overlay'}
-                                                         onClick={this.closeSidebar}></div>
-                                                    <div className={this.state.isSidebarOpen ? 'sidebar open' : 'sidebar'}>
+                                                    <div
+                                                        className={this.state.isSidebarOpen ? 'overlay open' : 'overlay'}
+                                                        onClick={this.closeSidebar}></div>
+                                                    <div
+                                                        className={this.state.isSidebarOpen ? 'sidebar open' : 'sidebar'}>
                                                         <button onClick={() => this.toggleSidebar}
                                                                 className="close-btn">&times;</button>
                                                         <VulnerabilityDetailsSidebar
@@ -1590,7 +1593,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     {this.renderVulOrBLTable(APP_Server_URL + '/api/vulndetetion/query_uuid?uuid=',
                                         this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel,
                                         '漏洞内容', ['port'],
-                                        vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData,os_version)}
+                                        vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
                                 </Row>
                             </div>
                         );
@@ -1645,7 +1648,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                     fontSize: '16px',
                                                                     transform: 'translateX(70%)',
                                                                 }}>最近检查通过率</span>}
-                                                                           value={100 * (1 - filteredAdjData.length / filteredBLData.length) + '%'} />
+                                                                           value={String(100 * (1 - filteredAdjData.length / filteredBLData.length)).slice(0,4) + '%'} />
                                                             </Col>
                                                             <Col span={12} style={{
                                                                 height: '90px',
@@ -1798,7 +1801,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     {this.renderBLWhiteListModal()}
                                     {this.renderVulOrBLTable(APP_Server_URL + '/api/baseline_check/' + os_version + '/query_uuid?uuid=',
                                         this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'],
-                                        vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData,os_version)}
+                                        vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
                                 </Row>
                             </div>
                         );
@@ -1846,12 +1849,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         }
     };
 
-    setTimerForUuidData = () =>{
-        this.setState({dataInitialized:true});
+    setTimerForUuidData = () => {
+        this.setState({ dataInitialized: true });
         setInterval(() => {
             this.setState({ dataInitialized: false });
         }, 4 * 60 * 1000); // 4 minutes
-    }
+    };
 
     render() {
         return (
@@ -1864,27 +1867,24 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             </div>); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
-                    const {refreshDataFromAPIWithUuid,
+                    const {
+                        refreshDataFromAPIWithUuid,
                         agentUuidOriginData,
                         monitorUuidOriginData,
-                        fimUuidOriginData,
                         vulnUuidOriginData,
-                        portUuidOriginData,
-                        processUuidOriginData,
                         linuxBaseLineUuidOriginData,
                         windowsBaseLineUuidOriginData,
                         honeyUuidOriginData,
-                        // bruteTTPsUuidOriginData,
-                        // privilegeTTPsUuidOriginData,
-                        // defenseTTPsUuidOriginData,
-                        // assetsUuidOriginData,
+                        bruteTTPsUuidOriginData,
+                        privilegeTTPsUuidOriginData,
+                        defenseTTPsUuidOriginData,
 
                         // linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
                         // vulnOriginData, honeyPotOriginData,
                         virusOriginData,
-                        bruteforceTTPsOriginData,
-                        privilegeescalationTTPsOriginData,
-                        defenseavoidanceTTPsOriginData,
+                        // bruteforceTTPsOriginData,
+                        // privilegeescalationTTPsOriginData,
+                        // defenseavoidanceTTPsOriginData,
                         bruteforceTTPsMetaData_uuid,
                         privilegeescalationTTPsMetaData_uuid,
                         defenseavoidanceTTPsMetaData_uuid,
@@ -1893,9 +1893,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     } = context;
                     const dataInitialized = this.state.dataInitialized;
                     const host_uuid = this.state.host_uuid;
-                    console.log("DetailsPage refreshDataFromAPIWithUuid");
+                    console.log('DetailsPage refreshDataFromAPIWithUuid');
                     if (refreshDataFromAPIWithUuid && !dataInitialized) {
-                        console.log("DetailsPage refreshDataFromAPIWithUuid_2");
+                        console.log('DetailsPage refreshDataFromAPIWithUuid_2');
                         refreshDataFromAPIWithUuid(Agent_uuid_Data_API, host_uuid);
                         refreshDataFromAPIWithUuid(Monitor_uuid_Data_API, host_uuid);
                         refreshDataFromAPIWithUuid(Fim_uuid_Data_API, host_uuid);
@@ -1905,10 +1905,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         refreshDataFromAPIWithUuid(BaseLine_linux_uuid_Data_API, host_uuid);
                         refreshDataFromAPIWithUuid(BaseLine_windows_uuid_Data_API, host_uuid);
                         refreshDataFromAPIWithUuid(Honey_uuid_Data_API, host_uuid);
-                        // refreshDataFromAPIWithUuid(Assets_uuid_Data_API, host_uuid);
-                        // refreshDataFromAPIWithUuid(Brute_TTPs_uuid_Data_API, host_uuid);
-                        // refreshDataFromAPIWithUuid(Privilege_TTPs_uuid_Data_API, host_uuid);
-                        // refreshDataFromAPIWithUuid(Defense_TTPs_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Assets_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Brute_TTPs_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Privilege_TTPs_uuid_Data_API, host_uuid);
+                        refreshDataFromAPIWithUuid(Defense_TTPs_uuid_Data_API, host_uuid);
                         this.setTimerForUuidData();
                     }
                     //用xxUuidOriginData代替xxOriginData,
@@ -1917,15 +1917,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     const linuxBaseLineCheckOriginData = linuxBaseLineUuidOriginData;
                     const windowsBaseLineCheckOriginData = windowsBaseLineUuidOriginData;
                     const honeyPotOriginData = honeyUuidOriginData;
-                    const monitorOriginData = monitorUuidOriginData;
-                    const fimOriginData = fimUuidOriginData;
-                    const portOriginData = portUuidOriginData;
-                    const processOriginData = processUuidOriginData;
-
-
-
-
-
+                    const bruteforceTTPsOriginData = bruteTTPsUuidOriginData;
+                    const privilegeescalationTTPsOriginData = privilegeTTPsUuidOriginData;
+                    const defenseavoidanceTTPsOriginData = defenseTTPsUuidOriginData;
 
 
                     const HoneyPotHostCount = (HoneyPotMetaData_uuid && HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
