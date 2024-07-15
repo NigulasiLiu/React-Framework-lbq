@@ -195,21 +195,6 @@ class VirusScanDetailsPage extends React.Component<VirusScanDetailsPageProps, Vi
               <Col md={2} />
             </Row>
             <Row style={{ marginTop: '20px' }}>
-              {/*<FetchDataForTaskTable*/}
-              {/*  apiEndpoint="http://localhost:5000/api/files/diskinfo"*/}
-              {/*  timeColumnIndex={[]}*/}
-              {/*  columns={virusscandetailscolumns}*/}
-              {/*  currentPanel="hostOverviewdiskinfolist"*/}
-              {/*/>*/}
-              {/*<DataDisplayTable*/}
-              {/*    key={'hostOverviewdiskinfolist'}*/}
-              {/*    apiEndpoint={'http://localhost:5000/api/files/diskinfo'}*/}
-              {/*    externalDataSource={[]}*/}
-              {/*    timeColumnIndex={[]}*/}
-              {/*    columns={virusscandetailscolumns}*/}
-              {/*    currentPanel={"hostOverviewdiskinfolist"}*/}
-              {/*    searchColumns={['uuid', 'check_name']}*/}
-              {/*/>*/}
             </Row>
           </Card>
         </Row>

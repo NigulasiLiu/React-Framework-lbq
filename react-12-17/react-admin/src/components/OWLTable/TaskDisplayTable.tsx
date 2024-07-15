@@ -15,7 +15,7 @@ interface GenericDataItem {
     [key: string]: any;
 }
 
-interface ElkeidDisplayTableProps {
+interface TaskDisplayTableProps {
     externalDataSource: any[];
     columns: any[]; // 根据实际列数据结构定义更明确的类型
     timeColumnIndex?: string[];//用于标记'时间'类型的字段，被标记的字段需要从unix时间转换为便于阅读的格式
@@ -45,7 +45,7 @@ interface ElkeidDisplayTableProps {
     handleReload?: () => void;
 }
 
-interface ElkeidDisplayTableState {
+interface TaskDisplayTableState {
     triggerUpdate:number,
     newColumns: any[],
     lastUpdated: string | null;
@@ -73,8 +73,8 @@ interface ElkeidDisplayTableState {
 }
 
 
-class TaskDisplayTable extends React.Component<ElkeidDisplayTableProps, ElkeidDisplayTableState> {
-    constructor(props: ElkeidDisplayTableProps) {
+class TaskDisplayTable extends React.Component<TaskDisplayTableProps, TaskDisplayTableState> {
+    constructor(props: TaskDisplayTableProps) {
         super(props);
         this.state = {
             triggerUpdate:0,

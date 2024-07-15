@@ -67,7 +67,7 @@ const menus: {
             subs: [
                 {
                     key: '/app/RiskManagement/VulnerabilityList',
-                    title: '漏洞检查',
+                    title: '漏洞扫描',
                     icon: 'bug',
                     component: 'VulnerabilityList',
                 },

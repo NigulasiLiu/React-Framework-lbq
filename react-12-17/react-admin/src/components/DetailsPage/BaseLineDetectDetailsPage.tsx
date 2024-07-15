@@ -131,12 +131,6 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card >
-                                    {/*<FetchDataForTaskTable*/}
-                                    {/*    timeColumnIndex={[]}*/}
-                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
-                                    {/*    columns={baseLineDetectCheckedItemColumns}*/}
-                                    {/*    currentPanel='baseLineDetectDetailsCheckedItem'*/}
-                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>
@@ -169,12 +163,6 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                             </Text>
                                         </Row>
                                         <Row style={{ width: '100%', margin: '0 auto' }}>
-                                            {/*<FetchDataForTaskTable*/}
-                                            {/*    apiEndpoint="http://localhost:5000/api/vulnerdetailpage1"*/}
-                                            {/*    timeColumnIndex={[]}*/}
-                                            {/*    columns={baseLineDetectScanResult1Columns}*/}
-                                            {/*    currentPanel="baseLineDetectScanResult1"*/}
-                                            {/*/>*/}
                                         </Row>
                                     </Row>
                                 </Card>
@@ -188,12 +176,6 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                         <Col md={12}>
                             <div className="gutter-box">
                                 <Card bordered={false}>
-                                    {/*<FetchDataForTaskTable*/}
-                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
-                                    {/*    timeColumnIndex={[]}*/}
-                                    {/*    columns={baseLineDetectHostItemColumns}*/}
-                                    {/*    currentPanel='baseLinedetectdetailsHostItem'*/}
-                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>
@@ -203,12 +185,6 @@ class BaseLineDetectDetailsPage extends React.Component<BaseLineDetectDetailsPag
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontWeight: 'bold' }}>
                                         <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginLeft: '0px' }}>检查结果</h2>
                                     </div>
-                                    {/*<FetchDataForTaskTable*/}
-                                    {/*    timeColumnIndex={[]}*/}
-                                    {/*    apiEndpoint="http://localhost:5000/api/FileIntegrityInfo1"*/}
-                                    {/*    columns={baseLineDetectScanResult2Columns}*/}
-                                    {/*    currentPanel='baseLineDetectScanResult2'*/}
-                                    {/*/>*/}
                                 </Card>
                             </div>
                         </Col>

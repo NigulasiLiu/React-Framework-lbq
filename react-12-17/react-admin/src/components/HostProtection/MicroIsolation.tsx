@@ -349,7 +349,7 @@ handleDecryptSubmit = async () => {
       }
     };
     const response = await axios.post(Isolate_decrypt_Data, postData,config);
-    if (response.data.code === 0) {
+    if (response.data.code === 200) {
       message.success('文件解除隔离成功');
     } else {
       message.error('文件解除隔离失败: ' + response.data.message);
@@ -422,7 +422,7 @@ handleEncryptSubmit = async () => {
       }
     };
     const response = await axios.post(Isolate_encrypt_Data, postData,config);
-    if (response.data.code === 0) {
+    if (response.data.code === 200) {
       message.success('文件隔离成功');
     } else {
       message.error('文件隔离失败: ' + response.data.message);

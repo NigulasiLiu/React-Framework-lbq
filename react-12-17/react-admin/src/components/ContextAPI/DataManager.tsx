@@ -1,5 +1,5 @@
 // src/components/DataManager.tsx
-import React, { createContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { createContext, useState, useEffect, Dispatch, SetStateAction, useRef } from 'react';
 import { templateData } from './SeperateData';
 import CustomNotification from '../ui/CustomNotification';
 import useSortedData from './TopFiveDataProvider';
@@ -50,12 +50,16 @@ import {
     Brute_TTPs_uuid_Data_API,
     Privilege_TTPs_uuid_Data_API,
 } from '../../service/config';
-import ReactDOM from 'react-dom';
 import useExpCounts from './useExpCounts';
+import { message } from 'antd';
 
 
 export interface DataContextType {
-    refreshDataFromAPI: (apiEndpoint: string) => Promise<void>;
+    highRiskCount: number,
+    mediumRiskCount: number,
+    lowRiskCount: number,
+
+    refreshDataFromAPI: (apiEndpoint: string, tag:number) => Promise<void>;
 
     fetchLatestData: (apiEndpoint: string,
                       searchField?: string, searchQuery?: string, rangeQuery?: string,
@@ -215,27 +219,47 @@ const apiEndpointToVariableNameUUID: { [key: string]: string } = {
 };
 
 const DataManager: React.FC = ({ children }) => {
+    const [highRiskCount, setHighRiskCount] = useState(0);
+    const [mediumRiskCount, setMediumRiskCount] = useState(0);
+    const [lowRiskCount, setLowRiskCount] = useState(0);
+    const riskLevels = useRef<{ [key: string]: string }>({});
+    //
+    // // 加载 optimized_cve_data.json 文件中的数据（仅加载一次）
+    // useEffect(() => {
+    //     const loadRiskLevels = async () => {
+    //         try {
+    //             const response = await fetch('react-12-17/react-admin/public/optimized_cve_data.json');
+    //             if (!response.ok) {
+    //                 message.error("FETCH CVE JSON FAILED!")
+    //                 console.error("FETCH CVE JSON FAILED!")
+    //                 throw new Error('Failed to load optimized_cve_data.json');
+    //             }
+    //             const data = await response.json();
+    //             riskLevels.current = data;
+    //             message.success("FETCH CVE JSON SUCCEED!")
+    //             console.log("FETCH CVE JSON SUCCEED!")
+    //         } catch (error) {
+    //             console.error('Error loading risk levels:', error);
+    //         }
+    //     };
+    //     loadRiskLevels();
+    // }, []);
+
     const [agentOriginData, setAgentOriginData] = useState<any>([]);
     const [taskDetailsOriginData, settaskDetailsOriginData] = useState<any>([]);
-
     const [monitoredOriginData, setMonitoredOriginData] = useState<any>([]);
     const [fimOriginData, setFimOriginData] = useState<any>([]);
-
     const [portOriginData, setPortOriginData] = useState<any>([]);
     const [processOriginData, setProcessOriginData] = useState<any>([]);
     const [assetOriginData, setAssetOriginData] = useState<any>([]);
     const [linuxBaseLineCheckOriginData, setlinuxBLCheckOriginData] = useState<any>([]);
     const [windowsBaseLineCheckOriginData, setwindowsBLCheckOriginData] = useState<any>([]);
-
     const [vulnOriginData, setVulnOriginData] = useState<any>([]);
-
     const [memHorseOriginData, setmemHorseOriginData] = useState<any>([]);
     const [honeyPotOriginData, sethoneyPotOriginData] = useState<any>([]);
-
     const [bruteforceTTPsOriginData, setbruteforceTTPsOriginData] = useState<any>([]);
     const [privilegeescalationTTPsOriginData, setprivilegeescalationTTPsOriginData] = useState<any>([]);
     const [defenseavoidanceTTPsOriginData, setdefenseavoidanceTTPsOriginData] = useState<any>([]);
-
     // const [usersOriginData, setUsersOriginData] = useState<any>([]);
     const [virusOriginData, setVirusOriginData] = useState<any>([]);
     const [isolationOriginData, setIsolationOriginData] = useState<any>([]);
@@ -313,93 +337,141 @@ const DataManager: React.FC = ({ children }) => {
         } catch (error) {
             const endpointString = apiEndpoint(uuid).toString();
             console.error('Failed to fetch data:', error);
-            CustomNotification.openNotification2('error', `获取接口 ${apiEndpointToVariableNameUUID[endpointString]} 数据失败`);
+            CustomNotification.openNotification2('error', `获取接口 ${endpointString} 数据失败`);
         }
     };
     // 通用的数据刷新函数
-    const refreshDataFromAPI = async (apiEndpoint: string) => {
+    // const refreshDataFromAPI = async (apiEndpoint: string) => {
+    //     try {
+    //         const data = await fetchDataFromAPI({ apiEndpoint });
+    //         // 根据API端点调用对应的设置状态函数
+    //         const setDataFunction = setDataFunctions[apiEndpoint];
+    //         //用于notification显示的字符串
+    //         const variableName = apiEndpointToVariableName[apiEndpoint];
+    //         if (setDataFunction) {
+    //             setDataFunction(data); // 更新状态
+    //             // message.success(apiEndpoint + ' Data refreshed successfully');
+    //             // CustomNotification.successNotification(variableName);
+    //         } else {
+    //             if (!apiEndpoint.includes('?')) {
+    //                 console.error('refreshDataFromAPI:No matching function found for the API endpoint');
+    //                 CustomNotification.openNotification('error', `refreshDataFromAPI:No matching function found for the API endpoint ${variableName}`);
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to fetch data:', error);
+    //         // message.error('获取接口' + { apiEndpoint } + '数据失败');
+    //         CustomNotification.openNotification2('error', `获取接口 ${apiEndpoint} 数据失败`);
+    //     }
+    // };
+    const refreshDataFromAPI = async (apiEndpoint: string, tag = 1) => {
+        const variableName = apiEndpointToVariableName[apiEndpoint];
+        const lastFetchTime = localStorage.getItem(`${variableName}_timestamp`);
+        const cachedData = localStorage.getItem(variableName);
+        const currentTime = new Date().getTime();
+
+        if (tag && lastFetchTime && currentTime - parseInt(lastFetchTime) < 15000) {
+            message.info(`跳过 ${variableName} 相关数据的刷新, 因15s内已经刷新.`);
+            console.log(`Skipping refresh for ${variableName} as it was fetched less than 15s ago.`);
+            if (cachedData) {
+                const setDataFunction = setDataFunctions[apiEndpoint];
+                if (setDataFunction) {
+                    setDataFunction(JSON.parse(cachedData)); // 使用缓存的数据
+                    return;
+                }
+            }
+        }
+
         try {
             const data = await fetchDataFromAPI({ apiEndpoint });
-            // 根据API端点调用对应的设置状态函数
             const setDataFunction = setDataFunctions[apiEndpoint];
-            //用于notification显示的字符串
-            const variableName = apiEndpointToVariableName[apiEndpoint];
+
             if (setDataFunction) {
                 setDataFunction(data); // 更新状态
-                // message.success(apiEndpoint + ' Data refreshed successfully');
-                // CustomNotification.successNotification(variableName);
+                localStorage.setItem(variableName, JSON.stringify(data));
+                localStorage.setItem(`${variableName}_timestamp`, currentTime.toString());
             } else {
                 if (!apiEndpoint.includes('?')) {
-                    console.error('refreshDataFromAPI:No matching function found for the API endpoint');
-                    CustomNotification.openNotification('error', `refreshDataFromAPI:No matching function found for the API endpoint ${variableName}`);
+                    console.error(`refreshDataFromAPI: No matching function found for the API endpoint`);
+                    CustomNotification.openNotification('error', `refreshDataFromAPI: No matching function found for the API endpoint ${variableName}`);
                 }
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
-            // message.error('获取接口' + { apiEndpoint } + '数据失败');
-            CustomNotification.openNotification2('error', `获取接口 ${apiEndpointToVariableName[apiEndpoint]} 数据失败`);
+            CustomNotification.openNotification2('error', `获取接口 ${apiEndpoint} 数据失败`);
         }
     };
 
     useEffect(() => {
+        Object.keys(apiEndpointToVariableName).forEach(apiEndpoint => {
+            refreshDataFromAPI(apiEndpoint);
+        });
+        const interval_1 = setInterval(() => {
 
-        refreshDataFromAPI(Agent_Data_API);
+            [Agent_Data_API, Monitor_Data_API, Fim_Data_API, Port_Data_API,
+                Process_Data_API, Assets_Data_API, Task_Data_API]
+                .forEach(apiEndpoint => {
+                    refreshDataFromAPI(apiEndpoint);
+                });
+        }, interval_fast); // 240s, 4min
+        const interval_2 = setInterval(() => {
+            [BaseLine_linux_Data_API, BaseLine_windows_Data_API, Vul_Data_API, Virus_Data_API,
+                MemoryShell_API, Honey_API, Brute_TTPs_API, Privilege_TTPs_API, Defense_TTPs_API, Isolate_Data_API]
+                .forEach(apiEndpoint => {
+                    refreshDataFromAPI(apiEndpoint);
+                });
+        }, interval_slow); // 960s, 16min
+        // refreshDataFromAPI(Agent_Data_API);
+        // refreshDataFromAPI(Monitor_Data_API);
+        // refreshDataFromAPI(Fim_Data_API);
+        // refreshDataFromAPI(Port_Data_API);
+        // refreshDataFromAPI(Process_Data_API);
+        // refreshDataFromAPI(Assets_Data_API);
+        // refreshDataFromAPI(BaseLine_linux_Data_API);
+        // refreshDataFromAPI(BaseLine_windows_Data_API);
+        // refreshDataFromAPI(Vul_Data_API);
+        // refreshDataFromAPI(Task_Data_API);
+        // refreshDataFromAPI(MemoryShell_API);
+        // refreshDataFromAPI(Honey_API);
+        // refreshDataFromAPI(Brute_TTPs_API);
+        // refreshDataFromAPI(Privilege_TTPs_API);
+        // refreshDataFromAPI(Defense_TTPs_API);
+        // refreshDataFromAPI(Isolate_Data_API);
 
-        refreshDataFromAPI(Monitor_Data_API);
-        refreshDataFromAPI(Fim_Data_API);
-
-        refreshDataFromAPI(Port_Data_API);
-        refreshDataFromAPI(Process_Data_API);
-        refreshDataFromAPI(Assets_Data_API);
-        refreshDataFromAPI(BaseLine_linux_Data_API);
-        refreshDataFromAPI(BaseLine_windows_Data_API);
-        refreshDataFromAPI(Vul_Data_API);
-        refreshDataFromAPI(Task_Data_API);
-        refreshDataFromAPI(MemoryShell_API);
-        refreshDataFromAPI(Honey_API);
-
-        refreshDataFromAPI(Brute_TTPs_API);
-        refreshDataFromAPI(Privilege_TTPs_API);
-        refreshDataFromAPI(Defense_TTPs_API);
-
-        refreshDataFromAPI(Isolate_Data_API);
         // refreshDataFromAPI(Virus_Data_API);
         // refreshDataFromAPI(User_Data_API);
-
-
-        const interval_1 = setInterval(() => {
-            refreshDataFromAPI(Agent_Data_API);
-            refreshDataFromAPI(Monitor_Data_API);
-            refreshDataFromAPI(Fim_Data_API);
-            refreshDataFromAPI(Port_Data_API);
-            refreshDataFromAPI(Process_Data_API);
-            refreshDataFromAPI(Assets_Data_API);
-            refreshDataFromAPI(User_Data_API);
-            refreshDataFromAPI(Task_Data_API);
-            // refreshDataFromAPI(BaseLine_linux_Data_API);
-            // refreshDataFromAPI(BaseLine_windows_Data_API);
-            // refreshDataFromAPI(Vul_Data_API);
-            // refreshDataFromAPI(Virus_Data_API);
-            // refreshDataFromAPI(MemoryShell_API);
-            // refreshDataFromAPI(Honey_API);
-            // refreshDataFromAPI(Brute_TTPs_API);
-            // refreshDataFromAPI(Privilege_TTPs_API);
-            // refreshDataFromAPI(Defense_TTPs_API);
-            // refreshDataFromAPI(Isolate_Data_API);
-        }, interval_fast); // 240s,4min
-
-        const interval_2 = setInterval(() => {
-            refreshDataFromAPI(BaseLine_linux_Data_API);
-            refreshDataFromAPI(BaseLine_windows_Data_API);
-            refreshDataFromAPI(Vul_Data_API);
-            refreshDataFromAPI(Virus_Data_API);
-            refreshDataFromAPI(MemoryShell_API);
-            refreshDataFromAPI(Honey_API);
-            refreshDataFromAPI(Brute_TTPs_API);
-            refreshDataFromAPI(Privilege_TTPs_API);
-            refreshDataFromAPI(Defense_TTPs_API);
-            refreshDataFromAPI(Isolate_Data_API);
-        }, interval_slow); // 960s,16min
+        // const interval_1 = setInterval(() => {
+        //     refreshDataFromAPI(Agent_Data_API);
+        //     refreshDataFromAPI(Monitor_Data_API);
+        //     refreshDataFromAPI(Fim_Data_API);
+        //     refreshDataFromAPI(Port_Data_API);
+        //     refreshDataFromAPI(Process_Data_API);
+        //     refreshDataFromAPI(Assets_Data_API);
+        //     refreshDataFromAPI(Task_Data_API);
+        //     // refreshDataFromAPI(User_Data_API);
+        //     // refreshDataFromAPI(BaseLine_linux_Data_API);
+        //     // refreshDataFromAPI(BaseLine_windows_Data_API);
+        //     // refreshDataFromAPI(Vul_Data_API);
+        //     // refreshDataFromAPI(Virus_Data_API);
+        //     // refreshDataFromAPI(MemoryShell_API);
+        //     // refreshDataFromAPI(Honey_API);
+        //     // refreshDataFromAPI(Brute_TTPs_API);
+        //     // refreshDataFromAPI(Privilege_TTPs_API);
+        //     // refreshDataFromAPI(Defense_TTPs_API);
+        //     // refreshDataFromAPI(Isolate_Data_API);
+        // }, interval_fast); // 240s,4min
+        // const interval_2 = setInterval(() => {
+        //     refreshDataFromAPI(BaseLine_linux_Data_API);
+        //     refreshDataFromAPI(BaseLine_windows_Data_API);
+        //     refreshDataFromAPI(Vul_Data_API);
+        //     refreshDataFromAPI(Virus_Data_API);
+        //     refreshDataFromAPI(MemoryShell_API);
+        //     refreshDataFromAPI(Honey_API);
+        //     refreshDataFromAPI(Brute_TTPs_API);
+        //     refreshDataFromAPI(Privilege_TTPs_API);
+        //     refreshDataFromAPI(Defense_TTPs_API);
+        //     refreshDataFromAPI(Isolate_Data_API);
+        // }, interval_slow); // 960s,16min
 
         return () => {
             clearInterval(interval_1);
@@ -407,6 +479,143 @@ const DataManager: React.FC = ({ children }) => {
         };
 
     }, []);
+
+    // useEffect(() => {
+    //     const fetchAndCalculateRiskLevels = async () => {
+    //         const data = await fetchDataFromAPI({ apiEndpoint: Vul_Data_API });
+    //         setVulnOriginData(data);
+    //         // 加载 riskLevels 数据
+    //         const response = await fetch('react-12-17/react-admin/public/optimized_cve_data.json');
+    //         const riskLevels = await response.json();
+    //         // 计算风险等级计数
+    //         let highRisk = 0;
+    //         let mediumRisk = 0;
+    //         let lowRisk = 0;
+    //         data.forEach((item: any) => {
+    //             item.vul_detection_exp_result.forEach((result: { bug_exp: string }) => {
+    //                 const riskLevel = riskLevels[result.bug_exp];
+    //                 switch (riskLevel) {
+    //                     case 'high':
+    //                         highRisk++;
+    //                         break;
+    //                     case 'medium':
+    //                         mediumRisk++;
+    //                         break;
+    //                     case 'low':
+    //                         lowRisk++;
+    //                         break;
+    //                     default:
+    //                         break;
+    //                 }
+    //             });
+    //         });
+    //
+    //         setHighRiskCount(highRisk);
+    //         setMediumRiskCount(mediumRisk);
+    //         setLowRiskCount(lowRisk);
+    //     };
+    //
+    //     const refreshDataFromAPI = async (apiEndpoint: string, callback?: () => void) => {
+    //         try {
+    //             const data = await fetchDataFromAPI({ apiEndpoint });
+    //             const setDataFunction = setDataFunctions[apiEndpoint];
+    //             const variableName = apiEndpointToVariableName[apiEndpoint];
+    //             if (setDataFunction) {
+    //                 setDataFunction(data); // 更新状态
+    //                 console.log("1122")
+    //                 if (callback) callback();
+    //             } else {
+    //                 console.error(`refreshDataFromAPI: No matching function found for the API endpoint ${variableName}`);
+    //                 CustomNotification.openNotification('error', `refreshDataFromAPI: No matching function found for the API endpoint ${variableName}`);
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to fetch data:', error);
+    //             CustomNotification.openNotification2('error', `获取接口 ${apiEndpoint} 数据失败`);
+    //         }
+    //     };
+    //
+    //     const initializeData = async () => {
+    //         await refreshDataFromAPI(Agent_Data_API);
+    //         await refreshDataFromAPI(Monitor_Data_API);
+    //         await refreshDataFromAPI(Fim_Data_API);
+    //         await refreshDataFromAPI(Port_Data_API);
+    //         await refreshDataFromAPI(Process_Data_API);
+    //         await refreshDataFromAPI(Assets_Data_API);
+    //         await refreshDataFromAPI(BaseLine_linux_Data_API);
+    //         await refreshDataFromAPI(BaseLine_windows_Data_API);
+    //         await refreshDataFromAPI(Vul_Data_API, fetchAndCalculateRiskLevels);
+    //         await refreshDataFromAPI(Task_Data_API);
+    //         await refreshDataFromAPI(MemoryShell_API);
+    //         await refreshDataFromAPI(Honey_API);
+    //         await refreshDataFromAPI(Brute_TTPs_API);
+    //         await refreshDataFromAPI(Privilege_TTPs_API);
+    //         await refreshDataFromAPI(Defense_TTPs_API);
+    //         await refreshDataFromAPI(Isolate_Data_API);
+    //     };
+    //
+    //     initializeData();
+    //
+    //     const interval_1 = setInterval(() => {
+    //         refreshDataFromAPI(Agent_Data_API);
+    //         refreshDataFromAPI(Monitor_Data_API);
+    //         refreshDataFromAPI(Fim_Data_API);
+    //         refreshDataFromAPI(Port_Data_API);
+    //         refreshDataFromAPI(Process_Data_API);
+    //         refreshDataFromAPI(Assets_Data_API);
+    //         refreshDataFromAPI(Task_Data_API);
+    //     }, interval_fast); // 240s, 4min
+    //
+    //     const interval_2 = setInterval(() => {
+    //         refreshDataFromAPI(BaseLine_linux_Data_API);
+    //         refreshDataFromAPI(BaseLine_windows_Data_API);
+    //         refreshDataFromAPI(Vul_Data_API, fetchAndCalculateRiskLevels);
+    //         refreshDataFromAPI(Virus_Data_API);
+    //         refreshDataFromAPI(MemoryShell_API);
+    //         refreshDataFromAPI(Honey_API);
+    //         refreshDataFromAPI(Brute_TTPs_API);
+    //         refreshDataFromAPI(Privilege_TTPs_API);
+    //         refreshDataFromAPI(Defense_TTPs_API);
+    //         refreshDataFromAPI(Isolate_Data_API);
+    //     }, interval_slow); // 960s, 16min
+    //
+    //     return () => {
+    //         clearInterval(interval_1);
+    //         clearInterval(interval_2);
+    //     };
+    // }, []);
+    // 监听 vulnOriginData 的变化来更新风险等级计数
+
+    //vulnOriginData发生变化时，引起风险等级计数
+    // useEffect(() => {
+    //     if (vulnOriginData && riskLevels.current) {
+    //         let highCount = 0;
+    //         let mediumCount = 0;
+    //         let lowCount = 0;
+    //
+    //         vulnOriginData.forEach((item: any) => {
+    //             item.vul_detection_exp_result.forEach((result: { bug_exp: string }) => {
+    //                 const riskLevel = riskLevels.current[result.bug_exp];
+    //                 switch (riskLevel) {
+    //                     case 'high':
+    //                         highCount++;
+    //                         break;
+    //                     case 'medium':
+    //                         mediumCount++;
+    //                         break;
+    //                     case 'low':
+    //                         lowCount++;
+    //                         break;
+    //                     default:
+    //                         break;
+    //                 }
+    //             });
+    //         });
+    //
+    //         setHighRiskCount(highCount);
+    //         setMediumRiskCount(mediumCount);
+    //         setLowRiskCount(lowCount);
+    //     }
+    // }, [vulnOriginData]);
 
     const fetchLatestData = async (apiEndpoint: string, searchField = '', searchQuery = '', rangeQuery = '', timeColumnIndex: string[] = []) => {
         try {
@@ -424,9 +633,10 @@ const DataManager: React.FC = ({ children }) => {
         }
     };
 
+
     //agent信息
     const agentMetaData_status = useExtractOrigin('status', agentOriginData);//各类status主机的数量
-    const agentOnlineCount = agentMetaData_status.typeCount.get('Online') || -1;
+    const agentOnlineCount = agentMetaData_status.typeCount.get('1') || -1;
 
     const agentCPUuseMetaData = useExtractOrigin('cpu_use', agentOriginData);//各类status主机的数量
     const agentMEMuseMetaData = useExtractOrigin('mem_use', agentOriginData);//各类status主机的数量
@@ -545,6 +755,11 @@ const DataManager: React.FC = ({ children }) => {
 
     return (
         <DataContext.Provider value={{
+            highRiskCount: highRiskCount || 0,
+            mediumRiskCount: mediumRiskCount || 0,
+            lowRiskCount: lowRiskCount || 0,
+
+
             fetchLatestData,
             refreshDataFromAPI,
 

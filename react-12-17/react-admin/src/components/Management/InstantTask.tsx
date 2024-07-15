@@ -4,7 +4,7 @@ import { blueButton } from '../../style/config';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { Once_Task_API, Task_Data_API } from '../../service/config';
+import { Isolate_decrypt_Data, Once_Task_API, Task_Data_API } from '../../service/config';
 
 
 interface InstantTaskProps {
@@ -12,12 +12,14 @@ interface InstantTaskProps {
 interface InstantTaskState {
     selectedUuids: string[];
     selectedFunctions: { func: string, data: string, parseAsJson: boolean }[];
+    uuidError: boolean;
 }
 
 class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
     state: InstantTaskState = {
         selectedUuids: [],
         selectedFunctions: [],
+        uuidError: false,
     };
 
     handleUuidCheckboxChange = (uuid: string) => {
@@ -71,27 +73,34 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
 
     handleSubmit = () => {
         const { selectedUuids, selectedFunctions } = this.state;
-        const token = localStorage.getItem('jwt_token');
 
+        if (selectedUuids.length === 0 || selectedFunctions.length === 0) {
+            this.setState({ uuidError: true });
+            message.error('请选择至少一个主机和一个功能');
+            return;
+        }
+        const token = localStorage.getItem('jwt_token');
         // 遍历选中的每个 uuid
         selectedUuids.forEach(uuid => {
             // 遍历选中的每个 func
             selectedFunctions.forEach(item => {
                 // 只处理有数据的功能
                 if (item.func && item.data) {
+
+                    // 构造 job_id
+                    const job_id = `${uuid}:${item.func}`;
+                    const Task_API = item.func!=="micro_isolate_decrypt"?
+                        (Once_Task_API + `?job_id=${job_id}`):(Isolate_decrypt_Data)
                     // 构造请求体
-                    const requestBody = {
+                    const requestBody = item.func!=="micro_isolate_decrypt"?{
                         // data: item.parseAsJson ? item.data : { value: item.data },
                         data: item.data,
                         uuid: uuid,
                         func: item.func,
-                    };
-
-                    // 构造 job_id
-                    const job_id = `${uuid}:${item.func}`;
-
+                    }:item.data
+                    ;
                     // 发送单独的 POST 请求
-                    axios.post(Once_Task_API + `?job_id=${job_id}`, requestBody, {
+                    axios.post(Task_API, requestBody, {
                         headers: {
                             Authorization: token ? `Bearer ${token}` : undefined,
                             'Content-Type': 'application/json',
@@ -136,19 +145,19 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
         ];
 
         const functionData = [
-            { func: 'asset_mapping_scan', name: 'asset_mapping_scan' },
-            { func: 'start_check_scan', name: 'start_check_scan' },
+            { func: 'asset_mapping_scan', name: '资产测绘' },
+            { func: 'start_check_scan', name: '基线检查' },
             { func: 'switch_nmap_scan', name: 'switch_nmap_scan' },
-            { func: 'start_file_integrity', name: 'start_file_integrity' },
+            { func: 'start_file_integrity', name: '文件完整性检验' },
             { func: 'switch_os_info', name: 'switch_os_info' },
-            { func: 'monitor_directory', name: 'monitor_directory' },
-            { func: 'monitor_processes', name: 'monitor_processes' },
-            { func: 'vuln_scan_start', name: 'vuln_scan_start' },
-            { func: 'start_honeypot', name: 'start_honeypot' },
-            { func: 'micro_isolate_encrypt', name: 'micro_isolate_encrypt' },
-            { func: 'micro_isolate_decrypt', name: 'micro_isolate_decrypt' },
-            { func: 'ssh_log_filter', name: 'ssh_log_filter' },
-            { func: 'command_hunting_job', name: 'command_hunting_job' },
+            { func: 'monitor_directory', name: '目录监测' },
+            { func: 'monitor_processes', name: '进程监测' },
+            { func: 'vuln_scan_start', name: '漏洞扫描' },
+            { func: 'start_honeypot', name: '开启蜜罐' },
+            { func: 'micro_isolate_encrypt', name: '文件隔离' },
+            { func: 'micro_isolate_decrypt', name: '隔离文件解密' },
+            { func: 'ssh_log_filter', name: '暴力破解' },
+            { func: 'command_hunting_job', name: '权限提升和防御规避' },
         ];
         return (
             <DataContext.Consumer>
@@ -250,10 +259,10 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
                                                                     this.setState({ selectedFunctions: updatedFunctions });
                                                                 }}
                                                             >
-                                                                解析为 JSON
+                                                                组装为JSON
                                                             </Checkbox>
                                                             <Input
-                                                                placeholder={`输入${item.name}的执行参数`}
+                                                                placeholder={`输入${item.name}的执行参数或者任意值`}
                                                                 onChange={(e) => this.handleFunctionDataChange(item.func, e.target.value, selectedFunctions.find(f => f.func === item.func)?.parseAsJson || false)}
                                                                 value={selectedFunctions.find(f => f.func === item.func)?.data || ''}
                                                                 style={{ marginTop: '8px', width: '100%' }}

@@ -204,12 +204,6 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                                                     <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>告警内容</h2>
                                                     {/*<Button onClick={this.handleAdd} style={{ padding: '5px 15px', fontWeight: 'bold' }} name="del" >添加告警</Button>*/}
                                                 </div>
-                                                {/*<FetchDataForTaskTable*/}
-                                                {/*    apiEndpoint={this.props.apiEndpoint}*/}
-                                                {/*    timeColumnIndex={[]}*/}
-                                                {/*    columns={this.props.columns}*/}
-                                                {/*    currentPanel={this.props.currentPanel}*/}
-                                                {/*/>*/}
                                             </Card>
                                         </div>
                                     </Col>

@@ -15,89 +15,89 @@ interface HoneypotDefenseStates{
   modalVisible: boolean,
   columns:any[];
 };
-const columnsHoneypotInfo1 = [
-  {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      Maxwidth: '15px',
-  },
-  {
-    title: '蜜罐端口',
-    dataIndex: 'honeypot_port',
-    key: 'honeypot_port',
-  },
-  {
-    title: '蜜罐类型',
-    dataIndex: 'honeypot_type',
-    key: 'honeypot_type',
-    // 可以使用render方法来将蜜罐类型的Integer值转换为对应的文本说明
-    // render: (text:number) => {
-    //   switch(text) {
-    //     case 1:
-    //       return 'MySQL蜜罐';
-    //     default:
-    //       return '其他蜜罐';
-    //   }
-    // },
-  },
-  {
-    title: '蜜罐状态',
-    dataIndex: 'honeypot_status',
-    key: 'honeypot_status',
-  },
-];
-const columnsAttackerInfo = [
-  {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      Maxwidth: '15px',
-  },
-  {
-    title: '攻击者IP地址',
-    dataIndex: 'attacker_ip',
-    key: 'attacker_ip',
-  },
-  {
-    title: '攻击者主机名',
-    dataIndex: 'attacker_hostname',
-    key: 'attacker_hostname',
-  },
-  {
-    title: '攻击者微信号',
-    dataIndex: 'attacker_wx_id',
-    key: 'attacker_wx_id',
-  },
-  {
-    title: '攻击时间',
-    dataIndex: 'attack_time',
-    key: 'attack_time',
-  },
-];
-const columnsAttackerInfo2 = [
-  {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      Maxwidth: '15px',
-  },
-  {
-    title: 'Agent',
-    dataIndex: 'agent_ip',
-    key: 'agent_ip',
-  },
-  {
-    title: '攻击者IP',
-    dataIndex: 'atk_ip',
-    key: 'atk_ip',
-  },
-  {
-    title: '攻击时间',
-    dataIndex: 'atk_time',
-    key: 'atk_time',
-  },
-];
+// const columnsHoneypotInfo1 = [
+//   {
+//       title: 'ID',
+//       dataIndex: 'id',
+//       key: 'id',
+//       Maxwidth: '15px',
+//   },
+//   {
+//     title: '蜜罐端口',
+//     dataIndex: 'honeypot_port',
+//     key: 'honeypot_port',
+//   },
+//   {
+//     title: '蜜罐类型',
+//     dataIndex: 'honeypot_type',
+//     key: 'honeypot_type',
+//     // 可以使用render方法来将蜜罐类型的Integer值转换为对应的文本说明
+//     // render: (text:number) => {
+//     //   switch(text) {
+//     //     case 1:
+//     //       return 'MySQL蜜罐';
+//     //     default:
+//     //       return '其他蜜罐';
+//     //   }
+//     // },
+//   },
+//   {
+//     title: '蜜罐状态',
+//     dataIndex: 'honeypot_status',
+//     key: 'honeypot_status',
+//   },
+// ];
+// const columnsAttackerInfo = [
+//   {
+//       title: 'ID',
+//       dataIndex: 'id',
+//       key: 'id',
+//       Maxwidth: '15px',
+//   },
+//   {
+//     title: '攻击者IP地址',
+//     dataIndex: 'attacker_ip',
+//     key: 'attacker_ip',
+//   },
+//   {
+//     title: '攻击者主机名',
+//     dataIndex: 'attacker_hostname',
+//     key: 'attacker_hostname',
+//   },
+//   {
+//     title: '攻击者微信号',
+//     dataIndex: 'attacker_wx_id',
+//     key: 'attacker_wx_id',
+//   },
+//   {
+//     title: '攻击时间',
+//     dataIndex: 'attack_time',
+//     key: 'attack_time',
+//   },
+// ];
+// const columnsAttackerInfo2 = [
+//   {
+//       title: 'ID',
+//       dataIndex: 'id',
+//       key: 'id',
+//       Maxwidth: '15px',
+//   },
+//   {
+//     title: 'Agent',
+//     dataIndex: 'agent_ip',
+//     key: 'agent_ip',
+//   },
+//   {
+//     title: '攻击者IP',
+//     dataIndex: 'atk_ip',
+//     key: 'atk_ip',
+//   },
+//   {
+//     title: '攻击时间',
+//     dataIndex: 'atk_time',
+//     key: 'atk_time',
+//   },
+// ];
 class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
   constructor(props: any) {
     super(props);

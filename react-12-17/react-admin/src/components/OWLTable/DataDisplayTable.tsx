@@ -260,85 +260,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
         this.setState({ selectedDeletedRows: selectedRows });
         // message.info('keys:' + newSelectedRowKeys);
 
-        // 使用选中行的键值获取对应的行数据，存储到 selectedRows 中
-        // const selectedDeletedRows = selectedRowKeys.map(key => {
-        //     const row = this.props.externalDataSource.find(row => row[this.props.columns[0].key] === key);
-        //     return row ? { ...row } : null; // 复制对象以避免直接修改原始数据
-        // }).filter(row => row !== null); // 过滤掉空行数据
-        //
-        // // 在这里输出一下选中的行数据，以确保它们被正确地获取到了
-        // if(selectedDeletedRows){
-        //     console.log('Selected rows:', selectedRows);
-        //     selectedRows.map(row=>console.log('Selected rows uuid:', row.uuid));
-        // }
-
     };
-
-    // toggleModal = () => {
-    //     this.setState(prevState => ({
-    //         showModal: !prevState.showModal,
-    //         // selectedRows: record, // 设置当前记录，以便后续操作
-    //     }));
-    // };
-    // handleRefresh_delete = (api: string) => {
-    //     // 这个方法将被用于调用context中的refreshDataFromAPI
-    //     this.setState({
-    //         lastUpdated: new Date().toLocaleString(),
-    //     });
-    //     this.context.refreshDataFromAPI(api);
-    // };
-    // handleOk = async () => {
-    //     // 处理忽略操作
-    //     console.log('selectedRows:', this.state.selectedDeletedRows);
-    //     if (this.state.selectedDeletedRows && this.state.selectedDeletedRows.length > 0 && this.state.selectedDeletedRows[0]) {
-    //         const record = this.state.selectedDeletedRows.map(row => row.uuid);
-    //         await handleDelete(this.props.currentPanel, record).then(
-    //             () => this.handleRefresh_delete(this.props.apiEndpoint));
-    //     } else {
-    //         message.info('selectedRows中没有有效数据');
-    //     }
-    //     this.toggleModal(); // 关闭模态框
-    //     // message.info('已刷新:' + this.props.apiEndpoint + '的数据');
-    // };
-    // handleCancel = () => {
-    //     this.toggleModal(); // 关闭模态框
-    // };
-    // renderModal = (rows: any[]) => {
-    //     return (
-    //         <>
-    //             <Modal
-    //                 title="确认操作"
-    //                 visible={this.state.showModal}
-    //                 onOk={this.handleOk}
-    //                 onCancel={this.handleCancel}
-    //                 footer={[
-    //                     <Button key="back" onClick={this.handleCancel}>
-    //                         取消
-    //                     </Button>,
-    //                     <Button key="submit" style={{ backgroundColor: '#1664FF', color: 'white' }}
-    //                             onClick={this.handleOk}>
-    //                         是
-    //                     </Button>,
-    //                 ]}
-    //                 //style={{ top: '50%', transform: 'translateY(-50%)' }} // 添加这行代码尝试居中
-    //             >
-    //                 确认删除选中的:
-    //                 {rows.map(row => (
-    //                 <span key={row.uuid}>
-    //                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(row.uuid)}`} target="_blank">
-    //                     <Button style={{
-    //                         fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-    //                         padding: '0 0',
-    //                     }}>{row.uuid && row.uuid}</Button>
-    //                 </Link>
-    //                     {','}
-    //                 </span>
-    //             ))}
-    //                 条目?
-    //             </Modal>
-    //         </>
-    //     );
-    // };
 
     render() {
         // rowSelection object indicates the need for row selection
@@ -359,8 +281,6 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
 
         const isButtonDisabled = this.props.externalDataSource.length === 0
             || this.state.selectedRowKeys.length === 0;
-        // const isButtonDisabled = this.state.data.length === 0
-        //     || this.state.selectedRowKeys.length === 0;
 
         return (
             <DataContext.Consumer>
@@ -381,7 +301,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                             refreshDataFromAPIWithUuid(apiUuid,uuid);
                         }
                         else {
-                            refreshDataFromAPI(api);
+                            refreshDataFromAPI(api, 0);
                         }
                         this.setState({
                             lastUpdated: new Date().toLocaleString(),

@@ -142,12 +142,12 @@ export interface CreateTaskDataType {
 }
 
 export const createNewTaskColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        //width: '13%',
-    },
+    // {
+    //     title: 'ID',
+    //     dataIndex: 'id',
+    //     key: 'id',
+    //     //width: '13%',
+    // },
     // {
     //     title: 'UUID',
     //     dataIndex: 'uuid', key: 'uuid',
@@ -205,8 +205,8 @@ export const createNewTaskColumns = [
         ),
     },
     {
-        title: '主机IP',
-        dataIndex: 'ip_address',
+        title: '操作系统类型',
+        dataIndex: 'host_name',
     },
     {
         title: '操作系统',
@@ -215,20 +215,19 @@ export const createNewTaskColumns = [
     {
         title: '状态',
         dataIndex: 'status',
-        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
+        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status == value,
         filters: [
             {
                 text: 'Online',
-                value: 'Online',
+                value: '1',
             },
             {
                 text: 'Offline',
-                value: 'Offline',
+                value: '0',
             },
         ],
-        // 修改这里使用record参数，确保函数能访问到当前行的数据
         render: (text: string, record: hostinventoryColumnsType) => (
-            <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
+            <Badge status={record.status === '1' ? 'success' : 'error'} text={record.status === '1' ? 'Online' : 'Offline'} />
         ),
     },
 ];
@@ -244,294 +243,12 @@ export interface hostinventoryColumnsType {
     cpu_use: string;
 }
 
-// const hostinventoryColumns = [
-//     {
-//         title: 'ID',
-//         dataIndex: 'id',
-//         key: 'id',
-//         width: '15px', // 修正 Maxwidth 为 width
-//         // render:(text:string)=>(
-//         //     <Button className="custom-button">{text}</Button>
-//         // ),
-//     },
-//     {
-//         title: '主机名',
-//         dataIndex: 'uuid',
-//         key: 'uuid',
-//         render: (text: string, record: hostinventoryColumnsType) => (
-//             <div>
-//                 <div>
-//                     <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
-//                         <Button style={{
-//                             fontWeight: 'bold',
-//                             border: 'transparent',
-//                             backgroundColor: 'transparent',
-//                             color: '#4086FF',
-//                             padding: '0 0',
-//                         }}>
-//                             <Tooltip title={record.uuid || 'Unknown UUID'}>
-//                                 <div style={{
-//                                     whiteSpace: 'nowrap',
-//                                     overflow: 'hidden',
-//                                     textOverflow: 'ellipsis',
-//                                     maxWidth: '80px',
-//                                 }}>
-//                                     {record.uuid || '-'}
-//                                 </div>
-//                             </Tooltip>
-//                         </Button>
-//                     </Link>
-//                 </div>
-//                 <div style={{
-//                     fontSize: 'small', // 字体更小
-//                     background: '#f0f0f0', // 灰色背景
-//                     padding: '2px 4px', // 轻微内边距
-//                     borderRadius: '2px', // 圆角边框
-//                     display: 'inline-block', // 使得背景色仅围绕文本
-//                     marginTop: '4px', // 上边距
-//                 }}>
-//                     <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip_address}
-//                 </div>
-//             </div>
-//         ),
-//     },
-//     {
-//         title: '操作系统',
-//         dataIndex: 'os_version',
-//     },
-//     {
-//         title: '状态',
-//         dataIndex: 'status',
-//         onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
-//         filters: [
-//             {
-//                 text: 'Online',
-//                 value: 'Online',
-//             },
-//             {
-//                 text: 'Offline',
-//                 value: 'Offline',
-//             },
-//         ],
-//         // 修改这里使用record参数，确保函数能访问到当前行的数据
-//         render: (text: string, record: hostinventoryColumnsType) => (
-//             <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
-//         ),
-//     },
-//     {
-//         title: 'CPU使用率',
-//         dataIndex: 'cpu_use',
-//         render: (text: string, record: any) => (
-//             <div style={{
-//                 fontSize: 'small', // 字体更小
-//             }}>
-//                 <span style={{
-//                     border: '2px solid #f0f0f0',
-//                     fontWeight: 'bold',
-//                     padding: '2px 4px', // 轻微内边距
-//                     borderRadius: '2px', // 圆角边框
-//                 }}>CPU</span> {record.cpu_use}
-//             </div>
-//         ),
-//         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
-//     },
-//     {
-//         title: '内存使用量',
-//         dataIndex: 'mem_use',
-//         render: (text: string, record: any) => (
-//             <div style={{
-//                 fontSize: 'small', // 字体更小
-//             }}>
-//                 <span style={{
-//                     border: '2px solid #f0f0f0',
-//                     fontWeight: 'bold',
-//                     padding: '2px 4px', // 轻微内边距
-//                     borderRadius: '2px', // 圆角边框
-//                 }}>内存</span> {record.mem_use}
-//             </div>
-//         ),
-//         sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
-//     },
-//     {
-//         title: '操作',
-//         dataIndex: 'operation',
-//         render: (text: string, record: any) => (
-//             <Dropdown overlay={renderTaskMenu(record)} trigger={['click']}>
-//                 <Button
-//                     style={{
-//                         fontWeight: 'bold',
-//                         padding: '0 0',
-//                         border: 'transparent',
-//                         backgroundColor: 'transparent',
-//                     }}
-//                     disabled={record.status !== 'Online'}
-//                 >
-//                     下发任务
-//                 </Button>
-//             </Dropdown>
-//         ),
-//     },
-// ];
-//
-// // 渲染任务菜单
-// const renderTaskMenu = (record: any) => (
-//     <Menu onClick={handleMenuClick}>
-//         <Menu.Item key="scheduled">定时任务</Menu.Item>
-//         <Menu.Item key="instant">即时任务</Menu.Item>
-//     </Menu>
-// );
-//
-// // 处理任务菜单点击事件
-// const handleMenuClick = (e: any) => {
-//     const key = e.key;
-//     if (key === 'scheduled') {
-//         // Link到creat_agent_task
-//         window.open("/app/create_agent_task", '_blank');
-//     } else if (key === 'instant') {
-//         // 切换到路由/app/Management/InstantTask
-//         window.location.href = '/app/Management/InstantTask';
-//     }
-// };
 
 // 先定义一个辅助函数，用于从带百分比的字符串中提取数字，主机列表中的cpu,内存占用等信息的显示
 export const extractNumberFromPercentString = (percentString: string): number => {
     return parseFloat(percentString.replace('%', ''));
 };
 
-const hostinventoryColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        Maxwidth: '15px',
-        // render:(text:string)=>(
-        //     <Button className="custom-button">{text}</Button>
-        // ),
-    },
-    {
-        title: '主机名',
-        dataIndex: 'uuid',
-        key: 'uuid',
-        render: (text: string, record: hostinventoryColumnsType) => (
-            <div>
-                <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
-                          target="_blank">
-                        <Button style={{
-                            fontWeight: 'bold',
-                            border: 'transparent',
-                            backgroundColor: 'transparent',
-                            color: '#4086FF',
-                            padding: '0 0',
-                        }}>
-                            <Tooltip title={record.uuid || 'Unknown UUID'}>
-                                <div style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    maxWidth: '80px',
-                                }}>
-                                    {record.uuid || '-'}
-                                </div>
-                            </Tooltip>
-                        </Button>
-                    </Link>
-                </div>
-                <div style={{
-                    fontSize: 'small', // 字体更小
-                    background: '#f0f0f0', // 灰色背景
-                    padding: '2px 4px', // 轻微内边距
-                    borderRadius: '2px', // 圆角边框
-                    display: 'inline-block', // 使得背景色仅围绕文本
-                    marginTop: '4px', // 上边距
-                }}>
-                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip_address}
-                </div>
-            </div>
-        ),
-    },
-    {
-        title: '操作系统',
-        dataIndex: 'os_version',
-    },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        onFilter: (value: string | number | boolean, record: hostinventoryColumnsType) => record.status.includes(value as string),
-        filters: [
-            {
-                text: 'Online',
-                value: 'Online',
-            },
-            {
-                text: 'Offline',
-                value: 'Offline',
-            },
-        ],
-        // 修改这里使用record参数，确保函数能访问到当前行的数据
-        render: (text: string, record: hostinventoryColumnsType) => (
-            <Badge status={record.status === 'Online' ? 'success' : 'error'} text={record.status} />
-        ),
-    },
-    {
-        title: 'CPU使用率',
-        dataIndex: 'cpu_use',
-        render: (text: string, record: any) => (
-            <div style={{
-                fontSize: 'small', // 字体更小
-                // background: '#f0f0f0', // 灰色背景
-                display: 'inline-block', // 使得背景色仅围绕文本
-                // marginTop: '4px', // 上边距
-            }}>
-                <span style={{
-                    border: '2px solid #f0f0f0', fontWeight: 'bold',
-                    padding: '2px 4px', // 轻微内边距
-                    borderRadius: '2px', // 圆角边框
-                }}>CPU</span> {record.cpu_use}
-            </div>
-        ),
-        sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
-    },
-    {
-        title: '内存使用量',
-        dataIndex: 'mem_use',
-        render: (text: string, record: any) => (
-            <div style={{
-                fontSize: 'small', // 字体更小
-                // background: '#f0f0f0', // 灰色背景
-                display: 'inline-block', // 使得背景色仅围绕文本
-                // marginTop: '4px', // 上边距
-            }}>
-                <span style={{
-                    border: '2px solid #f0f0f0', fontWeight: 'bold',
-                    padding: '2px 4px', // 轻微内边距
-                    borderRadius: '2px', // 圆角边框
-                }}>内存</span> {record.mem_use}
-            </div>
-        ),
-        sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
-    },
-    {
-        title: '操作',
-        dataIndex: 'operation',
-        render: (text: string, record: any) => (
-            <Link to="/app/create_agent_task" target="_blank">
-                <Button
-                    style={{
-                        fontWeight: 'bold', padding: '0 0',
-                        border: 'transparent',
-                        backgroundColor: 'transparent',
-                        // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
-                        // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
-                    }}
-                    disabled={record.status !== 'Online'}
-                >
-                    下发任务
-                </Button>
-            </Link>
-        ),
-    },
-];
 
 export interface FimDataType {
     key: React.Key;
@@ -2079,6 +1796,126 @@ export const hostperformanceColumns = [
     },
 ];
 
+
+export const Honeypotcolumns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        Maxwidth: '15px',
+    },
+    {
+        title: '主机名',
+        dataIndex: 'uuid',
+        key: 'uuid',
+        render: (text: string, record: any) => (
+            <div>
+                <div>
+                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
+                          target="_blank">
+                        <Button style={{
+                            fontWeight: 'bold',
+                            border: 'transparent',
+                            backgroundColor: 'transparent',
+                            color: '#4086FF',
+                            padding: '0 0',
+                        }}>
+                            <Tooltip title={record.uuid || 'Unknown UUID'}>
+                                <div style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '80px',
+                                }}>
+                                    {record.uuid || '-'}
+                                </div>
+                            </Tooltip>
+                        </Button>
+                    </Link>
+                </div>
+                <div style={{
+                    fontSize: 'small', // 字体更小
+                    background: '#f0f0f0', // 灰色背景
+                    padding: '2px 4px', // 轻微内边距
+                    borderRadius: '2px', // 圆角边框
+                    display: 'inline-block', // 使得背景色仅围绕文本
+                    marginTop: '4px', // 上边距
+                }}>
+                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agent_ip}
+                </div>
+            </div>
+        ),
+    },
+    {
+        title: '攻击者IP',
+        dataIndex: 'atk_ip',
+        key: 'atk_ip',
+    },
+    {
+        title: '攻击时刻',
+        dataIndex: 'atk_time',
+        key: 'atk_time',
+        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+        sorter: (a: any, b: any) => parseFloat(b.atk_time) - parseFloat(a.atk_time),
+    },
+];
+
+
+export const constRenderTable = (OriginData: any[], title: string,
+                                 timeColumnIndex: string[], column: any[], currentPanel: string, api: string,
+                                 searchIndex?: string[], additionalButton?: () => void, additionalButtonTitile?: string) => {
+    if (OriginData !== undefined) {
+        // 确保OriginData总是作为数组处理
+        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+        return (
+            <div style={{ fontWeight: 'bolder', width: '100%' }}>
+                <Card bordered={true}
+                      style={{ backgroundColor: '#ffffff' }}>
+                    <Row>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: 8,
+                            fontWeight: 'bold',
+                        }}>
+                            <h2 style={{
+                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                marginLeft: '0px',
+                            }}>{title}</h2>
+                        </div>
+                    </Row>
+                    <DataDisplayTable
+                        externalDataSource={originDataArray}
+                        apiEndpoint={api}
+                        timeColumnIndex={timeColumnIndex}
+                        columns={column}
+                        currentPanel={currentPanel}
+                        searchColumns={searchIndex}
+                        additionalButton={additionalButton}
+                        additionalButtonTitile={additionalButtonTitile}
+                    />
+                </Card>
+            </div>
+        );
+    }
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+            <Card bordered={true}
+                  style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: '#ffffff',
+                      width: '100%',
+                  }}>
+                <LoadingOutlined style={{ fontSize: '3em' }} />
+            </Card>
+        </div>
+    );
+};
+
 export const baseLineDetectScanResult1Columns = [
     { title: '影响主机', dataIndex: 'influencehost', key: 'influencehost' },
     {
@@ -2208,121 +2045,3 @@ export const baseLineDetectScanResult2Columns = [
         ),
     },
 ];
-export const Honeypotcolumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        Maxwidth: '15px',
-    },
-    {
-        title: '主机名',
-        dataIndex: 'uuid',
-        key: 'uuid',
-        render: (text: string, record: any) => (
-            <div>
-                <div>
-                    <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`}
-                          target="_blank">
-                        <Button style={{
-                            fontWeight: 'bold',
-                            border: 'transparent',
-                            backgroundColor: 'transparent',
-                            color: '#4086FF',
-                            padding: '0 0',
-                        }}>
-                            <Tooltip title={record.uuid || 'Unknown UUID'}>
-                                <div style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    maxWidth: '80px',
-                                }}>
-                                    {record.uuid || '-'}
-                                </div>
-                            </Tooltip>
-                        </Button>
-                    </Link>
-                </div>
-                <div style={{
-                    fontSize: 'small', // 字体更小
-                    background: '#f0f0f0', // 灰色背景
-                    padding: '2px 4px', // 轻微内边距
-                    borderRadius: '2px', // 圆角边框
-                    display: 'inline-block', // 使得背景色仅围绕文本
-                    marginTop: '4px', // 上边距
-                }}>
-                    <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agent_ip}
-                </div>
-            </div>
-        ),
-    },
-    {
-        title: '蜜罐IP',
-        dataIndex: 'agent_ip',
-        key: 'agent_ip',
-    },
-    {
-        title: '攻击时刻',
-        dataIndex: 'atk_time',
-        key: 'atk_time',
-        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-        sorter: (a: any, b: any) => parseFloat(b.atk_time) - parseFloat(a.atk_time),
-    },
-];
-
-
-export const constRenderTable = (OriginData: any[], title: string,
-                                 timeColumnIndex: string[], column: any[], currentPanel: string, api: string,
-                                 searchIndex?: string[], additionalButton?: () => void, additionalButtonTitile?: string) => {
-    if (OriginData !== undefined) {
-        // 确保OriginData总是作为数组处理
-        const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-        return (
-            <div style={{ fontWeight: 'bolder', width: '100%' }}>
-                <Card bordered={true}
-                      style={{ backgroundColor: '#ffffff' }}>
-                    <Row>
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            marginBottom: 8,
-                            fontWeight: 'bold',
-                        }}>
-                            <h2 style={{
-                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                fontSize: '18px',
-                                fontWeight: 'bold',
-                                marginLeft: '0px',
-                            }}>{title}</h2>
-                        </div>
-                    </Row>
-                    <DataDisplayTable
-                        externalDataSource={originDataArray}
-                        apiEndpoint={api}
-                        timeColumnIndex={timeColumnIndex}
-                        columns={column}
-                        currentPanel={currentPanel}
-                        searchColumns={searchIndex}
-                        additionalButton={additionalButton}
-                        additionalButtonTitile={additionalButtonTitile}
-                    />
-                </Card>
-            </div>
-        );
-    }
-    return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-            <Card bordered={true}
-                  style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: '#ffffff',
-                      width: '100%',
-                  }}>
-                <LoadingOutlined style={{ fontSize: '3em' }} />
-            </Card>
-        </div>
-    );
-};

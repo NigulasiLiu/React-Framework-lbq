@@ -527,7 +527,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                 },
             };
             const response = await axios.post(APP_Server_URL + '/api/isolate/encrypt', postData, config);
-            if (response.data.code === 0) {
+            if (response.data.code === 200) {
                 message.success('文件隔离成功');
             } else {
                 message.error('文件隔离失败: ' + response.data.message);
@@ -720,10 +720,12 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                     marginBottom: '8px',
                                                                 }}>{currentTime}</span>
                                                                 <Row>
-                                                                    <Button
-                                                                        onClick={this.handleScan}
-                                                                        {...blueButton}>
-                                                                        立即扫描</Button>
+                                                                    <Link to={"/app/create_virusscan_task"}
+                                                                          target="_blank">
+                                                                        <Button
+                                                                            onClick={this.handleScan}
+                                                                            {...blueButton}>
+                                                                            立即扫描</Button></Link>
                                                                     {/*<Link to="/app/create_virusscan_task"*/}
                                                                     {/*      target="_blank">*/}
                                                                     {/*    <Button*/}

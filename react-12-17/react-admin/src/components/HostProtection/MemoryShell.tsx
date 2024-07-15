@@ -235,7 +235,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
             </Modal>
         );
     };
-    handleRefresh = (api:string) => {
+    handleRefresh = (api:string, tag:number) => {
         // 这个方法将被用于调用context中的refreshDataFromAPI
         this.context.refreshDataFromAPI();
     };
@@ -249,7 +249,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                     <Button key="back" onClick={
                         () => {
                         this.setState({ detailModalVisible: false })
-                        this.handleRefresh(MemoryShell_API)
+                        this.handleRefresh(MemoryShell_API,0)
                     }
                     }>
                         关闭

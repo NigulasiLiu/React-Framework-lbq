@@ -40,7 +40,6 @@ export default {
     AssetFingerprint,
     HostInventory,
     Provenance,
-    AuthBasic,
     WysiwygBundle,
     VirusScanning,
     Env,

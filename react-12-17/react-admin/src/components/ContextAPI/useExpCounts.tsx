@@ -47,9 +47,9 @@ const useExpCounts = (OriginData: any[]) => {
                         if (exp && exp.bug_exp && exp.scanTime) {
                             last7Days.forEach((dayStart, index) => {
                                 const dayEnd = dayStart + oneDayInSeconds;
-                                console.log("dayStart: ", dayStart); // 调试信息
-                                console.log("dayEnd: ", dayEnd); // 调试信息
-                                console.log("exp.scanTime: ", exp.scanTime); // 调试信息
+                                // console.log("dayStart: ", dayStart); // 调试信息
+                                // console.log("dayEnd: ", dayEnd); // 调试信息
+                                // console.log("exp.scanTime: ", exp.scanTime); // 调试信息
                                 if (exp.scanTime >= dayStart && exp.scanTime < dayEnd) {
                                     dailyCounts[index] += 1;
                                 }

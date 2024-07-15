@@ -352,7 +352,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             currentRecord: record // 设置当前记录，以便后续操作
         }));
     }
-    handleRefresh = (api:string) => {
+    handleRefresh = (api:string,tag:number) => {
         // 这个方法将被用于调用context中的refreshDataFromAPI
         this.context.refreshDataFromAPI();
       };
@@ -362,7 +362,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务删除成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
-                this.handleRefresh(Task_Data_API)
+                this.handleRefresh(Task_Data_API,0)
             })
             .catch(error => {
                 if (error.response && error.response.status === 401) {
@@ -379,7 +379,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务暂停成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
-                this.handleRefresh(Task_Data_API)
+                this.handleRefresh(Task_Data_API,0)
             })
             .catch(error => {
                 if (error.response && error.response.status === 401) {
@@ -396,7 +396,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
             .then(response => {
                 message.success('任务恢复成功');
                 // 这里可以根据需要刷新页面或者重新加载数据
-                this.handleRefresh(Task_Data_API)
+                this.handleRefresh(Task_Data_API,0)
             })
             .catch(error => {
                 if (error.response && error.response.status === 401) {

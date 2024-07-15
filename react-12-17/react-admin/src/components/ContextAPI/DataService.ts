@@ -73,8 +73,6 @@ export const splitFilePath = (filePath: any): { filepath: string; filename: stri
   return { filepath, filename };
 };
 
-
-
 // processData 函数
 export const processData = (data: GenericDataItem[], timeColumnIndex?: string[]): GenericDataItem[] => {
   return data.map(item => {
@@ -215,18 +213,3 @@ export const determineOS = (filteredData: any) => {
     return 'unknown';
   }
 };
-
-// export const determineOS = (filteredData: any) => {
-//   // 将 os_version 字段转换为小写，并去除空格
-//   const osVersion = filteredData.os_version.toLowerCase().trim();
-//
-//   // 根据常见的操作系统版本信息判断操作系统类型
-//   if (osVersion.includes('windows')) {
-//     return 'windows';
-//   } else if (osVersion.includes('ubuntu') || osVersion.includes('debian') || osVersion.includes('centos') || osVersion.includes('redhat')) {
-//     return 'linux';
-//   } else {
-//     // 如果无法判断，默认为未知操作系统
-//     return 'unknown';
-//   }
-// }

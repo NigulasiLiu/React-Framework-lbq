@@ -482,17 +482,6 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                     />
                 </div>
             );
-                // <Row style={{ width: '100%' }}>
-                    {/*<FetchDataForTaskTable*/}
-                    {/*    key={currentPanel+this.state.count}*/}
-                    {/*    apiEndpoint={APP_Server_URL+'/api/baseline_check/' + currentPanel + '/all'}*/}
-                    {/*    timeColumnIndex={['last_checked']}*/}
-                    {/*    columns={this.state.baselineDetectColumns}*/}
-                    {/*    currentPanel={currentPanel === 'windows' ? 'baseLine_check_windows' : 'baseLine_check_linux'}*/}
-                    {/*    search={['uuid', 'check_name']}*/}
-                    {/*    handleReload={this.handleReload}*/}
-                    {/*/>*/}
-                {/*</Row>*/}
         }
     }
 

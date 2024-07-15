@@ -7,6 +7,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Agent_Data_API } from '../../service/config';
 import { Link,withRouter } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
+import moment from 'moment/moment';
 
 //const { Search } = Input;
 
@@ -364,10 +365,11 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     fontWeight: 'bold',
                     padding: '2px 4px', // 轻微内边距
                     borderRadius: '2px', // 圆角边框
-                }}>CPU</span> {record.cpu_use}
+                }}>CPU</span> {record.cpu_use+"%"}
                         </div>
                     ),
-                    sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
+                    sorter: (a: any, b: any) => parseFloat(b.cpu_use) - parseFloat(a.cpu_use),
+                    //sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.cpu_use) - extractNumberFromPercentString(b.cpu_use),
                 },
                 {
                     title: '内存使用量',
@@ -384,7 +386,13 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                 }}>内存</span> {record.mem_use}
                         </div>
                     ),
-                    sorter: (a: hostinventoryColumnsType, b: hostinventoryColumnsType) => extractNumberFromPercentString(a.mem_use) - extractNumberFromPercentString(b.mem_use),
+                    sorter: (a: any, b: any) => parseFloat(b.mem_use) - parseFloat(a.mem_use),
+                },
+                {
+                    title: '扫描时间',
+                    dataIndex: 'last_seen',
+                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    sorter: (a: any, b: any) => parseFloat(b.last_seen) - parseFloat(a.last_seen),
                 },
                 {
                     title: '操作',

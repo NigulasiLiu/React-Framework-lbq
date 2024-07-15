@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Steps, Form, Input, InputNumber, Button, Row, Alert, Radio, Card, message, Col, DatePicker } from 'antd';
-import FetchDataForTaskTable from '../OWLTable/FetchDataForTaskTable';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { createNewTaskColumns, VirusTaskDetail } from '../Columns';
 import { LeftOutlined } from '@ant-design/icons';
 import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
 import { Agent_Data_API, APP_Server_URL } from '../../service/config';
-import moment from 'moment/moment';
 import axios from 'axios';
+import HostListTable from '../OWLTable/HostListTable';
+import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -105,7 +105,7 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
         this.setState({
             selectedUuids,
         });
-        // message.info("选中了：" + selectedUuids)
+        message.info("选中了:" + selectedUuids)
     };
     getStepStatus = (stepIndex: number) => {
         const { currentStep } = this.state;
@@ -168,146 +168,167 @@ class CreateVirusScanTask extends React.Component<CreateVirusScanTaskProps, Crea
         );
 
         return (
-            <div style={{ width: '100%', margin: '0 auto' }}>
-                <Row style={{
-                    width: '110%', height: '80px', backgroundColor: '#FFFFFF', //height:'40px',
-                    marginLeft: '-20px', padding: '12px', borderBottom: '1px solid #F6F7FB',
-                }}>
-                    <div style={{ margin: 'auto 10px' }}>
-                        <Button
-                            type="link"
-                            style={{
-                                width: '40px', height: '40px', fontWeight: 'bold', border: 'transparent',
-                                backgroundColor: '#F6F7FB', color: '#88878C',
-                            }}
-                            icon={<LeftOutlined />}
-                            onClick={() => {
-                                window.close();
-                            }}
-                        />
-                        <span style={{ fontSize: '20px', marginLeft: '20px' }}>
+            <DataContext.Consumer>
+                {(context: DataContextType | undefined) => {
+                    if (!context) {
+                        return (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <LoadingOutlined style={{ fontSize: '3em' }} />
+                            </div>); // 或者其他的加载状态显示
+                    }
+                    // 从 context 中解构出 topFiveFimData 和 n
+                    const { agentOriginData } = context;
+
+                    return (
+                        <div style={{ width: '100%', margin: '0 auto' }}>
+                            <Row style={{
+                                width: '110%', height: '80px', backgroundColor: '#FFFFFF', //height:'40px',
+                                marginLeft: '-20px', padding: '12px', borderBottom: '1px solid #F6F7FB',
+                            }}>
+                                <div style={{ margin: 'auto 10px' }}>
+                                    <Button
+                                        type="link"
+                                        style={{
+                                            width: '40px', height: '40px', fontWeight: 'bold', border: 'transparent',
+                                            backgroundColor: '#F6F7FB', color: '#88878C',
+                                        }}
+                                        icon={<LeftOutlined />}
+                                        onClick={() => {
+                                            window.close();
+                                        }}
+                                    />
+                                    <span style={{ fontSize: '20px', marginLeft: '20px' }}>
               新建任务
             </span>
-                    </div>
-                </Row>
-                <Row style={{ width: '30%', height: '40px', margin: '5px auto' }}>
-                    <Steps>
-                        <Step title="选择主机" status={this.getStepStatus(0)}
-                              icon={currentStep > 0 ? <SmileOutlined /> : <UserOutlined />} />
-                        <Step title="设置任务信息" status={this.getStepStatus(1)}
-                              icon={currentStep > 1 ? <SmileOutlined /> : <SolutionOutlined />} />
-                    </Steps>
-                </Row>
-                <Row style={{}}>
-                    {currentStep === 0 && (
-                        <Card bordered={false} style={{ width: '90%', margin: '0px auto' }}>
-                            <Row style={{ margin: '0px auto', width: '100%' }}>
-                                <FetchDataForTaskTable
-                                    key={'createnewvirusscantask'}
-                                    apiEndpoint={Agent_Data_API}
-                                    timeColumnIndex={[]}
-                                    columns={createNewTaskColumns}
-                                    currentPanel={'createnewvirusscantask'} // 替换为你的 panel 名称
-                                    keyIndex={1}
-                                    search={[]}
-                                    onSelectedRowKeysChange={this.handleSelectedRowKeysChange}
-                                />
+                                </div>
                             </Row>
-                            <Row style={{
-                                width: '100%', margin: '20px auto',
-                                display: 'flex', justifyContent: 'center', alignItems: 'center',
-                            }}>
-                                <Button
-                                    style={{ backgroundColor: 'white', color: 'black', marginRight: '20px' }}
-                                    onClick={this.goBack} // 或者其他取消操作的逻辑
-                                >
-                                    取消
-                                </Button>
-                                <Button
-                                    disabled={this.state.selectedUuids.length === 0}
-                                    style={{ backgroundColor: '#1664FF', color: 'white' }}
-                                    onClick={() => this.setState({ currentStep: currentStep + 1 })}
-                                >
-                                    下一步
-                                </Button>
+                            <Row style={{ width: '30%', height: '40px', margin: '5px auto' }}>
+                                <Steps>
+                                    <Step title="选择主机" status={this.getStepStatus(0)}
+                                          icon={currentStep > 0 ? <SmileOutlined /> : <UserOutlined />} />
+                                    <Step title="设置任务信息" status={this.getStepStatus(1)}
+                                          icon={currentStep > 1 ? <SmileOutlined /> : <SolutionOutlined />} />
+                                </Steps>
                             </Row>
-                        </Card>
-                    )}
-                    {currentStep === 1 && (
-                        <Row style={{ width: '100%', margin: '0px auto' }}>
-                            <Card style={{ width: '90%', margin: '0px auto' }}>
-                                <Row style={{ width: '100%', margin: '0px auto' }}>
-                                    <Form
-                                        layout="vertical"
-                                        style={{ width: '70%', margin: '0px auto' }}
-                                        onFinish={this.handleSubmit}
-                                        initialValues={{}}
-                                    >
-                                        <Row>
-                                            <Row style={{
-                                                width: '100%',
-                                                paddingBottom: '0px',
-                                                border: 'solid 0px #E5E8EF',
-                                            }}>
-                                                <Form.Item
-                                                    label={<span style={{ fontSize: '18px' }}>将要扫描病毒的主机</span>}
-                                                    name="description">
-                                                    <p style={{
-                                                        margin: '0px auto', fontSize: '18px',
-                                                        display: 'flex',
-                                                        //justifyContent: 'center', // 水平居中
-                                                        alignItems: 'center', // 垂直居中
-                                                    }}>{this.state.selectedUuids.join(', ')}</p>
-                                                </Form.Item>
-                                            </Row>
+                            <Row style={{}}>
+                                {currentStep === 0 && (
+                                    <Card bordered={false} style={{ width: '90%', margin: '0px auto' }}>
+                                        <Row style={{ margin: '0px auto', width: '100%' }}>
+                                            {/*<FetchDataForTaskTable*/}
+                                            {/*    key={'createnewvirusscantask'}*/}
+                                            {/*    apiEndpoint={Agent_Data_API}*/}
+                                            {/*    timeColumnIndex={[]}*/}
+                                            {/*    columns={createNewTaskColumns}*/}
+                                            {/*    currentPanel={'createnewvirusscantask'} // 替换为你的 panel 名称*/}
+                                            {/*    keyIndex={1}*/}
+                                            {/*    search={[]}*/}
+                                            {/*    onSelectedRowKeysChange={this.handleSelectedRowKeysChange}*/}
+                                            {/*/>*/}
+                                            <HostListTable
+                                                externalDataSource={agentOriginData}
+                                                columns={createNewTaskColumns} apiEndpoint={Agent_Data_API}
+                                                currentPanel={'createnewtask'}
+                                                updateSelectedUuids={this.handleSelectedRowKeysChange} // 将回调函数作为 props 传递
+                                            />
                                         </Row>
-                                        <Row style={{ width: '100%' }}>
-                                            <Form.Item label="任务类型" name="type" rules={[{ required: false }]}>
-                                                <Radio.Group defaultValue="folderscan">
-                                                    <Radio.Button value="folderscan"
-                                                                  onClick={() => this.setState({ selectedTaskType: 'folderscan' })}>端上目录/文件扫描</Radio.Button>
-                                                    <Radio.Button value="fullscan"
-                                                                  onClick={() => this.setState({ selectedTaskType: 'fullscan' })}>全盘扫描</Radio.Button>
-                                                    <Radio.Button value="quickscan"
-                                                                  onClick={() => this.setState({ selectedTaskType: 'quickscan' })}>快速扫描</Radio.Button>
-                                                </Radio.Group>
-                                            </Form.Item>
-                                        </Row>
-                                            {this.state.selectedTaskType === 'folderscan' && (<>
-                                                <Form.Item
-                                                    label="绝对路径"
-                                                    name="abspath"
-                                                    rules={[{ required: true, message: '请输入绝对路径' }]}>
-                                                    <Input placeholder="请输入绝对路径" />
-                                                </Form.Item>
-                                            </>)}
-                                        {this.state.selectedTaskType === 'fullscan' && renderCommonFormItems(this.state.selectedTaskType)}
-                                        {this.state.selectedTaskType === 'quickscan' && renderCommonFormItems(this.state.selectedTaskType)}
-
                                         <Row style={{
                                             width: '100%', margin: '20px auto',
-                                            display: 'flex', justifyContent: 'center', alignItems: 'center'
+                                            display: 'flex', justifyContent: 'center', alignItems: 'center',
                                         }}>
                                             <Button
                                                 style={{ backgroundColor: 'white', color: 'black', marginRight: '20px' }}
-                                                onClick={() => this.setState({ currentStep: currentStep - 1 })}
+                                                onClick={this.goBack} // 或者其他取消操作的逻辑
                                             >
-                                                上一步
+                                                取消
                                             </Button>
                                             <Button
+                                                disabled={this.state.selectedUuids.length === 0}
                                                 style={{ backgroundColor: '#1664FF', color: 'white' }}
-                                                htmlType="submit"
+                                                onClick={() => this.setState({ currentStep: currentStep + 1 })}
                                             >
-                                                确定
+                                                下一步
                                             </Button>
                                         </Row>
-                                    </Form>
-                                </Row>
-                            </Card>
-                        </Row>
-                    )}
-                </Row>
-            </div>
+                                    </Card>
+                                )}
+                                {currentStep === 1 && (
+                                    <Row style={{ width: '100%', margin: '0px auto' }}>
+                                        <Card style={{ width: '90%', margin: '0px auto' }}>
+                                            <Row style={{ width: '100%', margin: '0px auto' }}>
+                                                <Form
+                                                    layout="vertical"
+                                                    style={{ width: '70%', margin: '0px auto' }}
+                                                    onFinish={this.handleSubmit}
+                                                    initialValues={{}}
+                                                >
+                                                    <Row>
+                                                        <Row style={{
+                                                            width: '100%',
+                                                            paddingBottom: '0px',
+                                                            border: 'solid 0px #E5E8EF',
+                                                        }}>
+                                                            <Form.Item
+                                                                label={<span style={{ fontSize: '18px' }}>将要扫描病毒的主机</span>}
+                                                                name="description">
+                                                                <p style={{
+                                                                    margin: '0px auto', fontSize: '18px',
+                                                                    display: 'flex',
+                                                                    //justifyContent: 'center', // 水平居中
+                                                                    alignItems: 'center', // 垂直居中
+                                                                }}>{this.state.selectedUuids.join(', ')}</p>
+                                                            </Form.Item>
+                                                        </Row>
+                                                    </Row>
+                                                    <Row style={{ width: '100%' }}>
+                                                        <Form.Item label="任务类型" name="type" rules={[{ required: false }]}>
+                                                            <Radio.Group defaultValue="folderscan">
+                                                                <Radio.Button value="folderscan"
+                                                                              onClick={() => this.setState({ selectedTaskType: 'folderscan' })}>端上目录/文件扫描</Radio.Button>
+                                                                <Radio.Button value="fullscan"
+                                                                              onClick={() => this.setState({ selectedTaskType: 'fullscan' })}>全盘扫描</Radio.Button>
+                                                                <Radio.Button value="quickscan"
+                                                                              onClick={() => this.setState({ selectedTaskType: 'quickscan' })}>快速扫描</Radio.Button>
+                                                            </Radio.Group>
+                                                        </Form.Item>
+                                                    </Row>
+                                                    {this.state.selectedTaskType === 'folderscan' && (<>
+                                                        <Form.Item
+                                                            label="绝对路径"
+                                                            name="abspath"
+                                                            rules={[{ required: true, message: '请输入绝对路径' }]}>
+                                                            <Input placeholder="请输入绝对路径" />
+                                                        </Form.Item>
+                                                    </>)}
+                                                    {this.state.selectedTaskType === 'fullscan' && renderCommonFormItems(this.state.selectedTaskType)}
+                                                    {this.state.selectedTaskType === 'quickscan' && renderCommonFormItems(this.state.selectedTaskType)}
+
+                                                    <Row style={{
+                                                        width: '100%', margin: '20px auto',
+                                                        display: 'flex', justifyContent: 'center', alignItems: 'center'
+                                                    }}>
+                                                        <Button
+                                                            style={{ backgroundColor: 'white', color: 'black', marginRight: '20px' }}
+                                                            onClick={() => this.setState({ currentStep: currentStep - 1 })}
+                                                        >
+                                                            上一步
+                                                        </Button>
+                                                        <Button
+                                                            style={{ backgroundColor: '#1664FF', color: 'white' }}
+                                                            htmlType="submit"
+                                                        >
+                                                            确定
+                                                        </Button>
+                                                    </Row>
+                                                </Form>
+                                            </Row>
+                                        </Card>
+                                    </Row>
+                                )}
+                            </Row>
+                        </div>
+                    );
+                }}
+            </DataContext.Consumer>
         );
     }
 }

@@ -3,12 +3,8 @@ import { useAlita } from 'redux-alita';
 import umbrella from 'umbrella-storage';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useSwitch } from '../../utils/hooks';
-import {
-    DownloadOutlined, LogoutOutlined, SettingOutlined,
+import {LogoutOutlined,
     ArrowsAltOutlined,
-    BarsOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import { Row, Col, message } from 'antd';
 import axios from 'axios';
@@ -20,7 +16,6 @@ import { PwaInstaller } from '../widget';
 import screenfull from 'screenfull';
 import avater from '../../style/imgs/user1.png';
 import logo from '../../style/imgs/owl.png';
-import SiderCustom from './SiderCustom';
 import { APP_Server_URL } from '../../service/config';
 
 
