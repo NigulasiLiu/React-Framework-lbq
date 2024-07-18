@@ -16,6 +16,7 @@ import {
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { blueButton, cancelButton } from '../../style/config';
 import axios from 'axios';
+import moment from 'moment/moment';
 
 type RangeValue<T> = [T | null, T | null] | null;
 const { Search } = Input;
@@ -165,7 +166,8 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                 {
                     title: '最新扫描时间',
                     dataIndex: 'last_checked',
-                    // sorter: (a: any, b: any) => parseFloat(b.last_checked) - parseFloat(a.last_checked),
+                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    sorter: (a: any, b: any) => parseFloat(b.last_checked) - parseFloat(a.last_checked),
                 },
                 {
                     title: '操作',

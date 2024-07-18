@@ -102,15 +102,14 @@ class AlertList extends React.Component<AlertListProps, AlertListState> {
                     const {
                         hostCount,
                         HoneyPotHostCount,
-                        TTPsHostCount, vulnOriginData,
-                        VirusHostCount,
+                        TTPsHostCount,
                     } = context;
 
                     // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
                     const alertHostPieChartData = [
                         { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
                         { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
+                        // { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
                     ];
                     return (
                         <div style={{

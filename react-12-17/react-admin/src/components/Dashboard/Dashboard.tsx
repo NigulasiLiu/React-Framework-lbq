@@ -13,6 +13,7 @@ import {
 import DataCard from '../CustomAntd/DataCard';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import DisplaySettingsGuide from './DisplaySettingsGuide';
+import { cveData } from '../ContextAPI/DataService';
 
 
 interface ProgressPanelProps {
@@ -78,9 +79,70 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
     );
 };
 
+// const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
+//                           title1: string, title2: string, wholeCount: number,
+//                           width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
+//     if (linuxOriginData !== undefined && winOriginData !== undefined) {
+//         // 确保OriginData总是作为数组处理
+//         const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
+//         const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+//
+//         const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
+//         const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+//         // 确保needAdjItems不为空再访问它的属性
+//         if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
+//             // 使用reduce和findIndex方法统计唯一uuid个数
+//             const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
+//                 // 查找在累积数组中uuid是否已存在
+//                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+//                 // 如果不存在，则添加到累积数组中
+//                 if (index === -1) {
+//                     acc.push(current);
+//                 }
+//                 return acc;
+//             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+//             const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
+//                 // 查找在累积数组中uuid是否已存在
+//                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+//                 // 如果不存在，则添加到累积数组中
+//                 if (index === -1) {
+//                     acc.push(current);
+//                 }
+//                 return acc;
+//             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+//
+//             const baselineAlertData: StatusItem[] = [
+//                 // 确保使用正确的方法来计数
+//                 { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
+//                 { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' },//BLUE
+//             ];
+//             return (
+//                 <CustomPieChart
+//                     data={baselineAlertData}
+//                     title={'基线'}
+//                     innerRadius={34}
+//                     deltaRadius={5}
+//                     outerRadius={50}
+//                     cardHeight={150}
+//                     hasDynamicEffect={true}
+//                 />
+//             );
+//         }
+//     }
+//     return (
+//         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+//             <LoadingOutlined style={{ fontSize: '3em' }} />
+//         </div>
+//     );
+// };
 const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
                           title1: string, title2: string, wholeCount: number,
-                          width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
+                          width: number = 200, height: number = 200, inner: number = 34, delta: number = 5, outer: number = 50) => {
+    const defaultAlertData: StatusItem[] = [
+        { label: title1, value: 0, color: '#E5E8EF' },
+        { label: title2, value: wholeCount, color: '#4086FF' },
+    ];
+
     if (linuxOriginData !== undefined && winOriginData !== undefined) {
         // 确保OriginData总是作为数组处理
         const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
@@ -88,6 +150,7 @@ const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
 
         const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
         const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+
         // 确保needAdjItems不为空再访问它的属性
         if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
             // 使用reduce和findIndex方法统计唯一uuid个数
@@ -100,6 +163,7 @@ const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
                 }
                 return acc;
             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+
             const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
                 // 查找在累积数组中uuid是否已存在
                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
@@ -111,52 +175,116 @@ const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
 
             const baselineAlertData: StatusItem[] = [
-                // 确保使用正确的方法来计数
-                { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
-                { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' },//BLUE
+                { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' }, // GREY
+                { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' }, // BLUE
             ];
+
             return (
                 <CustomPieChart
                     data={baselineAlertData}
                     title={'基线'}
-                    innerRadius={34}
-                    deltaRadius={5}
-                    outerRadius={50}
-                    cardHeight={150}
+                    innerRadius={inner}
+                    deltaRadius={delta}
+                    outerRadius={outer}
+                    cardHeight={height}
+                    cardWidth={width}
                     hasDynamicEffect={true}
                 />
             );
         }
     }
+
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <LoadingOutlined style={{ fontSize: '3em' }} />
-        </div>
+        <CustomPieChart
+            data={defaultAlertData}
+            title={'基线'}
+            innerRadius={inner}
+            deltaRadius={delta}
+            outerRadius={outer}
+            cardHeight={height}
+            cardWidth={width}
+            hasDynamicEffect={true}
+        />
     );
 };
 
 class Dashboard extends React.Component<DashboardProps> {
 
 
-    renderDataCard = (OriginData: any[],last7totalVulsum:number) => {
+    renderVulDataCard = (OriginData: any[],last7totalVulsum:number) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
-            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            let highRiskCount = 0;
+            let mediumRiskCount = 0;
+            let lowRiskCount = 0;
             let totalExpResultCount = 0;
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
             originDataArray.forEach(item => {
                 totalExpResultCount += item.vul_detection_exp_result.length;
             });
+            const getRiskLevel = (bugExp: any) => {
+                if (cveData[bugExp]) {
+                    return cveData[bugExp].risk_level;
+                }
+                return 'low'; // 默认风险等级为低
+            };
+            // 从 localStorage 中读取被忽略的项
+            const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+            // OriginData.forEach(record => {
+            //     record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
+            //         // 检查是否该项被忽略
+            //         const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+            //         if (ignoredBugExps.includes(exp.bug_exp)) {
+            //             return; // 如果被忽略，跳过计数
+            //         }
+            //
+            //         const riskLevel = getRiskLevel(exp.bug_exp);
+            //         if (riskLevel === 'high') {
+            //             highRiskCount++;
+            //         } else if (riskLevel === 'medium') {
+            //             mediumRiskCount++;
+            //         } else if (riskLevel === 'low') {
+            //             lowRiskCount++;
+            //         }
+            //     });
+            // });
+            const currentTime = new Date().getTime(); // 当前时间的时间戳
+            const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 七天的时间戳毫秒数
 
+            OriginData.forEach(record => {
+                record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
+                    // 检查是否该项被忽略
+                    const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+                    if (ignoredBugExps.includes(exp.bug_exp)) {
+                        return; // 如果被忽略，跳过计数
+                    }
+
+                    // 计算数据的时间戳
+                    const expScanTime = new Date(exp.scanTime * 1000).getTime();
+                    if ((currentTime - expScanTime) > sevenDaysInMillis) {
+                        return; // 如果数据不在七天以内，跳过计数
+                    }
+
+                    const riskLevel = getRiskLevel(exp.bug_exp);
+                    if (riskLevel === 'high') {
+                        highRiskCount++;
+                    } else if (riskLevel === 'medium') {
+                        mediumRiskCount++;
+                    } else if (riskLevel === 'low') {
+                        lowRiskCount++;
+                    }
+                });
+            });
             return (
                 <div>
                     <DataCard
-                        title="待处理高可利用漏洞"
+                        title="待处理漏洞"
                         value={last7totalVulsum}
                         valueItem={[
-                            { value: '0', backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                            { value: '0', backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                            { value: '0', backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-                            { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
+                            { value: highRiskCount, backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
+                            { value: mediumRiskCount, backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
+                            { value: lowRiskCount, backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+                            // { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
                         ]}
                         panelId="/app/RiskManagement/VulnerabilityList"
                         height="75px"
@@ -215,22 +343,21 @@ class Dashboard extends React.Component<DashboardProps> {
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
-                        honeyPotOriginData,HoneyPotHostCount,
+                        HoneyPotHostCount,
                         bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData,
                         TTPsHostCount,
-                        virusOriginData,VirusHostCount,
+                        virusOriginData,
                         last7defenceForceValue,last7brutForceValue,last7privValue,
                         last7VirusValue,last7HoneyPotValue,
 
                         processMetaData_userName,
 
-                        agentOnlineCount,
+                        agentOriginData,
                         portMetaData_port_state,
                         assetMetaData_service,
                         vulnHostCount, hostCount,
                         vulnOriginData,
                         last7VulValue,
-
                         linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
                         blLinuxHostCount,
                         blWindowsHostCount,
@@ -240,6 +367,20 @@ class Dashboard extends React.Component<DashboardProps> {
 
                         agentAVGCPUUse, agentAVGMEMUse,
                     } = context;
+                    const uniqueUUIDs_1 = new Set();
+                    const uniqueUUIDs_2 = new Set();
+                    agentOriginData.forEach(item => {
+                        if (item.status === "1") {
+                            uniqueUUIDs_1.add(item.uuid);
+                        }
+                        else{
+                            uniqueUUIDs_2.add(item.uuid)
+                        }
+                    });
+                    const agentOnlineCount = uniqueUUIDs_1.size;
+                    const hostOfflineCount = uniqueUUIDs_2.size;
+
+
                     // console.log('过去7日漏洞风险:'+last7VulValue);
                     const vulAlertData = generateAlertData(last7VulValue);
                     // 转换value为DataItem类型
@@ -304,13 +445,13 @@ class Dashboard extends React.Component<DashboardProps> {
                             Virus: virusProcessedData[index].Virus,
                         };
                     });
-                    const noAlertHostCount =20+hostCount-HoneyPotHostCount-TTPsHostCount-VirusHostCount;
+                    const noAlertHostCount =hostCount-HoneyPotHostCount-TTPsHostCount;
                     // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
                     const alertHostPieChartData = [
-                        { label: '无告警主机', value: noAlertHostCount>0?noAlertHostCount:0, color: '#E5E8EF' },
-                        { label: '蜜罐告警', value: HoneyPotHostCount?HoneyPotHostCount:0, color: '#FFBB28' },
-                        { label: 'TTPs告警', value: TTPsHostCount?TTPsHostCount:0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount?VirusHostCount:0, color: '#846CCE' },
+                        { label: '无告警主机', value: noAlertHostCount||0, color: '#E5E8EF' },
+                        { label: '蜜罐告警', value: HoneyPotHostCount||0, color: '#FFBB28' },
+                        { label: 'TTPs告警', value: TTPsHostCount||0, color: '#468DFF' },
+                        // { label: '病毒扫描告警', value: VirusHostCount||0, color: '#846CCE' },
                     ];
                     //漏洞检测
                     const vulAlertPieChartData = [
@@ -611,7 +752,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 },
                                                                 {
                                                                     value: '0',
-                                                                    backgroundColor: '#468DFF',
+                                                                    backgroundColor: '#fff',
                                                                     fontSize: '14px',
                                                                     color: 'white',
                                                                 },
@@ -731,7 +872,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         </div>
                                                     </Col>
                                                     <Col span={6}>
-                                                        {this.renderDataCard(vulnOriginData, last7totalVulSum)}
+                                                        {this.renderVulDataCard(vulnOriginData, last7totalVulSum)}
                                                     </Col>
                                                 </Row>
 
@@ -919,9 +1060,9 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             hasDynamicEffect={true}
                                                         />
                                                     </Col>
-                                                    <Col span={8}>
+                                                    <Col span={8} style={{transform: 'translateX(-45px) translateY(-25px)'}}>
                                                         {renderBLPieChart(linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                                                            '无基线风险主机', '存在高危基线主机', blLinuxHostCount + blWindowsHostCount)}
+                                                            '无基线风险主机', '存在高危基线主机', hostCount)}
                                                     </Col>
                                                 </Row>
                                             </Card>

@@ -1,4 +1,7 @@
-.ignored-row {
+.ignored-row1 {
     background-color: #f0f0f0;
     opacity: 0.5;
+}
+.ignored-row {
+    display: none;
 }

@@ -12,6 +12,8 @@ interface FetchDataParams {
   requestParams?: any;
 }
 
+export const cveData = require('./optimized_cve_data_no_description.json'); // 使用适当的路径
+
 let hasAlertBeenShown = false; // 全局变量，用于跟踪是否已经显示过alert
 export const fetchDataFromAPI = async ({ apiEndpoint, requestType = 'get', requestParams }: FetchDataParams): Promise<any[]> => {
   let endpoint = `${apiEndpoint}`;

@@ -134,7 +134,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                 },
             ],
             render: (text: string, record: any) => (
-                <Badge status={record.is_shell === '1' ? 'success' : 'error'} text={record.is_shell === '1' ? 'Yes' : 'No'} />
+                <Badge status={record.is_shell === '0' ? 'success' : 'error'} text={record.is_shell === '1' ? 'Yes' : 'No'} />
             ),
         },
     ];

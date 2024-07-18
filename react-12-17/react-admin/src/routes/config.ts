@@ -119,64 +119,8 @@ const menus: {
                     title: '一次性任务',
                     component: 'InstantTask',
                 },
-                // {
-                //     key: '/app/Management/UserManagement',
-                //     title: '用户管理',
-                //     icon: 'user',
-                //     component: 'UserManagement',
-                // },
             ],
         },
-        // {
-        //     key: '/app/auth',
-        //     title: '系统监控',
-        //     icon: 'monitor',
-        //     subs: [
-        //         {
-        //             key: '/app/detailspage',
-        //             title: '详情页面',
-        //             icon: 'file',
-        //             component: 'DetailsPage', // 组件名称
-        //         },
-        //         {
-        //             key: '/app/create_agent_task',
-        //             title: '新建任务',
-        //             icon: 'plus-circle',
-        //             component: 'CreateAgentTaskPage', // 组件名称
-        //         },
-        //         {
-        //             key: '/app/create_virusscan_task',
-        //             title: '新建病毒扫描任务',
-        //             icon: 'plus-circle',
-        //             component: 'CreateVirusScanTaskPage', // 组件名称
-        //         },
-        //         {
-        //             key: '/app/baseline_detail',
-        //             title: '基线检查详情页面',
-        //             icon: 'info-circle',
-        //             component: 'BaseLineDetectDetailsPage', // 组件名称
-        //         },
-        //         {
-        //             key: '/app/virusscan_detail',
-        //             title: '病毒扫描详情页面',
-        //             icon: 'info-circle',
-        //             component: 'VirusScanDetailsPage', // 组件名称
-        //         },
-        //         {
-        //             key: '/app/auth/basic',
-        //             title: '基础演示',
-        //             icon: 'appstore',
-        //             component: 'AuthBasic'
-        //         },
-        //         {
-        //             key: '/app/auth/routerEnter',
-        //             title: '路由拦截',
-        //             icon: 'block',
-        //             component: 'RouterEnter',
-        //             requireAuth: 'auth/testPage',
-        //         },
-        //     ],
-        // },
     ],
     others: [
         {

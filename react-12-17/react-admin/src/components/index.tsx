@@ -18,7 +18,6 @@ import CreateAgentTaskPage from './Management/CreateTaskPage'
 import CreateVirusScanTaskPage from './VirusScanning/CreateVirusScanTask';
 import BaseLineDetectDetailsPage from './DetailsPage/BaseLineDetectDetailsPage';
 import VirusScanDetailsPage from './DetailsPage/VirusScanDetailsPage';
-import UserManagement from './Management/UserManagement';
 import HoneypotDefense from './RiskManagement/HoneypotDefense';
 import MemoryShell from './HostProtection/MemoryShell';
 import ThreatHunting from './HostProtection/ThreatHunting';
@@ -34,7 +33,6 @@ const WysiwygBundle = Loadable({
 });
 
 export default {
-    UserManagement,
     InstantTask,
     Dashboard,
     AssetFingerprint,

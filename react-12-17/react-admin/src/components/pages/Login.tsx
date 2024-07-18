@@ -74,7 +74,7 @@ class Login extends React.Component<LoginProps> {
                 // 更新redux状态
                 this.props.setAlitaState({
                     stateName: 'auth',
-                    data: { uid: response.data.access_token }, // 或其他你需要存储的用户信息
+                    data: { uid: response.data.access_token },
                 });
                 console.log("登陆成功");
                 // 跳转到主页或其他适当页面
@@ -84,8 +84,8 @@ class Login extends React.Component<LoginProps> {
                 message.error('登录失败: ' + response.data.message);
             }
         } catch (error) {
-            console.error('登录请求失败', error);
-            message.error('登录请求异常: ' + error.message);
+            console.error('登录失败', error);
+            message.error('登录异常: ' + error.message);
             this.props.history.push('/login'); // 确保登录失败时用户留在登录页面
         }
     };
@@ -103,7 +103,7 @@ class Login extends React.Component<LoginProps> {
                 <div className="login-form">
                     <div className="login-logo">
                         <span>Security Platform</span>
-                        <PwaInstaller />
+                        {/*<PwaInstaller />*/}
                     </div>
                     <Form onFinish={this.handleSubmit} style={{ maxWidth: '300px' }}>
                         <FormItem

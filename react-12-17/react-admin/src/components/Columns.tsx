@@ -1870,7 +1870,7 @@ export const constRenderTable = (OriginData: any[], title: string,
         return (
             <div style={{ fontWeight: 'bolder', width: '100%' }}>
                 <Card bordered={true}
-                      style={{ backgroundColor: '#ffffff' }}>
+                      style={{ backgroundColor: '#ffffff',height:'600px' }}>
                     <Row>
                         <div style={{
                             display: 'flex',

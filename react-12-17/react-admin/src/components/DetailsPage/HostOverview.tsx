@@ -12,7 +12,7 @@ import {
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { convertUnixTime, determineOS } from '../ContextAPI/DataService';
+import { convertUnixTime, cveData, determineOS } from '../ContextAPI/DataService';
 import {
     Agent_uuid_Data_API,
     Assets_Data_API, Assets_uuid_Data_API, BaseLine_linux_uuid_Data_API, BaseLine_windows_uuid_Data_API,
@@ -71,21 +71,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
     processRef: React.RefObject<HTMLDivElement>;
     assetRef: React.RefObject<HTMLDivElement>;
 
-    //扇形图动态效果实现
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState((prevState) => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) =>
-                i === index ? index : val,
-            ),
-        }));
-    };
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
+
     handleScrollToSection = (sectionRef: React.RefObject<HTMLDivElement>) => {
         if (sectionRef && sectionRef.current) {
             sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -108,48 +94,51 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
             filteredvulData.forEach(item => {
                 totalExpResultCount += item.vul_detection_exp_result.length;
             });
-            const vulPieChartData: StatusItem[] = [
-                { color: '#E63F3F', label: panelDataTitle1, value: totalExpResultCount },
-                { color: '#caa26f', label: panelDataTitle2, value: totalExpResultCount / 2 },
-                { color: '#468DFF', label: panelDataTitle3, value: 9 },
-            ];
+
+            // 调整getRiskLevel函数以使用cveData
+            const getRiskLevel = (bugExp: any) => {
+                if (cveData[bugExp]) {
+                    return cveData[bugExp].risk_level;
+                }
+                return 'low'; // 默认风险等级为低
+            };
 
             let highRiskCount = 0;
             let mediumRiskCount = 0;
             let lowRiskCount = 0;
 
-            filteredvulData.forEach(item => {
-                if (item && Array.isArray(item.vul_detection_exp_result)) {
-                    item.vul_detection_exp_result.forEach((result: { type: any; }) => {
-                        if (result && typeof result.type === 'number') {
-                            switch (result.type) {
-                                case 0:
-                                    highRiskCount++;
-                                    break;
-                                case 1:
-                                    mediumRiskCount++;
-                                    break;
-                                case 2:
-                                    lowRiskCount++;
-                                    break;
-                                default:
-                                    console.warn(`Unexpected risk type: ${result.type}`);
-                                    break;
-                            }
-                        } else {
-                            console.warn('Invalid result or result.type', result);
-                        }
-                    });
-                } else {
-                    console.warn('Invalid item or item.vul_detection_exp_result', item);
-                }
+            // 从 localStorage 中读取被忽略的项
+            const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+            filteredvulData.forEach(record => {
+                record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
+                    // 检查是否该项被忽略
+                    const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+                    if (ignoredBugExps.includes(exp.bug_exp)) {
+                        return; // 如果被忽略，跳过计数
+                    }
+
+                    const riskLevel = getRiskLevel(exp.bug_exp);
+                    if (riskLevel === 'high') {
+                        highRiskCount++;
+                    } else if (riskLevel === 'medium') {
+                        mediumRiskCount++;
+                    } else if (riskLevel === 'low') {
+                        lowRiskCount++;
+                    }
+                });
             });
 
-            const vulPieChartData1: StatusItem[] = [
-                { color: '#E63F3F', label: '高风险项', value: highRiskCount },
-                { color: '#caa26f', label: '中风险项', value: mediumRiskCount },
-                { color: '#468DFF', label: '低风险项', value: lowRiskCount },
+            // const vulScanResultData: StatusItem[] = [
+            //     { color: '#E63F3F', label: '高风险项', value: highRiskCount },
+            //     { color: '#caa26f', label: '中风险项', value: mediumRiskCount },
+            //     { color: '#468DFF', label: '低风险项', value: lowRiskCount },
+            // ];
+            const vulPieChartData: StatusItem[] = [
+                { color: '#E63F3F', label: panelDataTitle1, value: highRiskCount },
+                { color: '#caa26f', label: panelDataTitle2, value: mediumRiskCount },
+                { color: '#468DFF', label: panelDataTitle3, value: lowRiskCount },
             ];
+
 
 
             return (
@@ -184,61 +173,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
         }
     };
 
-    // renderBLPieChart = (linuxOriginData: any, winOriginData: any,
-    //     title1: string, title2: string, wholeCount: number,
-    //     width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
-    //     if (linuxOriginData !== undefined && winOriginData !== undefined) {
-    //         // 确保OriginData总是作为数组处理
-    //         const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
-    //         const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
-    //
-    //         const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
-    //         const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
-    //         // 确保needAdjItems不为空再访问它的属性
-    //         if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
-    //             // 使用reduce和findIndex方法统计唯一uuid个数
-    //             const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
-    //                 // 查找在累积数组中uuid是否已存在
-    //                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-    //                 // 如果不存在，则添加到累积数组中
-    //                 if (index === -1) {
-    //                     acc.push(current);
-    //                 }
-    //                 return acc;
-    //             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-    //             const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
-    //                 // 查找在累积数组中uuid是否已存在
-    //                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-    //                 // 如果不存在，则添加到累积数组中
-    //                 if (index === -1) {
-    //                     acc.push(current);
-    //                 }
-    //                 return acc;
-    //             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-    //
-    //             const baselineAlertData: StatusItem[] = [
-    //                 // 确保使用正确的方法来计数
-    //                 { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#EA635F' },//RED
-    //                 { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#468DFF' }//蓝
-    //             ];
-    //             return (
-    //                 <CustomPieChart
-    //                     data={baselineAlertData}
-    //                     innerRadius={34}
-    //                     deltaRadius={5}
-    //                     outerRadius={50}
-    //                     cardHeight={150}
-    //                     hasDynamicEffect={true}
-    //                 />
-    //             );
-    //         }
-    //     }
-    //     return (
-    //         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-    //             <LoadingOutlined style={{ fontSize: '3em' }} />
-    //         </div>
-    //     );
-    // }
     renderPieCharBaseLineChart = (OriginData: any, linux: any, windows: any) => {
         if (OriginData !== undefined) {
             // 确保OriginData总是作为数组处理
@@ -335,16 +269,59 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     }
                 }
             }
-        } else {
-            return (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <LoadingOutlined style={{ fontSize: '3em' }} />
-                </div>
-            );
         }
+
+        // 当 OriginData 为 undefined 时，返回建议调整和自行判断都为 0 的饼图
+        const baselineAlertData: StatusItem[] = [
+            { label: '建议调整', value: 0, color: '#EA635F' }, // RED
+            { label: '自行判断', value: 0, color: '#468DFF' }, // 蓝
+        ];
+        return (
+            <div>
+                <Row>
+                    <Col span={12}>
+                        <CustomPieChart
+                            data={baselineAlertData}
+                            innerRadius={54}
+                            deltaRadius={8}
+                            outerRadius={80}
+                            cardWidth={200}
+                            cardHeight={200}
+                            hasDynamicEffect={true}
+                        />
+                    </Col>
+                    <Col span={2}> </Col>
+                    <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
+                        <StatusPanel statusData={baselineAlertData} orientation="vertical" />
+                    </div>
+                </Row>
+            </div>
+        );
     };
 
-    renderBasicInfoData = (agentOriginData: any) => {
+
+    renderDataCard = (OriginData: any[], title: string) => {
+        if (OriginData !== undefined) {
+            // title==="文件完整性检验" && message.info("11112123123213222:"+JSON.stringify(OriginData));
+            // 确保OriginData总是作为数组处理
+            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+            if (filteredData.length > 0) {
+                return (
+                    <div style={{ width: '100%' }}>
+                        <Statistic title={<span>{title}</span>}
+                                   value={(Array.isArray(OriginData) ? OriginData : [OriginData]).filter(item => item.uuid === this.state.host_uuid).length} />
+                    </div>
+                );
+            }
+        }
+        return (
+            <div style={{ width: '100%' }}>
+                <Statistic title={<span>{title}</span>} value={0} />
+            </div>
+        );
+    };
+    renderBasicInfoData1 = (agentOriginData: any) => {
         if (agentOriginData !== undefined) {
             // 确保agentOriginData总是作为数组处理
             const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
@@ -371,13 +348,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                 };
 
                 return (
-                    // <Row gutter={[16, 16]}>
-                    //     {Object.entries(data).map(([key, value], index) => (
-                    //         <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
-                    //             <Text style={{color:'#686E7A'}}strong>{key}:</Text> <Text>{value}</Text>
-                    //         </Col>
-                    //     ))}
-                    // </Row>
                     <Row gutter={[16, 16]}>
                         {Object.entries(data).map(([key, value], index) => (
                             <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
@@ -400,6 +370,78 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                 </div>
             );
         }
+    };
+    renderBasicInfoData = (agentOriginData: any) => {
+        // 定义默认数据对象
+        const data_default = {
+            'UUID': 'undefined',
+            '主机名称': 'undefined',
+            '操作系统': 'undefined',
+            '在线状态': 'undefined',
+            '最后一次上线': 'undefined',
+            '磁盘大小': 'undefined',
+            '内存大小': 'undefined',
+            '内存使用': 'undefined',
+            'CPU使用率': 'undefined',
+            'CPU信息': 'undefined',
+            'python版本': 'undefined',
+        };
+
+        if (agentOriginData !== undefined) {
+            // 确保agentOriginData总是作为数组处理
+            const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
+            if (originDataArray && originDataArray.length > 0) {
+                const filteredData = originDataArray[0];
+                if (!filteredData) {
+                    return <div>No data available for this host.</div>;
+                }
+                // 将filteredData转换为所需的data结构
+                const data = {
+                    'UUID': filteredData.uuid,
+                    '主机名称': filteredData.host_name,
+                    '操作系统': filteredData.os_version,
+                    '在线状态': filteredData.status === '1' ? "Online" : "Offline",
+                    '最后一次上线': filteredData.last_seen,
+                    '磁盘大小': filteredData.disk_total,
+                    '内存大小': filteredData.mem_total,
+                    '内存使用': filteredData.mem_use,
+                    'CPU使用率': filteredData.cpu_use,
+                    'CPU信息': `${filteredData.processor_name}_${filteredData.processor_architecture}`,
+                    'python版本': filteredData.py_version,
+                };
+
+                return (
+                    <Row gutter={[16, 16]}>
+                        {Object.entries(data).map(([key, value], index) => (
+                            <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
+                                <Text style={{ color: '#686E7A' }} strong>{key}: </Text>
+                                {key === '在线状态' ? (
+                                    <Badge status={filteredData.status === '1' ? 'success' : 'error'}
+                                           text={filteredData.status === '1' ? "Online" : "Offline"} />
+                                ) : (
+                                    <Text>{value}</Text>
+                                )}
+                            </Col>
+                        ))}
+                    </Row>
+                );
+            }
+        }
+        // 使用默认数据对象 data_default
+        return (
+            <Row gutter={[16, 16]}>
+                {Object.entries(data_default).map(([key, value], index) => (
+                    <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
+                        <Text style={{ color: '#686E7A' }} strong>{key}: </Text>
+                        {key === '在线状态' ? (
+                            <Badge status="default" text={value} />
+                        ) : (
+                            <Text>{value}</Text>
+                        )}
+                    </Col>
+                ))}
+            </Row>
+        );
     };
 
 
@@ -442,34 +484,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
     };
 
 
-    renderDataCard = (OriginData: any[], title: string) => {
-        if (OriginData !== undefined) {
-            // title==="文件完整性检验" && message.info("11112123123213222:"+JSON.stringify(OriginData));
-            // 确保OriginData总是作为数组处理
-            const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-            const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
-            if (filteredData.length > 0) {
-                return (
-                    <div style={{ width: '100%' }}>
-                        <Statistic title={<span>{title}</span>}
-                                   value={(Array.isArray(OriginData) ? OriginData : [OriginData]).filter(item => item.uuid === this.state.host_uuid).length} />
-                    </div>
-                );
-            }
-        }
-        return (
-            <div style={{ width: '100%' }}>
-                <Statistic title={<span>{title}</span>} value={0} />
-            </div>
-        );
-    };
 
-    setTimerForUuidData = () => {
-        this.setState({ dataInitialized: true });
-        setInterval(() => {
-            this.setState({ dataInitialized: false });
-        }, 4 * 60 * 1000); // 4 minutes
-    };
 
     render() {
         return (
@@ -507,7 +522,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         bruteforceTTPsMetaData_uuid,
                         privilegeescalationTTPsMetaData_uuid,
                         defenseavoidanceTTPsMetaData_uuid,
-                        VirusMetaData_uuid,
                         HoneyPotMetaData_uuid,
                     } = context;
                     const dataInitialized = this.state.dataInitialized;
@@ -555,13 +569,16 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                         (defenseavoidanceTTPsMetaData_uuid && defenseavoidanceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
                     );
                     const TTPsHostCount = bruteforceTTPsHostCount + privilegeEscalationTTPsHostCount + defenseAvoidanceTTPsHostCount;
-                    const VirusHostCount = (VirusMetaData_uuid && VirusMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
+                    // const VirusHostCount = (VirusMetaData_uuid && VirusMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
 
 
                     const AlertData_uuid = [
-                        { label: '蜜罐告警', value: HoneyPotHostCount ? HoneyPotHostCount : 0, color: '#FFBB28' },
-                        { label: 'TTPs告警', value: TTPsHostCount ? TTPsHostCount : 0, color: '#468DFF' },
-                        { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
+                        // { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
+                        // { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#468DFF' },
+                        // { label: '病毒扫描告警', value: VirusHostCount || 0, color: '#846CCE' },
+                        { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
+                        { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#468DFF' },
+                        // { label: '病毒扫描告警', value: VirusHostCount || 0, color: '#846CCE' },
                     ];
                     const agentversion = '1.7.0.24';
 
@@ -639,7 +656,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                         />
                                                     </Col>
                                                     <Col span={2}> </Col>
-                                                    <div style={{ transform: 'translateX(220px) translateY(-160px)' }}>
+                                                    <div style={{ transform: 'translateX(10px) translateY(45px)' }}>
                                                         <StatusPanel statusData={AlertData_uuid}
                                                                      orientation="vertical" />
                                                     </div>

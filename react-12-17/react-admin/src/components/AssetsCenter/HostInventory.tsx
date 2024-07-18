@@ -5,13 +5,13 @@ import CustomPieChart from '../CustomAntd/CustomPieChart';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Agent_Data_API } from '../../service/config';
-import { Link,withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import moment from 'moment/moment';
 
 //const { Search } = Input;
 
-interface HostInventoryProps extends RouteComponentProps{
+interface HostInventoryProps extends RouteComponentProps {
     host_number: number;
     host_in_alert: number;
     host_with_vul: number;
@@ -29,7 +29,7 @@ interface HostInventoryState {
     deleteIndex: number | null;
     activeIndex: any;
     hostinventoryColumns: any[];
-    taskKey:string;
+    taskKey: string;
 };
 
 
@@ -81,65 +81,6 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientatio
     );
 };
 
-const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
-                          title1: string, title2: string, wholeCount: number,
-                          width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
-    if (linuxOriginData !== undefined && winOriginData !== undefined) {
-        // 确保OriginData总是作为数组处理
-        const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
-        const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
-
-        const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
-        const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
-        // 确保needAdjItems不为空再访问它的属性
-        if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
-            // 使用reduce和findIndex方法统计唯一uuid个数
-            const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
-                // 查找在累积数组中uuid是否已存在
-                const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                // 如果不存在，则添加到累积数组中
-                if (index === -1) {
-                    acc.push(current);
-                }
-                return acc;
-            }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-            const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
-                // 查找在累积数组中uuid是否已存在
-                const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                // 如果不存在，则添加到累积数组中
-                if (index === -1) {
-                    acc.push(current);
-                }
-                return acc;
-            }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-
-            const baselinePieChartData: StatusItem[] = [
-                // 确保使用正确的方法来计数
-                { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
-                { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' },//BLUE
-            ];
-            return (
-                <CustomPieChart
-                    data={baselinePieChartData}
-                    innerRadius={54}
-                    deltaRadius={8}
-                    outerRadius={80}
-                    cardHeight={200}
-                    cardWidth={200}
-                    hasDynamicEffect={true}
-                    title={'基线风险'}
-                />
-            );
-        }
-    }
-    return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <LoadingOutlined style={{ fontSize: '3em' }} />
-        </div>
-    );
-};
-
-
 const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: number, vulnHostCount: number,
                         title1: string, title2: string, wholeCount: number,
                         blLinuxHostCount: number,
@@ -175,13 +116,13 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
                 return acc;
             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
 
-            const noAlertHostCount = 20 + hostCount - HoneyPotHostCount - TTPsHostCount - VirusHostCount;
+            const noAlertHostCount = hostCount - HoneyPotHostCount - TTPsHostCount;
             // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
             const alertHostPieChartData = [
-                { label: '无告警主机', value: noAlertHostCount > 0 ? noAlertHostCount : 0, color: '#E5E8EF' },
-                { label: '蜜罐告警', value: HoneyPotHostCount ? HoneyPotHostCount : -1, color: '#FFBB28' },
-                { label: 'TTPs告警', value: TTPsHostCount ? TTPsHostCount : -1, color: '#468DFF' },
-                { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
+                { label: '无告警主机', value: noAlertHostCount || 0, color: '#E5E8EF' },
+                { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
+                { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#FFBB28' },
+                // { label: '病毒扫描告警', value: VirusHostCount || 0, color: '#846CCE' },
             ];
             const vulAlertData = [
                 { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
@@ -189,26 +130,26 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
             ];
             const baselinePieChartData: StatusItem[] = [
                 // 确保使用正确的方法来计数
-                { label: '无基线风险主机', value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
+                { label: '无基线风险主机', value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#E5E8EF' },//GREY
                 {
                     label: '存在高危基线主机',
-                    value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+                    value: uniqueUuidCount1 + uniqueUuidCount2,
                     color: '#4086FF',
                 },//BLUE
             ];
 
             const riskStatusPanelData: StatusItem[] = [
-                { color: '#E5E8EF', label: '主机总数 ', value: wholeCount },
+                { color: '#E5E8EF', label: '主机数量 ', value: hostCount },
                 {
                     color: '#FBB12E',
                     label: '存在告警的主机 ',
-                    value: HoneyPotHostCount + TTPsHostCount + VirusHostCount,
+                    value: HoneyPotHostCount + TTPsHostCount,
                 },
                 { color: '#EA635F', label: '存在漏洞的主机 ', value: vulnHostCount },
                 {
                     color: '#4086FF',
                     label: '存在高危基线的主机 ',
-                    value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+                    value: uniqueUuidCount1 + uniqueUuidCount2,
                 },
             ];
 
@@ -262,6 +203,7 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
             );
         }
     }
+
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <LoadingOutlined style={{ fontSize: '3em' }} />
@@ -273,7 +215,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
     constructor(props: any) {
         super(props);
         this.state = {
-            taskKey:'',
+            taskKey: '',
             runningStatusData: [],
             riskData: [],
             deleteIndex: -1,
@@ -350,7 +292,8 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                         },
                     ],
                     render: (text: string, record: hostinventoryColumnsType) => (
-                        <Badge status={record.status === '1' ? 'success' : 'error'} text={record.status === '1' ? 'Online' : 'Offline'} />
+                        <Badge status={record.status === '1' ? 'success' : 'error'}
+                               text={record.status === '1' ? 'Online' : 'Offline'} />
                     ),
                 },
                 {
@@ -365,7 +308,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     fontWeight: 'bold',
                     padding: '2px 4px', // 轻微内边距
                     borderRadius: '2px', // 圆角边框
-                }}>CPU</span> {record.cpu_use+"%"}
+                }}>CPU</span> {record.cpu_use + '%'}
                         </div>
                     ),
                     sorter: (a: any, b: any) => parseFloat(b.cpu_use) - parseFloat(a.cpu_use),
@@ -419,24 +362,25 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
 
     // 处理任务菜单点击事件
     handleMenuClick = (e: any) => {
-        this.setState({taskKey:e.key});
+        this.setState({ taskKey: e.key });
     };
+
     renderTaskMenu() {
         return (
             <Menu onClick={this.handleMenuClick}
                   selectedKeys={[this.state.taskKey]}>
                 <Menu.Item key="scheduled">
                     <Link to="/app/create_agent_task" target="_blank">
-                    <Button
-                        style={{
-                            fontWeight: 'bold',
-                            padding: '0 0',
-                            border: 'transparent',
-                            backgroundColor: 'transparent',
-                        }}
-                    >
-                        定时任务
-                    </Button>
+                        <Button
+                            style={{
+                                fontWeight: 'bold',
+                                padding: '0 0',
+                                border: 'transparent',
+                                backgroundColor: 'transparent',
+                            }}
+                        >
+                            定时任务
+                        </Button>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="instant">
@@ -469,15 +413,27 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
-                        agentMetaData_status, agentOriginData,
+                        agentOriginData,
                         linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
                         blLinuxHostCount,
                         blWindowsHostCount,
                         vulnHostCount, hostCount,
-                        HoneyPotHostCount, TTPsHostCount, VirusHostCount,
+                        HoneyPotHostCount, TTPsHostCount,
                     } = context;
-                    const hostOnlineCount = agentMetaData_status.typeCount.get('1') || 0;
-                    const hostOfflineCount = agentMetaData_status.typeCount.get('0') || 0;
+                    const uniqueUUIDs_1 = new Set();
+                    const uniqueUUIDs_2 = new Set();
+                    agentOriginData.forEach(item => {
+                        if (item.status === "1") {
+                            uniqueUUIDs_1.add(item.uuid);
+                        }
+                        else{
+                            uniqueUUIDs_2.add(item.uuid)
+                        }
+                    });
+                    const hostOnlineCount = uniqueUUIDs_1.size;
+                    const hostOfflineCount = uniqueUUIDs_2.size;
+                    // const hostOnlineCount = agentMetaData_status.typeCount.get('1') || 0;
+                    // const hostOfflineCount = agentMetaData_uuid.tupleCount-hostOnlineCount;
                     //StatusLabel数据
                     const runningStatusData: StatusItem[] = [
                         { color: '#22BC44', label: '运行中 ', value: Number(hostOnlineCount) },
@@ -545,7 +501,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                                         {renderPieChart(linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
                                             hostCount, vulnHostCount,
                                             '无风险主机', '存在高危基线主机', blLinuxHostCount + blWindowsHostCount,
-                                            blLinuxHostCount, blWindowsHostCount, HoneyPotHostCount, TTPsHostCount, VirusHostCount)}
+                                            blLinuxHostCount, blWindowsHostCount, HoneyPotHostCount, TTPsHostCount, 0)}
                                     </Card>
                                 </Col>
                             </Row>

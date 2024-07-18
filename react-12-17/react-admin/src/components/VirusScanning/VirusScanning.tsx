@@ -1,14 +1,14 @@
 import React from 'react';
-import { Row, Col, Card, Button, Statistic, Menu, Modal, Table, Tooltip, message, Descriptions } from 'antd';
+import { Row, Col, Card, Button, Statistic, Menu, Modal, Table, Tooltip, message, Descriptions, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import FileUpload from './FileUpload';
 import VirusScanningTaskSidebar from './VirusScanTableSidebar';
 import VirusScanProcessSidebar from '../SideBar/ScanProcessSidebar';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
-import { AlertDataType, fimColumns, runningProcessesColumnsType, StatusItem } from '../Columns';
-import DataDisplayTable from '../OWLTable/DataDisplayTable';
+import { FilterDropdownProps, StatusItem } from '../Columns';
+
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import { APP_Server_URL, Virus_Data_API, Virus_Scan, Virus_Upload_File } from '../../service/config';
 import umbrella from 'umbrella-storage';
 import axios from 'axios';
@@ -32,14 +32,15 @@ interface VirusScanningState {
     sidebarKey: number; // 添加这个状态
     // isLoading: boolean; // 添加 isLoading 状态
     // scanProgress: number; // 添加 scanProgress 状态
-    virusscanningColumns: any[];
+
+    // virusscanningColumns: any[];
     columns: any[];
 
 
-    ignoredVirus_array: { [uuid: string]: string[] }; // 修改为键值对形式存储
+    ignoredVirus_array: { [md5: string]: string[] }; // 修改为键值对形式存储
     ignoredVirus: any[], // 添加被忽略的 Virus 数组
     showIgnoredModal: boolean; // 新增
-    ignoredVirusData: { uuid: string; Virus: string }[]; // 新增
+    ignoredVirusData: { md5: string; filename: string }[]; // 新增
     showModal: boolean, // 控制模态框显示
     encryptModalVisible: boolean,
     showUpload: boolean,
@@ -122,132 +123,137 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
             sidebarKey: 0, // 初始化 sidebarKey
 
 
-            virusscanningColumns: [
-                {
-                    title: 'ID',
-                    dataIndex: 'id',
-                    key: 'id',
-                    Maxwidth: '20px',
-                    hide: true, // 添加隐藏属性
-                },
-                {
-                    title: '主机名',
-                    dataIndex: 'uuid',
-                    key: 'uuid',
-                    render: (text: string, record: runningProcessesColumnsType) => (
-                        <div>
-                            <div>
-                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
-                                    <Button style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#4086FF',
-                                        padding: '0 0',
-                                    }}>
-                                        <Tooltip title={record.uuid}>
-                                            <div style={{
-                                                whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                maxWidth: '80px',
-                                            }}>
-                                                {record.uuid || '-'}
-                                            </div>
-                                        </Tooltip>
-                                    </Button>
-                                </Link>
-                            </div>
-                            <div style={{
-                                fontSize: 'small', // 字体更小
-                                background: '#f0f0f0', // 灰色背景
-                                padding: '2px 4px', // 轻微内边距
-                                borderRadius: '2px', // 圆角边框
-                                display: 'inline-block', // 使得背景色仅围绕文本
-                                marginTop: '4px', // 上边距
-                            }}>
-                                <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agentIP}
-                            </div>
-                        </div>
-                    ),
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>文件名</span>,
-                    dataIndex: 'Virus',
-                    key: 'Virus',
-                    //width: '13%',
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>告警名称</span>,
-                    dataIndex: 'alarmName',
-                    //width: '13%',
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>影响资产</span>,
-                    dataIndex: 'affectedAsset',
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
-                    dataIndex: 'tz',
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>MD5</span>,
-                    dataIndex: 'level',
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
-                    dataIndex: 'status',
-                    filters: [
-                        { text: '已处理', value: '已处理' },
-                        { text: '未处理', value: '未处理' },
-                    ],
-                    onFilter: (value: string | number | boolean, record: AlertDataType) => record.status.includes(value as string),
-                },
-                {
-                    title: () => <span style={{ fontWeight: 'bold' }}>发生时间</span>,
-                    dataIndex: 'occurrenceTime',
-                },
-                {
-                    title: '操作',
-                    dataIndex: 'operation',
-                    render: (text: string, record: any) => (
-                        <div>
-                            <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
-                                    disabled={
-                                        (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
-                                            .includes(record.Virus)
-                                    }
-                                    style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#000000',
-                                    }}>忽略</Button>
-                            <Button onClick={() => this.showEncryptModal(record)}
-                                    disabled={
-                                        (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
-                                            .includes(record.Virus)
-                                    }
-                                    style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#4086FF',
-                                    }}>隔离</Button>
-                        </div>
-                    ),
-                },
-            ],
+            // virusscanningColumns: [
+            //     {
+            //         title: 'ID',
+            //         dataIndex: 'id',
+            //         key: 'id',
+            //         Maxwidth: '20px',
+            //         hide: true, // 添加隐藏属性
+            //     },
+            //     {
+            //         title: '主机名',
+            //         dataIndex: 'uuid',
+            //         key: 'uuid',
+            //         render: (text: string, record: runningProcessesColumnsType) => (
+            //             <div>
+            //                 <div>
+            //                     <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid || 'defaultUUID')}`} target="_blank">
+            //                         <Button style={{
+            //                             fontWeight: 'bold',
+            //                             border: 'transparent',
+            //                             backgroundColor: 'transparent',
+            //                             color: '#4086FF',
+            //                             padding: '0 0',
+            //                         }}>
+            //                             <Tooltip title={record.uuid}>
+            //                                 <div style={{
+            //                                     whiteSpace: 'nowrap',
+            //                                     overflow: 'hidden',
+            //                                     textOverflow: 'ellipsis',
+            //                                     maxWidth: '80px',
+            //                                 }}>
+            //                                     {record.uuid || '-'}
+            //                                 </div>
+            //                             </Tooltip>
+            //                         </Button>
+            //                     </Link>
+            //                 </div>
+            //                 <div style={{
+            //                     fontSize: 'small', // 字体更小
+            //                     background: '#f0f0f0', // 灰色背景
+            //                     padding: '2px 4px', // 轻微内边距
+            //                     borderRadius: '2px', // 圆角边框
+            //                     display: 'inline-block', // 使得背景色仅围绕文本
+            //                     marginTop: '4px', // 上边距
+            //                 }}>
+            //                     <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.agentIP}
+            //                 </div>
+            //             </div>
+            //         ),
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>文件名</span>,
+            //         dataIndex: 'Virus',
+            //         key: 'Virus',
+            //         //width: '13%',
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>告警名称</span>,
+            //         dataIndex: 'alarmName',
+            //         //width: '13%',
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>影响资产</span>,
+            //         dataIndex: 'affectedAsset',
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>级别</span>,
+            //         dataIndex: 'tz',
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>MD5</span>,
+            //         dataIndex: 'level',
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>状态</span>,
+            //         dataIndex: 'status',
+            //         filters: [
+            //             { text: '已处理', value: '已处理' },
+            //             { text: '未处理', value: '未处理' },
+            //         ],
+            //         onFilter: (value: string | number | boolean, record: AlertDataType) => record.status.includes(value as string),
+            //     },
+            //     {
+            //         title: () => <span style={{ fontWeight: 'bold' }}>发生时间</span>,
+            //         dataIndex: 'occurrenceTime',
+            //     },
+            //     {
+            //         title: '操作',
+            //         dataIndex: 'operation',
+            //         render: (text: string, record: any) => (
+            //             <div>
+            //                 <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
+            //                         disabled={
+            //                             (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
+            //                                 .includes(record.Virus)
+            //                         }
+            //                         style={{
+            //                             fontWeight: 'bold',
+            //                             border: 'transparent',
+            //                             backgroundColor: 'transparent',
+            //                             color: '#000000',
+            //                         }}>忽略</Button>
+            //                 <Button onClick={() => this.showEncryptModal(record)}
+            //                         disabled={
+            //                             (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.uuid] || [])
+            //                                 .includes(record.Virus)
+            //                         }
+            //                         style={{
+            //                             fontWeight: 'bold',
+            //                             border: 'transparent',
+            //                             backgroundColor: 'transparent',
+            //                             color: '#4086FF',
+            //                         }}>隔离</Button>
+            //             </div>
+            //         ),
+            //     },
+            // ],
             columns:[
+                // {
+                //     title: 'ID',
+                //     dataIndex: 'id',
+                //     key: 'id'
+                // },
                 {
-                    title: 'ID',
-                    dataIndex: 'id',
-                    key: 'id'
+                    title: 'Alert',
+                    dataIndex: 'alert',
+                    key: 'alert'
                 },
                 {
                     title: 'Filename',
                     dataIndex: 'filename',
-                    key: 'filename'
+                    key: 'filename',
                 },
                 {
                     title: 'MD5',
@@ -260,10 +266,35 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     key: 'time'
                 },
                 {
-                    title: 'Alert',
-                    dataIndex: 'alert',
-                    key: 'alert'
-                }
+                    title: '操作',
+                    dataIndex: 'operation',
+                    render: (text: string, record: any) => (
+                        <div>
+                            <Button onClick={() => this.toggleModal(record)} className="custom-link-button"
+                                    disabled={
+                                        (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.md5] || [])
+                                            .includes(record.Virus)
+                                    }
+                                    style={{
+                                        fontWeight: 'bold',
+                                        border: 'transparent',
+                                        backgroundColor: 'transparent',
+                                        color: '#000000',
+                                    }}>忽略</Button>
+                                    {/*<Button onClick={() => this.showEncryptModal(record)}*/}
+                                    {/*disabled={*/}
+                                    {/*    (JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}')[record.md5] || [])*/}
+                                    {/*        .includes(record.filename)*/}
+                                    {/*}*/}
+                                    {/*style={{*/}
+                                    {/*    fontWeight: 'bold',*/}
+                                    {/*    border: 'transparent',*/}
+                                    {/*    backgroundColor: 'transparent',*/}
+                                    {/*    color: '#4086FF',*/}
+                                    {/*}}>隔离</Button>*/}
+                        </div>
+                    ),
+                },
             ],
 
             // isLoading: false, // 初始化 isLoading 为 false
@@ -305,24 +336,24 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
         this.setState({ currentTime: formattedTime });
     };
 
-    getIgnoredVirusData = (ignoredVirus_array: { [uuid: string]: string[] }) => {
-        return Object.keys(ignoredVirus_array).map(uuid => ({
-            uuid,
-            Virus: ignoredVirus_array[uuid].join(', '),
+    getIgnoredVirusData = (ignoredVirus_array: { [md5: string]: string[] }) => {
+        return Object.keys(ignoredVirus_array).map(md5 => ({
+            md5,
+            filename: ignoredVirus_array[md5].join(', '),
         }));
     };
-    getIgnoredVirusItemCount = (ignoredVirus_array: { [uuid: string]: string[] }) => {
+    getIgnoredVirusItemCount = (ignoredVirus_array: { [md5: string]: string[] }) => {
         return Object.values(ignoredVirus_array).reduce((count, Virus) => count + Virus.length, 0);
     };
     handleIgnoreVirusButtonClick = async (record: any) => {
         try {
             // message.info("handleIgnoreVirusButtonClick:"+record.uuid);
             const { ignoredVirus_array } = this.state;
-            if (!ignoredVirus_array[record.uuid]) {
-                ignoredVirus_array[record.uuid] = [];
+            if (!ignoredVirus_array[record.md5]) {
+                ignoredVirus_array[record.md5] = [];
             }
             // message.info("record.uuid:"+record.uuid)
-            ignoredVirus_array[record.uuid].push(record.Virus);
+            ignoredVirus_array[record.md5].push(record.filename);
             localStorage.setItem('ignoredVirus_array', JSON.stringify(ignoredVirus_array));
 
             this.setState({
@@ -341,9 +372,9 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
             ignoredVirusData: this.getIgnoredVirusData(ignoredVirus_array),
         });
     };
-    handleRemoveVirusIgnored = (uuid: string) => {
+    handleRemoveVirusIgnored = (md5: string) => {
         const ignoredVirus_array = JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}');
-        delete ignoredVirus_array[uuid];
+        delete ignoredVirus_array[md5];
         localStorage.setItem('ignoredVirus_array', JSON.stringify(ignoredVirus_array));
         this.setState({
             ignoredVirus_array,
@@ -365,47 +396,34 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     <Table
                         className="customTable"
                         dataSource={this.state.ignoredVirusData}
-                        rowKey="uuid"
+                        rowKey="md5"
                         pagination={{ pageSize: 5 }}
                         columns={[
                             {
-                                title: 'UUID',
-                                dataIndex: 'uuid',
-                                key: 'uuid',
-                                render: (text: string, record: any) => (
+                                title: 'MD5',
+                                dataIndex: 'md5',
+                                key: 'md5',
+                                render: (text: string) => (
                                     <div>
-                                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
-                                              target="_blank">
-                                            <Button
+                                        <Tooltip title={text}>
+                                            <div
                                                 style={{
-                                                    fontWeight: 'bold',
-                                                    border: 'transparent',
-                                                    backgroundColor: 'transparent',
-                                                    color: '#4086FF',
-                                                    padding: '0 0',
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    maxWidth: '150px', // 调整最大宽度
                                                 }}
                                             >
-                                                <Tooltip title={record.uuid}>
-                                                    <div
-                                                        style={{
-                                                            whiteSpace: 'nowrap',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            maxWidth: '150px', // 调整最大宽度
-                                                        }}
-                                                    >
-                                                        {record.uuid || '-'}
-                                                    </div>
-                                                </Tooltip>
-                                            </Button>
-                                        </Link>
+                                                {text || '-'}
+                                            </div>
+                                        </Tooltip>
                                     </div>
                                 ),
                             },
                             {
-                                title: '风险项名称',
-                                dataIndex: 'Virus',
-                                key: 'Virus',
+                                title: '风险文件',
+                                dataIndex: 'filename',
+                                key: 'filename',
                                 render: (text: string) => (
                                     <div>
                                         <Tooltip title={text}>
@@ -435,7 +453,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                             backgroundColor: 'transparent',
                                             color: '#4086FF',
                                         }}
-                                        onClick={() => this.handleRemoveVirusIgnored(record.uuid)}
+                                        onClick={() => this.handleRemoveVirusIgnored(record.md5)}
                                     >
                                         移出白名单
                                     </Button>
@@ -597,7 +615,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                 <LoadingOutlined style={{ fontSize: '3em' }} />
                             </div>); // 或者其他的加载状态显示
                     }
-                    const { virusOriginData, VirusHostCount } = context;
+                    const { virusOriginData} = context;
                     const originDataArray = Array.isArray(virusOriginData) ? virusOriginData : [virusOriginData];
 
                     let totalCount = 0;
@@ -691,6 +709,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                         {this.renderVirusIgnoreModal()}
                                         <FileUpload
                                             uploadUrl={Virus_Upload_File}
+                                            scanUrl={Virus_Scan}
                                             visible={this.state.showUpload}
                                             onClose={this.handleCloseUpload}
                                         />
@@ -720,65 +739,57 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                                     marginBottom: '8px',
                                                                 }}>{currentTime}</span>
                                                                 <Row>
-                                                                    <Link to={"/app/create_virusscan_task"}
-                                                                          target="_blank">
-                                                                        <Button
-                                                                            onClick={this.handleScan}
-                                                                            {...blueButton}>
-                                                                            立即扫描</Button></Link>
-                                                                    {/*<Link to="/app/create_virusscan_task"*/}
+                                                                    <Button
+                                                                        onClick={this.handleOpenUpload}
+                                                                        {...blueButton}>
+                                                                        立即扫描
+                                                                    </Button>
+                                                                    {/*<Link to={"/app/create_virusscan_task"}*/}
                                                                     {/*      target="_blank">*/}
                                                                     {/*    <Button*/}
-                                                                    {/*        // onClick={this.handleScan}*/}
-                                                                    {/*        style={{*/}
-                                                                    {/*            backgroundColor: '#1664FF',*/}
-                                                                    {/*            color: 'white',*/}
-                                                                    {/*            marginRight: '10px',*/}
-                                                                    {/*            transition: 'opacity 0.3s', // 添加过渡效果*/}
-                                                                    {/*            opacity: 1, // 初始透明度*/}
-                                                                    {/*        }}*/}
-                                                                    {/*        onMouseEnter={(e) => {*/}
-                                                                    {/*            e.currentTarget.style.opacity = 0.7;*/}
-                                                                    {/*        }} // 鼠标进入时将透明度设置为0.5*/}
-                                                                    {/*        onMouseLeave={(e) => {*/}
-                                                                    {/*            e.currentTarget.style.opacity = 1;*/}
-                                                                    {/*        }}>立即扫描</Button>*/}
+                                                                    {/*        onClick={this.handleScan}*/}
+                                                                    {/*        // onClick={this.handleOpenUpload}*/}
+                                                                    {/*        {...blueButton}>*/}
+                                                                    {/*        立即扫描</Button>*/}
                                                                     {/*</Link>*/}
                                                                     <Button style={{
                                                                         marginRight: '10px',
                                                                     }}
-                                                                            onClick={this.showIgnoredVirusModal}>白名单</Button>
-                                                                    <Button style={{}}
-                                                                            onClick={this.toggleTaskSidebar}>扫描记录</Button>
-                                                                </Row>
-                                                                <Row>
-                                                                    <Button
-                                                                        style={{
-                                                                            marginLeft: '0px',
-                                                                            marginTop: '10px',
-                                                                        }}
-                                                                        onClick={this.handleOpenUpload}
-                                                                    >
-                                                                        上传并扫描单个文件
+                                                                            onClick={this.showIgnoredVirusModal}>白名单
                                                                     </Button>
+                                                                    {/*<Button */}
+                                                                    {/*        onClick={this.toggleTaskSidebar}>扫描记录*/}
+                                                                    {/*</Button>*/}
                                                                 </Row>
+                                                                {/*<Row>*/}
+                                                                {/*    <Button*/}
+                                                                {/*        style={{*/}
+                                                                {/*            marginLeft: '0px',*/}
+                                                                {/*            marginTop: '10px',*/}
+                                                                {/*        }}*/}
+                                                                {/*        onClick={this.handleOpenUpload}*/}
+                                                                {/*    >*/}
+                                                                {/*        上传并扫描单个文件*/}
+                                                                {/*    </Button>*/}
+                                                                {/*</Row>*/}
                                                             </Row>
                                                             <div
                                                                 className={isScanningProcessSidebarOpen ? 'overlay open' : 'overlay'}
                                                                 onClick={this.closeProcessSidebar}></div>
-                                                            <div
-                                                                className={isScanningProcessSidebarOpen ? 'smallsidebar open' : 'smallsidebar'}>
-                                                                <button onClick={this.toggleProcessSidebar}
-                                                                        className="close-btn">&times;</button>
-                                                                <VirusScanProcessSidebar
-                                                                    scanInfo={['病毒扫描', '病毒扫描中，请稍后', '查看详情']}
-                                                                    statusData={virusstatusData}
-                                                                    hostCount={VirusHostCount}
-                                                                    riskItemCount={this.state.riskItemCount} // 传递风险项的数量
-                                                                    isSidebarOpen={this.state.isScanningProcessSidebarOpen}
-                                                                    toggleSidebar={this.toggleProcessSidebar}
-                                                                />
-                                                            </div>
+                                                            {/*<div*/}
+                                                            {/*    className={isScanningProcessSidebarOpen ? 'smallsidebar open' : 'smallsidebar'}>*/}
+                                                            {/*    <button onClick={this.toggleProcessSidebar}*/}
+                                                            {/*            className="close-btn">&times;</button>*/}
+                                                            {/*    <VirusScanProcessSidebar*/}
+                                                            {/*        scanInfo={['病毒扫描', '病毒扫描中，请稍后', '查看详情']}*/}
+                                                            {/*        statusData={virusstatusData}*/}
+                                                            {/*        hostCount={VirusHostCount}*/}
+                                                            {/*        riskItemCount={this.state.riskItemCount} // 传递风险项的数量*/}
+                                                            {/*        isSidebarOpen={this.state.isScanningProcessSidebarOpen}*/}
+                                                            {/*        toggleSidebar={this.toggleProcessSidebar}*/}
+                                                            {/*    />*/}
+                                                            {/*</div>*/}
+
                                                             <div className={isSidebarOpen ? 'overlay open' : 'overlay'}
                                                                  onClick={this.closeTaskSidebar}></div>
                                                             <div className={isSidebarOpen ? 'sidebar open' : 'sidebar'}>
@@ -920,16 +931,17 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                             {/*/>*/}
                                             <Table
                                                 key={'VirusScanning'}
+                                                rowKey={'md5'}
                                                 className={'customTable'}
-                                                dataSource={virusScanningData}
-                                                columns={this.state.virusscanningColumns}
+                                                dataSource={virusOriginData}
+                                                columns={this.state.columns}
                                                 rowClassName={(record) => {
                                                     const ignoredVirus_array = JSON.parse(localStorage.getItem('ignoredVirus_array') || '{}');
-                                                    const isIgnored = (uuid: string, Virus: any) => {
-                                                        const ignoredViruses = ignoredVirus_array[uuid] || [];
-                                                        return ignoredViruses.includes(Virus);
+                                                    const isIgnored = (md5: string, filename: any) => {
+                                                        const ignoredViruses = ignoredVirus_array[md5] || [];
+                                                        return ignoredViruses.includes(filename);
                                                     };
-                                                    return isIgnored(record.uuid, record.Virus) ? 'ignored-row' : '';
+                                                    return isIgnored(record.md5, record.filename) ? 'ignored-row' : '';
                                                 }}
                                             />
                                         </Card>

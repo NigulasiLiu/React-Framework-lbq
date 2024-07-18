@@ -25,74 +25,6 @@ const baseDataItems: BaseItem[] = [
     // ... other port_data items
 ];
 
-// const port_data: DataItem[] = [
-//     { key: '1', id: '9984', value: 1, color: '#F24040' },
-//     { key: '2', id: '9090', value: 1, color: '#F77237' },
-//     { key: '3', id: '9993', value: 1, color: '#E5BA4A' },
-//     { key: '4', id: '9982', value: 1, color: '#F2F3F5' },
-//     { key: '5', id: '8082', value: 1, color: '#F2F3F5' },
-//     // ... other port_data items
-// ];
-// const softerware_data: DataItem[] = [
-//     // ... other port_data items
-// ];
-// //除了第一个表中的数据，其余数据都没有排序
-// const service_data: DataItem[] = [
-//     { key: '1', id: 'systemd-initctl.service', value: 1, color: '#F24040' },
-//     { key: '2', id: 'systemd-tmpfles-clean.service', value: 3, color: '#F77237' },
-//     { key: '3', id: 'dbus.service', value: 1, color: '#E5BA4A' },
-//     { key: '4', id: 'systemd-journald.service', value: 4, color: '#F2F3F5' },
-//     { key: '5', id: 'elkeid_kafka_exporter.service', value: 2, color: '#F2F3F5' },
-//     // ... other port_data items
-// ];
-// const progress_data: DataItem[] = [
-//     { key: '1', id: 'nginx', value: 1, color: '#F24040' },
-//     { key: '2', id: 'bash', value: 1, color: '#F77237' },
-//     { key: '3', id: 'java', value: 1, color: '#E5BA4A' },
-//     { key: '4', id: 'nginx uploader', value: 1, color: '#F2F3F5' },
-//     { key: '5', id: 'prometheus', value: 1, color: '#F2F3F5' },
-//     // ... other port_data items
-// ];
-
-// const fim_data: DataItem[] = [
-//     // ... other port_data items
-// ];
-
-// const app_data: DataItem[] = [
-//     { key: '1', id: 'prometheus', value: 1, color: '#F24040' },
-//     { key: '2', id: 'grafana', value: 1, color: '#F77237' },
-//     { key: '3', id: 'mongodb', value: 1, color: '#E5BA4A' },
-//     { key: '4', id: 'redis', value: 1, color: '#F2F3F5' },
-//     { key: '5', id: 'nginx', value: 1, color: '#F2F3F5' },
-//     // ... other port_data items
-// ];
-// const core_data: DataItem[] = [
-//     { key: '1', id: 'snd rawmidi', value: 1, color: '#F24040' },
-//     { key: '2', id: 'ata generic', value: 1, color: '#F77237' },
-//     { key: '3', id: 'serio raw', value: 1, color: '#E5BA4A' },
-//     { key: '4', id: 'ablk helper', value: 1, color: '#F2F3F5' },
-//     { key: '5', id: 'bridge', value: 1, color: '#F2F3F5' },
-//     // ... other port_data items
-// ];
-// const status_data: StatusItem[] = [
-//     { label: 'Created', value: 7, color: '#22BC44' }, //GREEN
-//     { label: 'Running', value: 2, color: '#FBB12E' }, //ORANGE
-//     { label: 'Exited', value: 5, color: '#EA635F' }, //RED
-//     { label: 'Unknown', value: 1, color: '#E5E8EF' }, //GREY
-// ];
-
-// // 找到最大值
-// const maxValue = [
-//     findMaxValue(port_data),
-//     findMaxValue(softerware_data),
-//     findMaxValue(service_data),
-//     findMaxValue(progress_data),
-//     findMaxValue(fim_data),
-//     findMaxValue(app_data),
-//     findMaxValue(core_data),
-// ];
-
-// 告警颜色-固定
 
 const findMaxValue = (dataItems: DataItem[]) => {
     return Math.max(...dataItems.map(item => item.value), 0); // 加上0以处理空数组的情况
@@ -185,8 +117,6 @@ const tbName: GenericDataItem = {
     '运行进程 TOP5': 'running_processes',
     '文件完整性校验-最新变更二进制文件 TOP5': 'fim',
     '应用 TOP5': 'applications',
-    '内核模块 TOP5': 'kernel_modules',
-    '容器运行状态分布': 'container',
 }
 const tbNameList = [
     '开放端口 TOP5',
@@ -195,8 +125,6 @@ const tbNameList = [
     '运行进程 TOP5',
     '文件完整性校验-最新变更二进制文件 TOP5',
     '应用 TOP5',
-    '内核模块 TOP5',
-    '容器运行状态分布',
 ];
 const tbName_Right = ['指纹数', '变更时间', ''];
 // 预定义的模板数组，包含 key 和 color
@@ -214,6 +142,7 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
 
     goToPanel = (panelName: string) => {
         // 更新父组件的状态，changePanel 的函数负责这个逻辑
+        // if(['系统用户 TOP5','应用 TOP5'].includes(panelName))
         this.props.changePanel(panelName);
 
     };
@@ -261,11 +190,11 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
 
                     const columns = [
                         generateColumns(findMaxValue(topFivePortCounts), tbNameList[0], tbName_Right[0], tbNameList, this.goToPanel),//开放端口
-                        generateColumns(findMaxValue(topFiveUserCounts), tbNameList[1], tbName_Right[0], tbNameList, this.goToPanel),//系统用户
+                        generateColumns(findMaxValue(topFiveUserCounts), tbNameList[1], tbName_Right[0], tbNameList, ()=>{}),//系统用户
                         generateColumns(findMaxValue(topFiveServiceCounts), tbNameList[2], tbName_Right[0], tbNameList, this.goToPanel),//系统服务
                         generateColumns(findMaxValue(topFiveProcessCounts), tbNameList[3], tbName_Right[0], tbNameList, this.goToPanel), //运行进程
                         generateColumns(findMaxValue(topFiveFimData), tbNameList[4], tbName_Right[1], tbNameList, this.goToPanel),//fim
-                        generateColumns(findMaxValue(topFiveProductCounts), tbNameList[5], tbName_Right[0], tbNameList, this.goToPanel),//系统应用
+                        generateColumns(findMaxValue(topFiveProductCounts), tbNameList[5], tbName_Right[0], tbNameList, ()=>{}),//系统应用
                         // generateColumns(tbNameList[6], tbName_Right[0], tbNameList, this.goToPanel),
                         // generateColumns(tbNameList[7], tbName_Right[2], tbNameList, this.goToPanel),
                     ];
