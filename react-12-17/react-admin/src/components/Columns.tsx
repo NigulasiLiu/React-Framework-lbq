@@ -867,16 +867,16 @@ export const runningProcessesColumns = [
         filters: [
             {
                 text: 'No',
-                value: 'No',
+                value: 'False',
             },
             {
                 text: 'Yes',
-                value: 'Yes',
+                value: 'True',
             },
         ],
         // 修改这里使用record参数，确保函数能访问到当前行的数据
         render: (text: string, record: runningProcessesColumnsType) => (
-            <Badge status={record.highRisk === 'Yes' ? 'error' : 'processing'} text={record.highRisk} />
+            <Badge status={record.highRisk === 'True' ? 'error' : 'processing'} text={record.highRisk} />
         ),
         onFilter: (value: string | number | boolean, record: runningProcessesColumnsType) => record.highRisk.includes(value as string),
     },

@@ -209,6 +209,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 {
                     title: '扫描类型',
                     dataIndex: 'scanType',
+                    render: (text: string, record: any) => {
+                        return (
+                            <span>
+                                {record.scanType === '1' ? 'Nmap Scan' : '-'}
+                            </span>
+                        );
+                    },
                 },
                 {
                     title: '操作',
@@ -2051,7 +2058,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                     <Col span={8} style={{
                                                                         height: '90px',
                                                                         minWidth: '200px',
-                                                                        transform: 'translateX(100%) translateY(-40px)',
+                                                                        transform: 'translateX(100%) translateY(-30px)',
                                                                     }}>
                                                                         <StatusPanel statusData={AlertData_uuid}
                                                                                      orientation="vertical" />

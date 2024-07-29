@@ -62,6 +62,13 @@ class VirusScanTableSidebar extends React.Component<VirusScanTableSidebarProps, 
                 title: '扫描类型',
                 dataIndex: 'scanType',
                 key: 'scanType',
+                render: (text: string, record: any) => {
+                    return (
+                        <span>
+                                {record.scanType === '1' ? 'Nmap Scan' : '-'}
+                            </span>
+                    );
+                },
             },
             {
                 title: '创建状态',
