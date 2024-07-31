@@ -124,12 +124,14 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import routes from '../../routes/config';
+import routes, { menuTheme } from '../../routes/config';
 import SiderMenu from './SiderMenu';
 import { useAlita } from 'redux-alita';
 import { useSwitch } from '../../utils/hooks';
 import { usePrevious } from 'ahooks';
-import logo from '../../style/imgs/owl.png';
+// import logo from '../../style/imgs/owl.png';
+import logo from '../../style/imgs/CHINA SOUTHERN POWER GRID SEPRI.jpg';
+
 const { Sider } = Layout;
 
 const pagesWithoutSiderMenu = [
@@ -162,9 +164,9 @@ const SiderCustom = (props: SiderCustomProps) => {
     const prePathname = usePrevious(props.location.pathname);
 
     useEffect(() => {
-       // 检查当前路由是否在pagesWithoutSiderMenu列表中
+        // 检查当前路由是否在pagesWithoutSiderMenu列表中
         const shouldCollapse = pagesWithoutSiderMenu.some(path => props.location.pathname.includes(path));
-        
+
         // 如果当前路由不在列表中，则展开侧边栏
         if (!shouldCollapse) {
             setIsCollapsed(false); // 使用新的状态设置函数
@@ -217,12 +219,14 @@ const SiderCustom = (props: SiderCustomProps) => {
         width: collapsed ? '0' : '165px', // 控制侧边栏宽度
         overflowX: 'hidden', // 隐藏溢出内容
         transition: 'width 0.3s ease', // 添加过渡效果
+        // background: menuTheme.background, // 使用配置中的背景颜色
+        // color: menuTheme.color // 使用配置中的字体颜色
     };
     return (
         <Sider
             trigger={null}
             breakpoint="lg"
-            collapsed={collapsed&&isCollapsed}
+            collapsed={collapsed && isCollapsed}
             collapsedWidth={0}
             width={165}
             style={{
@@ -232,22 +236,29 @@ const SiderCustom = (props: SiderCustomProps) => {
                 zIndex: 1,
             }}
         >
-            <div className="logo-title-container" style={{ padding: '1px,1px', margin: '0px,0px',display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-                <img src={logo} alt="Logo" style={{ width: '60px', height: '60px', marginRight: '10px' }} />
-                <h2 style={{
-                    // fontFamily: "'YouYuan', sans-serif",
-                    // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                fontWeight: 'bold',padding: '22px,6px', margin: '10px,0px', color: 'rgba(0, 0, 0, 0.85)', 
-                display: 'flex', alignItems: 'center',fontSize:'16px' }}>Security Platform</h2>
+            <div className="logo-title-container" style={{
+                padding: '1px',
+                margin: '0px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
+                <img src={logo} alt="Logo" style={{ zoom: 0.55 }} />
+                {/*<h2 style={{
+                    fontWeight: 'bold', padding: '22px', margin: '10px 0px', color: 'rgba(0, 0, 0, 0.85)',
+                    display: 'flex', alignItems: 'center', fontSize: '16px'
+                }}>
+                替换为一张南网图片</h2>*/}
             </div>
+
             {(
-                <SiderMenu
-                    menus={[...routes.menus, ...smenus]}
-                    onClick={menuClick}
-                    mode="inline"
-                    selectedKeys={[menu.selectedKey]}
-                    openKeys={firstHide ? [] : menu.openKeys}
-                    onOpenChange={openMenu}
+                <SiderMenu style={{ marginTop: '20px' }}
+                           menus={[...routes.menus, ...smenus]}
+                           onClick={menuClick}
+                           mode="inline"
+                           selectedKeys={[menu.selectedKey]}
+                           openKeys={firstHide ? [] : menu.openKeys}
+                           onOpenChange={openMenu}
                 />
             )}
         </Sider>

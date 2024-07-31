@@ -22,11 +22,16 @@ const useCalculateAverage = (columnName: string, originData: any[]): AverageResu
         originData.forEach((item) => {
           let value = item[columnName];
           // 检查是否为百分数字符串
-          if (typeof value === 'string' && value.endsWith('%')) {
+          if (typeof value === 'string') {
             // 转换百分数字符串为数字
-            value = parseFloat(value.slice(0, -1)) / 100;
+            if(value.endsWith('%')){
+              value = parseFloat(value.slice(0, -1)) / 100;
+            }
+            else{
+              value = parseFloat(value) / 100;
+            }
           }
-          // 检查是否为百分数字符串
+          // 检查是否为B结尾的字符串
           if (typeof value === 'string' && value.endsWith('B')) {
             // 转换百分数字符串为数字
             value = parseFloat(value.slice(0, -2)) / 100;

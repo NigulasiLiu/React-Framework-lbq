@@ -104,8 +104,6 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                 dataSourceChanged: true, // 此状态字段可能需要进一步审查其必要性
                 currentPanelName: this.props.currentPanel,
             }, () => {
-                // 如果有需要，可以在状态更新后获取数据
-                // this.props.fetchLatestData(this.props.apiEndpoint,'all', '', '');
             });
         }
         // else {

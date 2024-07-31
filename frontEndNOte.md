@@ -1,3 +1,21 @@
+登陆界面：logo，配色修改，title：“用电全域安全监测平台”
+
+划词背景颜色->黑
+
+community--->深蓝色底色+“”, 如果左侧放了logo后有些挤, 那么“用电全域安全监测平台”
+
+
+
+HeaderCustom logo:主机详情页的logo替换
+
+![image-20240731201006788](C:\Users\Admin\AppData\Roaming\Typora\typora-user-images\image-20240731201006788.png)
+
+和
+
+![image-20240731201111228](C:\Users\Admin\AppData\Roaming\Typora\typora-user-images\image-20240731201111228.png)
+
+左边加上“网研”图标
+
 7/7
 
 操作系统判定：determineOS函数目前只区分：

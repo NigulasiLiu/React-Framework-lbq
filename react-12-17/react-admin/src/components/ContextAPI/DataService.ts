@@ -117,6 +117,44 @@ export const processData = (data: GenericDataItem[], timeColumnIndex?: string[])
   });
 };
 
+export const processDataFor = (data: GenericDataItem[], api?: string): GenericDataItem[] => {
+  return data.map(item => {
+    // 时间转换
+    if (item.time && api?.toLowerCase().includes("virus")) {
+      item.time = Date.parse(item.time) / 1000; // 转换为Unix时间戳（秒）
+    }
+    // 处理嵌套的JSON数据
+    if (item.vul_detection_exp_result) {
+      item.vul_detection_exp_result = item.vul_detection_exp_result.map((expItem: any) => {
+        return {
+          ...expItem,
+          bug_exp: expItem.bug_exp,
+        };
+      });
+    }
+
+    if (item.vul_detection_finger_result) {
+      item.vul_detection_finger_result = item.vul_detection_finger_result.map((fingerItem: any) => {
+        return {
+          ...fingerItem,
+          finger: fingerItem.finger,
+        };
+      });
+    }
+
+    if (item.vul_detection_poc_result) {
+      item.vul_detection_poc_result = item.vul_detection_poc_result.map((pocItem: any) => {
+        return {
+          ...pocItem,
+          bug_poc: pocItem.bug_poc,
+        };
+      });
+    }
+    return item;
+  });
+};
+
+
 export const handleExport = (externalDataSource: any[], currentPanel: any,selectedRowKeys: string | any[]) => {
   // 确保 externalDataSource 是数组
   if (!Array.isArray(externalDataSource)) {

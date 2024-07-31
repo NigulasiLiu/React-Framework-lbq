@@ -369,9 +369,9 @@ const DataManager: React.FC = ({ children }) => {
         const cachedData = localStorage.getItem(variableName);
         const currentTime = new Date().getTime();
 
-        if (tag && lastFetchTime && currentTime - parseInt(lastFetchTime) < 15000) {
-            message.info(`跳过 ${variableName} 相关数据的刷新, 因15s内已经刷新.`);
-            console.log(`Skipping refresh for ${variableName} as it was fetched less than 15s ago.`);
+        if (tag && lastFetchTime && currentTime - parseInt(lastFetchTime) < 5000) {
+            message.info(`跳过 ${variableName} 相关数据的刷新, 因5s内已经刷新.`);
+            console.log(`Skipping refresh for ${variableName} as it was fetched less than 5s ago.`);
             if (cachedData) {
                 const setDataFunction = setDataFunctions[apiEndpoint];
                 if (setDataFunction) {
@@ -420,57 +420,6 @@ const DataManager: React.FC = ({ children }) => {
                     refreshDataFromAPI(apiEndpoint);
                 });
         }, interval_slow); // 960s, 16min
-        // refreshDataFromAPI(Agent_Data_API);
-        // refreshDataFromAPI(Monitor_Data_API);
-        // refreshDataFromAPI(Fim_Data_API);
-        // refreshDataFromAPI(Port_Data_API);
-        // refreshDataFromAPI(Process_Data_API);
-        // refreshDataFromAPI(Assets_Data_API);
-        // refreshDataFromAPI(BaseLine_linux_Data_API);
-        // refreshDataFromAPI(BaseLine_windows_Data_API);
-        // refreshDataFromAPI(Vul_Data_API);
-        // refreshDataFromAPI(Task_Data_API);
-        // refreshDataFromAPI(MemoryShell_API);
-        // refreshDataFromAPI(Honey_API);
-        // refreshDataFromAPI(Brute_TTPs_API);
-        // refreshDataFromAPI(Privilege_TTPs_API);
-        // refreshDataFromAPI(Defense_TTPs_API);
-        // refreshDataFromAPI(Isolate_Data_API);
-
-        // refreshDataFromAPI(Virus_Data_API);
-        // refreshDataFromAPI(User_Data_API);
-        // const interval_1 = setInterval(() => {
-        //     refreshDataFromAPI(Agent_Data_API);
-        //     refreshDataFromAPI(Monitor_Data_API);
-        //     refreshDataFromAPI(Fim_Data_API);
-        //     refreshDataFromAPI(Port_Data_API);
-        //     refreshDataFromAPI(Process_Data_API);
-        //     refreshDataFromAPI(Assets_Data_API);
-        //     refreshDataFromAPI(Task_Data_API);
-        //     // refreshDataFromAPI(User_Data_API);
-        //     // refreshDataFromAPI(BaseLine_linux_Data_API);
-        //     // refreshDataFromAPI(BaseLine_windows_Data_API);
-        //     // refreshDataFromAPI(Vul_Data_API);
-        //     // refreshDataFromAPI(Virus_Data_API);
-        //     // refreshDataFromAPI(MemoryShell_API);
-        //     // refreshDataFromAPI(Honey_API);
-        //     // refreshDataFromAPI(Brute_TTPs_API);
-        //     // refreshDataFromAPI(Privilege_TTPs_API);
-        //     // refreshDataFromAPI(Defense_TTPs_API);
-        //     // refreshDataFromAPI(Isolate_Data_API);
-        // }, interval_fast); // 240s,4min
-        // const interval_2 = setInterval(() => {
-        //     refreshDataFromAPI(BaseLine_linux_Data_API);
-        //     refreshDataFromAPI(BaseLine_windows_Data_API);
-        //     refreshDataFromAPI(Vul_Data_API);
-        //     refreshDataFromAPI(Virus_Data_API);
-        //     refreshDataFromAPI(MemoryShell_API);
-        //     refreshDataFromAPI(Honey_API);
-        //     refreshDataFromAPI(Brute_TTPs_API);
-        //     refreshDataFromAPI(Privilege_TTPs_API);
-        //     refreshDataFromAPI(Defense_TTPs_API);
-        //     refreshDataFromAPI(Isolate_Data_API);
-        // }, interval_slow); // 960s,16min
 
         return () => {
             clearInterval(interval_1);
@@ -618,9 +567,8 @@ const DataManager: React.FC = ({ children }) => {
 
     const fetchLatestData = async (apiEndpoint: string, searchField = '', searchQuery = '', rangeQuery = '', timeColumnIndex: string[] = []) => {
         try {
-            // 修改queryParams的构造逻辑
             let finalEndpoint = `${apiEndpoint}`;
-            console.log('finalEndpoint:' + finalEndpoint);
+            message.info('finalEndpoint:' + finalEndpoint);
             const rawData = await fetchDataFromAPI({ apiEndpoint: finalEndpoint });
             // 检查message字段是否是数组，如果不是，则将其转换为包含该对象的数组
             const messageData = Array.isArray(rawData) ? rawData : [rawData];
@@ -638,7 +586,7 @@ const DataManager: React.FC = ({ children }) => {
     const agentCPUuseMetaData = useExtractOrigin('cpu_use', agentOriginData);//各类status主机的数量
     const agentMEMuseMetaData = useExtractOrigin('mem_use', agentOriginData);//各类status主机的数量
     const agentAVGCPUUse = (((useCalculateAverage('cpu_use', agentOriginData).average) || 0) * 100).toString().slice(0, 4) + '%';
-    const agentAVGMEMUse = (((useCalculateAverage('mem_use', agentOriginData).average) || 0) * 100).toString().slice(0, 4) + 'GB';
+    const agentAVGMEMUse = (((useCalculateAverage('mem_use', agentOriginData).average) || 0) * 100).toString().slice(0, 4) + '%';
 
 
     //完整性检验信息
@@ -714,9 +662,11 @@ const DataManager: React.FC = ({ children }) => {
     const honeypot_atk_Time = useExtractOrigin('atk_time', honeyPotOriginData);
     const last7HoneyPotValue = getPastSevenDaysAlerts(honeypot_atk_Time);
 
-    // const virus_scan_time = useExtractOrigin('time', virusOriginData);
-    // const last7VirusValue = getPastSevenDaysAlerts(virus_scan_time);
-    const last7VirusValue = [0, 0, 0, 0, 0, 0, 0];
+    const virus_scan_time = useExtractOrigin('time', virusOriginData);
+    const last7VirusValue = getPastSevenDaysAlerts(virus_scan_time);
+    // console.log("Computed last7VirusValue: ", last7VirusValue); // 调试信息
+
+    // const last7VirusValue = [0, 0, 0, 0, 0, 0, 0];
     //主机数量
     const hostCount = useUniqueUUIDCounts(agentOriginData);
     const vulnHostCount = vulnMetaData_uuid.typeCount.size;
@@ -741,7 +691,7 @@ const DataManager: React.FC = ({ children }) => {
         privilegeescalationTTPsMetaData_uuid,
         defenseavoidanceTTPsMetaData_uuid,
     ]);
-
+    console.log("TTPsHostCount:"+TTPsHostCount);
     //top5表单
     const topFivePortCounts = convertAndFillData(topFivePortCountsArray, templateData);
     const topFiveServiceCounts = convertAndFillData(topFiveServiceCountsArray, templateData);

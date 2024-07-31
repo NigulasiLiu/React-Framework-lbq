@@ -1103,6 +1103,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 showRightBorder={false}
                                                             />
                                                         </div>
+                                                        <div>
                                                         <DataCard
                                                             title="离线 Agent"
                                                             value={hostCount - agentOnlineCount}
@@ -1116,6 +1117,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             showBottomBorder={false}
                                                             showLeftBorder={false}
                                                             showRightBorder={false} />
+                                                        </div>
                                                     </Col>
                                                     <Col span={12}>
                                                         <div style={{ marginBottom: '20px' }}>
@@ -1133,19 +1135,21 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 showLeftBorder={false}
                                                                 showRightBorder={false} />
                                                         </div>
-                                                        <DataCard
-                                                            title="Mem AVG"
-                                                            value={agentAVGMEMUse}
-                                                            valueItem={[]}
-                                                            panelId=""
-                                                            height="100px"
-                                                            width="155px"
-                                                            backgroundColor="#F6F7FB"
-                                                            navigate={false}
-                                                            showTopBorder={false}
-                                                            showBottomBorder={false}
-                                                            showLeftBorder={false}
-                                                            showRightBorder={false} />
+                                                        <div >
+                                                            <DataCard
+                                                                title="Mem AVG"
+                                                                value={agentAVGMEMUse}
+                                                                valueItem={[]}
+                                                                panelId=""
+                                                                height="100px"
+                                                                width="155px"
+                                                                backgroundColor="#F6F7FB"
+                                                                navigate={false}
+                                                                showTopBorder={false}
+                                                                showBottomBorder={false}
+                                                                showLeftBorder={false}
+                                                                showRightBorder={false} />
+                                                            </div>
                                                     </Col>
 
                                                 </Row>

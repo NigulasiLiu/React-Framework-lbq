@@ -10,6 +10,12 @@ export interface IFMenuBase {
     login?: boolean;
 }
 
+export const menuTheme = {
+    background: '#002C6E', // 侧边栏背景颜色
+    color: 'white', // 字体颜色
+    selectedBackground: '#006AAC' // 选中项背景颜色
+};
+
 export interface IFMenu extends IFMenuBase {
     subs?: IFMenu[];
 }

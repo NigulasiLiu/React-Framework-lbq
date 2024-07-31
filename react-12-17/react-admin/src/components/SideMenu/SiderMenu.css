@@ -1,0 +1,29 @@
+/* global.css 或 SiderMenu.module.css */
+
+.sider-menu-container {
+    background-color: #002C6E !important; /* 侧边栏背景颜色 */
+    color: white !important; /* 字体颜色 */
+}
+
+.menu-item .nav-text {
+    color: white !important; /* 字体颜色 */
+}
+
+.submenu-item .nav-text {
+    color: white !important; /* 字体颜色 */
+}
+
+.ant-menu-item-selected {
+    background-color: #006AAC !important; /* 选中项背景颜色 */
+    color: white !important; /* 确保选中项字体颜色也是白色 */
+}
+
+.ant-menu-item:hover {
+    background-color: #006AAC !important; /* 悬停时背景颜色 */
+    color: white !important; /* 确保悬停时字体颜色也是白色 */
+}
+
+.ant-menu-submenu-title .ant-menu-submenu-arrow::before,
+.ant-menu-submenu-title .ant-menu-submenu-arrow::after {
+    background-color: white !important; /* 小箭头颜色 */
+}

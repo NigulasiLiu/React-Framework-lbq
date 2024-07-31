@@ -1562,7 +1562,7 @@ this.tinycolor = tinycolor;
 @component-background: #fff;
 @font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
   'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
-  'Segoe UI Emoji', 'Segoe UI Symbol';
+  'Segoe UI Emoji', 'Segoe UI Symbol', "FZDaHei-B01S";
 @code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 @text-color: fade(@black, 65%);
 @text-color-secondary: fade(@black, 45%);
@@ -2275,7 +2275,7 @@ mark {
 }
 ::selection {
   color: #ffffff;
-  background: @primary-color;
+  background: #000;//@primary-color;
 }
 .anticon {
   color: inherit;
@@ -2553,7 +2553,7 @@ html {
   border-radius: 2px;
 }
 .ant-fullcalendar-value:hover {
-  background: color(~`colorPalette("@{primary-color}", 1)`);
+  background: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-fullcalendar-value:active {
   color: #ffffff;
@@ -2593,7 +2593,7 @@ html {
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month:hover,
 .ant-fullcalendar-fullscreen .ant-fullcalendar-date:hover {
-  background: color(~`colorPalette("@{primary-color}", 1)`);
+  background: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month:active,
 .ant-fullcalendar-fullscreen .ant-fullcalendar-date:active {
@@ -2616,7 +2616,7 @@ html {
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month-panel-selected-cell .ant-fullcalendar-month,
 .ant-fullcalendar-fullscreen .ant-fullcalendar-selected-day .ant-fullcalendar-date {
-  background: color(~`colorPalette("@{primary-color}", 1)`);
+  background: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month-panel-selected-cell .ant-fullcalendar-value,
 .ant-fullcalendar-fullscreen .ant-fullcalendar-selected-day .ant-fullcalendar-value {
@@ -2797,7 +2797,7 @@ html {
   border-radius: 2px;
 }
 .ant-cascader-menu-item:hover {
-  background: color(~`colorPalette("@{primary-color}", 1)`);
+  background: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-cascader-menu-item-disabled {
   color: rgba(0, 0, 0, 0.25);
@@ -3800,11 +3800,11 @@ form .ant-upload {
   color: #000000;
 }
 .ant-mentions-dropdown-item:hover {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-mentions-dropdown-item.focus,
 .ant-mentions-dropdown-item-active {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-mentions-dropdown-item-disabled {
   color: rgba(0, 0, 0, 0.25);
@@ -3900,7 +3900,7 @@ form .ant-upload {
   color: #000000;
 }
 .ant-mentions-dropdown-menu-item:hover {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-mentions-dropdown-menu-item:first-child {
   border-radius: 2px 2px 0 0;
@@ -3920,7 +3920,7 @@ form .ant-upload {
   background-color: #fafafa;
 }
 .ant-mentions-dropdown-menu-item-active {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 
 
@@ -3936,8 +3936,8 @@ form .ant-upload {
   color: @primary-color;
 }
 .ant-menu-item:active,
-.ant-menu-submenu-title:active {
-  background: color(~`colorPalette("@{primary-color}", 1)`);
+.ant-menu-submenu-title:active {//按住时的menu item颜色
+  background: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 
 
@@ -3973,7 +3973,7 @@ form .ant-upload {
   color: @primary-color;
 }
 .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-menu-inline,
 .ant-menu-vertical,
@@ -4660,7 +4660,7 @@ form .ant-upload {
   border-radius: 2px 2px 0 0;
 }
 .ant-transfer-list-content-item:not(.ant-transfer-list-content-item-disabled):hover {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-transfer-list-content-item-disabled {
   color: rgba(0, 0, 0, 0.25);
@@ -4708,7 +4708,7 @@ form .ant-upload {
   border-radius: 2px 2px 0 0;
 }
 .ant-transfer-list-content-item:not(.ant-transfer-list-content-item-disabled):hover {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-transfer-list-content-item-disabled {
   color: rgba(0, 0, 0, 0.25);
@@ -4793,7 +4793,7 @@ form .ant-upload {
   border-radius: 2px;
 }
 .ant-select-tree li .ant-select-tree-node-content-wrapper:hover {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-select-tree li .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
   background-color: rgba(58, 64, 99, 0.15);
@@ -4840,7 +4840,7 @@ li.ant-select-tree-treenode-disabled > .ant-select-tree-node-content-wrapper:hov
 }
 .ant-tree.ant-tree-directory > li span.ant-tree-node-content-wrapper:hover::before,
 .ant-tree.ant-tree-directory .ant-tree-child-tree > li span.ant-tree-node-content-wrapper:hover::before {
-  background: color(~`colorPalette("@{primary-color}", 1)`);
+  background: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-tree.ant-tree-directory > li span.ant-tree-node-content-wrapper.ant-tree-node-selected,
 .ant-tree.ant-tree-directory .ant-tree-child-tree > li span.ant-tree-node-content-wrapper.ant-tree-node-selected {
@@ -4965,7 +4965,7 @@ li.ant-select-tree-treenode-disabled > .ant-select-tree-node-content-wrapper:hov
   border-radius: 2px;
 }
 .ant-tree li .ant-tree-node-content-wrapper:hover {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
   background-color: rgba(58, 64, 99, 0.15);
@@ -5121,7 +5121,7 @@ h4.ant-typography,
   color: #000000;
 }
 .ant-upload-list-item:hover .ant-upload-list-item-info {
-  background-color: color(~`colorPalette("@{primary-color}", 1)`);
+  background-color: #F6F7FB;//color(~`colorPalette("@{primary-color}", 1)`);
 }
 .ant-upload-list-item-error,
 .ant-upload-list-item-error .anticon-paper-clip,

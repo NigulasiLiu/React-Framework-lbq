@@ -59,29 +59,31 @@ interface DataCardProps {
 
 const CustomValueStatistic: React.FC<CustomValueStatisticProps> = ({ title, value, values }) => {
   return (
-    <Statistic
-      title={<span>{title}</span>}
-      valueRender={() => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ marginRight: 18 }}>{value}</div>
-          {values.map((item: ValueItem, index: number) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: item.backgroundColor,
-                color: item.color,
-                fontSize: item.fontSize,
-                borderRadius: '3px', // 设置圆角大小
-                padding: '3px 7px', // 根据需要调整内边距以适应内容
+      <div style={{transform: title.includes("AVG")?'translateX(15px)':''}}>
+        <Statistic
+            title={<span>{title}</span>}
+            valueRender={() => (
+                <div style={{ display: 'flex', alignItems: 'center',}}>
+                  <div style={{ marginRight: 18 }}>{value}</div>
+                  {values.map((item: ValueItem, index: number) => (
+                      <div
+                          key={index}
+                          style={{
+                            backgroundColor: item.backgroundColor,
+                            color: item.color,
+                            fontSize: item.fontSize,
+                            borderRadius: '3px', // 设置圆角大小
+                            padding: '3px 7px', // 根据需要调整内边距以适应内容
 
-                marginRight: 5,
-              }}>
-              {item.value}
-            </div>
-          ))}
-        </div>
-      )}
-    />
+                            marginRight: 5,
+                          }}>
+                        {item.value}
+                      </div>
+                  ))}
+                </div>
+            )}
+        />
+      </div>
   );
 };
 

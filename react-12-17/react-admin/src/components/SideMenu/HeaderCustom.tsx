@@ -194,8 +194,9 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                             {/*    </Tooltip>*/}
                             {/*))}*/}
                             {!hideSiderMenu && (//backgroundColor:'#F6F7FB',
-                                <div style={{ color: '#000', marginLeft: '15px' }}>
-                                    Community Edition v1.9.1
+                                <div style={{ color: '#000', marginLeft: '15px',fontSize:'20px',fontStyle: 'italic',
+                                    fontFamily: 'FZDaHei-B01S, sans-serif', }}>
+                                    用电全域安全监测平台
                                 </div>
                             )}
                             {hideSiderMenu && (
@@ -209,7 +210,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                     <img src={logo} alt="Logo"
                                          style={{ width: '60px', height: '60px', marginRight: '20px' }} />
                                     <Link to="/app/dashboard" style={{ textDecoration: 'none' }}>
-                                        <h2 style={{
+                                        <h2 style={{fontFamily: 'FZDaHei-B01S, sans-serif',fontStyle: 'italic',
                                             fontWeight: 'bold',
                                             padding: '22px,6px',
                                             margin: '10px,0px',
@@ -217,7 +218,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                             display: 'flex',
                                             alignItems: 'center',
                                             fontSize: '20px',
-                                        }}>Security Platform</h2>
+                                        }}>用电全域安全监测平台</h2>
                                     </Link>
                                 </div>
                             )}

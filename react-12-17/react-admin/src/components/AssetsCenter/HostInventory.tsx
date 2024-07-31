@@ -130,7 +130,11 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
             ];
             const baselinePieChartData: StatusItem[] = [
                 // 确保使用正确的方法来计数
-                { label: '无基线风险主机', value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#E5E8EF' },//GREY
+                {
+                    label: '无基线风险主机',
+                    value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+                    color: '#E5E8EF',
+                },//GREY
                 {
                     label: '存在高危基线主机',
                     value: uniqueUuidCount1 + uniqueUuidCount2,
@@ -326,7 +330,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     fontWeight: 'bold',
                     padding: '2px 4px', // 轻微内边距
                     borderRadius: '2px', // 圆角边框
-                }}>内存</span> {record.mem_use}
+                }}>内存</span> {record.mem_use + '%'}
                         </div>
                     ),
                     sorter: (a: any, b: any) => parseFloat(b.mem_use) - parseFloat(a.mem_use),
@@ -423,11 +427,10 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     const uniqueUUIDs_1 = new Set();
                     const uniqueUUIDs_2 = new Set();
                     agentOriginData.forEach(item => {
-                        if (item.status === "1") {
+                        if (item.status === '1') {
                             uniqueUUIDs_1.add(item.uuid);
-                        }
-                        else{
-                            uniqueUUIDs_2.add(item.uuid)
+                        } else {
+                            uniqueUUIDs_2.add(item.uuid);
                         }
                     });
                     const hostOnlineCount = uniqueUUIDs_1.size;

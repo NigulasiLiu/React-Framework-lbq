@@ -13,6 +13,7 @@ import { APP_Server_URL, Virus_Data_API, Virus_Scan, Virus_Upload_File } from '.
 import umbrella from 'umbrella-storage';
 import axios from 'axios';
 import { blueButton, cancelButton } from '../../style/config';
+import moment from 'moment';
 
 interface VirusScanningProps {
     hostuuid: string;
@@ -246,24 +247,26 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                 //     key: 'id'
                 // },
                 {
-                    title: 'Alert',
+                    title: '告警',
                     dataIndex: 'alert',
                     key: 'alert'
                 },
                 {
-                    title: 'Filename',
+                    title: '文件名',
                     dataIndex: 'filename',
                     key: 'filename',
                 },
                 {
-                    title: 'MD5',
+                    title: '文件MD5',
                     dataIndex: 'md5',
                     key: 'md5'
                 },
                 {
-                    title: 'Time',
+                    title: '时刻',
                     dataIndex: 'time',
-                    key: 'time'
+                    key: 'time',
+                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    sorter: (a: any, b: any) => parseFloat(b.time) - parseFloat(a.time),
                 },
                 {
                     title: '操作',
