@@ -507,7 +507,9 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
                                                                                required: true,
                                                                                message: '请选择执行时间',
                                                                            }]}>
-                                                                    <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
+                                                                    <DatePicker
+                                                                        className="custom-date-picker"
+                                                                        showTime format="YYYY-MM-DD HH:mm:ss"
                                                                                 defaultValue={moment()}
                                                                                 value={this.state.excuteTime}
                                                                                 onChange={this.handleExcuteTimeChange} />

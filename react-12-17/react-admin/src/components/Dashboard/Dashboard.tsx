@@ -456,7 +456,7 @@ class Dashboard extends React.Component<DashboardProps> {
                     //漏洞检测
                     const vulAlertPieChartData = [
                         { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
-                        { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
+                        { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
                     ];
                     //基线检查，进度条型展示时，使用一个各项值为1的panel
                     const baselineLineChartLabelUseData: StatusItem[] = [

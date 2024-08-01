@@ -126,7 +126,7 @@ const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: num
             ];
             const vulAlertData = [
                 { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
-                { label: '存在高可利用漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
+                { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
             ];
             const baselinePieChartData: StatusItem[] = [
                 // 确保使用正确的方法来计数

@@ -15,7 +15,7 @@ import { PwaInstaller } from '../widget';
 
 import screenfull from 'screenfull';
 import avater from '../../style/imgs/user1.png';
-import logo from '../../style/imgs/owl.png';
+import logo from '../../style/imgs/logo_new.png';
 import { APP_Server_URL } from '../../service/config';
 
 
@@ -194,8 +194,12 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                             {/*    </Tooltip>*/}
                             {/*))}*/}
                             {!hideSiderMenu && (//backgroundColor:'#F6F7FB',
-                                <div style={{ color: '#000', marginLeft: '15px',fontSize:'20px',fontStyle: 'italic',
-                                    fontFamily: 'FZDaHei-B01S, sans-serif', }}>
+                                <div style={{
+                                    color: '#000', marginLeft: '-35px', fontSize: '20px', fontStyle: 'italic',border:'solid 0px #F6F7FB',
+                                    fontFamily: 'FZDaHei-B01S, sans-serif',
+                                }}>
+                                    <img src={logo} alt="Logo"
+                                         style={{ zoom: 0.15, marginRight: '20px' }} />
                                     用电全域安全监测平台
                                 </div>
                             )}
@@ -208,7 +212,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                     justifyContent: 'start',
                                 }}>
                                     <img src={logo} alt="Logo"
-                                         style={{ width: '60px', height: '60px', marginRight: '20px' }} />
+                                         style={{ zoom:0.15,marginRight:'20px' }} />
                                     <Link to="/app/dashboard" style={{ textDecoration: 'none' }}>
                                         <h2 style={{fontFamily: 'FZDaHei-B01S, sans-serif',fontStyle: 'italic',
                                             fontWeight: 'bold',

@@ -102,7 +102,7 @@ class Login extends React.Component<LoginProps> {
             <div className="login">
                 <div className="login-form">
                     <div className="login-logo">
-                        <span>Security Platform</span>
+                        <span>用电全域安全监测平台</span>
                         {/*<PwaInstaller />*/}
                     </div>
                     <Form onFinish={this.handleSubmit} style={{ maxWidth: '300px' }}>

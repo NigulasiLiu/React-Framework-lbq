@@ -1,0 +1,8 @@
+.title {
+    color: black; /* 默认字体颜色 */
+}
+
+.title::selection {
+    background-color: black; /* 被选中时的背景颜色 */
+    color: white; /* 被选中时的字体颜色 */
+}

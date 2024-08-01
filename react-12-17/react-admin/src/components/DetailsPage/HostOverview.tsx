@@ -697,7 +697,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                                 </Row>
 
                                                 <Row gutter={0}>
-                                                    {this.renderVulPieChart(vulnOriginData, '待处理高可利用漏洞',
+                                                    {this.renderVulPieChart(vulnOriginData, '待处理漏洞',
                                                         '高风险项', '中风险项', '低风险项')}
 
                                                 </Row>
