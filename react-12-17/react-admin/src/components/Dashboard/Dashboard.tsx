@@ -3,7 +3,14 @@ import { Row, Col, Card, Statistic, Button } from 'antd';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
 import { StatusPanel } from '../AssetsCenter/HostInventory';
 import { StatusItem } from '../Columns';
-import { GithubOutlined, GlobalOutlined, LoadingOutlined, MailOutlined, RightOutlined } from '@ant-design/icons';
+import {
+    GithubOutlined,
+    GlobalOutlined,
+    LoadingOutlined,
+    MailOutlined,
+    PhoneOutlined,
+    RightOutlined,EnvironmentOutlined
+} from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import {
@@ -924,85 +931,122 @@ class Dashboard extends React.Component<DashboardProps> {
                                                       backgroundColor: '#ffffff',
                                                   }}>
                                                 <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
+                                                    marginBottom: '10px',
                                                     fontWeight: 'bold',
                                                 }}>
-                                                    <h2 style={{
-                                                        fontSize: '19px',
+                                                    <h1 style={{
+                                                        fontSize: '24px',
+                                                        margin: '0',
+                                                        fontFamily: 'FZDaHei-B01S, sans-serif',
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>OWL Security</h2>
+                                                    }}>用电全域安全监测平台</h1>
                                                 </div>
+
                                                 <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 6,
+                                                    marginBottom: '6px',
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h2 style={{
-                                                        fontSize: '15px',
-                                                        fontWeight: 'bold',
-                                                        marginLeft: '0px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'FZDaHei-B01S, sans-serif',//由<strong>主站安全监测功能模块</strong>和<strong>边缘控制终端安全监测模块</strong>组成。<br />其设计目标是
                                                     }}>
-                                                        OWL Security是一个云原生的基于主机的安全(入侵检测与风险识别)解决方案
+                                                        <strong>用电全域安全监测平台为</strong><strong><a
+                                                        href="https://baike.baidu.com/item/车网互动"
+                                                        target="_blank">车网互动</a></strong>及<strong>智能量测</strong>场景提供了全面的安全监测解决方案。<br />
+                                                        安全监测解决方案提供了<strong>资产测绘</strong>、<strong>基线检查</strong>、<strong>运行监测</strong>、<strong>风险监测</strong>、
+                                                        <strong>攻击溯源</strong>和<strong>安全狩猎</strong>等功能。<br />
+                                                        本平台旨在实现对车网互动及智能量测系统的全面感知与统一监控，以确保系统的安全、稳定和经济运行。
                                                     </h2>
+
                                                 </div>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 6,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontSize: '15px',
-                                                        fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>
-                                                        Owl Security is a support cloud-native and base linux host
-                                                        security(Intrusion detection and risk identification)solution
-                                                    </h2>
-                                                </div>
-                                                <div style={{ marginBottom: '3px',transform: 'translateY(-8px)' }}>
+                                                <div style={{ marginBottom: '3px', transform: 'translateY(-8px)' }}>
+                                                    {/*<div style={{*/}
+                                                    {/*    display: 'flex',*/}
+                                                    {/*    justifyContent: 'space-between',*/}
+                                                    {/*    marginLeft: 16,*/}
+                                                    {/*    fontWeight: 'bold',*/}
+                                                    {/*}}>*/}
+                                                    {/*    <p><GithubOutlined /> <a*/}
+                                                    {/*        style={{ color: '#1964F5' }}*/}
+                                                    {/*        href="https://github.com"*/}
+                                                    {/*        target="_blank"*/}
+                                                    {/*        rel="noopener noreferrer">GitHub</a></p>*/}
+                                                    {/*</div>*/}
                                                     <div style={{
                                                         display: 'flex',
                                                         justifyContent: 'space-between',
-                                                        marginBottom: 2,
-                                                        marginLeft: 16,
-                                                        fontWeight: 'bold',
-                                                    }}>
-                                                        <p><GithubOutlined /> <a
-                                                            style={{ color: '#1964F5' }}
-                                                            href="https://github.com"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer">GitHub</a></p>
-                                                    </div>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        marginBottom: 2,
                                                         marginLeft: 16,
                                                         fontWeight: 'bold',
                                                     }}>
                                                         <p><GlobalOutlined /> <a
                                                             style={{ color: '#1964F5' }}
-                                                            href="https://yourwebsite.com" target="_blank"
-                                                            rel="noopener noreferrer">Official website</a></p>
+                                                            href="http://www.sepri.csg.cn/" target="_blank"
+                                                            rel="noopener noreferrer">南方电网科学研究院</a></p>
                                                     </div>
                                                     <div style={{
                                                         display: 'flex',
                                                         justifyContent: 'space-between',
-                                                        marginBottom: 2,
                                                         marginLeft: 16,
                                                         fontWeight: 'bold',
                                                     }}>
                                                         <p><MailOutlined /> <a
                                                             style={{ color: '#1964F5' }}
-                                                            href="mailto:elkeid@bytedance.com">elkeid@bytedance.com</a>
+                                                            href="mailto:kyyzzbs@csg.cn">kyyzzbs@csg.cn</a>
+                                                        </p>
+                                                    </div>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginLeft: 16,
+                                                        fontWeight: 'bold',
+                                                    }}>
+                                                        <p><PhoneOutlined /> <a
+                                                            style={{ color: '#1964F5' }}
+                                                            href="tel:020-88662222">020-36625237</a>(业务合作联系电话)
                                                         </p>
                                                     </div>
                                                 </div>
+
+
+                                                {/*<div style={{ marginBottom: '3px', transform: 'translateY(-8px)' }}>*/}
+                                                {/*    <div style={{*/}
+                                                {/*        display: 'flex',*/}
+                                                {/*        justifyContent: 'space-between',*/}
+                                                {/*        marginBottom: 2,*/}
+                                                {/*        marginLeft: 16,*/}
+                                                {/*        fontWeight: 'bold',*/}
+                                                {/*    }}>*/}
+                                                {/*        <p><GithubOutlined /> <a*/}
+                                                {/*            style={{ color: '#1964F5' }}*/}
+                                                {/*            href="https://github.com"*/}
+                                                {/*            target="_blank"*/}
+                                                {/*            rel="noopener noreferrer">GitHub</a></p>*/}
+                                                {/*    </div>*/}
+                                                {/*    <div style={{*/}
+                                                {/*        display: 'flex',*/}
+                                                {/*        justifyContent: 'space-between',*/}
+                                                {/*        marginBottom: 2,*/}
+                                                {/*        marginLeft: 16,*/}
+                                                {/*        fontWeight: 'bold',*/}
+                                                {/*    }}>*/}
+                                                {/*        <p><GlobalOutlined /> <a*/}
+                                                {/*            style={{ color: '#1964F5' }}*/}
+                                                {/*            href="http://www.sepri.csg.cn/" target="_blank"*/}
+                                                {/*            rel="noopener noreferrer">Official website</a></p>*/}
+                                                {/*    </div>*/}
+                                                {/*    <div style={{*/}
+                                                {/*        display: 'flex',*/}
+                                                {/*        justifyContent: 'space-between',*/}
+                                                {/*        marginBottom: 2,*/}
+                                                {/*        marginLeft: 16,*/}
+                                                {/*        fontWeight: 'bold',*/}
+                                                {/*    }}>*/}
+                                                {/*        <p><MailOutlined /> <a*/}
+                                                {/*            style={{ color: '#1964F5' }}*/}
+                                                {/*            href="mailto:elkeid@bytedance.com">elkeid@bytedance.com</a>*/}
+                                                {/*        </p>*/}
+                                                {/*    </div>*/}
+                                                {/*</div>*/}
                                             </Card>
                                         </Row>
                                     </Col>

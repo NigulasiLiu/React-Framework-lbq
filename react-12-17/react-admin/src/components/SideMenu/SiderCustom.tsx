@@ -130,7 +130,7 @@ import { useAlita } from 'redux-alita';
 import { useSwitch } from '../../utils/hooks';
 import { usePrevious } from 'ahooks';
 // import logo from '../../style/imgs/owl.png';
-import logo from '../../style/imgs/CHINA SOUTHERN POWER GRID SEPRI.jpg';
+import logo from '../../style/imgs/CSPG_light.jpg';
 
 const { Sider } = Layout;
 
