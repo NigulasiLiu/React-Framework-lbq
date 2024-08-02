@@ -1,7 +1,6 @@
 import React , { useRef } from 'react';
 import { Button, Form, Input, message } from 'antd';
 
-import { PwaInstaller } from '../widget';
 import { connectAlita } from 'redux-alita';
 import axios from 'axios';
 import { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
@@ -90,10 +89,6 @@ class Login extends React.Component<LoginProps> {
         }
     };
 
-    gitHub = () => {
-        window.location.href =
-            'https://github.com/login/oauth/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin';
-    };
 
     render() {
         // const userNameRef = useRef<Input>(null);

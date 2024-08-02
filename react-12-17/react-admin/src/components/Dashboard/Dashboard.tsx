@@ -931,7 +931,8 @@ class Dashboard extends React.Component<DashboardProps> {
                                                       backgroundColor: '#ffffff',
                                                   }}>
                                                 <div style={{
-                                                    marginBottom: '10px',
+                                                    marginTop: '-10px',
+                                                    marginBottom: '5px',
                                                     fontWeight: 'bold',
                                                 }}>
                                                     <h1 style={{
@@ -1001,8 +1002,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         fontWeight: 'bold',
                                                     }}>
                                                         <p><PhoneOutlined /> <a
-                                                            style={{ color: '#1964F5' }}
-                                                            href="tel:020-88662222">020-36625237</a>(业务合作联系电话)
+                                                            style={{ color: '#1964F5' }}>020-36625237</a>(业务合作联系电话)
                                                         </p>
                                                     </div>
                                                 </div>
