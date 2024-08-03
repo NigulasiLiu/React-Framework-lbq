@@ -81,131 +81,257 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ statusData, orientatio
     );
 };
 
-const renderPieChart = (linuxOriginData: any, winOriginData: any, hostCount: number, vulnHostCount: number,
-                        title1: string, title2: string, wholeCount: number,
-                        blLinuxHostCount: number,
-                        blWindowsHostCount: number, HoneyPotHostCount: number, TTPsHostCount: number, VirusHostCount: number,
-                        width?: number, height?: number, inner?: number, delta?: number, outter?: number,
+// const renderPieChart1 = (linuxOriginData: any, winOriginData: any, hostCount: number, vulnHostCount: number,
+//                         title1: string, title2: string, wholeCount: number,
+//                         blLinuxHostCount: number,
+//                         blWindowsHostCount: number, HoneyPotHostCount: number, TTPsHostCount: number, VirusHostCount: number,
+//                         width?: number, height?: number, inner?: number, delta?: number, outter?: number,
+// ) => {
+//     if (linuxOriginData !== undefined && winOriginData !== undefined) {
+//         // 确保OriginData总是作为数组处理
+//         const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
+//         const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+//
+//         const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
+//         const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+//         // 确保needAdjItems不为空再访问它的属性
+//         if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
+//             // 使用reduce和findIndex方法统计唯一uuid个数
+//             const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
+//                 // 查找在累积数组中uuid是否已存在
+//                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+//                 // 如果不存在，则添加到累积数组中
+//                 if (index === -1) {
+//                     acc.push(current);
+//                 }
+//                 return acc;
+//             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+//             const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
+//                 // 查找在累积数组中uuid是否已存在
+//                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
+//                 // 如果不存在，则添加到累积数组中
+//                 if (index === -1) {
+//                     acc.push(current);
+//                 }
+//                 return acc;
+//             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+//
+//             const noAlertHostCount = hostCount - HoneyPotHostCount - TTPsHostCount;
+//             // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
+//             const alertHostPieChartData = [
+//                 { label: '无告警主机', value: noAlertHostCount || 0, color: '#E5E8EF' },
+//                 { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
+//                 { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#FFBB28' },
+//                 // { label: '病毒扫描告警', value: VirusHostCount || 0, color: '#846CCE' },
+//             ];
+//             const vulAlertData = [
+//                 { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
+//                 { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
+//             ];
+//             const baselinePieChartData: StatusItem[] = [
+//                 // 确保使用正确的方法来计数
+//                 {
+//                     label: '无基线风险主机',
+//                     value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+//                     color: '#E5E8EF',
+//                 },//GREY
+//                 {
+//                     label: '存在高危基线主机',
+//                     value: uniqueUuidCount1 + uniqueUuidCount2,
+//                     color: '#4086FF',
+//                 },//BLUE
+//             ];
+//
+//             const riskStatusPanelData: StatusItem[] = [
+//                 { color: '#E5E8EF', label: '主机数量 ', value: hostCount },
+//                 {
+//                     color: '#FBB12E',
+//                     label: '存在告警的主机 ',
+//                     value: HoneyPotHostCount + TTPsHostCount,
+//                 },
+//                 { color: '#EA635F', label: '存在漏洞的主机 ', value: vulnHostCount },
+//                 {
+//                     color: '#4086FF',
+//                     label: '存在高危基线的主机 ',
+//                     value: uniqueUuidCount1 + uniqueUuidCount2,
+//                 },
+//             ];
+//
+//
+//             return (
+//                 <Row gutter={0}>
+//                     <Col span={5}>
+//                         <CustomPieChart
+//                             data={alertHostPieChartData}
+//                             innerRadius={54}
+//                             deltaRadius={8}
+//                             outerRadius={80}
+//                             cardWidth={200}
+//                             cardHeight={200}
+//                             hasDynamicEffect={true}
+//                             title={'告警'}
+//                         />
+//                     </Col>
+//                     <Col span={5}>
+//                         <CustomPieChart
+//                             data={vulAlertData}
+//                             innerRadius={54}
+//                             deltaRadius={8}
+//                             outerRadius={80}
+//                             cardHeight={200}
+//                             cardWidth={200}
+//                             hasDynamicEffect={true}
+//                             title={'存在漏洞'}
+//                         />
+//                     </Col>
+//                     <Col span={5}>
+//                         <CustomPieChart
+//                             data={baselinePieChartData}
+//                             innerRadius={54}
+//                             deltaRadius={8}
+//                             outerRadius={80}
+//                             cardHeight={200}
+//                             cardWidth={200}
+//                             hasDynamicEffect={true}
+//                             title={'基线风险'}
+//                         />
+//                         {/*{renderBLPieChart(linuxOriginData, winOriginData, '无基线风险主机', '存在高危基线主机', blLinuxHostCount + blWindowsHostCount)}*/}
+//                     </Col>
+//                     <Col span={2}> </Col>
+//                     <Col span={6}>
+//                         <div style={{ transform: 'translateY(40px)' }}>
+//                             <StatusPanel statusData={riskStatusPanelData} orientation="vertical" />
+//                         </div>
+//                     </Col>
+//                 </Row>
+//             );
+//         }
+//     }
+//
+//     return (
+//         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+//             <LoadingOutlined style={{ fontSize: '3em' }} />
+//         </div>
+//     );
+// };
+const renderPieChart = (
+    linuxOriginData: any,
+    winOriginData: any,
+    hostCount: number,
+    vulnHostCount: number,
+    title1: string,
+    title2: string,
+    wholeCount: number,
+    blLinuxHostCount: number,
+    blWindowsHostCount: number,
+    HoneyPotHostCount: number,
+    TTPsHostCount: number,
+    VirusHostCount: number,
+    width?: number,
+    height?: number,
+    inner?: number,
+    delta?: number,
+    outter?: number,
 ) => {
-    if (linuxOriginData !== undefined && winOriginData !== undefined) {
-        // 确保OriginData总是作为数组处理
-        const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
-        const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+    // Ensure originDataArray is always an array
+    const originDataArray1 = linuxOriginData ? (Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData]) : [];
+    const originDataArray2 = winOriginData ? (Array.isArray(winOriginData) ? winOriginData : [winOriginData]) : [];
 
-        const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
-        const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
-        // 确保needAdjItems不为空再访问它的属性
-        if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
-            // 使用reduce和findIndex方法统计唯一uuid个数
-            const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
-                // 查找在累积数组中uuid是否已存在
-                const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                // 如果不存在，则添加到累积数组中
-                if (index === -1) {
-                    acc.push(current);
-                }
-                return acc;
-            }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-            const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
-                // 查找在累积数组中uuid是否已存在
-                const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                // 如果不存在，则添加到累积数组中
-                if (index === -1) {
-                    acc.push(current);
-                }
-                return acc;
-            }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+    const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+    const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
 
-            const noAlertHostCount = hostCount - HoneyPotHostCount - TTPsHostCount;
-            // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
-            const alertHostPieChartData = [
-                { label: '无告警主机', value: noAlertHostCount || 0, color: '#E5E8EF' },
-                { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
-                { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#FFBB28' },
-                // { label: '病毒扫描告警', value: VirusHostCount || 0, color: '#846CCE' },
-            ];
-            const vulAlertData = [
-                { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
-                { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
-            ];
-            const baselinePieChartData: StatusItem[] = [
-                // 确保使用正确的方法来计数
-                {
-                    label: '无基线风险主机',
-                    value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
-                    color: '#E5E8EF',
-                },//GREY
-                {
-                    label: '存在高危基线主机',
-                    value: uniqueUuidCount1 + uniqueUuidCount2,
-                    color: '#4086FF',
-                },//BLUE
-            ];
-
-            const riskStatusPanelData: StatusItem[] = [
-                { color: '#E5E8EF', label: '主机数量 ', value: hostCount },
-                {
-                    color: '#FBB12E',
-                    label: '存在告警的主机 ',
-                    value: HoneyPotHostCount + TTPsHostCount,
-                },
-                { color: '#EA635F', label: '存在漏洞的主机 ', value: vulnHostCount },
-                {
-                    color: '#4086FF',
-                    label: '存在高危基线的主机 ',
-                    value: uniqueUuidCount1 + uniqueUuidCount2,
-                },
-            ];
-
-
-            return (
-                <Row gutter={0}>
-                    <Col span={5}>
-                        <CustomPieChart
-                            data={alertHostPieChartData}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardWidth={200}
-                            cardHeight={200}
-                            hasDynamicEffect={true}
-                            title={'告警'}
-                        />
-                    </Col>
-                    <Col span={5}>
-                        <CustomPieChart
-                            data={vulAlertData}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardHeight={200}
-                            cardWidth={200}
-                            hasDynamicEffect={true}
-                            title={'存在漏洞'}
-                        />
-                    </Col>
-                    <Col span={5}>
-                        <CustomPieChart
-                            data={baselinePieChartData}
-                            innerRadius={54}
-                            deltaRadius={8}
-                            outerRadius={80}
-                            cardHeight={200}
-                            cardWidth={200}
-                            hasDynamicEffect={true}
-                            title={'基线风险'}
-                        />
-                        {/*{renderBLPieChart(linuxOriginData, winOriginData, '无基线风险主机', '存在高危基线主机', blLinuxHostCount + blWindowsHostCount)}*/}
-                    </Col>
-                    <Col span={2}> </Col>
-                    <Col span={6}>
-                        <div style={{ transform: 'translateY(40px)' }}>
-                            <StatusPanel statusData={riskStatusPanelData} orientation="vertical" />
-                        </div>
-                    </Col>
-                </Row>
-            );
+    // Use reduce and findIndex to count unique UUIDs
+    const uniqueUuidCount = (items: any[]) => items.reduce((acc, current) => {
+        if (!acc.some((item: { uuid: any; }) => item.uuid === current.uuid)) {
+            acc.push(current);
         }
+        return acc;
+    }, []).length;
+
+    const uniqueUuidCount1 = uniqueUuidCount(needAdjItems1);
+    const uniqueUuidCount2 = uniqueUuidCount(needAdjItems2);
+
+    const noAlertHostCount = hostCount - HoneyPotHostCount - TTPsHostCount;
+
+    // Define pie chart data arrays
+    const alertHostPieChartData = [
+        { label: '无告警主机', value: noAlertHostCount || 0, color: '#E5E8EF' },
+        { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
+        { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#FFBB28' },
+    ];
+
+    const vulAlertData = [
+        { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },
+        { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' },
+    ];
+
+    const baselinePieChartData = [
+        {
+            label: '无基线风险主机',
+            value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+            color: '#E5E8EF',
+        },
+        {
+            label: '存在高危基线主机',
+            value: uniqueUuidCount1 + uniqueUuidCount2,
+            color: '#4086FF',
+        },
+    ];
+
+    const riskStatusPanelData = [
+        { color: '#E5E8EF', label: '主机数量 ', value: hostCount },
+        { color: '#FBB12E', label: '存在告警的主机 ', value: HoneyPotHostCount + TTPsHostCount },
+        { color: '#EA635F', label: '存在漏洞的主机 ', value: vulnHostCount },
+        { color: '#4086FF', label: '存在高危基线的主机 ', value: uniqueUuidCount1 + uniqueUuidCount2 },
+    ];
+
+    if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
+        return (
+            <Row gutter={0}>
+                <Col span={5}>
+                    <CustomPieChart
+                        data={alertHostPieChartData}
+                        innerRadius={54}
+                        deltaRadius={8}
+                        outerRadius={80}
+                        cardWidth={200}
+                        cardHeight={200}
+                        hasDynamicEffect={true}
+                        title={'告警'}
+                    />
+                </Col>
+                <Col span={5}>
+                    <CustomPieChart
+                        data={vulAlertData}
+                        innerRadius={54}
+                        deltaRadius={8}
+                        outerRadius={80}
+                        cardHeight={200}
+                        cardWidth={200}
+                        hasDynamicEffect={true}
+                        title={'存在漏洞'}
+                    />
+                </Col>
+                <Col span={5}>
+                    <CustomPieChart
+                        data={baselinePieChartData}
+                        innerRadius={54}
+                        deltaRadius={8}
+                        outerRadius={80}
+                        cardHeight={200}
+                        cardWidth={200}
+                        hasDynamicEffect={true}
+                        title={'基线风险'}
+                    />
+                </Col>
+                <Col span={2}> </Col>
+                <Col span={6}>
+                    <div style={{ transform: 'translateY(40px)' }}>
+                        <StatusPanel statusData={riskStatusPanelData} orientation="vertical" />
+                    </div>
+                </Col>
+            </Row>
+        );
     }
 
     return (
@@ -513,25 +639,11 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                                     {constRenderTable(agentOriginData, '主机内容', [],
                                         this.state.hostinventoryColumns, 'hostinventory', Agent_Data_API,
                                         ['uuid', 'os_version'])}
-                                    {/* <div className="gutter-box">
-                    <Card bordered={false}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontWeight: 'bold' }}>
-                        <h2 style={{ fontWeight: 'bold', marginLeft: '0px' }}>主机内容</h2>
-                      </div>
-                      <FetchDataForTaskTable
-                        apiEndpoint="http://localhost:5000/api/agent/all"//后续更换为agent表
-                        timeColumnIndex={[]}
-                        columns={hostinventoryColumns}//hostinventoryColumns
-                        currentPanel="hostinventory"
-                      />
-                    </Card>
-                  </div> */}
                                 </Col>
                             </Row>
-
                             {/* <MetaDataDisplay
-                  metadata={agentMetaData_status}
-                  /> */}
+                              metadata={agentMetaData_status}
+                              /> */}
                         </div>
                     );
                 }}

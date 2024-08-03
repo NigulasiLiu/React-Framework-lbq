@@ -370,7 +370,7 @@ const DataManager: React.FC = ({ children }) => {
         const currentTime = new Date().getTime();
 
         if (tag && lastFetchTime && currentTime - parseInt(lastFetchTime) < 5000) {
-            message.info(`跳过 ${variableName} 相关数据的刷新, 因5s内已经刷新.`);
+            // message.info(`跳过 ${variableName} 相关数据的刷新, 因5s内已经刷新.`);
             console.log(`Skipping refresh for ${variableName} as it was fetched less than 5s ago.`);
             if (cachedData) {
                 const setDataFunction = setDataFunctions[apiEndpoint];

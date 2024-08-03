@@ -146,29 +146,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
         this.props.changePanel(panelName);
 
     };
-    renderEmpty = () => {
-        return (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-                <Empty description="暂无数据" />
-            </div>
-        );
-    };
-    //扇形图动态效果实现
-    handleMouseEnter = (_: any, index: number) => {
-        // 使用 map 来更新数组中特定索引的值
-        this.setState((prevState) => ({
-            activeIndex: prevState.activeIndex.map((val: number, i: number) =>
-                i === index ? index : val
-            ),
-        }));
-    };
-    handleMouseLeave = () => {
-        // 重置所有索引为 -1
-        this.setState({
-            activeIndex: this.state.activeIndex.map(() => -1),
-        });
-    };
-
 
     render() {
 
@@ -339,39 +316,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                         </Row>
                                     </Card>
                                 </Col>
-                                {/* <Col span={3}>
-                    <Card
-                        bordered={false}
-                        style={{
-                            height: '75px',
-                            width: '150px',
-                            minWidth: 80, // 最小宽度100px
-                            maxWidth: 200, // 最大宽度200px
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                        }}
-                    >
-                        <Row>
-                            <Col pull={2} span={22}>
-                                <Statistic title={<span>定时任务</span>} value={0} />
-                            </Col>
-                            <Col
-                                pull={0}
-                                span={2}
-                                style={{ position: 'relative', top: '-3.5px' }}
-                            >
-                                <Button
-                                    type="link"
-                                    style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#88878C'}}
-                                    icon={<RightOutlined />}
-                                    onClick={() => this.goToPanel('scheduled-tasks')}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col> */}
                                 <Col span={3}>
                                     <Card
                                         bordered={false}
@@ -461,45 +405,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                         rowKey="id"
                                     />
                                 </Col>
-                                {/* <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        dataSource={sortedData[6]}
-                        columns={columns[6]}
-                        pagination={false}
-                        rowKey="id"
-                    />
-                </Col> */}
-                                {/* <Col span={12}>
-                    <Table<DataItem>
-                        className="customTable"
-                        //dataSource={sortedData[7]}
-                        columns={columns[7]}
-                        locale={{ emptyText: ' ' }} // 将空文本设置为一个空的React.Fragment
-                        // pagination={false}
-                        // rowKey="id"
-                    />
-                    <Card bordered={false} className="noTopBorderCard" style={{ height: 238 }}>
-                        <Row gutter={0}>
-                            <Col span={12}>
-                                <CustomPieChart
-                                data={status_data}
-                                innerRadius={54}
-                                deltaRadius={8}
-                                outerRadius={80}
-                                cardWidth={200}
-                                cardHeight={200}
-                                hasDynamicEffect={true}
-                                >
-                                </CustomPieChart>
-                            </Col>
-                            <Col span={2}> </Col>
-                            <div style={{ transform: 'translateX(40px) translateY(40px)' }}>
-                                <StatusPanel statusData={status_data} orientation="vertical"/>
-                            </div>
-                        </Row>
-                    </Card>
-                </Col> */}
                             </Row>
                             {/* <MetaDataDisplay
             metadata={assetMetaData_service}

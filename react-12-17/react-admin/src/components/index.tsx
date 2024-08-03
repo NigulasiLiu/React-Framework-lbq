@@ -16,8 +16,6 @@ import Env from './env';
 import DetailsPage from './DetailsPage/DetailsPage';
 import CreateAgentTaskPage from './Management/CreateTaskPage'
 import CreateVirusScanTaskPage from './VirusScanning/CreateVirusScanTask';
-import BaseLineDetectDetailsPage from './DetailsPage/BaseLineDetectDetailsPage';
-import VirusScanDetailsPage from './DetailsPage/VirusScanDetailsPage';
 import HoneypotDefense from './RiskManagement/HoneypotDefense';
 import MemoryShell from './HostProtection/MemoryShell';
 import ThreatHunting from './HostProtection/ThreatHunting';
@@ -46,8 +44,6 @@ export default {
     DetailsPage,
     CreateAgentTaskPage,
     CreateVirusScanTaskPage,
-    BaseLineDetectDetailsPage,
-    VirusScanDetailsPage,
     HoneypotDefense,
     MemoryHorseDetection: MemoryShell,
     ThreatHunting,

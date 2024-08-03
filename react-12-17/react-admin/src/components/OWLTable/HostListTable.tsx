@@ -2,11 +2,9 @@ import React from 'react';
 import { Button, Card, Col, message, Row, Table } from 'antd';
 import { LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { Link } from 'react-router-dom';
-import { blueButton } from '../../style/config';
 import { handleExport } from '../ContextAPI/DataService';
-import { createNewTaskColumns } from '../Columns';
 
+//下发任务页面的主机列表，因为要获取当前选取主机的uuid，所以勾选时不能触发‘componentDidUpdate导致的重新获取agent数据’，因此单独设置一个新Table组件
 interface HostListTableProps {
     externalDataSource: any[];
     columns: any[]; // 根据实际列数据结构定义更明确的类型

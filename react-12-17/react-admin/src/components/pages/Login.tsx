@@ -7,6 +7,7 @@ import { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router';
 import umbrella from 'umbrella-storage';
 import { Login_API } from '../../service/config';
+import wangyanLogo from '../../style/imgs/logo&font_new.png';
 
 const FormItem = Form.Item;
 
@@ -98,10 +99,12 @@ class Login extends React.Component<LoginProps> {
                 <div className="login-form">
                     <div className="login-logo">
                         <span>用电全域安全监测平台</span>
+                        <img src={wangyanLogo} alt="wangyanLogo"
+                             style={{ zoom: 0.20, marginRight: '0px' }} />
                         {/*<PwaInstaller />*/}
                     </div>
-                    <Form onFinish={this.handleSubmit} style={{ maxWidth: '300px' }}>
-                        <FormItem
+                    <Form onFinish={this.handleSubmit} style={{ maxWidth: '300px',marginTop:'80px' }}>
+                    <FormItem
                             name="userName"
                             rules={[{ required: true, message: '请输入用户名!' }]}
                         >

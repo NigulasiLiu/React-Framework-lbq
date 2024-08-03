@@ -3,23 +3,18 @@ import axios from 'axios';
 import {
     Col,
     Row,
-    Card,
     Input,
     Button,
     Tooltip,
     Modal,
     Form,
     message,
-    Upload,
-    message as AntMessage,
     Badge,
 } from 'antd';
 import { LoadingOutlined,  } from '@ant-design/icons';
 import moment from 'moment';
-import CustomUpload from '../CustomAntd/CustomUpload'
 import { DataContext, DataContextType } from '../ContextAPI/DataManager';
-import { constRenderTable, hostinventoryColumnsType } from '../Columns';
-import umbrella from 'umbrella-storage';
+import { constRenderTable, } from '../Columns';
 import { APP_Server_URL, MemoryShell_API, Task_Data_API } from '../../service/config';
 import { blueButton } from '../../style/config';
 
@@ -60,27 +55,6 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
             //     <Button className="custom-button">{text}</Button>
             // ),
         },
-        // {
-        //     title: "主机名称",
-        //     dataIndex: 'uuid',
-        //     key: 'uuid',
-        //     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        //     render: (text: string, record: any) => (
-        //         <div>
-        //             <div>
-        //                 <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-        //                     <Button style={{ fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF', padding: '0 0' }}>
-        //                         <Tooltip title={record.uuid}>
-        //                             <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
-        //                                 {record.uuid || '-'}
-        //                             </div>
-        //                         </Tooltip>
-        //                     </Button>
-        //                 </Link>
-        //             </div>
-        //         </div>
-        //     ),
-        // },
         {
             title: '攻击时刻',
             dataIndex: 'detect_time',
@@ -180,14 +154,6 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
         }
     };
 
-
-    handleUploadSuccess = (fileName: string, fileContent: string) => {
-        this.setState({ uploadedFileContent: fileContent }); // 将上传文件的内容存储到state中
-    };
-
-    handleUploadError = (fileName: string) => {
-        message.error(`${fileName} 文件上传失败，请重试`);
-    };
 
     renderMemoryShellModal = () => {
         const { uploadedFileContent } = this.state;

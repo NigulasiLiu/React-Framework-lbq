@@ -86,9 +86,14 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
     );
 };
 
-// const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
+// const renderBLPieChart1 = (linuxOriginData: any, winOriginData: any,
 //                           title1: string, title2: string, wholeCount: number,
-//                           width?: number, height?: number, inner?: number, delta?: number, outter?: number) => {
+//                           width: number = 200, height: number = 200, inner: number = 34, delta: number = 5, outer: number = 50) => {
+//     const defaultAlertData: StatusItem[] = [
+//         { label: title1, value: 0, color: '#E5E8EF' },
+//         { label: title2, value: wholeCount, color: '#4086FF' },
+//     ];
+//
 //     if (linuxOriginData !== undefined && winOriginData !== undefined) {
 //         // 确保OriginData总是作为数组处理
 //         const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
@@ -96,6 +101,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
 //
 //         const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
 //         const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+//
 //         // 确保needAdjItems不为空再访问它的属性
 //         if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
 //             // 使用reduce和findIndex方法统计唯一uuid个数
@@ -108,6 +114,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
 //                 }
 //                 return acc;
 //             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
+//
 //             const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
 //                 // 查找在累积数组中uuid是否已存在
 //                 const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
@@ -119,91 +126,83 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
 //             }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
 //
 //             const baselineAlertData: StatusItem[] = [
-//                 // 确保使用正确的方法来计数
-//                 { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' },//GREY
-//                 { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' },//BLUE
+//                 { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' }, // GREY
+//                 { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' }, // BLUE
 //             ];
+//
 //             return (
 //                 <CustomPieChart
 //                     data={baselineAlertData}
 //                     title={'基线'}
-//                     innerRadius={34}
-//                     deltaRadius={5}
-//                     outerRadius={50}
-//                     cardHeight={150}
+//                     innerRadius={inner}
+//                     deltaRadius={delta}
+//                     outerRadius={outer}
+//                     cardHeight={height}
+//                     cardWidth={width}
 //                     hasDynamicEffect={true}
 //                 />
 //             );
 //         }
 //     }
+//
 //     return (
-//         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-//             <LoadingOutlined style={{ fontSize: '3em' }} />
-//         </div>
+//         <CustomPieChart
+//             data={defaultAlertData}
+//             title={'基线'}
+//             innerRadius={inner}
+//             deltaRadius={delta}
+//             outerRadius={outer}
+//             cardHeight={height}
+//             cardWidth={width}
+//             hasDynamicEffect={true}
+//         />
 //     );
 // };
-const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
-                          title1: string, title2: string, wholeCount: number,
-                          width: number = 200, height: number = 200, inner: number = 34, delta: number = 5, outer: number = 50) => {
+
+const renderBLPieChart = (
+    linuxOriginData: any,
+    winOriginData: any,
+    title1: string,
+    title2: string,
+    wholeCount: number,
+    width: number = 200,
+    height: number = 200,
+    inner: number = 34,
+    delta: number = 5,
+    outer: number = 50
+) => {
+    // Default alert data when no data is available
     const defaultAlertData: StatusItem[] = [
         { label: title1, value: 0, color: '#E5E8EF' },
         { label: title2, value: wholeCount, color: '#4086FF' },
     ];
 
-    if (linuxOriginData !== undefined && winOriginData !== undefined) {
-        // 确保OriginData总是作为数组处理
-        const originDataArray1 = Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData];
-        const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+    // Ensure linuxOriginData and winOriginData are arrays
+    const originDataArray1 = linuxOriginData ? (Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData]) : [];
+    const originDataArray2 = winOriginData ? (Array.isArray(winOriginData) ? winOriginData : [winOriginData]) : [];
 
-        const originDataArray2 = Array.isArray(winOriginData) ? winOriginData : [winOriginData];
-        const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+    const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
+    const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
 
-        // 确保needAdjItems不为空再访问它的属性
-        if (needAdjItems1.length > 0 || needAdjItems2.length > 0) {
-            // 使用reduce和findIndex方法统计唯一uuid个数
-            const uniqueUuidCount1 = needAdjItems1.reduce((acc, current) => {
-                // 查找在累积数组中uuid是否已存在
-                const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                // 如果不存在，则添加到累积数组中
-                if (index === -1) {
-                    acc.push(current);
-                }
-                return acc;
-            }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-
-            const uniqueUuidCount2 = needAdjItems2.reduce((acc, current) => {
-                // 查找在累积数组中uuid是否已存在
-                const index = acc.findIndex((item: { uuid: string; }) => item.uuid === current.uuid);
-                // 如果不存在，则添加到累积数组中
-                if (index === -1) {
-                    acc.push(current);
-                }
-                return acc;
-            }, []).length; // 最后返回累积数组的长度，即为唯一uuid的数量
-
-            const baselineAlertData: StatusItem[] = [
-                { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' }, // GREY
-                { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' }, // BLUE
-            ];
-
-            return (
-                <CustomPieChart
-                    data={baselineAlertData}
-                    title={'基线'}
-                    innerRadius={inner}
-                    deltaRadius={delta}
-                    outerRadius={outer}
-                    cardHeight={height}
-                    cardWidth={width}
-                    hasDynamicEffect={true}
-                />
-            );
+    // Calculate unique UUID count
+    const calculateUniqueUuidCount = (items: any[]) => items.reduce((acc, current) => {
+        if (!acc.some((item: { uuid: any; }) => item.uuid === current.uuid)) {
+            acc.push(current);
         }
-    }
+        return acc;
+    }, []).length;
+
+    const uniqueUuidCount1 = calculateUniqueUuidCount(needAdjItems1);
+    const uniqueUuidCount2 = calculateUniqueUuidCount(needAdjItems2);
+
+    const baselineAlertData: StatusItem[] = [
+        { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' }, // GREY
+        { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' }, // BLUE
+    ];
 
     return (
         <CustomPieChart
-            data={defaultAlertData}
+            data={needAdjItems1.length > 0 || needAdjItems2.length > 0 ? baselineAlertData : defaultAlertData}
             title={'基线'}
             innerRadius={inner}
             deltaRadius={delta}
@@ -218,102 +217,188 @@ const renderBLPieChart = (linuxOriginData: any, winOriginData: any,
 class Dashboard extends React.Component<DashboardProps> {
 
 
-    renderVulDataCard = (OriginData: any[],last7totalVulsum:number) => {
+    // renderVulDataCard1 = (OriginData: any[],last7totalVulsum:number) => {
+    //     if (OriginData !== undefined) {
+    //         // 确保OriginData总是作为数组处理
+    //         let highRiskCount = 0;
+    //         let mediumRiskCount = 0;
+    //         let lowRiskCount = 0;
+    //         let totalExpResultCount = 0;
+    //         const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+    //         originDataArray.forEach(item => {
+    //             totalExpResultCount += item.vul_detection_exp_result.length;
+    //         });
+    //         const getRiskLevel = (bugExp: any) => {
+    //             if (cveData[bugExp]) {
+    //                 return cveData[bugExp].risk_level;
+    //             }
+    //             return 'low'; // 默认风险等级为低
+    //         };
+    //         // 从 localStorage 中读取被忽略的项
+    //         const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+    //         // OriginData.forEach(record => {
+    //         //     record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
+    //         //         // 检查是否该项被忽略
+    //         //         const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+    //         //         if (ignoredBugExps.includes(exp.bug_exp)) {
+    //         //             return; // 如果被忽略，跳过计数
+    //         //         }
+    //         //
+    //         //         const riskLevel = getRiskLevel(exp.bug_exp);
+    //         //         if (riskLevel === 'high') {
+    //         //             highRiskCount++;
+    //         //         } else if (riskLevel === 'medium') {
+    //         //             mediumRiskCount++;
+    //         //         } else if (riskLevel === 'low') {
+    //         //             lowRiskCount++;
+    //         //         }
+    //         //     });
+    //         // });
+    //         const currentTime = new Date().getTime(); // 当前时间的时间戳
+    //         const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 七天的时间戳毫秒数
+    //
+    //         OriginData.forEach(record => {
+    //             record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
+    //                 // 检查是否该项被忽略
+    //                 const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+    //                 if (ignoredBugExps.includes(exp.bug_exp)) {
+    //                     return; // 如果被忽略，跳过计数
+    //                 }
+    //
+    //                 // 计算数据的时间戳
+    //                 const expScanTime = new Date(exp.scanTime * 1000).getTime();
+    //                 if ((currentTime - expScanTime) > sevenDaysInMillis) {
+    //                     return; // 如果数据不在七天以内，跳过计数
+    //                 }
+    //
+    //                 const riskLevel = getRiskLevel(exp.bug_exp);
+    //                 if (riskLevel === 'high') {
+    //                     highRiskCount++;
+    //                 } else if (riskLevel === 'medium') {
+    //                     mediumRiskCount++;
+    //                 } else if (riskLevel === 'low') {
+    //                     lowRiskCount++;
+    //                 }
+    //             });
+    //         });
+    //         return (
+    //             <div>
+    //                 <DataCard
+    //                     title="待处理漏洞"
+    //                     value={last7totalVulsum}
+    //                     valueItem={[
+    //                         { value: highRiskCount, backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
+    //                         { value: mediumRiskCount, backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
+    //                         { value: lowRiskCount, backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+    //                         // { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
+    //                     ]}
+    //                     panelId="/app/RiskManagement/VulnerabilityList"
+    //                     height="75px"
+    //                     width={"220px"}
+    //                     backgroundColor="#ffffff"
+    //                     navigate={true}
+    //                     showTopBorder={false}
+    //                     showBottomBorder={false}
+    //                     showLeftBorder={false}
+    //                     showRightBorder={false}
+    //                 />
+    //             </div>
+    //         );
+    //     } else {
+    //         return (
+    //             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+    //                 <Card bordered={true}
+    //                       style={{ backgroundColor: '#ffffff', width: '100%' }}>
+    //                     <LoadingOutlined style={{ fontSize: '3em' }} />
+    //                 </Card>
+    //             </div>);
+    //     }
+    // };
+    renderVulDataCard = (OriginData: any[], last7totalVulsum: number) => {
+        let highRiskCount = 0;
+        let mediumRiskCount = 0;
+        let lowRiskCount = 0;
+        let totalExpResultCount = 0;
+
         if (OriginData !== undefined) {
-            // 确保OriginData总是作为数组处理
-            let highRiskCount = 0;
-            let mediumRiskCount = 0;
-            let lowRiskCount = 0;
-            let totalExpResultCount = 0;
+            // 确保 OriginData 总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
+
             originDataArray.forEach(item => {
-                totalExpResultCount += item.vul_detection_exp_result.length;
+                if (item.vul_detection_exp_result) {
+                    totalExpResultCount += item.vul_detection_exp_result.length;
+                }
             });
+
             const getRiskLevel = (bugExp: any) => {
                 if (cveData[bugExp]) {
                     return cveData[bugExp].risk_level;
                 }
                 return 'low'; // 默认风险等级为低
             };
+
             // 从 localStorage 中读取被忽略的项
             const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
-            // OriginData.forEach(record => {
-            //     record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
-            //         // 检查是否该项被忽略
-            //         const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-            //         if (ignoredBugExps.includes(exp.bug_exp)) {
-            //             return; // 如果被忽略，跳过计数
-            //         }
-            //
-            //         const riskLevel = getRiskLevel(exp.bug_exp);
-            //         if (riskLevel === 'high') {
-            //             highRiskCount++;
-            //         } else if (riskLevel === 'medium') {
-            //             mediumRiskCount++;
-            //         } else if (riskLevel === 'low') {
-            //             lowRiskCount++;
-            //         }
-            //     });
-            // });
+
             const currentTime = new Date().getTime(); // 当前时间的时间戳
             const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 七天的时间戳毫秒数
 
-            OriginData.forEach(record => {
-                record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
-                    // 检查是否该项被忽略
-                    const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-                    if (ignoredBugExps.includes(exp.bug_exp)) {
-                        return; // 如果被忽略，跳过计数
-                    }
+            originDataArray.forEach(record => {
+                if (record.vul_detection_exp_result) {
+                    record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
+                        // 检查是否该项被忽略
+                        const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+                        if (ignoredBugExps.includes(exp.bug_exp)) {
+                            return; // 如果被忽略，跳过计数
+                        }
 
-                    // 计算数据的时间戳
-                    const expScanTime = new Date(exp.scanTime * 1000).getTime();
-                    if ((currentTime - expScanTime) > sevenDaysInMillis) {
-                        return; // 如果数据不在七天以内，跳过计数
-                    }
+                        // 计算数据的时间戳
+                        const expScanTime = new Date(exp.scanTime * 1000).getTime();
+                        if ((currentTime - expScanTime) > sevenDaysInMillis) {
+                            return; // 如果数据不在七天以内，跳过计数
+                        }
 
-                    const riskLevel = getRiskLevel(exp.bug_exp);
-                    if (riskLevel === 'high') {
-                        highRiskCount++;
-                    } else if (riskLevel === 'medium') {
-                        mediumRiskCount++;
-                    } else if (riskLevel === 'low') {
-                        lowRiskCount++;
-                    }
-                });
+                        const riskLevel = getRiskLevel(exp.bug_exp);
+                        if (riskLevel === 'high') {
+                            highRiskCount++;
+                        } else if (riskLevel === 'medium') {
+                            mediumRiskCount++;
+                        } else if (riskLevel === 'low') {
+                            lowRiskCount++;
+                        }
+                    });
+                }
             });
-            return (
-                <div>
-                    <DataCard
-                        title="待处理漏洞"
-                        value={last7totalVulsum}
-                        valueItem={[
-                            { value: highRiskCount, backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                            { value: mediumRiskCount, backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                            { value: lowRiskCount, backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-                            // { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
-                        ]}
-                        panelId="/app/RiskManagement/VulnerabilityList"
-                        height="75px"
-                        width={"220px"}
-                        backgroundColor="#ffffff"
-                        navigate={true}
-                        showTopBorder={false}
-                        showBottomBorder={false}
-                        showLeftBorder={false}
-                        showRightBorder={false}
-                    />
-                </div>
-            );
         } else {
-            return (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                    <Card bordered={true}
-                          style={{ backgroundColor: '#ffffff', width: '100%' }}>
-                        <LoadingOutlined style={{ fontSize: '3em' }} />
-                    </Card>
-                </div>);
+            // 如果 OriginData 为 undefined，使用默认值
+            totalExpResultCount = 0;
+            highRiskCount = 0;
+            mediumRiskCount = 0;
+            lowRiskCount = 0;
         }
+
+        return (
+            <div>
+                <DataCard
+                    title="待处理漏洞"
+                    value={last7totalVulsum}
+                    valueItem={[
+                        { value: highRiskCount, backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
+                        { value: mediumRiskCount, backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
+                        { value: lowRiskCount, backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+                    ]}
+                    panelId="/app/RiskManagement/VulnerabilityList"
+                    height="75px"
+                    width={"220px"}
+                    backgroundColor="#ffffff"
+                    navigate={true}
+                    showTopBorder={false}
+                    showBottomBorder={false}
+                    showLeftBorder={false}
+                    showRightBorder={false}
+                />
+            </div>
+        );
     };
 
     render() {
@@ -956,11 +1041,11 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         target="_blank">车网互动</a></strong>及<strong>智能量测</strong>场景提供了全面的安全监测解决方案。<br />
                                                         安全监测解决方案提供了<strong>资产测绘</strong>、<strong>基线检查</strong>、<strong>运行监测</strong>、<strong>风险监测</strong>、
                                                         <strong>攻击溯源</strong>和<strong>安全狩猎</strong>等功能。<br />
-                                                        本平台旨在实现对车网互动及智能量测系统的全面感知与统一监控，以确保系统的安全、稳定和经济运行。
+                                                        本平台旨在实现对车网互动及智能量测系统的全面感知与统一监控，以确保系统的安全和稳定运行。
                                                     </h2>
 
                                                 </div>
-                                                <div style={{ marginBottom: '3px', transform: 'translateY(-8px)' }}>
+                                                <div style={{ marginBottom: '3px', transform: 'translateX(-12px) translateY(14px)' }}>
                                                     {/*<div style={{*/}
                                                     {/*    display: 'flex',*/}
                                                     {/*    justifyContent: 'space-between',*/}
@@ -1008,45 +1093,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                 </div>
 
 
-                                                {/*<div style={{ marginBottom: '3px', transform: 'translateY(-8px)' }}>*/}
-                                                {/*    <div style={{*/}
-                                                {/*        display: 'flex',*/}
-                                                {/*        justifyContent: 'space-between',*/}
-                                                {/*        marginBottom: 2,*/}
-                                                {/*        marginLeft: 16,*/}
-                                                {/*        fontWeight: 'bold',*/}
-                                                {/*    }}>*/}
-                                                {/*        <p><GithubOutlined /> <a*/}
-                                                {/*            style={{ color: '#1964F5' }}*/}
-                                                {/*            href="https://github.com"*/}
-                                                {/*            target="_blank"*/}
-                                                {/*            rel="noopener noreferrer">GitHub</a></p>*/}
-                                                {/*    </div>*/}
-                                                {/*    <div style={{*/}
-                                                {/*        display: 'flex',*/}
-                                                {/*        justifyContent: 'space-between',*/}
-                                                {/*        marginBottom: 2,*/}
-                                                {/*        marginLeft: 16,*/}
-                                                {/*        fontWeight: 'bold',*/}
-                                                {/*    }}>*/}
-                                                {/*        <p><GlobalOutlined /> <a*/}
-                                                {/*            style={{ color: '#1964F5' }}*/}
-                                                {/*            href="http://www.sepri.csg.cn/" target="_blank"*/}
-                                                {/*            rel="noopener noreferrer">Official website</a></p>*/}
-                                                {/*    </div>*/}
-                                                {/*    <div style={{*/}
-                                                {/*        display: 'flex',*/}
-                                                {/*        justifyContent: 'space-between',*/}
-                                                {/*        marginBottom: 2,*/}
-                                                {/*        marginLeft: 16,*/}
-                                                {/*        fontWeight: 'bold',*/}
-                                                {/*    }}>*/}
-                                                {/*        <p><MailOutlined /> <a*/}
-                                                {/*            style={{ color: '#1964F5' }}*/}
-                                                {/*            href="mailto:elkeid@bytedance.com">elkeid@bytedance.com</a>*/}
-                                                {/*        </p>*/}
-                                                {/*    </div>*/}
-                                                {/*</div>*/}
+
                                             </Card>
                                         </Row>
                                     </Col>
@@ -1239,68 +1286,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         </div>
                                                     </Col>
                                                 </Row>
-                                                {/*<Row gutter={[6, 6]}>*/}
-                                                {/*    <Col span={12}>*/}
-                                                {/*        <div style={{ marginBottom: '20px' }}>*/}
-                                                {/*            <DataCard*/}
-                                                {/*                title="服务一"*/}
-                                                {/*                value={0}*/}
-                                                {/*                valueItem={[]}*/}
-                                                {/*                panelId=""*/}
-                                                {/*                height="100px"*/}
-                                                {/*                width="155px"*/}
-                                                {/*                backgroundColor="#F6F7FB"*/}
-                                                {/*                navigate={true}*/}
-                                                {/*                showTopBorder={false}*/}
-                                                {/*                showBottomBorder={false}*/}
-                                                {/*                showLeftBorder={false}*/}
-                                                {/*                showRightBorder={false} />*/}
-                                                {/*        </div>*/}
-                                                {/*        <DataCard*/}
-                                                {/*            title="服务二"*/}
-                                                {/*            value={0}*/}
-                                                {/*            valueItem={[]}*/}
-                                                {/*            panelId=""*/}
-                                                {/*            height="100px"*/}
-                                                {/*            width="155px"*/}
-                                                {/*            backgroundColor="#F6F7FB"*/}
-                                                {/*            navigate={true}*/}
-                                                {/*            showTopBorder={false}*/}
-                                                {/*            showBottomBorder={false}*/}
-                                                {/*            showLeftBorder={false}*/}
-                                                {/*            showRightBorder={false} />*/}
-                                                {/*    </Col>*/}
-                                                {/*    <Col span={12}>*/}
-                                                {/*        <div style={{ marginBottom: '20px' }}>*/}
-                                                {/*            <DataCard*/}
-                                                {/*                title="服务三"*/}
-                                                {/*                value={'0%'}*/}
-                                                {/*                valueItem={[]}*/}
-                                                {/*                panelId=""*/}
-                                                {/*                height="100px"*/}
-                                                {/*                width="155px"*/}
-                                                {/*                backgroundColor="#F6F7FB"*/}
-                                                {/*                navigate={true}*/}
-                                                {/*                showTopBorder={false}*/}
-                                                {/*                showBottomBorder={false}*/}
-                                                {/*                showLeftBorder={false}*/}
-                                                {/*                showRightBorder={false} />*/}
-                                                {/*        </div>*/}
-                                                {/*        <DataCard*/}
-                                                {/*            title="服务四"*/}
-                                                {/*            value={'0B'}*/}
-                                                {/*            valueItem={[]}*/}
-                                                {/*            panelId=""*/}
-                                                {/*            height="100px"*/}
-                                                {/*            width="155px"*/}
-                                                {/*            backgroundColor="#F6F7FB"*/}
-                                                {/*            navigate={true}*/}
-                                                {/*            showTopBorder={false}*/}
-                                                {/*            showBottomBorder={false}*/}
-                                                {/*            showLeftBorder={false}*/}
-                                                {/*            showRightBorder={false} />*/}
-                                                {/*    </Col>*/}
-                                                {/*</Row>*/}
+
                                             </Card>
                                         </Col>
                                     </Row>

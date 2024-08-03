@@ -321,56 +321,6 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
             </div>
         );
     };
-    renderBasicInfoData1 = (agentOriginData: any) => {
-        if (agentOriginData !== undefined) {
-            // 确保agentOriginData总是作为数组处理
-            const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
-            if (originDataArray && originDataArray.length > 0) {
-                // message.info("filteredData:"+originDataArray.map(item=>item.uuid));
-                // originDataArray.forEach(item => message.info("1:"+JSON.stringify(item)));
-                const filteredData = originDataArray[0];
-                if (!filteredData) {
-                    return <div>No data available for this host.</div>;
-                }
-                // 将filteredData转换为所需的data结构
-                const data = {
-                    'UUID': filteredData.uuid,
-                    '主机名称': filteredData.host_name,
-                    '操作系统': filteredData.os_version,
-                    '在线状态': filteredData.status==='1'?"Online":"Offline",
-                    '最后一次上线': filteredData.last_seen,//convertUnixTime(filteredData.last_seen),
-                    '磁盘大小': filteredData.disk_total,
-                    '内存大小': filteredData.mem_total,
-                    '内存使用': filteredData.mem_use,
-                    'CPU使用率': filteredData.cpu_use,
-                    'CPU信息': `${filteredData.processor_name}_${filteredData.processor_architecture}`,
-                    'python版本': filteredData.py_version,
-                };
-
-                return (
-                    <Row gutter={[16, 16]}>
-                        {Object.entries(data).map(([key, value], index) => (
-                            <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
-                                <Text style={{ color: '#686E7A' }} strong>{key}: </Text>
-                                {key === '在线状态' ? (
-                                    <Badge status={filteredData.status === '1' ? 'success' : 'error'}
-                                           text={filteredData.status==='1'?"Online":"Offline"} />
-                                ) : (
-                                    <Text>{value}</Text>
-                                )}
-                            </Col>
-                        ))}
-                    </Row>
-                );
-            }
-        } else {
-            return (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <LoadingOutlined style={{ fontSize: '3em' }} />
-                </div>
-            );
-        }
-    };
     renderBasicInfoData = (agentOriginData: any) => {
         // 定义默认数据对象
         const data_default = {
@@ -402,18 +352,32 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                     '操作系统': filteredData.os_version,
                     '在线状态': filteredData.status === '1' ? "Online" : "Offline",
                     '最后一次上线': filteredData.last_seen,
-                    '磁盘大小': filteredData.disk_total,
-                    '内存大小': filteredData.mem_total,
-                    '内存使用': filteredData.mem_use,
-                    'CPU使用率': filteredData.cpu_use,
+                    '磁盘大小': filteredData.disk_total+' GB',
+                    '内存大小': filteredData.mem_total+' GB',
+                    '内存使用': filteredData.mem_use+'%',
+                    'CPU使用率': filteredData.cpu_use+'%',
                     'CPU信息': `${filteredData.processor_name}_${filteredData.processor_architecture}`,
                     'python版本': filteredData.py_version,
                 };
 
+
+                // <Row gutter={[16, 16]}>
+                //     {Object.entries(data).map(([key, value], index) => (
+                //         <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
+                //             <Text style={{ color: '#686E7A' }} strong>{key}: </Text>
+                //             {key === '在线状态' ? (
+                //                 <Badge status={filteredData.status === '1' ? 'success' : 'error'}
+                //                        text={filteredData.status === '1' ? "Online" : "Offline"} />
+                //             ) : (
+                //                 <Text>{value}</Text>
+                //             )}
+                //         </Col>
+                //     ))}
+                // </Row>
                 return (
                     <Row gutter={[16, 16]}>
                         {Object.entries(data).map(([key, value], index) => (
-                            <Col key={index} span={8} style={{ fontSize: '15px', marginBottom: '10px' }}>
+                            <Col key={index} span={key === 'CPU信息' ? 16 : key === 'python版本' ? 8 : 8} style={{ fontSize: '15px', marginBottom: '10px' }}>
                                 <Text style={{ color: '#686E7A' }} strong>{key}: </Text>
                                 {key === '在线状态' ? (
                                     <Badge status={filteredData.status === '1' ? 'success' : 'error'}

@@ -19,12 +19,25 @@ import { StatusPanel } from '../AssetsCenter/HostInventory';
 import moment from 'moment';
 import {
     Agent_uuid_Data_API,
-    APP_Server_URL, Assets_uuid_Data_API, BaseLine_linux_uuid_Data_API, BaseLine_windows_uuid_Data_API,
-    Brute_TTPs_API, Brute_TTPs_uuid_Data_API,
-    Defense_TTPs_API, Defense_TTPs_uuid_Data_API, Fim_uuid_Data_API,
-    Honey_API, Honey_uuid_Data_API, Monitor_uuid_Data_API, Port_uuid_Data_API,
-    Privilege_TTPs_API, Privilege_TTPs_uuid_Data_API, Process_uuid_Data_API,
-    Vul_Data_API, Vul_uuid_Data_API,
+    APP_Server_URL,
+    Assets_uuid_Data_API,
+    BaseLine_linux_uuid_Data_API,
+    BaseLine_windows_Data_API,
+    BaseLine_windows_uuid_Data_API,
+    Brute_TTPs_API,
+    Brute_TTPs_uuid_Data_API,
+    Defense_TTPs_API,
+    Defense_TTPs_uuid_Data_API,
+    Fim_uuid_Data_API,
+    Honey_API,
+    Honey_uuid_Data_API,
+    Monitor_uuid_Data_API,
+    Port_uuid_Data_API,
+    Privilege_TTPs_API,
+    Privilege_TTPs_uuid_Data_API,
+    Process_uuid_Data_API,
+    Vul_Data_API,
+    Vul_uuid_Data_API,
 } from '../../service/config';
 import CustomNotification from '../ui/CustomNotification';
 import { vulDetectColumnsType } from '../RiskManagement/VulnerabilityList';
@@ -1018,7 +1031,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
-    renderVulOrBLTable = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string, searchIndex: string[],
+    renderVulOrBLTable1 = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string, searchIndex: string[],
                           VulOriginData: any[], WinBLOriginData: any[], LinuxBLOriginData: any[], os_type: string) => {
         if (uuid !== undefined) {
             if (currentPanel == 'vulnerabilityDetailList') {
@@ -1146,26 +1159,76 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     }
                 }
             }
-            // <FetchDataForTaskTable
-            //     key={currentPanel + this.state.baselineTableReloadCount}
-            //     apiEndpoint={apiEndpoint + uuid}
-            //     timeColumnIndex={timeColumnIndex}
-            //     columns={columns}
-            //     currentPanel={currentPanel}
-            //     expandedRowRender={this.expandedRowRender}
-            //     indentSize={15} // 设置缩进大小，单位是像素
-            //     childrenColumnName="children" // 指定子数据的属性名称
-            //     search={searchIndex}
-            //     handleReload={
-            //         () => {
-            //             CustomNotification.successNotification('BaseLine_Data_API');
-            //             console.log('baselineTableReloadCount:this.state.baselineTableReloadCount+1:' + this.state.baselineTableReloadCount);
-            //             this.setState({ baselineTableReloadCount: this.state.baselineTableReloadCount + 1 });
-            //         }
-            //     }
-            // />
         }
     };
+    // renderVulOrBLTable = (
+    //     apiEndpoint: string,
+    //     uuid: string,
+    //     timeColumnIndex: string[],
+    //     columns: any[],
+    //     currentPanel: string,
+    //     title: string,
+    //     searchIndex: string[],
+    //     VulOriginData: any[],
+    //     WinBLOriginData: any[],
+    //     LinuxBLOriginData: any[],
+    //     os_type: string
+    // ) => {
+    //     if (uuid !== undefined) {
+    //         let originDataArray = [];
+    //         let filteredData = [];
+    //
+    //         if (currentPanel === 'vulnerabilityDetailList') {
+    //             originDataArray = VulOriginData ? (Array.isArray(VulOriginData) ? VulOriginData : [VulOriginData]) : [];
+    //         } else if (currentPanel === 'baseLineDetectDetailList') {
+    //             if (os_type === 'windows') {
+    //                 originDataArray = WinBLOriginData ? (Array.isArray(WinBLOriginData) ? WinBLOriginData : [WinBLOriginData]) : [];
+    //             } else if (os_type === 'linux') {
+    //                 originDataArray = LinuxBLOriginData ? (Array.isArray(LinuxBLOriginData) ? LinuxBLOriginData : [LinuxBLOriginData]) : [];
+    //             }
+    //         }
+    //
+    //         filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+    //
+    //         return (
+    //             <div style={{ width: '100%' }}>
+    //                 <Col md={24} style={{ width: '100%', maxWidth: 2640, border: 'false' }}>
+    //                     <Row gutter={[8, 16]} style={{ marginTop: '0px', marginLeft: '-8px' }}>
+    //                         <Col md={24}>
+    //                             <Card bordered={false}>
+    //                                 <div style={{
+    //                                     display: 'flex',
+    //                                     justifyContent: 'space-between',
+    //                                     marginBottom: 10,
+    //                                 }}>
+    //                                     <h2 style={{
+    //                                         fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+    //                                         fontSize: '18px',
+    //                                         fontWeight: 'bold',
+    //                                     }}>{title}</h2>
+    //                                 </div>
+    //
+    //                                 <DataDisplayTable
+    //                                     key={currentPanel}
+    //                                     externalDataSource={filteredData}
+    //                                     apiEndpoint={apiEndpoint + uuid}
+    //                                     timeColumnIndex={timeColumnIndex}
+    //                                     columns={columns}
+    //                                     currentPanel={currentPanel}
+    //                                     expandedRowRender={this.expandedRowRender}
+    //                                     indentSize={15} // 设置缩进大小，单位是像素
+    //                                     childrenColumnName="children" // 指定子数据的属性名称
+    //                                     searchColumns={searchIndex}
+    //                                 />
+    //
+    //                             </Card>
+    //                         </Col>
+    //                     </Row>
+    //                 </Col>
+    //             </div>
+    //         );
+    //     }
+    // };
 
     renderTable = (OriginData: any[], apiUuid: (uuid: string) => string, uuid: string, title: string, timeColumnIndex: string[], column: any[], currentPanel: string,
                    searchIndex: string[],
@@ -1190,701 +1253,40 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             }}>{title}</h2>
                         </div>
                     </Row>
-                    <DataDisplayTable
-                        externalDataSource={filteredData}
-                        apiEndpoint={''}
-                        apiUuid={apiUuid}
-                        uuid={uuid}
-                        timeColumnIndex={timeColumnIndex}
-                        columns={column}
-                        currentPanel={currentPanel}
-                        searchColumns={searchIndex}
-                    />
+                    {currentPanel.includes("vul")?
+                        (<DataDisplayTable
+                            externalDataSource={filteredData}
+                            apiEndpoint={''}
+                            apiUuid={apiUuid}
+                            uuid={uuid}
+                            timeColumnIndex={timeColumnIndex}
+                            expandedRowRender={this.expandedRowRender}
+                            indentSize={15} // 设置缩进大小，单位是像素
+                            childrenColumnName="children" // 指定子数据的属性名称
+                            columns={column}
+                            currentPanel={currentPanel}
+                            searchColumns={searchIndex}
+                        />):(
+                            <DataDisplayTable
+                                externalDataSource={filteredData}
+                                apiEndpoint={''}
+                                apiUuid={apiUuid}
+                                uuid={uuid}
+                                timeColumnIndex={timeColumnIndex}
+                                columns={column}
+                                currentPanel={currentPanel}
+                                searchColumns={searchIndex}
+                            />)
+                    }
                 </Card>
             </div>
         );
     };
 
-    // renderCurrentPanel1 = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
-    //                       vulOriginData: any[],
-    //                       HoneyPotOriginData: any[],
-    //                       bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[], defenseavoidanceTTPsOriginData: any[],
-    //                       VirusOriginData: any[],
-    //                       HoneyPotHostCount: number, TTPsHostCount: number, VirusHostCount: number) => {
-    //
-    //     const { currentPanel, host_uuid } = this.state;
-    //
-    //     const ignoredVulnerabilitiesCount = this.getIgnoredVulnerabilitiesCount(this.state.ignoredBugExps_array, host_uuid);
-    //
-    //     const IgnoredBLItemCount = this.getIgnoredBLItemCount(this.state.ignoredBLCheckItem_array, host_uuid);
-    //     //const os_version = ['ubuntu', 'windows'];
-    //     if (agentOriginData !== undefined) {
-    //         // 确保agentOriginData总是作为数组处理
-    //         const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
-    //         if (originDataArray && originDataArray.length > 0) {
-    //             const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid);
-    //
-    //             if (!filteredData) {
-    //                 console.error('No data available for this host.');
-    //                 // return (
-    //                 //     <div>
-    //                 //         <Alert message="No data available for this host." type="warning" showIcon />
-    //                 //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-    //                 //         {/* <Empty description="No data available for this host." /> */}
-    //                 //     </div>
-    //                 // );
-    //             }
-    //
-    //             // const os_version = filteredData.os_version.toLowerCase().includes('ubuntu') ? 'linux' : 'windows';
-    //             const os_version = determineOS(filteredData);
-    //
-    //             const baselineOriginData = os_version === 'linux' ? linuxbaselineOriginData : windowsbaselineOriginData;
-    //
-    //
-    //             //针对基线检查数据的筛选
-    //             if (baselineOriginData === undefined) {
-    //                 console.error('No baselineOriginData available for this host.');
-    //                 // return (
-    //                 //     <div>
-    //                 //         <Alert message="No baselineOriginData available for this host." type="warning" showIcon />
-    //                 //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-    //                 //         {/* <Empty description="No data available for this host." /> */}
-    //                 //     </div>
-    //                 // );
-    //             }
-    //             const blDataArray = Array.isArray(baselineOriginData) ? baselineOriginData : [baselineOriginData];
-    //             if (blDataArray.length === 0) {
-    //                 // return (
-    //                 //     <div>
-    //                 //         <Alert message="No blDataArray available for this host." type="warning" showIcon />
-    //                 //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-    //                 //         {/* <Empty description="No data available for this host." /> */}
-    //                 //     </div>
-    //                 // );
-    //             }
-    //             const filteredBLData = blDataArray.filter(Item => Item.uuid === this.state.host_uuid);
-    //             if (!filteredBLData) {
-    //                 console.error('No filteredBLData available for this host.');
-    //                 // return (
-    //                 //     <div>
-    //                 //         <Alert message="No filteredBLData available for this host." type="warning" showIcon />
-    //                 //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-    //                 //         {/* <Empty description="No data available for this host." /> */}
-    //                 //     </div>
-    //                 // );
-    //             }
-    //             const filteredAdjData = filteredBLData.filter(Item => Item.adjustment_requirement === '建议调整');
-    //             if (!filteredAdjData) {
-    //                 console.error('No filteredAdjData available for this host.');
-    //                 // return (
-    //                 //     <div>
-    //                 //         <Alert message="No filteredAdjData available for this host." type="warning" showIcon />
-    //                 //         {/* 如果你希望在没有数据时显示空状态（Empty），可以这样使用 */}
-    //                 //         {/* <Empty description="No data available for this host." /> */}
-    //                 //     </div>
-    //                 // );
-    //             }
-    //
-    //
-    //             const vulResult = this.filteredData(vulOriginData, 'Vuln');
-    //             // if (vulResult.error) {
-    //             //     return vulResult.error; // 显示错误消息
-    //             // }
-    //             const filteredvulData = vulResult.data;
-    //             let totalExpResultCount = 0;
-    //             filteredvulData.forEach(item => {
-    //                 totalExpResultCount += item.vul_detection_exp_result.length;
-    //             });
-    //
-    //
-    //             const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
-    //             // if (honeyPotResult.error) {
-    //             //     return honeyPotResult.error; // 显示错误消息
-    //             // }
-    //             const filteredHoneyPotData = honeyPotResult.data;
-    //
-    //             // 针对TTPs数据的筛选
-    //             const ttpsResult1 = this.filteredData(bruteforceTTPsOriginData, 'bruteforceTTPs');
-    //             // if (ttpsResult1.error) {
-    //             //     return ttpsResult1.error; // 显示错误消息
-    //             // }
-    //             const filteredTTPsData1 = ttpsResult1.data;
-    //
-    //             const ttpsResult2 = this.filteredData(privilegeescalationTTPsOriginData, 'privilegeescalationTTPs');
-    //             // if (ttpsResult2.error) {
-    //             //     return ttpsResult2.error; // 显示错误消息
-    //             // }
-    //             const filteredTTPsData2 = ttpsResult2.data;
-    //             const ttpsResult3 = this.filteredData(defenseavoidanceTTPsOriginData, 'defenseavoidanceTTPs');
-    //             // if (ttpsResult3.error) {
-    //             //     return ttpsResult3.error; // 显示错误消息
-    //             // }
-    //             const filteredTTPsData3 = ttpsResult3.data;
-    //
-    //             const AlertData_uuid = [
-    //                 { label: '蜜罐告警', value: HoneyPotHostCount ? HoneyPotHostCount : 0, color: '#FFBB28' },
-    //                 { label: 'TTPs告警', value: TTPsHostCount ? TTPsHostCount : 0, color: '#468DFF' },
-    //                 { label: '病毒扫描告警', value: VirusHostCount === 0 ? 20 : VirusHostCount, color: '#846CCE' },
-    //             ];
-    //
-    //             // 调整getRiskLevel函数以使用cveData
-    //             const getRiskLevel = (bugExp: any) => {
-    //                 if (cveData[bugExp]) {
-    //                     return cveData[bugExp].risk_level;
-    //                 }
-    //                 return 'low'; // 默认风险等级为低
-    //             };
-    //
-    //             let highRiskCount = 0;
-    //             let mediumRiskCount = 0;
-    //             let lowRiskCount = 0;
-    //
-    //             // 从 localStorage 中读取被忽略的项
-    //             const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
-    //             vulOriginData.forEach(record => {
-    //                 record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
-    //                     // 检查是否该项被忽略
-    //                     const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-    //                     if (ignoredBugExps.includes(exp.bug_exp)) {
-    //                         return; // 如果被忽略，跳过计数
-    //                     }
-    //
-    //                     const riskLevel = getRiskLevel(exp.bug_exp);
-    //                     if (riskLevel === 'high') {
-    //                         highRiskCount++;
-    //                     } else if (riskLevel === 'medium') {
-    //                         mediumRiskCount++;
-    //                     } else if (riskLevel === 'low') {
-    //                         lowRiskCount++;
-    //                     }
-    //                 });
-    //             });
-    //
-    //             const vulScanResultData: StatusItem[] = [
-    //                 { color: '#E63F3F', label: '高风险项', value: highRiskCount },
-    //                 { color: '#caa26f', label: '中风险项', value: mediumRiskCount },
-    //                 { color: '#468DFF', label: '低风险项', value: lowRiskCount },
-    //             ];
-    //
-    //
-    //             switch (currentPanel) {
-    //                 case 'HostOverview':
-    //                     return (
-    //                         <HostOverview
-    //                             changePanel={this.changePanel}
-    //                         />
-    //                     );
-    //                 case 'hostAlertInfo':
-    //                     return (
-    //                         <div style={{ marginTop: '-20px' }}>
-    //                             <div style={{
-    //                                 // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-    //                                 fontWeight: 'bold',
-    //                             }}>
-    //                                 <Col md={24}>
-    //                                     <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
-    //                                         <Col md={24}>
-    //                                             <Card bordered={false}
-    //                                                   style={{ fontWeight: 'bolder', marginTop: '10px', height: 200 }}>
-    //                                                 <div style={{
-    //                                                     display: 'flex',
-    //                                                     justifyContent: 'space-between',
-    //                                                     marginBottom: 16,
-    //                                                     fontWeight: 'bold',
-    //                                                 }}>
-    //                                                     <h2 style={{
-    //                                                         fontSize: '18px',
-    //                                                         fontWeight: 'bold',
-    //                                                         marginTop: '0px',
-    //                                                     }}>告警概览</h2>
-    //                                                 </div>
-    //                                                 <Row gutter={[6, 6]}>
-    //                                                     <Col md={3} />
-    //                                                     <Col md={18}>
-    //                                                         <Card
-    //                                                             bordered={false}
-    //                                                             style={{
-    //                                                                 height: '100px',
-    //                                                                 // width: '800px',
-    //                                                                 minWidth: '150px',
-    //                                                                 display: 'flex',
-    //                                                                 alignItems: 'center',
-    //                                                                 justifyContent: 'center',
-    //                                                                 backgroundColor: '#F6F7FB',
-    //                                                             }}
-    //                                                         >
-    //                                                             <Row style={{ width: '100%' }}>
-    //                                                                 <Col span={8}
-    //                                                                      style={{ transform: 'translateX(-180%) translateY(60px)' }}>
-    //                                                                     <Statistic title={<span
-    //                                                                         style={{ fontSize: '16px' }}>待处理告警</span>}
-    //                                                                                value={HoneyPotHostCount + TTPsHostCount + 40} />
-    //                                                                 </Col>
-    //                                                                 <Col span={8}
-    //                                                                      style={{ transform: 'translateX(-130%) translateY(45px)' }}>
-    //                                                                     <CustomPieChart
-    //                                                                         data={AlertData_uuid}
-    //                                                                         innerRadius={30}
-    //                                                                         deltaRadius={2}
-    //                                                                         outerRadius={36}
-    //                                                                         cardWidth={90}
-    //                                                                         cardHeight={90}
-    //                                                                         hasDynamicEffect={true}
-    //                                                                     />
-    //                                                                 </Col>
-    //                                                                 <Col span={8} style={{
-    //                                                                     height: '90px',
-    //                                                                     minWidth: '200px',
-    //                                                                     transform: 'translateX(100%) translateY(-40px)',
-    //                                                                 }}>
-    //                                                                     <StatusPanel statusData={AlertData_uuid}
-    //                                                                                  orientation="vertical" />
-    //                                                                 </Col>
-    //                                                             </Row>
-    //                                                         </Card>
-    //                                                     </Col>
-    //                                                     <Col md={3} />
-    //                                                 </Row>
-    //
-    //                                             </Card>
-    //                                         </Col>
-    //                                     </Row>
-    //                                     <Row gutter={[12, 6]}/*(列间距，行间距)*/
-    //                                          style={{ width: '100%', margin: '0 auto' }}>
-    //                                         <Col md={24}>
-    //                                             {this.renderTable(HoneyPotOriginData,Honey_uuid_Data_API,host_uuid,"蜜罐信息",[],
-    //                                             Honeypotcolumns,'HoneypotDefenselistDetails',['uuid'])}
-    //                                             {this.renderTable(bruteforceTTPsOriginData,Brute_TTPs_uuid_Data_API,host_uuid,"威胁狩猎-暴力破解",[],
-    //                                                 threatHuntingColumns, 'brute-force-details',['uuid','atk_ip'])}
-    //                                             {this.renderTable(privilegeescalationTTPsOriginData,Privilege_TTPs_uuid_Data_API,host_uuid,'威胁狩猎-权限提升', [],
-    //                                                 threatHuntingColumns_2, 'privilege-escalation-details', ['uuid', 'atk_ip'])}
-    //                                             {this.renderTable(defenseavoidanceTTPsOriginData,Defense_TTPs_uuid_Data_API,host_uuid,"威胁狩猎-防御规避",[],
-    //                                                 threatHuntingColumns_2, 'defense-avoidance-details',['uuid', 'atk_ip'])}
-    //                                             {/*{constRenderTable(*/}
-    //                                             {/*    filteredHoneyPotData, '蜜罐信息', [],*/}
-    //                                             {/*    Honeypotcolumns, 'HoneypotDefenselistDetails', Honey_API, ['uuid'],*/}
-    //                                             {/*)}*/}
-    //                                             {/*{constRenderTable(*/}
-    //                                             {/*    filteredTTPsData1, '威胁狩猎-暴力破解', [],*/}
-    //                                             {/*    threatHuntingColumns, 'brute-force-details',*/}
-    //                                             {/*    Brute_TTPs_API, ['uuid', 'atk_ip'],*/}
-    //                                             {/*)}*/}
-    //                                             {/*{constRenderTable(*/}
-    //                                             {/*    filteredTTPsData2, '威胁狩猎-权限提升', [],*/}
-    //                                             {/*    threatHuntingColumns_2, 'privilege-escalation-details',*/}
-    //                                             {/*    Privilege_TTPs_API, ['uuid', 'atk_ip'],*/}
-    //                                             {/*)}*/}
-    //                                             {/*{constRenderTable(*/}
-    //                                             {/*    filteredTTPsData3, '威胁狩猎-防御规避', [],*/}
-    //                                             {/*    threatHuntingColumns_2, 'defense-avoidance-details',*/}
-    //                                             {/*    Defense_TTPs_API, ['uuid', 'atk_ip'],*/}
-    //                                             {/*)}*/}
-    //                                         </Col>
-    //                                     </Row>
-    //                                 </Col>
-    //                             </div>
-    //                         </div>
-    //                     );
-    //                 case 'vulnerabilityDetailList':
-    //                     return (
-    //                         <div style={{ marginTop: '0px' }}>
-    //                             {this.renderIgnoreModal()}
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 <Col md={24}>
-    //                                     <Card bordered={false} /*title="主机状态分布" 产生分界线*/
-    //                                           style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
-    //                                         <div style={{
-    //                                             display: 'flex',
-    //                                             justifyContent: 'space-between',
-    //                                             marginBottom: 16,
-    //                                             fontWeight: 'bold',
-    //                                         }}>
-    //                                             <h2 style={{
-    //                                                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-    //                                                 fontSize: '18px',
-    //                                                 fontWeight: 'bold',
-    //                                                 marginLeft: '0px',
-    //                                             }}>漏洞概览</h2>
-    //                                             <Button onClick={this.showIgnoredExpsModal}>白名单</Button>
-    //                                         </div>
-    //                                         <Row gutter={[6, 6]}>
-    //                                             <Col span={2}>
-    //                                             </Col>
-    //                                             <Col span={10}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '470px',
-    //                                                         minWidth: '200px', // 最小宽度300px，而非100px
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{
-    //                                                         width: '100%',
-    //                                                         marginTop: '0px',
-    //                                                         paddingRight: '10px',
-    //                                                     }}>
-    //                                                         <Col span={8}
-    //                                                              style={{
-    //                                                                  paddingTop: '20px',
-    //                                                                  width: '400px',
-    //                                                                  height: '90px',
-    //                                                              }}>
-    //                                                             <Statistic
-    //                                                                 title={<span
-    //                                                                     style={{ fontSize: '16px' }}>待处理漏洞</span>}
-    //                                                                 value={totalExpResultCount - ignoredVulnerabilitiesCount} />
-    //                                                         </Col>
-    //                                                         <Col span={9} style={{
-    //                                                             width: '400px',
-    //                                                             transform: 'translateX(0px) translateY(10px)',
-    //                                                         }}>
-    //                                                             <CustomPieChart
-    //                                                                 data={vulScanResultData}
-    //                                                                 innerRadius={30}
-    //                                                                 deltaRadius={2}
-    //                                                                 outerRadius={36}
-    //                                                                 cardWidth={90}
-    //                                                                 cardHeight={90}
-    //                                                                 hasDynamicEffect={true}
-    //                                                             />
-    //                                                         </Col>
-    //                                                         <Col span={7}
-    //                                                              style={{
-    //                                                                  width: '420px',
-    //                                                                  height: '100px',
-    //                                                                  paddingTop: '5px',
-    //                                                                  marginTop: '10px',
-    //                                                                  transform: 'translateX(0px) translateY(10px)',
-    //                                                              }}>
-    //                                                             <StatusPanel
-    //                                                                 statusData={vulScanResultData} orientation="vertical" />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col span={1}>
-    //                                             </Col>
-    //
-    //                                             <Col span={10} style={{ marginLeft: '10px' }}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '440px',
-    //                                                         minWidth: '200px', // 最小宽度300px，而非100px
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row>
-    //                                                         <Col pull={2} span={24}
-    //                                                              style={{
-    //                                                                  marginRight: '50px',
-    //                                                                  transform: 'translateX(-50%)',
-    //                                                              }}>
-    //                                                             <Statistic title={<span
-    //                                                                 style={{ fontSize: '16px' }}>累计忽略的漏洞</span>}
-    //                                                                        value={ignoredVulnerabilitiesCount} />
-    //                                                         </Col>
-    //
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <div className="container">
-    //                                                 <div
-    //                                                     className={this.state.isSidebarOpen ? 'overlay open' : 'overlay'}
-    //                                                     onClick={this.closeSidebar}></div>
-    //                                                 <div
-    //                                                     className={this.state.isSidebarOpen ? 'sidebar open' : 'sidebar'}>
-    //                                                     <button onClick={() => this.toggleSidebar}
-    //                                                             className="close-btn">&times;</button>
-    //                                                     <VulnerabilityDetailsSidebar
-    //                                                         //vulnOriginData={vulnOriginData}
-    //                                                         //vulnInfoArray={getSelectedVulnDetails()}
-    //                                                         onDoneButtonClick={this.handleDoneButtonClick}//点击‘处理’按键
-    //                                                         toggleSidebar={this.toggleSidebar}
-    //                                                         host_uuid={this.state.selectedVulnUuid}
-    //                                                         isSidebarOpen={this.state.isSidebarOpen}
-    //                                                     />
-    //                                                 </div>
-    //                                             </div>
-    //                                         </Row>
-    //                                     </Card>
-    //                                 </Col>
-    //                             </Row>
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 {this.renderModal()}
-    //                                 {this.renderVulOrBLTable(APP_Server_URL + '/api/vulndetetion/query_uuid?uuid=',
-    //                                     this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel,
-    //                                     '漏洞内容', ['port'],
-    //                                     vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
-    //                             </Row>
-    //                         </div>
-    //                     );
-    //                 case 'baseLineDetectDetailList':
-    //                     return (
-    //                         <div>
-    //                             {this.renderBLIgnoreModal()}
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 <Col md={24}>
-    //                                     <Card bordered={false}
-    //                                           style={{ fontWeight: 'bolder', marginTop: '0px', height: 200 }}>
-    //                                         <div style={{
-    //                                             display: 'flex',
-    //                                             justifyContent: 'space-between',
-    //                                             marginBottom: 16,
-    //                                             fontWeight: 'bold',
-    //                                         }}>
-    //                                             <h2 style={{
-    //                                                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-    //                                                 fontSize: '18px',
-    //                                                 fontWeight: 'bold',
-    //                                                 marginTop: '0px',
-    //                                             }}>基线概览</h2>
-    //                                             <Button
-    //                                                 onClick={this.showIgnoredBLCheckItemsModal}>白名单</Button>
-    //                                         </div>
-    //                                         <Row gutter={[6, 6]}>
-    //                                             <Col md={1} />
-    //                                             <Col md={6}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         // width: '520px',
-    //                                                         width: '100%',
-    //                                                         minWidth: '150px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{ width: '100%', marginBottom: '-130px' }}>
-    //                                                         <Col span={12} style={{
-    //                                                             height: '100px',
-    //                                                             marginRight: '20px',
-    //                                                             marginLeft: '20px',
-    //                                                             marginBottom: '-170px',
-    //                                                             paddingTop: '10px',
-    //                                                         }}>
-    //                                                             <Statistic title={<span style={{
-    //                                                                 fontSize: '16px',
-    //                                                                 transform: 'translateX(70%)',
-    //                                                             }}>最近检查通过率</span>}
-    //                                                                        value={String(100 * (1 - filteredAdjData.length / filteredBLData.length)).slice(0,4) + '%'} />
-    //                                                         </Col>
-    //                                                         <Col span={12} style={{
-    //                                                             height: '90px',
-    //                                                             marginLeft: '150px',
-    //                                                             marginRight: '150px',
-    //                                                             marginBottom: '130px',
-    //                                                         }}>
-    //                                                             {/* <StatusPanel statusData={statusData} orientation="vertical" /> */}
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col md={1} />
-    //                                             <Col md={8}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         // width: '620px',
-    //                                                         width: '100%',
-    //                                                         minWidth: '150px', // 最小宽度300px，而非100px
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{
-    //                                                         width: '100%',
-    //                                                         marginTop: '0px',
-    //                                                         paddingRight: '10px',
-    //                                                     }}>
-    //                                                         <Col span={3} style={{
-    //                                                             paddingTop: '25px',
-    //                                                             paddingLeft: '20px',
-    //                                                             width: '440px',
-    //                                                             height: '100px',
-    //                                                         }}>
-    //                                                             {/* <StatusPanel statusData={RASPdata_2} orientation="vertical" /> */}
-    //                                                         </Col>
-    //                                                         <Col span={5} style={{
-    //                                                             marginLeft: '20px',
-    //                                                             paddingTop: '20px',
-    //                                                             width: '180px',
-    //                                                             height: '90px',
-    //                                                         }}>
-    //                                                             <Statistic title={<span
-    //                                                                 style={{ fontSize: '16px' }}>检查项</span>}
-    //                                                                        value={filteredBLData.length} />
-    //                                                         </Col>
-    //                                                         <Col span={5} style={{
-    //                                                             marginLeft: '-20px',
-    //                                                             marginRight: '20px',
-    //                                                             width: '100px',
-    //                                                             alignItems: 'center',
-    //                                                             justifyContent: 'center',
-    //                                                             transform: 'translateX(-10px) translateY(5px)',
-    //                                                         }}>
-    //                                                             <CustomPieChart
-    //                                                                 data={[
-    //                                                                     {
-    //                                                                         label: '风险项',
-    //                                                                         value: filteredAdjData.length,
-    //                                                                         color: '#EA635F',
-    //                                                                     },
-    //                                                                     {
-    //                                                                         label: '通过项',
-    //                                                                         value: filteredBLData.length - filteredAdjData.length,
-    //                                                                         color: '#468DFF',
-    //                                                                     },
-    //                                                                 ]}
-    //                                                                 innerRadius={30}
-    //                                                                 deltaRadius={2}
-    //                                                                 outerRadius={36}
-    //                                                                 cardWidth={130}
-    //                                                                 cardHeight={90}
-    //                                                                 hasDynamicEffect={true}
-    //                                                             />
-    //                                                         </Col>
-    //                                                         <Col span={8} style={{
-    //                                                             paddingTop: '15px',
-    //                                                             width: '450px',
-    //                                                             height: '100px',
-    //                                                             transform: 'translateY(5px)',
-    //                                                         }}>
-    //                                                             <StatusPanel statusData={[
-    //                                                                 {
-    //                                                                     label: '风险项',
-    //                                                                     value: filteredAdjData.length,
-    //                                                                     color: '#EA635F',
-    //                                                                 },
-    //                                                                 {
-    //                                                                     label: '通过项',
-    //                                                                     value: filteredBLData.length - filteredAdjData.length,
-    //                                                                     color: '#E5E8EF',
-    //                                                                 },
-    //                                                             ]}
-    //                                                                          orientation="vertical" />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col md={1} />
-    //                                             <Col md={6}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         // width: '520px',
-    //                                                         width: '100%',
-    //                                                         minWidth: '150px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{ width: '100%', marginBottom: '-130px' }}>
-    //                                                         <Col span={12} style={{
-    //                                                             height: '100px',
-    //                                                             marginRight: '20px',
-    //                                                             marginLeft: '20px',
-    //                                                             marginBottom: '-170px',
-    //                                                             paddingTop: '10px',
-    //                                                         }}>
-    //                                                             <Statistic title={<span style={{
-    //                                                                 fontSize: '16px',
-    //                                                                 transform: 'translateX(70%)',
-    //                                                             }}>白名单</span>}
-    //                                                                        value={IgnoredBLItemCount} />
-    //                                                         </Col>
-    //                                                         <Col span={12} style={{
-    //                                                             height: '90px',
-    //                                                             marginLeft: '150px',
-    //                                                             marginRight: '150px',
-    //                                                             marginBottom: '130px',
-    //                                                         }}>
-    //                                                             {/* <StatusPanel statusData={statusData} orientation="vertical" /> */}
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col md={1} />
-    //                                         </Row>
-    //
-    //                                     </Card>
-    //                                 </Col>
-    //                             </Row>
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 {this.renderBLWhiteListModal()}
-    //                                 {this.renderVulOrBLTable(APP_Server_URL + '/api/baseline_check/' + os_version + '/query_uuid?uuid=',
-    //                                     this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'],
-    //                                     vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
-    //                             </Row>
-    //                         </div>
-    //                     );
-    //                 case 'virusscanning':
-    //                     return (
-    //                         <div style={{ marginTop: '-20px' }}>
-    //                             <VirusScanning
-    //                                 hostuuid={this.state.host_uuid}
-    //                                 // pageWidth={1320}
-    //                             />
-    //                         </div>
-    //                     );
-    //                 case 'honeyPot':
-    //                     return (
-    //                         <div style={{ fontWeight: 'bold' }}>
-    //                             <Row gutter={[12, 6]} style={{ marginTop: '0px' }}>
-    //                                 <Col md={24}>
-    //                                     {/*{this.renderTable(filteredHoneyPotData, '蜜罐信息', Honeypotcolumns,*/}
-    //                                     {/*    'honeyPot_host', Honey_API)}*/}
-    //                                 </Col>
-    //                             </Row>
-    //                         </div>
-    //                     );
-    //
-    //                 case 'performancemonitor':
-    //                     return (
-    //                         <div style={{ marginTop: '-20px' }}>
-    //                             {/*<PerformanceMonitor />*/}
-    //                         </div>
-    //                     );
-    //                 default:
-    //                     return (
-    //                         <HostOverview
-    //                             changePanel={this.changePanel}
-    //                         />
-    //                     );
-    //             }
-    //         }
-    //     } else {
-    //         return (
-    //             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    //                 <LoadingOutlined style={{ fontSize: '3em' }} />
-    //             </div>
-    //         );
-    //     }
-    // };
-
     renderCurrentPanel = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
                           vulOriginData: any[],
                           HoneyPotOriginData: any[],
                           bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[], defenseavoidanceTTPsOriginData: any[],
-                          VirusOriginData: any[],
                           HoneyPotHostCount: number, TTPsHostCount: number) => {
 
         const { currentPanel, host_uuid } = this.state;
@@ -1892,19 +1294,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         const ignoredVulnerabilitiesCount = this.getIgnoredVulnerabilitiesCount(this.state.ignoredBugExps_array, host_uuid);
         const IgnoredBLItemCount = this.getIgnoredBLItemCount(this.state.ignoredBLCheckItem_array, host_uuid);
 
-        // 定义默认告警数据
-        const defaultAlertData = [
-            { label: '蜜罐告警', value: 0, color: '#FFBB28' },
-            { label: 'TTPs告警', value: 0, color: '#468DFF' },
-            { label: '病毒扫描告警', value: 0, color: '#846CCE' },
-        ];
-
-        // 定义默认漏洞扫描结果数据
-        const defaultVulScanResultData = [
-            { color: '#E63F3F', label: '高风险项', value: 0 },
-            { color: '#caa26f', label: '中风险项', value: 0 },
-            { color: '#468DFF', label: '低风险项', value: 0 },
-        ];
+        // // 定义默认漏洞扫描结果数据
+        // const defaultVulScanResultData = [
+        //     { color: '#E63F3F', label: '高风险项', value: 0 },
+        //     { color: '#caa26f', label: '中风险项', value: 0 },
+        //     { color: '#468DFF', label: '低风险项', value: 0 },
+        // ];
         const defaultBLData: never[] = [];
         const defaultAdjData: never[] = [];
 
@@ -1923,7 +1318,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 const blDataArray = Array.isArray(baselineOriginData) ? baselineOriginData : [baselineOriginData];
                 const filteredBLData = blDataArray.filter(Item => Item.uuid === this.state.host_uuid) || defaultBLData;
                 const filteredAdjData = filteredBLData.filter(Item => Item.adjustment_requirement === '建议调整') || defaultAdjData;
-
+                const filteredAdjDataLength = filteredAdjData.length || 0;
+                const filteredBLDataLength = filteredBLData.length || 1; // 避免分母为0
+                let percentage = 100 * (1 - filteredAdjDataLength / filteredBLDataLength);
+                // 确保百分比在0-100之间
+                percentage = Math.max(0, Math.min(percentage, 100));
+                // 将值限制为两位小数并附加百分号
+                const percentageString = `${percentage.toFixed(2)}%`;
 
                 const vulResult = this.filteredData(vulOriginData, 'Vuln');
                 const filteredvulData = vulResult.data || [];
@@ -1932,18 +1333,18 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     totalExpResultCount += item.vul_detection_exp_result ? item.vul_detection_exp_result.length : 0;
                 });
 
-                const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
-                const filteredHoneyPotData = honeyPotResult.data || [];
-
-                // 针对TTPs数据的筛选
-                const ttpsResult1 = this.filteredData(bruteforceTTPsOriginData, 'bruteforceTTPs');
-                const filteredTTPsData1 = ttpsResult1.data || [];
-
-                const ttpsResult2 = this.filteredData(privilegeescalationTTPsOriginData, 'privilegeescalationTTPs');
-                const filteredTTPsData2 = ttpsResult2.data || [];
-
-                const ttpsResult3 = this.filteredData(defenseavoidanceTTPsOriginData, 'defenseavoidanceTTPs');
-                const filteredTTPsData3 = ttpsResult3.data || [];
+                // const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
+                // const filteredHoneyPotData = honeyPotResult.data || [];
+                //
+                // // 针对TTPs数据的筛选
+                // const ttpsResult1 = this.filteredData(bruteforceTTPsOriginData, 'bruteforceTTPs');
+                // const filteredTTPsData1 = ttpsResult1.data || [];
+                //
+                // const ttpsResult2 = this.filteredData(privilegeescalationTTPsOriginData, 'privilegeescalationTTPs');
+                // const filteredTTPsData2 = ttpsResult2.data || [];
+                //
+                // const ttpsResult3 = this.filteredData(defenseavoidanceTTPsOriginData, 'defenseavoidanceTTPs');
+                // const filteredTTPsData3 = ttpsResult3.data || [];
 
                 const AlertData_uuid = [
                     { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
@@ -2199,6 +1600,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                         <button onClick={() => this.toggleSidebar}
                                                                 className="close-btn">&times;</button>
                                                         <VulnerabilityDetailsSidebar
+                                                            detailsPage={true}
                                                             onDoneButtonClick={this.handleDoneButtonClick}
                                                             toggleSidebar={this.toggleSidebar}
                                                             host_uuid={this.state.selectedVulnUuid}
@@ -2212,10 +1614,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 </Row>
                                 <Row style={{ width: '100%', margin: '0 auto' }}>
                                     {this.renderModal()}
-                                    {this.renderVulOrBLTable(APP_Server_URL + '/api/vulndetetion/query_uuid?uuid=',
-                                        this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel,
-                                        '漏洞内容', ['port'],
-                                        vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
+                                    {/*{this.renderVulOrBLTable(APP_Server_URL + '/api/vulndetetion/query_uuid?uuid=',*/}
+                                    {/*    this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel,*/}
+                                    {/*    '漏洞扫描结果', ['port'],*/}
+                                    {/*    vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}*/}
+
+                                    {this.renderTable(vulOriginData, Vul_uuid_Data_API, host_uuid, '漏洞扫描结果', ['scanTime'],
+                                        this.state.vulnColumns, currentPanel, ['port'])}
                                 </Row>
                             </div>
                         );
@@ -2261,7 +1666,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             <Statistic title={<span style={{
                                                                 fontSize: '16px',
                                                             }}>最近检查通过率</span>}
-                                                                       value={String(100 * (1 - filteredAdjData.length / filteredBLData.length)).slice(0, 4) + '%'} />
+                                                                       value={percentageString}
+                                                            />
 
                                                         </Row>
                                                     </Card>
@@ -2386,9 +1792,14 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 </Row>
                                 <Row style={{ width: '100%', margin: '0 auto' }}>
                                     {this.renderBLWhiteListModal()}
-                                    {this.renderVulOrBLTable(APP_Server_URL + '/api/baseline_check/' + os_version + '/query_uuid?uuid=',
-                                        this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'],
-                                        vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
+                                    {/*{this.renderVulOrBLTable(APP_Server_URL + '/api/baseline_check/' + os_version + '/query_uuid?uuid=',*/}
+                                    {/*    this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'],*/}
+                                    {/*    vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}*/}
+
+                                    {this.renderTable(baselineOriginData,
+                                        os_version==='linux'?BaseLine_linux_uuid_Data_API:BaseLine_windows_uuid_Data_API,
+                                        host_uuid, '基线扫描结果', ['last_checked'],
+                                        this.state.blColumns, currentPanel, ['check_name'])}
                                 </Row>
                             </div>
                         );
@@ -2426,526 +1837,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 }
             }
         }
-
-        // 当数据为 undefined 时，使用默认数据
-        const AlertData_uuid = defaultAlertData;
-        const vulScanResultData = defaultVulScanResultData;
-
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <LoadingOutlined style={{ fontSize: '3em' }} />
             </div>
         );
     };
-
-
-    // renderCurrentPanel3 = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
-    //                       vulOriginData: any[],
-    //                       HoneyPotOriginData: any[],
-    //                       bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[], defenseavoidanceTTPsOriginData: any[],
-    //                       VirusOriginData: any[],
-    //                       HoneyPotHostCount: number, TTPsHostCount: number, VirusHostCount: number) => {
-    //
-    //     const { currentPanel, host_uuid } = this.state;
-    //
-    //     const ignoredVulnerabilitiesCount = this.getIgnoredVulnerabilitiesCount(this.state.ignoredBugExps_array, host_uuid);
-    //
-    //     const IgnoredBLItemCount = this.getIgnoredBLItemCount(this.state.ignoredBLCheckItem_array, host_uuid);
-    //
-    //     // 定义默认数据对象
-    //     const data_default = {
-    //         'UUID': 'undefined',
-    //         '主机名称': 'undefined',
-    //         '操作系统': 'undefined',
-    //         '在线状态': 'undefined',
-    //         '最后一次上线': 'undefined',
-    //         '磁盘大小': 'undefined',
-    //         '内存大小': 'undefined',
-    //         '内存使用': 'undefined',
-    //         'CPU使用率': 'undefined',
-    //         'CPU信息': 'undefined',
-    //         'python版本': 'undefined',
-    //     };
-    //
-    //     // 定义默认告警数据
-    //     const defaultAlertData = [
-    //         { label: '蜜罐告警', value: 0, color: '#FFBB28' },
-    //         { label: 'TTPs告警', value: 0, color: '#468DFF' },
-    //         { label: '病毒扫描告警', value: 0, color: '#846CCE' },
-    //     ];
-    //
-    //     // 定义默认漏洞扫描结果数据
-    //     const defaultVulScanResultData = [
-    //         { color: '#E63F3F', label: '高风险项', value: 0 },
-    //         { color: '#caa26f', label: '中风险项', value: 0 },
-    //         { color: '#468DFF', label: '低风险项', value: 0 },
-    //     ];
-    //
-    //     if (agentOriginData !== undefined) {
-    //         // 确保agentOriginData总是作为数组处理
-    //         const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
-    //         if (originDataArray && originDataArray.length > 0) {
-    //             const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid) || data_default;
-    //
-    //             // const os_version = filteredData.os_version.toLowerCase().includes('ubuntu') ? 'linux' : 'windows';
-    //             const os_version = determineOS(filteredData);
-    //
-    //             const baselineOriginData = os_version === 'linux' ? linuxbaselineOriginData : windowsbaselineOriginData;
-    //
-    //             // 针对基线检查数据的筛选
-    //             const blDataArray = Array.isArray(baselineOriginData) ? baselineOriginData : [baselineOriginData];
-    //             const filteredBLData = blDataArray.filter(Item => Item.uuid === this.state.host_uuid) || [];
-    //             const filteredAdjData = filteredBLData.filter(Item => Item.adjustment_requirement === '建议调整') || [];
-    //
-    //             const vulResult = this.filteredData(vulOriginData, 'Vuln');
-    //             const filteredvulData = vulResult.data || [];
-    //             let totalExpResultCount = 0;
-    //             filteredvulData.forEach(item => {
-    //                 totalExpResultCount += item.vul_detection_exp_result ? item.vul_detection_exp_result.length : 0;
-    //             });
-    //
-    //             const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
-    //             const filteredHoneyPotData = honeyPotResult.data || [];
-    //
-    //             // 针对TTPs数据的筛选
-    //             const ttpsResult1 = this.filteredData(bruteforceTTPsOriginData, 'bruteforceTTPs');
-    //             const filteredTTPsData1 = ttpsResult1.data || [];
-    //
-    //             const ttpsResult2 = this.filteredData(privilegeescalationTTPsOriginData, 'privilegeescalationTTPs');
-    //             const filteredTTPsData2 = ttpsResult2.data || [];
-    //
-    //             const ttpsResult3 = this.filteredData(defenseavoidanceTTPsOriginData, 'defenseavoidanceTTPs');
-    //             const filteredTTPsData3 = ttpsResult3.data || [];
-    //
-    //             const AlertData_uuid = [
-    //                 { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
-    //                 { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#468DFF' },
-    //                 { label: '病毒扫描告警', value: VirusHostCount || 0, color: '#846CCE' },
-    //             ];
-    //
-    //             // 调整getRiskLevel函数以使用cveData
-    //             const getRiskLevel = (bugExp: any) => {
-    //                 if (cveData[bugExp]) {
-    //                     return cveData[bugExp].risk_level;
-    //                 }
-    //                 return 'low'; // 默认风险等级为低
-    //             };
-    //
-    //             let highRiskCount = 0;
-    //             let mediumRiskCount = 0;
-    //             let lowRiskCount = 0;
-    //
-    //             // 从 localStorage 中读取被忽略的项
-    //             const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
-    //             vulOriginData.forEach(record => {
-    //                 if (record.vul_detection_exp_result) {
-    //                     record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
-    //                         // 检查是否该项被忽略
-    //                         const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-    //                         if (ignoredBugExps.includes(exp.bug_exp)) {
-    //                             return; // 如果被忽略，跳过计数
-    //                         }
-    //
-    //                         const riskLevel = getRiskLevel(exp.bug_exp);
-    //                         if (riskLevel === 'high') {
-    //                             highRiskCount++;
-    //                         } else if (riskLevel === 'medium') {
-    //                             mediumRiskCount++;
-    //                         } else if (riskLevel === 'low') {
-    //                             lowRiskCount++;
-    //                         }
-    //                     });
-    //                 }
-    //             });
-    //
-    //             const vulScanResultData: StatusItem[] = [
-    //                 { color: '#E63F3F', label: '高风险项', value: highRiskCount },
-    //                 { color: '#caa26f', label: '中风险项', value: mediumRiskCount },
-    //                 { color: '#468DFF', label: '低风险项', value: lowRiskCount },
-    //             ];
-    //
-    //             switch (currentPanel) {
-    //                 case 'HostOverview':
-    //                     return (
-    //                         <HostOverview
-    //                             changePanel={this.changePanel}
-    //                         />
-    //                     );
-    //                 case 'hostAlertInfo':
-    //                     return (
-    //                         <div style={{ marginTop: '-20px' }}>
-    //                             <div style={{ fontWeight: 'bold' }}>
-    //                                 <Col md={24}>
-    //                                     <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
-    //                                         <Col md={24}>
-    //                                             <Card bordered={false}
-    //                                                   style={{ fontWeight: 'bolder', marginTop: '10px', height: 200 }}>
-    //                                                 <div style={{
-    //                                                     display: 'flex',
-    //                                                     justifyContent: 'space-between',
-    //                                                     marginBottom: 16,
-    //                                                     fontWeight: 'bold',
-    //                                                 }}>
-    //                                                     <h2 style={{
-    //                                                         fontSize: '18px',
-    //                                                         fontWeight: 'bold',
-    //                                                         marginTop: '0px',
-    //                                                     }}>告警概览</h2>
-    //                                                 </div>
-    //                                                 <Row gutter={[6, 6]}>
-    //                                                     <Col md={3} />
-    //                                                     <Col md={18}>
-    //                                                         <Card
-    //                                                             bordered={false}
-    //                                                             style={{
-    //                                                                 height: '100px',
-    //                                                                 minWidth: '150px',
-    //                                                                 display: 'flex',
-    //                                                                 alignItems: 'center',
-    //                                                                 justifyContent: 'center',
-    //                                                                 backgroundColor: '#F6F7FB',
-    //                                                             }}
-    //                                                         >
-    //                                                             <Row style={{ width: '100%' }}>
-    //                                                                 <Col span={8}
-    //                                                                      style={{ transform: 'translateX(-180%) translateY(60px)' }}>
-    //                                                                     <Statistic title={<span
-    //                                                                         style={{ fontSize: '16px' }}>待处理告警</span>}
-    //                                                                                value={HoneyPotHostCount + TTPsHostCount + 40} />
-    //                                                                 </Col>
-    //                                                                 <Col span={8}
-    //                                                                      style={{ transform: 'translateX(-130%) translateY(45px)' }}>
-    //                                                                     <CustomPieChart
-    //                                                                         data={AlertData_uuid}
-    //                                                                         innerRadius={30}
-    //                                                                         deltaRadius={2}
-    //                                                                         outerRadius={36}
-    //                                                                         cardWidth={90}
-    //                                                                         cardHeight={90}
-    //                                                                         hasDynamicEffect={true}
-    //                                                                     />
-    //                                                                 </Col>
-    //                                                                 <Col span={8} style={{
-    //                                                                     height: '90px',
-    //                                                                     minWidth: '200px',
-    //                                                                     transform: 'translateX(100%) translateY(-40px)',
-    //                                                                 }}>
-    //                                                                     <StatusPanel statusData={AlertData_uuid}
-    //                                                                                  orientation="vertical" />
-    //                                                                 </Col>
-    //                                                             </Row>
-    //                                                         </Card>
-    //                                                     </Col>
-    //                                                     <Col md={3} />
-    //                                                 </Row>
-    //
-    //                                             </Card>
-    //                                         </Col>
-    //                                     </Row>
-    //                                     <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
-    //                                         <Col md={24}>
-    //                                             {this.renderTable(HoneyPotOriginData,Honey_uuid_Data_API,host_uuid,"蜜罐信息",[],
-    //                                                 Honeypotcolumns,'HoneypotDefenselistDetails',['uuid'])}
-    //                                             {this.renderTable(bruteforceTTPsOriginData,Brute_TTPs_uuid_Data_API,host_uuid,"威胁狩猎-暴力破解",[],
-    //                                                 threatHuntingColumns, 'brute-force-details',['uuid','atk_ip'])}
-    //                                             {this.renderTable(privilegeescalationTTPsOriginData,Privilege_TTPs_uuid_Data_API,host_uuid,'威胁狩猎-权限提升', [],
-    //                                                 threatHuntingColumns_2, 'privilege-escalation-details', ['uuid', 'atk_ip'])}
-    //                                             {this.renderTable(defenseavoidanceTTPsOriginData,Defense_TTPs_uuid_Data_API,host_uuid,"威胁狩猎-防御规避",[],
-    //                                                 threatHuntingColumns_2, 'defense-avoidance-details',['uuid', 'atk_ip'])}
-    //                                         </Col>
-    //                                     </Row>
-    //                                 </Col>
-    //                             </div>
-    //                         </div>
-    //                     );
-    //                 case 'vulnerabilityDetailList':
-    //                     return (
-    //                         <div style={{ marginTop: '0px' }}>
-    //                             {this.renderIgnoreModal()}
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 <Col md={24}>
-    //                                     <Card bordered={false} style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
-    //                                         <div style={{
-    //                                             display: 'flex',
-    //                                             justifyContent: 'space-between',
-    //                                             marginBottom: 16,
-    //                                             fontWeight: 'bold',
-    //                                         }}>
-    //                                             <h2 style={{
-    //                                                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-    //                                                 fontSize: '18px',
-    //                                                 fontWeight: 'bold',
-    //                                                 marginLeft: '0px',
-    //                                             }}>漏洞概览</h2>
-    //                                             <Button onClick={this.showIgnoredExpsModal}>白名单</Button>
-    //                                         </div>
-    //                                         <Row gutter={[6, 6]}>
-    //                                             <Col span={2}></Col>
-    //                                             <Col span={10}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '470px',
-    //                                                         minWidth: '200px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
-    //                                                         <Col span={8} style={{ paddingTop: '20px', width: '400px', height: '90px' }}>
-    //                                                             <Statistic title={<span style={{ fontSize: '16px' }}>待处理漏洞</span>}
-    //                                                                        value={totalExpResultCount - ignoredVulnerabilitiesCount} />
-    //                                                         </Col>
-    //                                                         <Col span={9} style={{ width: '400px', transform: 'translateX(0px) translateY(10px)' }}>
-    //                                                             <CustomPieChart
-    //                                                                 data={vulScanResultData}
-    //                                                                 innerRadius={30}
-    //                                                                 deltaRadius={2}
-    //                                                                 outerRadius={36}
-    //                                                                 cardWidth={90}
-    //                                                                 cardHeight={90}
-    //                                                                 hasDynamicEffect={true}
-    //                                                             />
-    //                                                         </Col>
-    //                                                         <Col span={7} style={{ width: '420px', height: '100px', paddingTop: '5px', marginTop: '10px', transform: 'translateX(0px) translateY(10px)' }}>
-    //                                                             <StatusPanel statusData={vulScanResultData} orientation="vertical" />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col span={1}></Col>
-    //                                             <Col span={10} style={{ marginLeft: '10px' }}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '440px',
-    //                                                         minWidth: '200px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row>
-    //                                                         <Col pull={2} span={24} style={{ marginRight: '50px', transform: 'translateX(-50%)' }}>
-    //                                                             <Statistic title={<span style={{ fontSize: '16px' }}>累计忽略的漏洞</span>}
-    //                                                                        value={ignoredVulnerabilitiesCount} />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <div className="container">
-    //                                                 <div className={this.state.isSidebarOpen ? 'overlay open' : 'overlay'} onClick={this.closeSidebar}></div>
-    //                                                 <div className={this.state.isSidebarOpen ? 'sidebar open' : 'sidebar'}>
-    //                                                     <button onClick={() => this.toggleSidebar} className="close-btn">&times;</button>
-    //                                                     <VulnerabilityDetailsSidebar
-    //                                                         onDoneButtonClick={this.handleDoneButtonClick}
-    //                                                         toggleSidebar={this.toggleSidebar}
-    //                                                         host_uuid={this.state.selectedVulnUuid}
-    //                                                         isSidebarOpen={this.state.isSidebarOpen}
-    //                                                     />
-    //                                                 </div>
-    //                                             </div>
-    //                                         </Row>
-    //                                     </Card>
-    //                                 </Col>
-    //                             </Row>
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 {this.renderModal()}
-    //                                 {this.renderVulOrBLTable(APP_Server_URL + '/api/vulndetetion/query_uuid?uuid=',
-    //                                     this.state.host_uuid, ['scanTime'], this.state.vulnColumns, currentPanel,
-    //                                     '漏洞内容', ['port'],
-    //                                     vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
-    //                             </Row>
-    //                         </div>
-    //                     );
-    //                 case 'baseLineDetectDetailList':
-    //                     return (
-    //                         <div>
-    //                             {this.renderBLIgnoreModal()}
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 <Col md={24}>
-    //                                     <Card bordered={false} style={{ fontWeight: 'bolder', marginTop: '0px', height: 200 }}>
-    //                                         <div style={{
-    //                                             display: 'flex',
-    //                                             justifyContent: 'space-between',
-    //                                             marginBottom: 16,
-    //                                             fontWeight: 'bold',
-    //                                         }}>
-    //                                             <h2 style={{
-    //                                                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-    //                                                 fontSize: '18px',
-    //                                                 fontWeight: 'bold',
-    //                                                 marginTop: '0px',
-    //                                             }}>基线概览</h2>
-    //                                             <Button onClick={this.showIgnoredBLCheckItemsModal}>白名单</Button>
-    //                                         </div>
-    //                                         <Row gutter={[6, 6]}>
-    //                                             <Col md={1} />
-    //                                             <Col md={6}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '100%',
-    //                                                         minWidth: '150px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{ width: '100%', marginBottom: '-130px' }}>
-    //                                                         <Col span={12} style={{
-    //                                                             height: '100px',
-    //                                                             marginRight: '20px',
-    //                                                             marginLeft: '20px',
-    //                                                             marginBottom: '-170px',
-    //                                                             paddingTop: '10px',
-    //                                                         }}>
-    //                                                             <Statistic title={<span style={{ fontSize: '16px', transform: 'translateX(70%)' }}>最近检查通过率</span>}
-    //                                                                        value={String(100 * (1 - filteredAdjData.length / filteredBLData.length)).slice(0, 4) + '%'} />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col md={1} />
-    //                                             <Col md={8}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '100%',
-    //                                                         minWidth: '150px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{ width: '100%', marginTop: '0px', paddingRight: '10px' }}>
-    //                                                         <Col span={3} style={{ paddingTop: '25px', paddingLeft: '20px', width: '440px', height: '100px' }}>
-    //                                                         </Col>
-    //                                                         <Col span={5} style={{ marginLeft: '20px', paddingTop: '20px', width: '180px', height: '90px' }}>
-    //                                                             <Statistic title={<span style={{ fontSize: '16px' }}>检查项</span>}
-    //                                                                        value={filteredBLData.length} />
-    //                                                         </Col>
-    //                                                         <Col span={5} style={{ marginLeft: '-20px', marginRight: '20px', width: '100px', alignItems: 'center', justifyContent: 'center', transform: 'translateX(-10px) translateY(5px)' }}>
-    //                                                             <CustomPieChart
-    //                                                                 data={[
-    //                                                                     { label: '风险项', value: filteredAdjData.length, color: '#EA635F' },
-    //                                                                     { label: '通过项', value: filteredBLData.length - filteredAdjData.length, color: '#468DFF' },
-    //                                                                 ]}
-    //                                                                 innerRadius={30}
-    //                                                                 deltaRadius={2}
-    //                                                                 outerRadius={36}
-    //                                                                 cardWidth={130}
-    //                                                                 cardHeight={90}
-    //                                                                 hasDynamicEffect={true}
-    //                                                             />
-    //                                                         </Col>
-    //                                                         <Col span={8} style={{ paddingTop: '15px', width: '450px', height: '100px', transform: 'translateY(5px)' }}>
-    //                                                             <StatusPanel
-    //                                                                 statusData={[
-    //                                                                     { label: '风险项', value: filteredAdjData.length, color: '#EA635F' },
-    //                                                                     { label: '通过项', value: filteredBLData.length - filteredAdjData.length, color: '#E5E8EF' },
-    //                                                                 ]}
-    //                                                                 orientation="vertical"
-    //                                                             />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col md={1} />
-    //                                             <Col md={6}>
-    //                                                 <Card
-    //                                                     bordered={false}
-    //                                                     style={{
-    //                                                         height: '100px',
-    //                                                         width: '100%',
-    //                                                         minWidth: '150px',
-    //                                                         display: 'flex',
-    //                                                         alignItems: 'center',
-    //                                                         justifyContent: 'center',
-    //                                                         backgroundColor: '#F6F7FB',
-    //                                                     }}
-    //                                                 >
-    //                                                     <Row style={{ width: '100%', marginBottom: '-130px' }}>
-    //                                                         <Col span={12} style={{
-    //                                                             height: '100px',
-    //                                                             marginRight: '20px',
-    //                                                             marginLeft: '20px',
-    //                                                             marginBottom: '-170px',
-    //                                                             paddingTop: '10px',
-    //                                                         }}>
-    //                                                             <Statistic title={<span style={{ fontSize: '16px', transform: 'translateX(70%)' }}>白名单</span>}
-    //                                                                        value={IgnoredBLItemCount} />
-    //                                                         </Col>
-    //                                                     </Row>
-    //                                                 </Card>
-    //                                             </Col>
-    //                                             <Col md={1} />
-    //                                         </Row>
-    //                                     </Card>
-    //                                 </Col>
-    //                             </Row>
-    //                             <Row style={{ width: '100%', margin: '0 auto' }}>
-    //                                 {this.renderBLWhiteListModal()}
-    //                                 {this.renderVulOrBLTable(APP_Server_URL + '/api/baseline_check/' + os_version + '/query_uuid?uuid=',
-    //                                     this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'],
-    //                                     vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}
-    //                             </Row>
-    //                         </div>
-    //                     );
-    //                 case 'virusscanning':
-    //                     return (
-    //                         <div style={{ marginTop: '-20px' }}>
-    //                             <VirusScanning
-    //                                 hostuuid={this.state.host_uuid}
-    //                             />
-    //                         </div>
-    //                     );
-    //                 case 'honeyPot':
-    //                     return (
-    //                         <div style={{ fontWeight: 'bold' }}>
-    //                             <Row gutter={[12, 6]} style={{ marginTop: '0px' }}>
-    //                                 <Col md={24}>
-    //                                     {/* {this.renderTable(filteredHoneyPotData, '蜜罐信息', Honeypotcolumns, 'honeyPot_host', Honey_API)} */}
-    //                                 </Col>
-    //                             </Row>
-    //                         </div>
-    //                     );
-    //
-    //                 case 'performancemonitor':
-    //                     return (
-    //                         <div style={{ marginTop: '-20px' }}>
-    //                             {/* <PerformanceMonitor /> */}
-    //                         </div>
-    //                     );
-    //                 default:
-    //                     return (
-    //                         <HostOverview
-    //                             changePanel={this.changePanel}
-    //                         />
-    //                     );
-    //             }
-    //         }
-    //     }
-    //
-    //     // 当数据为 undefined 时，使用默认数据
-    //     const AlertData_uuid = defaultAlertData;
-    //     const vulScanResultData = defaultVulScanResultData;
-    //
-    //     return (
-    //         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    //             <LoadingOutlined style={{ fontSize: '3em' }} />
-    //         </div>
-    //     );
-    // };
 
 
     setTimerForUuidData = () => {
@@ -2980,7 +1877,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
                         // linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
                         // vulnOriginData, honeyPotOriginData,
-                        virusOriginData,
                         // bruteforceTTPsOriginData,
                         // privilegeescalationTTPsOriginData,
                         // defenseavoidanceTTPsOriginData,
@@ -3054,7 +1950,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                         >
                                             <Menu.Item key="hostoverview">主机概览</Menu.Item>
                                             <Menu.Item key="hostAlertInfo">安全告警（AlarmTotal）</Menu.Item>
-                                            <Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>
+                                            {/*<Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>*/}
                                             <Menu.Item key="vulnerabilityDetailList">漏洞风险（VulnTotal）</Menu.Item>
                                             <Menu.Item
                                                 key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
@@ -3074,7 +1970,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                             {this.renderCurrentPanel(agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData, vulnOriginData,
                                                 honeyPotOriginData,
                                                 bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData,
-                                                virusOriginData,
+
                                                 HoneyPotHostCount,
                                                 TTPsHostCount)}
                                         </Card>

@@ -50,13 +50,14 @@
   justify-content: center;
   align-items: center;
   height: 100%;
-  //background: url("../style/imgs/beauty.jpg") no-repeat center center; /* Updated line */
-  background: url("../style/imgs/CSPG_login_high.PNG") no-repeat center center; /* Updated line */
+  //background: url("../style/imgs/CSPG_login_high.PNG") no-repeat center center; /* Updated line */
+  background: url("../style/imgs/CSPG_login_high_smallLogo_1.PNG") no-repeat center center; /* Updated line */
   background-size: cover; /* 保证图片完整显示在容器内 */
   .login-form {
     position: absolute; /* 绝对定位 */
     right: 20%; /* 将登录窗口向左推，使其位于容器宽度的1/5处 */
     width: 320px;
+    height: 320px;
     padding: 20px; /* 减少内边距 */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 0.85);
@@ -68,10 +69,10 @@
       text-align: center;
       height: 40px;
       line-height: 40px;
-      cursor: pointer;
+      cursor: default;
       margin-bottom: 24px;
       span {
-        font-family: "Open Sans", sans-serif; /* 示例字体 */
+        font-family: "FZDaHei-B01S", sans-serif; /* 示例字体 */
         font-size: 22px; /* 字体大小 */
         color: #666; /* 设置字体颜色，原666 */
         //text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 文本阴影 */
@@ -85,7 +86,6 @@
       padding-top: 10px; /* 或根据需要调整 */
       font-size: 0.8em; /* 或根据需要调整 */
     }
-
   }
 }
 FormItem {

@@ -225,18 +225,19 @@ export const convertUnixTime = (timestamp: number): string => {
 
 export const determineOS = (filteredData: any) => {
   // 检查输入数据是否存在以及是否包含 os_version 字段
-  if (!filteredData || typeof filteredData.host_name !== 'string') {
+  if (!filteredData || typeof filteredData.processor_architecture !== 'string') {
     return 'unknown';
   }
 
   try {
     // 将 os_version 字段转换为小写，并去除空格
-    const osVersion = filteredData.host_name.toLowerCase().trim();
+    const osVersion = filteredData.processor_architecture.toLowerCase().trim();
 
     // 根据常见的操作系统版本信息判断操作系统类型
     if (osVersion.includes('windows')) {
       return 'windows';
     } else if (
+        osVersion.includes('linux') ||
         osVersion.includes('ubuntu') ||
         osVersion.includes('debian') ||
         osVersion.includes('centos') ||
