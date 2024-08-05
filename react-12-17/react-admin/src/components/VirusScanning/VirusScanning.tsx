@@ -700,7 +700,7 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                     const IgnoredVirusCount = this.getIgnoredVirusItemCount(this.state.ignoredVirus_array);
                     return (
                         <div style={{
-                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            fontFamily: '宋体, SimHei, Arial, sans-serif',
                             fontWeight: 'bold', width: '100%',
                         }}>
                             {/*{this.renderEncryptModal()}*/}

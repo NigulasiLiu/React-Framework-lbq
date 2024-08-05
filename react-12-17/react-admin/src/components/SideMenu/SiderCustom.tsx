@@ -8,7 +8,6 @@
 // import { usePrevious } from 'ahooks';
 // import logo from '../style/imgs/owl.png';
 // const { Sider } = Layout;
-
 // type SiderCustomProps = RouteComponentProps<any> & {
 //     popoverHide?: () => void;
 //     collapsed?: boolean;
@@ -18,7 +17,6 @@
 //     openKeys: string[];
 //     selectedKey: string;
 // }
-
 // const SiderCustom = (props: SiderCustomProps) => {
 //     const [collapsed, tCollapsed] = useSwitch();
 //     const [firstHide, tFirstHide] = useSwitch();
@@ -27,7 +25,6 @@
 //     const [smenus] = useAlita({ smenus: [] }, { light: true });
 //     const { location, collapsed: pCollapsed } = props;
 //     const prePathname = usePrevious(props.location.pathname);
-
 //     useEffect(() => {
 //         const recombineOpenKeys = (openKeys: string[]) => {
 //             let i = 0;
@@ -41,7 +38,6 @@
 //             }
 //             return tempKeys;
 //         };
-
 //         const getOpenAndSelectKeys = () => {
 //             return {
 //                 openKeys: recombineOpenKeys(location.pathname.match(/[/](\w+)/gi) || []),
@@ -129,8 +125,7 @@ import SiderMenu from './SiderMenu';
 import { useAlita } from 'redux-alita';
 import { useSwitch } from '../../utils/hooks';
 import { usePrevious } from 'ahooks';
-// import logo from '../../style/imgs/owl.png';
-import logo from '../../style/imgs/CSPG_light.jpg';
+import logo from '../../style/imgs/CSPG_dark.png';
 
 const { Sider } = Layout;
 
@@ -214,13 +209,13 @@ const SiderCustom = (props: SiderCustomProps) => {
         setMenu((state) => ({ ...state, openKeys: v }));
         tFirstHide.turnOff();
     };
-
+    //左侧边栏Menu之外的背景颜色
     const sidebarStyle: React.CSSProperties = {
         width: collapsed ? '0' : '165px', // 控制侧边栏宽度
         overflowX: 'hidden', // 隐藏溢出内容
         transition: 'width 0.3s ease', // 添加过渡效果
-        // background: menuTheme.background, // 使用配置中的背景颜色
-        // color: menuTheme.color // 使用配置中的字体颜色
+        background: menuTheme.background, // 使用配置中的背景颜色
+        color: menuTheme.color, // 使用配置中的字体颜色
     };
     return (
         <Sider
@@ -243,7 +238,7 @@ const SiderCustom = (props: SiderCustomProps) => {
                 alignItems: 'center',
                 justifyContent: 'center',
             }}>
-                <img src={logo} alt="Logo" style={{ zoom: 0.55 }} />
+                <img src={logo} alt="Logo" style={{ marginTop:'30px',zoom: 0.4 }} />
                 {/*<h2 style={{
                     fontWeight: 'bold', padding: '22px', margin: '10px 0px', color: 'rgba(0, 0, 0, 0.85)',
                     display: 'flex', alignItems: 'center', fontSize: '16px'
@@ -252,7 +247,11 @@ const SiderCustom = (props: SiderCustomProps) => {
             </div>
 
             {(
-                <SiderMenu style={{ marginTop: '20px' }}
+                <SiderMenu style={{//只对可以展开的Item生效，如资产中心，风险管理
+                    marginTop: '20px',
+                    // background: menuTheme.background, // 使用配置中的背景颜色
+                    // color: menuTheme.color,
+                }}
                            menus={[...routes.menus, ...smenus]}
                            onClick={menuClick}
                            mode="inline"

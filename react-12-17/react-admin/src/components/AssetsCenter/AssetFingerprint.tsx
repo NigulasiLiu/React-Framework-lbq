@@ -173,8 +173,8 @@ class AssetFingerprint extends React.Component<AssetFingerprintProps, AssetFinge
                         processOriginData,portOriginData } = context;
                     // 将函数绑定到类组件的实例上
 
-                    return (
-                        <div style={{ fontFamily: 'YouYuan, sans-serif', fontWeight: 'bold' }}>
+                    return (//fontFamily: 'YouYuan, sans-serif',
+                        <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                             <div>
                                 <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                     <Col md={24}>

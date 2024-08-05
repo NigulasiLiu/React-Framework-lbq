@@ -534,7 +534,7 @@ class ScheduleTask extends React.Component<ScheduleTaskProps, ScheduleTaskState>
                     this.handleRefresh = refreshDataFromAPI;
                     return (
                         <div style={{
-                            // fontFamily: "'YouYuan', sans-serif",
+                            fontFamily: '宋体, SimHei, Arial, sans-serif',
                             // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
                             fontWeight: 'bold' }}>
                             {this.renderModal()}

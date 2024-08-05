@@ -311,10 +311,12 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
                     this.handleRefresh = refreshDataFromAPI;
 
                     return (
-                        <div style={{
-                            // fontFamily: 'YouYuan, sans-serif',
-                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                            fontWeight: 'bold' }}>
+                        <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}
+                            // style={{
+                            // // fontFamily: 'YouYuan, sans-serif',
+                            // // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                            // fontWeight: 'bold' }}
+                        >
                             {this.renderMemoryShellModal()}
                             {this.renderDetailModal()}
                             <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>

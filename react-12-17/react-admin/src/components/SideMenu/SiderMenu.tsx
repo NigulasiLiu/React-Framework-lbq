@@ -7,13 +7,11 @@
 // // 渲染单个菜单项
 // const renderMenuItem = (
 //     item: IFMenu // item.route 菜单单独跳转的路由
-// ) => (
+// ) => (//className="menu-item"
 //     <Menu.Item key={item.key} >
 //         <Link to={(item.route || item.key) + (item.query || '')}>
 //             <span className="nav-text" style={{
-//                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-//                 color: 'white' // 字体颜色
-//             }}>{item.title}</span>
+//                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',}}>{item.title}</span>
 //         </Link>
 //     </Menu.Item>
 // );
@@ -24,10 +22,8 @@
 //         <Menu.SubMenu
 //             key={item.key}
 //             title={<span className="nav-text" style={{
-//                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-//                 color: 'white' // 字体颜色
-//             }}>{item.title}</span>}
-//
+//                 fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',}}>{item.title}</span>}
+//             //className="submenu-item"
 //         >
 //             {item.subs!.map(renderMenu)}
 //         </Menu.SubMenu>
@@ -41,39 +37,23 @@
 //         : renderMenuItem(item);
 // };
 //
+// // SiderMenu 组件和之前一样
+//
+//
 // type SiderMenuProps = MenuProps & {
 //     menus: IFMenu[];
 // };
 //
 // const SiderMenu = ({ menus, ...props }: SiderMenuProps) => {
 //     return (
-//         <div className="sider-menu" style={{ fontSize: '13px', backgroundColor: '#002C6E' }}>
-//             <Menu
-//                 {...props}
-//                 mode="inline"
-//
-//                 inlineCollapsed={false}
-//                 selectedKeys={['1']} // 确保至少有一个默认选中的菜单项
-//                 onSelect={({ key }) => {
-//                     document.querySelectorAll('.ant-menu-item').forEach(item => {
-//                         (item as HTMLElement).style.backgroundColor = '#002C6E';
-//                     });
-//                     const selectedItem = document.querySelector('.ant-menu-item-selected');
-//                     if (selectedItem) {
-//                         (selectedItem as HTMLElement).style.backgroundColor = '#006AAC';
-//                     }
-//                 }}
-//             >
-//                 {menus.map(renderMenu)}
-//             </Menu>
-//         </div>
+//       <div className="sider-menu"> {/* 应用了带有轮廓线的样式 style={{fontSize: '13px',}}*/}
+//         <Menu {...props} mode="inline" >
+//           {menus.map(renderMenu)}
+//         </Menu>
+//       </div>
 //     );
-// };
-//
+//   };
 // export default React.memo(SiderMenu);
-//
-
-
 import React from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
@@ -83,11 +63,13 @@ import { MenuProps } from 'antd/lib/menu';
 // 渲染单个菜单项
 const renderMenuItem = (
     item: IFMenu // item.route 菜单单独跳转的路由
-) => (//className="menu-item"
-    <Menu.Item key={item.key} >
+) => (
+    <Menu.Item key={item.key}>
         <Link to={(item.route || item.key) + (item.query || '')}>
-            <span className="nav-text" style={{
-                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',}}>{item.title}</span>
+            <span style={{
+                fontFamily: '宋体, SimHei, Arial, sans-serif',
+                // color: '#FFFFFF', // 常态字体颜色
+            }}>{item.title}</span>
         </Link>
     </Menu.Item>
 );
@@ -97,9 +79,10 @@ const renderSubMenu = (item: IFMenu) => {
     return (
         <Menu.SubMenu
             key={item.key}
-            title={<span className="nav-text" style={{
-                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',}}>{item.title}</span>}
-            //className="submenu-item"
+            title={<span style={{
+                fontFamily: '宋体, SimHei, Arial, sans-serif',
+                color: '#FFFFFF', // 常态字体颜色
+            }}>{item.title}</span>}
         >
             {item.subs!.map(renderMenu)}
         </Menu.SubMenu>
@@ -113,20 +96,26 @@ const renderMenu = (item: IFMenu) => {
         : renderMenuItem(item);
 };
 
-// SiderMenu 组件和之前一样
-
-
+// SiderMenu 组件
 type SiderMenuProps = MenuProps & {
     menus: IFMenu[];
 };
 
 const SiderMenu = ({ menus, ...props }: SiderMenuProps) => {
     return (
-      <div className="sider-menu"> {/* 应用了带有轮廓线的样式 style={{fontSize: '13px',}}*/}
-        <Menu {...props} mode="inline" >
-          {menus.map(renderMenu)}
-        </Menu>
-      </div>
+        <div className="sider-menu">
+            <Menu
+                {...props}
+                mode="inline"
+                style={{
+                    backgroundColor: '#002C6E', // 常态背景颜色
+                }}
+                theme="dark"
+            >
+                {menus.map(renderMenu)}
+            </Menu>
+        </div>
     );
-  };
+};
+
 export default React.memo(SiderMenu);

@@ -98,41 +98,64 @@ const FileUpload: React.FC<FileUploadProps> = ({ uploadUrl, scanUrl, visible, on
     };
 
     return (
-        <Modal
-            title="扫描上传文件"
-            visible={visible}
-            onCancel={onClose}
-            footer={null}
-            closeIcon={<CloseOutlined />}
-            centered
-        >
-            <div className="file-upload-container">
-                <Upload
-                    key={uploadKey} // 强制重新渲染Upload组件
-                    multiple // 允许上传多个文件
-                    beforeUpload={() => false} // 关闭自动上传
-                    onChange={handleFileChange}
-                    showUploadList={false}
-                >
-                    <Button
-                        icon={<UploadOutlined />}
-                        style={{
-                            marginRight: '10px',
-                        }}
+            <Modal
+                title="扫描上传文件"
+                visible={visible}
+                onCancel={onClose}
+                footer={null}
+                closeIcon={<CloseOutlined />}
+                centered
+            >
+                <div className="file-upload-container">
+                    <Upload
+                        key={uploadKey} // 强制重新渲染Upload组件
+                        multiple // 允许上传多个文件
+                        beforeUpload={() => false} // 关闭自动上传
+                        onChange={handleFileChange}
+                        showUploadList={false}
                     >
-                        选择文件
-                    </Button>
-                </Upload>
-                {selectedFiles.map((file) => (
-                    <div className="file-info" key={file.name}>
-                        <span>{file.name}</span>
                         <Button
-                            type="primary"
-                            danger
+                            icon={<UploadOutlined />}
                             style={{
                                 marginRight: '10px',
-                                backgroundColor: '#fb1440',
+                            }}
+                        >
+                            选择文件
+                        </Button>
+                    </Upload>
+                    {selectedFiles.map((file) => (
+                        <div className="file-info" key={file.name}>
+                            <span>{file.name}</span>
+                            <Button
+                                type="primary"
+                                danger
+                                style={{
+                                    marginRight: '10px',
+                                    backgroundColor: '#fb1440',
+                                    color: 'white',
+                                    transition: 'opacity 0.3s',
+                                    opacity: 1,
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.opacity = 0.7;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.opacity = 1;
+                                }}
+                                onClick={() => handleFileRemove(file)}
+                            >
+                                移除
+                            </Button>
+                        </div>
+                    ))}
+                    {error && <p className="error-message">{error}</p>}
+                    <div className="buttons-container">
+                        <Button
+                            style={{
+                                backgroundColor: '#1664FF',
                                 color: 'white',
+                                marginRight: '10px',
+                                marginTop: '10px',
                                 transition: 'opacity 0.3s',
                                 opacity: 1,
                             }}
@@ -142,86 +165,63 @@ const FileUpload: React.FC<FileUploadProps> = ({ uploadUrl, scanUrl, visible, on
                             onMouseLeave={(e) => {
                                 e.currentTarget.style.opacity = 1;
                             }}
-                            onClick={() => handleFileRemove(file)}
+                            onClick={handleFileUploadAndScan}
                         >
-                            移除
+                            上传并扫描
                         </Button>
                     </div>
-                ))}
-                {error && <p className="error-message">{error}</p>}
-                <div className="buttons-container">
-                    <Button
-                        style={{
-                            backgroundColor: '#1664FF',
-                            color: 'white',
-                            marginRight: '10px',
-                            marginTop: '10px',
-                            transition: 'opacity 0.3s',
-                            opacity: 1,
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.opacity = 0.7;
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.opacity = 1;
-                        }}
-                        onClick={handleFileUploadAndScan}
-                    >
-                        上传并扫描
-                    </Button>
+                    <Row>
+                        <Col span={12}>
+                            <List
+                                header={<div>上传状态</div>}
+                                bordered
+                                dataSource={uploadStatus}
+                                renderItem={(status, index) => (
+                                    <List.Item
+                                        style={{ fontSize: '14px', color: status.includes('失败') ? 'red' : 'inherit' }}
+                                        actions={[
+                                            <Button
+                                                type="link"
+                                                danger
+                                                icon={<DeleteOutlined />}
+                                                onClick={() => handleRemoveStatus(index)}
+                                            >
+                                                删除
+                                            </Button>,
+                                        ]}
+                                    >
+                                        <span style={{ fontSize: '13px' }}>{status}</span>
+                                    </List.Item>
+                                )}
+                            />
+                        </Col>
+                        <Col span={12}>
+                            <List
+                                header={<div>扫描记录</div>}
+                                bordered
+                                dataSource={scanRecords}
+                                renderItem={(item, index) => (
+                                    <List.Item
+                                        style={{ color: item.includes('失败') ? 'red' : 'inherit' }}
+                                        actions={[
+                                            <Button
+                                                type="link"
+                                                danger
+                                                icon={<DeleteOutlined />}
+                                                onClick={() => handleRemoveRecord(index)}
+                                            >
+                                                删除
+                                            </Button>,
+                                        ]}
+                                    >
+                                        <span style={{fontSize:'13px',}}>{item}</span>
+                                    </List.Item>
+                                )}
+                            />
+                        </Col>
+                    </Row>
                 </div>
-                <Row>
-                    <Col span={12}>
-                        <List
-                            header={<div>上传状态</div>}
-                            bordered
-                            dataSource={uploadStatus}
-                            renderItem={(status, index) => (
-                                <List.Item
-                                    style={{ fontSize: '14px', color: status.includes('失败') ? 'red' : 'inherit' }}
-                                    actions={[
-                                        <Button
-                                            type="link"
-                                            danger
-                                            icon={<DeleteOutlined />}
-                                            onClick={() => handleRemoveStatus(index)}
-                                        >
-                                            删除
-                                        </Button>,
-                                    ]}
-                                >
-                                    <span style={{ fontSize: '13px' }}>{status}</span>
-                                </List.Item>
-                            )}
-                        />
-                    </Col>
-                    <Col span={12}>
-                        <List
-                            header={<div>扫描记录</div>}
-                            bordered
-                            dataSource={scanRecords}
-                            renderItem={(item, index) => (
-                                <List.Item
-                                    style={{ color: item.includes('失败') ? 'red' : 'inherit' }}
-                                    actions={[
-                                        <Button
-                                            type="link"
-                                            danger
-                                            icon={<DeleteOutlined />}
-                                            onClick={() => handleRemoveRecord(index)}
-                                        >
-                                            删除
-                                        </Button>,
-                                    ]}
-                                >
-                                    <span style={{fontSize:'13px',}}>{item}</span>
-                                </List.Item>
-                            )}
-                        />
-                    </Col>
-                </Row>
-            </div>
-        </Modal>
+            </Modal>
     );
 };
 

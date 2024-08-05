@@ -30,7 +30,7 @@ export const buttonStyle = {
 class Provenance extends Component {
     render() {
         return (
-            <div className='main'>
+            <div className='main' style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                 <Row>
                     <div className='head'>
                         <Selector />

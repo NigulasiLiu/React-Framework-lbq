@@ -150,7 +150,7 @@ class ScanProcessSidebar extends React.Component<ScanProcessSidebarProps, ScanPr
     }
 
     return (
-      <div>
+      <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
         <Col md={24} style={{ borderTop: '5px solid #4086FF' }}>
           <Card
             style={{ fontWeight: 'bolder', width: 500, height: 680, border:'2px solid #becffa', justifyContent: 'center' }}>

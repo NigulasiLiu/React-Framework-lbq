@@ -561,7 +561,7 @@ class Dashboard extends React.Component<DashboardProps> {
                     const colors = ['#faad14', '#faad14', '#52c41a']; // 指定每个进度条的颜色,弃用的绿色'#52c41a'，红ff4d4f
 
                     return (
-                        <div>
+                        <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                             <div>
                                 <DisplaySettingsGuide />
                                 {/* 你现有的 Dashboard 内容 */}
@@ -580,6 +580,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                 }}>
                                                     <h2 style={{
                                                         fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                        // fontFamily: '宋体, SimHei, Arial, sans-serif',
                                                         fontSize: '19px',
                                                         fontWeight: 'bold',
                                                         marginLeft: '0px',
@@ -1037,6 +1038,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         fontFamily: 'FZDaHei-B01S, sans-serif',//由<strong>主站安全监测功能模块</strong>和<strong>边缘控制终端安全监测模块</strong>组成。<br />其设计目标是
                                                     }}>
                                                         <strong>用电全域安全监测平台为</strong><strong><a
+                                                        style={{ color: '#1964F5' }}
                                                         href="https://baike.baidu.com/item/车网互动"
                                                         target="_blank">车网互动</a></strong>及<strong>智能量测</strong>场景提供了全面的安全监测解决方案。<br />
                                                         安全监测解决方案提供了<strong>资产测绘</strong>、<strong>基线检查</strong>、<strong>运行监测</strong>、<strong>风险监测</strong>、

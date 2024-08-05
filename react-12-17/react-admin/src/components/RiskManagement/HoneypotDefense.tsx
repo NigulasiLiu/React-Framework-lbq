@@ -239,7 +239,7 @@ class HoneypotDefense extends React.Component<{}, HoneypotDefenseStates> {
       
 
                     return (
-                      <div style={{ fontFamily: "'YouYuan', sans-serif",fontWeight: 'bold'}}>
+                      <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                         {this.renderHoneyPotModal(agentOriginData)}
                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                             <Col md={24}>

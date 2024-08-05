@@ -27,10 +27,10 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
 
         notification[typeName]({
             message: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried-Notification-open</span>
+                <span style={{ fontFamily: '宋体', fontSize: '14px' }}>Data Refresh Tried-Notification-open</span>
     ),
             description: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
+                <span style={{ fontFamily: '宋体', fontSize: '12px' }}>
                     {descriptionContent}
                 </span>
             ),
@@ -61,11 +61,11 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
                     offset={[10, 0]}
                     style={{ backgroundColor: '#ff4d4f', color: 'white', fontSize: '12px', lineHeight: '16px' }}
                 >
-                    <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried-Notification-2</span>
+                    <span style={{ fontFamily: '宋体', fontSize: '14px' }}>Data Refresh Tried-Notification-2</span>
                 </Badge>
             ),
             description: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
+                <span style={{ fontFamily: '宋体', fontSize: '12px' }}>
                     {descriptionContent}
                 </span>
             ),
@@ -88,11 +88,11 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
     //                 offset={[10, 0]}
     //                 style={{ backgroundColor: '#ff4d4f', color: 'white', fontSize: '12px', lineHeight: '18px' }}
     //             >
-    //                 <span style={{ fontFamily: 'youyuan', fontSize: '16px' }}>Data Refresh Tried</span>
+    //                 <span style={{ fontFamily: '宋体', fontSize: '16px' }}>Data Refresh Tried</span>
     //             </Badge>
     //         ),
     //         description: (
-    //             <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>
+    //             <span style={{ fontFamily: '宋体', fontSize: '14px' }}>
     //                 {descriptionContent}
     //             </span>
     //         ),
@@ -110,10 +110,10 @@ class CustomNotification extends React.Component<CustomNotificationProps> {
 
         notification.open({
             message: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '14px' }}>Data Refresh Tried-Notification-static</span>
+                <span style={{ fontFamily: '宋体', fontSize: '14px' }}>Data Refresh Tried-Notification-static</span>
             ),
             description: (
-                <span style={{ fontFamily: 'youyuan', fontSize: '12px' }}>
+                <span style={{ fontFamily: '宋体', fontSize: '12px' }}>
                     {panel} 数据已刷新
                 </span>
             ),

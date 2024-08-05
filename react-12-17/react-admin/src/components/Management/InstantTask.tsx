@@ -179,7 +179,8 @@ class InstantTask extends Component<InstantTaskProps, InstantTaskState> {
                         name: uuid
                     }));
                     return(
-                        <div style={{ fontWeight: 'bolder', width: '100%', marginTop: '13px' }}>
+                        <div style={{
+                        fontFamily: '宋体, SimHei, Arial, sans-serif',fontWeight: 'bolder', width: '100%', marginTop: '13px' }}>
                             <Card bordered={true}>
                                 <Row>
                                     <div style={{

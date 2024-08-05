@@ -369,7 +369,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                 </Col>
                                                 <Col flex="auto"
                                                      style={{ textAlign: 'left', marginLeft: 10, marginTop: '5px' }}>
-                                                    <span>最近更新時間: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
+                                                    <span>最近更新时间: {this.state.lastUpdated ? this.state.lastUpdated : '-'}</span>
                                                 </Col>
                                                 <Col style={{ textAlign: 'left', marginLeft: 10, marginRight: '0px' }}>
                                                     <Button icon={<ReloadOutlined />}

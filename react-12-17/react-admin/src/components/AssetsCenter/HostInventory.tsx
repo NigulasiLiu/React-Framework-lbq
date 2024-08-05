@@ -572,10 +572,7 @@ class HostInventory extends React.Component<HostInventoryProps, HostInventorySta
                     ];
 
                     return (
-                        <div style={{
-                            // fontFamily: '\'YouYuan\', sans-serif',
-                            fontWeight: 'bold',
-                        }}>
+                        <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                             <Row gutter={[12, 6]}/*(列间距，行间距)*/ style={{ marginTop: '10px' }}>
                                 <Col span={8}>
                                     <Card bordered={false} style={{ fontWeight: 'bolder', width: '100%', height: 300 }}>

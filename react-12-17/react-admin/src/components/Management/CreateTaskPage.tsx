@@ -269,7 +269,8 @@ class CreateTaskPage extends React.Component<CreateTaskPageProps, CreateTaskPage
                     const { agentOriginData } = context;
 
                     return (
-                        <div style={{ width: '100%', margin: '0 auto' }}>
+                        <div style={{
+                            fontFamily: '宋体, SimHei, Arial, sans-serif',width: '100%', margin: '0 auto' }}>
                             <Row style={{
                                 width: '110%', height: '80px', backgroundColor: '#FFFFFF', //height:'40px',
                                 marginLeft: '-20px', padding: '12px', borderBottom: '1px solid #F6F7FB',

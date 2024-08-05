@@ -330,7 +330,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                     const privCount = Array.isArray(privilegeescalationTTPsOriginData) ? privilegeescalationTTPsOriginData.flat().length : 0;
                     const defensCount = Array.isArray(defenseavoidanceTTPsOriginData) ? defenseavoidanceTTPsOriginData.flat().length : 0;
                     return (
-                        <div>
+                        <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                             {/* <Button onClick={this.openModal}>添加TTPs</Button> */}
                             <Row gutter={[12, 6]} style={{ marginTop: '0px' }}>
                                 <Col md={24}>

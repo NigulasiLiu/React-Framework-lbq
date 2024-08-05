@@ -60,53 +60,6 @@ class MicroIsolation extends React.Component<MicroIsolationProps,MicroIsolationS
   constructor(props:any) {
     super(props);
     this.state = {
-      // spFilesColumns:[
-      //   {
-      //     title: 'ID',
-      //     dataIndex: 'id',
-      //     key: 'id',
-      //   },
-      //   {
-      //     title: "UUID",
-      //     dataIndex: 'uuid',
-      //     key: 'uuid',
-      //     render: (text: string) => (
-      //         // 使用模板字符串构造带查询参数的路径,encodeURIComponent 函数确保 text 被正确编码
-      //         <Link to={`/app/detailspage?uuid=${encodeURIComponent(text)}`} target="_blank">
-      //             <Button style={{
-      //                 fontWeight: 'bold', border: 'transparent', backgroundColor: 'transparent', color: '#4086FF',
-      //                 padding: '0 0'
-      //             }}>
-      //               {text!==undefined?text.slice(0, 5) : '-'}
-      //             </Button>
-      //         </Link>
-      //     ),
-      //   },
-      //   {
-      //     title: '原文件文件名',
-      //     dataIndex: 'origin_filename',
-      //     key: 'origin_filename',
-      //   },
-      //   {
-      //     title: '原文件文件路径',
-      //     dataIndex: 'origin_filepath',
-      //     key: 'origin_filepath',
-      //   },
-      //   {
-      //     title: '操作',
-      //     key: 'operation',
-      //     render: (text:string, record:any) => (
-      //       <Button
-      //           style={{
-      //             fontWeight: 'bold', padding: '0 0',
-      //             border: 'transparent',
-      //             backgroundColor: 'transparent',
-      //           }}
-      //           onClick={() => this.showEncryptModal(record)}>隔离</Button>
-      //     ),
-      //   }
-      //
-      // ],
       spFilesColumns:  [
         {
           title: 'ID',
@@ -474,9 +427,7 @@ renderEncryptModal=()=>{
               isolationOriginData,} = context;
             const virusData = virusOriginData===undefined?initialData:virusOriginData;
             return (
-                <div style={{
-                  // fontFamily: "'YouYuan', sans-serif",
-                  fontWeight: 'bold' }}>
+                <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
                   <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                     <Col md={24}>
                       <div className="gutter-box">

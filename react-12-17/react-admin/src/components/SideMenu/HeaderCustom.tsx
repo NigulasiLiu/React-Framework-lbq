@@ -151,7 +151,9 @@ const HeaderCustom = (props: HeaderCustomProps) => {
 
     //const isDetailPage = pagesWithoutSiderMenu.includes(location.pathname);
     return (
-        <div style={{ background: '#FFFFFF', borderBottom: '3px solid #F6F7FB' }}>
+        <div style={{ background: '#FFFFFF', borderBottom: '3px solid #F6F7FB',
+            fontFamily: '宋体, sans-serif', fontWeight: 'bold'
+        }} >
             <Row align="middle" className="header-row">
                 <Col span={24}>
                     <Header className="header-row  header-border"
@@ -195,11 +197,11 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                             {/*))}*/}
                             {!hideSiderMenu && (//backgroundColor:'#F6F7FB',
                                 <div style={{
-                                    color: '#000', marginLeft: '-35px', fontSize: '20px', fontStyle: 'italic',border:'solid 0px #F6F7FB',
+                                    color: '#00367a', marginLeft: '-35px', fontSize: '20px', fontStyle: 'italic',border:'solid 0px #F6F7FB',
                                     fontFamily: 'FZDaHei-B01S, sans-serif',
                                 }}>
                                     <img src={logo} alt="Logo"
-                                         style={{ zoom: 0.15, marginRight: '20px' }} />
+                                         style={{ zoom: 0.15, marginRight: '20px', }} />
                                     用电全域安全监测平台
                                 </div>
                             )}
@@ -218,7 +220,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                             fontWeight: 'bold',
                                             padding: '22px,6px',
                                             margin: '10px,0px',
-                                            color: 'rgba(0, 0, 0, 0.85)',
+                                            color: 'rgba(0, 54, 122, 1)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             fontSize: '20px',
