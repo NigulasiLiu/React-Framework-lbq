@@ -246,7 +246,7 @@ class BaselineDetectList extends React.Component<BaselineDetectListProps, Baseli
                     onCancel={() => this.setState({ showIgnoredModal: false })}
                     footer={null}
                     width={600}
-                    style={{ top: 20 }}
+                    style={{ top: 20,fontFamily:'宋体' }}
                 >
                     <Table
                         className="customTable"

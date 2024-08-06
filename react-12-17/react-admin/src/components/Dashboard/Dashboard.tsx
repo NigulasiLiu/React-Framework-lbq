@@ -1035,7 +1035,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                 }}>
                                                     <h2 style={{
                                                         fontSize: '14px',
-                                                        fontFamily: 'FZDaHei-B01S, sans-serif',//由<strong>主站安全监测功能模块</strong>和<strong>边缘控制终端安全监测模块</strong>组成。<br />其设计目标是
+                                                        fontFamily: '宋体, sans-serif',//由<strong>主站安全监测功能模块</strong>和<strong>边缘控制终端安全监测模块</strong>组成。<br />其设计目标是
                                                     }}>
                                                         <strong>用电全域安全监测平台为</strong><strong><a
                                                         style={{ color: '#1964F5' }}

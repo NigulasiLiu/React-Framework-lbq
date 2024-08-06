@@ -704,7 +704,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     onCancel={() => this.setState({ showIgnoredModal: false })}
                     footer={null}
                     width={600}
-                    style={{ top: 20 }}
+                    style={{ top: 20,fontFamily:'宋体' }}
                 >
                     <Table
                         className="customTable"
@@ -922,7 +922,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     onCancel={() => this.setState({ showIgnoredModal: false })}
                     footer={null}
                     width={600}
-                    style={{ top: 20 }}
+                    style={{ top: 20,fontFamily:'宋体' }}
                 >
                     <Table
                         className="customTable"

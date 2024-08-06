@@ -5094,6 +5094,8 @@ body {
 .ant-menu-dark .ant-menu-sub {
   //color: rgba(255, 255, 255, 0.65);
   //background: @primary-color;
+  padding: 0; /* Remove padding to see if it affects the background fill */
+  margin: 0; /* Remove margin to ensure background fills to the edges */
 }
 .ant-menu-dark .ant-menu-submenu-title .ant-menu-submenu-arrow::after,
 .ant-menu-dark .ant-menu-sub .ant-menu-submenu-title .ant-menu-submenu-arrow::after,
@@ -5102,6 +5104,7 @@ body {
   background: #fff;
 }
 .ant-menu-dark.ant-menu-submenu-popup {
+  //background: #ffffff;
   background: transparent;
 }
 .ant-menu-dark .ant-menu-inline.ant-menu-sub {
@@ -5213,16 +5216,19 @@ body {
 .ant-menu-dark .ant-menu-submenu-disabled,
 .ant-menu-dark .ant-menu-item-disabled > a,
 .ant-menu-dark .ant-menu-submenu-disabled > a {
+  //background-color: @primary-color;
   background: rgba(255, 255, 255, 0.35) !important;
 }
 .ant-menu-dark .ant-menu-item-disabled > .ant-menu-submenu-title,
 .ant-menu-dark .ant-menu-submenu-disabled > .ant-menu-submenu-title {
+  //background-color: @primary-color;
   background: rgba(255, 255, 255, 0.35) !important;
 }
 .ant-menu-dark .ant-menu-item-disabled > .ant-menu-submenu-title > .ant-menu-submenu-arrow::before,
 .ant-menu-dark .ant-menu-submenu-disabled > .ant-menu-submenu-title > .ant-menu-submenu-arrow::before,
 .ant-menu-dark .ant-menu-item-disabled > .ant-menu-submenu-title > .ant-menu-submenu-arrow::after,
 .ant-menu-dark .ant-menu-submenu-disabled > .ant-menu-submenu-title > .ant-menu-submenu-arrow::after {
+  //background-color: @primary-color;
   background: rgba(255, 255, 255, 0.35) !important;
 }
 

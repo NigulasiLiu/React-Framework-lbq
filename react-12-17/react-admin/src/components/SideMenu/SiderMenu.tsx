@@ -103,7 +103,7 @@ type SiderMenuProps = MenuProps & {
 
 const SiderMenu = ({ menus, ...props }: SiderMenuProps) => {
     return (
-        <div className="sider-menu">
+        <div >
             <Menu
                 {...props}
                 mode="inline"
@@ -111,6 +111,7 @@ const SiderMenu = ({ menus, ...props }: SiderMenuProps) => {
                     backgroundColor: '#002C6E', // 常态背景颜色
                 }}
                 theme="dark"
+                className="sider-menu"
             >
                 {menus.map(renderMenu)}
             </Menu>

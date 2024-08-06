@@ -1,3 +1,42 @@
+.sider-menu .ant-menu-item,
+.sider-menu .ant-menu-submenu {
+    box-sizing: border-box;
+}
+.sider-menu .ant-menu-item-selected:not(.ant-menu-submenu) {
+    background-color: #E5E8EF !important; /* Background color for selected item without submenu */
+    color: #000000 !important; /* Text color for selected item without submenu */
+    display: block; /* Ensures the background covers the full area of the item */
+    width: 130%; /* Ensures the background color covers the full width */
+    margin-left: -48px;
+}
+
+.sider-menu .ant-menu-item-selected:not(.ant-menu-submenu) > a {
+    color: #000000 !important; /* Link color for selected item without submenu */
+    background-color: #E5E8EF !important; /* Background color for selected item without submenu */
+    width: 130%; /* Ensures the background color covers the full width */
+    display: block; /* Ensures the background covers the full area of the item */
+    padding-left: 48px; /* Move text content to the right by 48px */
+}
+.sider-menu .ant-menu-submenu .ant-menu-item-selected {
+    background-color: #E5E8EF !important; /* Background color for selected item without submenu */
+    color: #000000 !important; /* Text color for selected item in submenu */
+    width: 130%; /* Ensures the background color covers the full width */
+    display: block; /* Ensures the background covers the full area of the item */
+}
+
+.sider-menu .ant-menu-submenu .ant-menu-item-selected > a {
+    color: #000000 !important; /* Link color for selected item in submenu */
+    background-color: #E5E8EF !important; /* Background color for selected item without submenu */
+    width: 130%; /* Ensures the background color covers the full width */
+    display: block; /* Ensures the background covers the full area of the item */
+}
+
+
+/* 在合适的地方添加该样式，确保生效 */
+.sider-menu.hidden {
+    display: none;
+}
+
 /*!* global.css 或 SiderMenu.module.css *!*/
 
 /*.sider-menu-container {*/

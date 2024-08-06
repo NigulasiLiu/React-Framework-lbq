@@ -63,39 +63,50 @@
   z-index: 1; /* 较低的z-index值 */
 }
 
-.sider-menu {
-  display: flex;
-  flex-direction: column;
-  background-color: #002C6E; // 修改侧边栏背景颜色
+//.sider-menu {
+//  display: flex;
+//  flex-direction: column;
+//  background-color: #002C6E; // 修改侧边栏背景颜色
+//
+//  .ant-menu-item-selected, .ant-menu-item-active {
+//    background-color: #006AAC; // 修改激活项背景颜色
+//    //background-color: #ffffff; // 修改激活项背景颜色
+//  }
+//
+//  .logo-container {
+//    display: flex;
+//    flex-direction: column;
+//    align-items: center;
+//    padding: 10px;
+//    background-color: #002C6E; // 适应新的背景颜色
+//
+//    .logo {
+//      max-width: 100%;
+//      height: auto; // Adjust the size as needed
+//    }
+//
+//    .title {
+//      font-weight: 400;
+//      font-size: 16px; // Adjust the font size as needed
+//      color: black;
+//      margin: 10px 0; // Add margin for spacing
+//    }
+//  }
+//
+//  // 为子元素添加类名来调整字体大小
+//  .small-font {
+//    font-size: 10px; // 将字体大小调整为10px
+//  }
+//}
 
-  .ant-menu-item-selected, .ant-menu-item-active {
-    background-color: #006AAC; // 修改激活项背景颜色
-  }
-
-  .logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background-color: #002C6E; // 适应新的背景颜色
-
-    .logo {
-      max-width: 100%;
-      height: auto; // Adjust the size as needed
-    }
-
-    .title {
-      font-weight: 400;
-      font-size: 16px; // Adjust the font size as needed
-      color: black;
-      margin: 10px 0; // Add margin for spacing
-    }
-  }
-
-  // 为子元素添加类名来调整字体大小
-  .small-font {
-    font-size: 10px; // 将字体大小调整为10px
-  }
+.sider-menu .ant-menu-item-selected,
+.sider-menu .ant-menu-submenu-selected {
+  background-color: #F6F7FB !important; /* 激活项背景颜色 */
+  color: #000000 !important; /* 激活项字体颜色为黑色 */
+}
+.sider-menu .ant-menu-item-selected > a,
+.sider-menu .ant-menu-submenu-selected > a {
+  color: #000000 !important; /* 链接的字体颜色为黑色 */
 }
 
 /* 在合适的地方添加该样式，确保生效 */

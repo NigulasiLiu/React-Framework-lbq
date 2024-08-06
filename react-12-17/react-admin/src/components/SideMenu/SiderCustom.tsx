@@ -125,6 +125,7 @@ import SiderMenu from './SiderMenu';
 import { useAlita } from 'redux-alita';
 import { useSwitch } from '../../utils/hooks';
 import { usePrevious } from 'ahooks';
+import './SiderMenu.css'
 import logo from '../../style/imgs/CSPG_dark.png';
 
 const { Sider } = Layout;
