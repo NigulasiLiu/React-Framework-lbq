@@ -216,110 +216,18 @@ const renderBLPieChart = (
 
 class Dashboard extends React.Component<DashboardProps> {
 
-
-    // renderVulDataCard1 = (OriginData: any[],last7totalVulsum:number) => {
-    //     if (OriginData !== undefined) {
-    //         // 确保OriginData总是作为数组处理
-    //         let highRiskCount = 0;
-    //         let mediumRiskCount = 0;
-    //         let lowRiskCount = 0;
-    //         let totalExpResultCount = 0;
-    //         const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
-    //         originDataArray.forEach(item => {
-    //             totalExpResultCount += item.vul_detection_exp_result.length;
-    //         });
-    //         const getRiskLevel = (bugExp: any) => {
-    //             if (cveData[bugExp]) {
-    //                 return cveData[bugExp].risk_level;
-    //             }
-    //             return 'low'; // 默认风险等级为低
-    //         };
-    //         // 从 localStorage 中读取被忽略的项
-    //         const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
-    //         // OriginData.forEach(record => {
-    //         //     record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
-    //         //         // 检查是否该项被忽略
-    //         //         const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-    //         //         if (ignoredBugExps.includes(exp.bug_exp)) {
-    //         //             return; // 如果被忽略，跳过计数
-    //         //         }
-    //         //
-    //         //         const riskLevel = getRiskLevel(exp.bug_exp);
-    //         //         if (riskLevel === 'high') {
-    //         //             highRiskCount++;
-    //         //         } else if (riskLevel === 'medium') {
-    //         //             mediumRiskCount++;
-    //         //         } else if (riskLevel === 'low') {
-    //         //             lowRiskCount++;
-    //         //         }
-    //         //     });
-    //         // });
-    //         const currentTime = new Date().getTime(); // 当前时间的时间戳
-    //         const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 七天的时间戳毫秒数
-    //
-    //         OriginData.forEach(record => {
-    //             record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
-    //                 // 检查是否该项被忽略
-    //                 const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-    //                 if (ignoredBugExps.includes(exp.bug_exp)) {
-    //                     return; // 如果被忽略，跳过计数
-    //                 }
-    //
-    //                 // 计算数据的时间戳
-    //                 const expScanTime = new Date(exp.scanTime * 1000).getTime();
-    //                 if ((currentTime - expScanTime) > sevenDaysInMillis) {
-    //                     return; // 如果数据不在七天以内，跳过计数
-    //                 }
-    //
-    //                 const riskLevel = getRiskLevel(exp.bug_exp);
-    //                 if (riskLevel === 'high') {
-    //                     highRiskCount++;
-    //                 } else if (riskLevel === 'medium') {
-    //                     mediumRiskCount++;
-    //                 } else if (riskLevel === 'low') {
-    //                     lowRiskCount++;
-    //                 }
-    //             });
-    //         });
-    //         return (
-    //             <div>
-    //                 <DataCard
-    //                     title="待处理漏洞"
-    //                     value={last7totalVulsum}
-    //                     valueItem={[
-    //                         { value: highRiskCount, backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-    //                         { value: mediumRiskCount, backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-    //                         { value: lowRiskCount, backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
-    //                         // { value: '0', backgroundColor: '#468DFF', fontSize: '14px', color: 'white' },
-    //                     ]}
-    //                     panelId="/app/RiskManagement/VulnerabilityList"
-    //                     height="75px"
-    //                     width={"220px"}
-    //                     backgroundColor="#ffffff"
-    //                     navigate={true}
-    //                     showTopBorder={false}
-    //                     showBottomBorder={false}
-    //                     showLeftBorder={false}
-    //                     showRightBorder={false}
-    //                 />
-    //             </div>
-    //         );
-    //     } else {
-    //         return (
-    //             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-    //                 <Card bordered={true}
-    //                       style={{ backgroundColor: '#ffffff', width: '100%' }}>
-    //                     <LoadingOutlined style={{ fontSize: '3em' }} />
-    //                 </Card>
-    //             </div>);
-    //     }
-    // };
+    getIgnoredVulnerabilitiesCount = (ignoredBugExps_array: { [uuid: string]: string[] }) => {
+        return Object.values(ignoredBugExps_array).reduce((count, bugExps) => count + bugExps.length, 0);
+    };
     renderVulDataCard = (OriginData: any[], last7totalVulsum: number) => {
         let highRiskCount = 0;
         let mediumRiskCount = 0;
         let lowRiskCount = 0;
         let totalExpResultCount = 0;
 
+        // 从 localStorage 中读取被忽略的项
+        // const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+        // const ignoredVulnerabilitiesCount = this.getIgnoredVulnerabilitiesCount(ignoredBugExps_array);
         if (OriginData !== undefined) {
             // 确保 OriginData 总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
@@ -337,8 +245,6 @@ class Dashboard extends React.Component<DashboardProps> {
                 return 'low'; // 默认风险等级为低
             };
 
-            // 从 localStorage 中读取被忽略的项
-            const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
 
             const currentTime = new Date().getTime(); // 当前时间的时间戳
             const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 七天的时间戳毫秒数
@@ -346,11 +252,11 @@ class Dashboard extends React.Component<DashboardProps> {
             originDataArray.forEach(record => {
                 if (record.vul_detection_exp_result) {
                     record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
-                        // 检查是否该项被忽略
-                        const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-                        if (ignoredBugExps.includes(exp.bug_exp)) {
-                            return; // 如果被忽略，跳过计数
-                        }
+                        // 检查是否该项被忽略---------现在仍然展示包括被忽略的项的计数
+                        // const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+                        // if (ignoredBugExps.includes(exp.bug_exp)) {
+                        //     return; // 如果被忽略，跳过计数
+                        // }
 
                         // 计算数据的时间戳
                         const expScanTime = new Date(exp.scanTime * 1000).getTime();

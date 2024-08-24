@@ -1555,9 +1555,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 />
                                                             </Col>
                                                             <Col span={7} style={{
-                                                                width: '420px', height: '100px',
+                                                                width: '450px', height: '100px',
                                                                 paddingTop: '5px', marginTop: '10px',
-                                                                transform: 'translateX(0px) translateY(0px)',
+                                                                transform: 'translateX(-10px) translateY(0px)',
                                                             }}>
                                                                 <StatusPanel statusData={vulScanResultData}
                                                                              orientation="vertical" />
@@ -1933,7 +1933,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     return (
                         <div style={{
                             // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                            fontWeight: 'bold',
+                            fontFamily: '宋体, sans-serif', fontWeight: 'bold',
                         }}>
                             <BreadcrumbCustom />
                             <span>
@@ -1949,11 +1949,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                             style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                                         >
                                             <Menu.Item key="hostoverview">主机概览</Menu.Item>
-                                            <Menu.Item key="hostAlertInfo">安全告警（AlarmTotal）</Menu.Item>
+                                            <Menu.Item key="hostAlertInfo">安全告警（Alert Total）</Menu.Item>
                                             {/*<Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>*/}
-                                            <Menu.Item key="vulnerabilityDetailList">漏洞风险（VulnTotal）</Menu.Item>
+                                            <Menu.Item key="vulnerabilityDetailList">漏洞风险（Vulnerability Total）</Menu.Item>
                                             <Menu.Item
-                                                key="baseLineDetectDetailList">基线风险（BaselineTotal）</Menu.Item>
+                                                key="baseLineDetectDetailList">基线风险（Baseline Total）</Menu.Item>
                                             {/*<Menu.Item key="honeyPot">蜜罐防御（HoneyPot）</Menu.Item>*/}
                                             {/*<Menu.Item key="TTPs">威胁狩猎（TTPs）</Menu.Item>*/}
                                             {/*<Menu.Item key="microIsolation">文件隔离（MicroIsolate）</Menu.Item>*/}

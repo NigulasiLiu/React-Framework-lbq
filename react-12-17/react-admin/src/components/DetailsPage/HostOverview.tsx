@@ -213,11 +213,12 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                         </Col>
                                         <Col span={2}> </Col>
                                         <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
-                                            <StatusPanel statusData={baselineAlertData} orientation="vertical" />
-                                        </div>
+                                            {/*<div style={{ transform: 'translateX(220px) translateY(-140px)' }}>*/}
+                                                <StatusPanel statusData={baselineAlertData} orientation="vertical" />
+                                            </div>
                                     </Row>
                                 </div>
-                            );
+                        );
                         }
                     } else {
                         return (
@@ -253,7 +254,7 @@ class HostOverview extends React.Component<HostOverviewProps, HostOverviewState>
                                             />
                                         </Col>
                                         <Col span={2}> </Col>
-                                        <div style={{ transform: 'translateX(30px) translateY(50px)' }}>
+                                        <div style={{ transform: 'translateX(220px) translateY(-140px)' }}>
                                             <StatusPanel statusData={baselineAlertData} orientation="vertical" />
                                         </div>
                                     </Row>
