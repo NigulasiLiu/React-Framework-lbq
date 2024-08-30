@@ -47,7 +47,6 @@ import DataDisplayTable from '../OWLTable/DataDisplayTable';
 import { cveData, determineOS } from '../ContextAPI/DataService';
 import { blueButton } from '../../style/config';
 
-
 interface DetailsPageProps extends RouteComponentProps<{ uuid: string }> {
     host_name: string;
 }
@@ -57,29 +56,27 @@ interface DetailsPageState {
     dataInitialized: boolean;
     refreshCounter: number;
 
-
     dataSource: any[];
 
-    currentRecord: any,
+    currentRecord: any;
     selectedVulnUuid: string;
     ignoredVulnerabilitiesCount: number;
     doneVulnerabilitiesCount: number;
-    showModal: boolean,
+    showModal: boolean;
     vulnColumns: any[];
     expColumns: any[];
     fingerColumns: any[];
     pocColumns: any[];
     ignoredBugExps_array: { [uuid: string]: string[] }; // 修改为键值对形式存储
-    ignoredBugExps: any[], // 添加被忽略的 bug_exp 数组
+    ignoredBugExps: any[]; // 添加被忽略的 bug_exp 数组
     ignoredBugExpsData: { uuid: string; bugExps: string }[]; // 新增
     showIgnoredModal: boolean; // 新增
 
-    showBLModal: boolean,
+    showBLModal: boolean;
     ignoredBLCheckItem_array: { [uuid: string]: string[] }; // 修改为键值对形式存储
-    ignoredBLCheckItem: any[], // 添加被忽略的 check_name 数组
+    ignoredBLCheckItem: any[]; // 添加被忽略的 check_name 数组
     ignoredBLCheckItemData: { uuid: string; BLCheckItem: string }[]; // 新增
     blColumns: any[];
-
 
     isSidebarOpen: boolean;
     currentTime: string;
@@ -91,15 +88,13 @@ interface DetailsPageState {
     activeIndex: any;
     areRowsSelected: boolean;
 
-
     statusData: StatusItem[]; // 初始状态
     currentPanel: string;
     // 新增状态字段，记录每个面板的选中行键
     panelSelectedRowKeys: {
         [panelName: string]: React.Key[];
     };
-};
-
+}
 
 class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     constructor(props: any) {
@@ -107,8 +102,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         const queryParams = new URLSearchParams(this.props.location.search);
         const host_uuid = queryParams.get('uuid') || 'default';
 
-        const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
-        const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
+        const ignoredBugExps_array = JSON.parse(
+            localStorage.getItem('ignoredBugExps_array') || '{}'
+        );
+        const ignoredBLCheckItem_array = JSON.parse(
+            localStorage.getItem('ignoredBLCheckItem_array') || '{}'
+        );
         this.state = {
             host_uuid,
             dataInitialized: false,
@@ -170,41 +169,52 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     title: '主机名称',
                     dataIndex: 'uuid',
                     key: 'uuid',
-                    filterIcon: (filtered: boolean) => <SearchOutlined
-                        style={{ color: filtered ? '#1890ff' : undefined }} />,
+                    filterIcon: (filtered: boolean) => (
+                        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+                    ),
                     render: (text: string, record: vulDetectColumnsType) => (
                         <div>
                             <div>
-                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-                                    <Button style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#4086FF',
-                                        padding: '0 0',
-                                    }}>
+                                <Link
+                                    to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
+                                    target="_blank"
+                                >
+                                    <Button
+                                        style={{
+                                            fontWeight: 'bold',
+                                            border: 'transparent',
+                                            backgroundColor: 'transparent',
+                                            color: '#4086FF',
+                                            padding: '0 0',
+                                        }}
+                                    >
                                         <Tooltip title={record.uuid}>
-                                            <div style={{
-                                                whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                maxWidth: '80px',
-                                            }}>
-                                                {record.uuid || '-'}
+                                            <div
+                                                style={{
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    maxWidth: '150px',
+                                                }}
+                                            >
+                                                {'充电桩' + record.uuid || '-'}
                                             </div>
                                         </Tooltip>
                                     </Button>
                                 </Link>
                             </div>
-                            <div style={{
-                                fontSize: 'small', // 字体更小
-                                background: '#f0f0f0', // 灰色背景
-                                padding: '2px 4px', // 轻微内边距
-                                borderRadius: '2px', // 圆角边框
-                                display: 'inline-block', // 使得背景色仅围绕文本
-                                marginTop: '4px', // 上边距
-                            }}>
-                                <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                            <div
+                                style={{
+                                    fontSize: 'small', // 字体更小
+                                    background: '#f0f0f0', // 灰色背景
+                                    padding: '2px 4px', // 轻微内边距
+                                    borderRadius: '2px', // 圆角边框
+                                    display: 'inline-block', // 使得背景色仅围绕文本
+                                    marginTop: '4px', // 上边距
+                                }}
+                            >
+                                <span style={{ fontWeight: 'bold' }}>内网/公网 IP:</span>{' '}
+                                {record.ip}
                             </div>
                         </div>
                     ),
@@ -216,18 +226,15 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 {
                     title: '扫描时刻',
                     dataIndex: 'scanTime',
-                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    render: (text: string) =>
+                        moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
                     sorter: (a: any, b: any) => parseFloat(a.scanTime) - parseFloat(b.scanTime),
                 },
                 {
                     title: '扫描类型',
                     dataIndex: 'scanType',
                     render: (text: string, record: any) => {
-                        return (
-                            <span>
-                                {record.scanType === '1' ? 'Nmap Scan' : '-'}
-                            </span>
-                        );
+                        return <span>{record.scanType === '1' ? 'Nmap Scan' : '-'}</span>;
                     },
                 },
                 {
@@ -238,15 +245,19 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             {/* <Button onClick={() => this.toggleVulOperationModal(record)} className="custom-link-button"
                         style={{fontWeight:'bold',border:'transparent',backgroundColor:'transparent',color:'#4086FF',marginRight: '20px',
                         padding:'0 0' }}>忽略</Button> */}
-                            <Button onClick={() => this.toggleDetailSidebar(record.uuid)} className="custom-link-button"
-                                    style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#4086FF',
-                                        padding: '0 0',
-                                    }}
-                            >详情</Button>
+                            <Button
+                                onClick={() => this.toggleDetailSidebar(record.uuid)}
+                                className="custom-link-button"
+                                style={{
+                                    fontWeight: 'bold',
+                                    border: 'transparent',
+                                    backgroundColor: 'transparent',
+                                    color: '#4086FF',
+                                    padding: '0 0',
+                                }}
+                            >
+                                详情
+                            </Button>
                         </div>
                     ),
                 },
@@ -256,24 +267,34 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 // { title: 'id', dataIndex: 'id', key: 'id' },
                 { title: '漏洞', dataIndex: 'bug_exp', key: 'bug_exp' },
                 {
-                    title: '扫描时间', dataIndex: 'scanTime', key: 'scanTime',
-                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    title: '扫描时间',
+                    dataIndex: 'scanTime',
+                    key: 'scanTime',
+                    render: (text: string) =>
+                        moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
                     //sorter: (a: any, b: any) => parseFloat(a.scanTime) - parseFloat(b.scanTime),
                 },
                 {
                     title: '操作',
                     dataIndex: 'operation',
                     render: (text: string, record: any) => (
-                        <Button onClick={() => this.toggleVulOperationModal(record)} className="custom-link-button"
-                                disabled=
-                                    {(JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}')[record.uuid] || [])
-                                        .includes(record.bug_exp)}
-                                style={{
-                                    fontWeight: 'bold',
-                                    border: 'transparent',
-                                    backgroundColor: 'transparent',
-                                    color: '#4086FF',
-                                }}>忽略</Button>
+                        <Button
+                            onClick={() => this.toggleVulOperationModal(record)}
+                            className="custom-link-button"
+                            disabled={(
+                                JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}')[
+                                    record.uuid
+                                ] || []
+                            ).includes(record.bug_exp)}
+                            style={{
+                                fontWeight: 'bold',
+                                border: 'transparent',
+                                backgroundColor: 'transparent',
+                                color: '#4086FF',
+                            }}
+                        >
+                            忽略
+                        </Button>
                     ),
                 },
             ],
@@ -283,8 +304,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 { title: '指纹', dataIndex: 'finger', key: 'finger' },
                 { title: 'URL', dataIndex: 'url', key: 'url' },
                 {
-                    title: '扫描时间', dataIndex: 'scanTime', key: 'scanTime',
-                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    title: '扫描时间',
+                    dataIndex: 'scanTime',
+                    key: 'scanTime',
+                    render: (text: string) =>
+                        moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
                     //sorter: (a: any, b: any) => parseFloat(a.scanTime) - parseFloat(b.scanTime),
                 },
             ],
@@ -297,7 +321,8 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     title: '扫描时间',
                     dataIndex: 'scanTime',
                     key: 'scanTime',
-                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    render: (text: string) =>
+                        moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
                 },
             ],
             doneVulnerabilitiesCount: 0,
@@ -306,7 +331,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
             ignoredBLCheckItem_array,
             ignoredBLCheckItem: [], // 添加被忽略的 check_name 数组
-            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array, host_uuid),
+            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(
+                ignoredBLCheckItem_array,
+                host_uuid
+            ),
             isSidebarOpen: false,
             currentTime: new Date().toLocaleString(), // 添加用于存储当前时间的状态变量
             baselineTableReloadCount: 0,
@@ -321,41 +349,52 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     title: '主机名称',
                     dataIndex: 'uuid',
                     key: 'uuid',
-                    filterIcon: (filtered: boolean) => <SearchOutlined
-                        style={{ color: filtered ? '#1890ff' : undefined }} />,
+                    filterIcon: (filtered: boolean) => (
+                        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+                    ),
                     render: (text: string, record: vulDetectColumnsType) => (
                         <div>
                             <div>
-                                <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`} target="_blank">
-                                    <Button style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#4086FF',
-                                        padding: '0 0',
-                                    }}>
+                                <Link
+                                    to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
+                                    target="_blank"
+                                >
+                                    <Button
+                                        style={{
+                                            fontWeight: 'bold',
+                                            border: 'transparent',
+                                            backgroundColor: 'transparent',
+                                            color: '#4086FF',
+                                            padding: '0 0',
+                                        }}
+                                    >
                                         <Tooltip title={record.uuid}>
-                                            <div style={{
-                                                whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                maxWidth: '80px',
-                                            }}>
-                                                {record.uuid || '-'}
+                                            <div
+                                                style={{
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    maxWidth: '150px',
+                                                }}
+                                            >
+                                                {'充电桩' + record.uuid || '-'}
                                             </div>
                                         </Tooltip>
                                     </Button>
                                 </Link>
                             </div>
-                            <div style={{
-                                fontSize: 'small', // 字体更小
-                                background: '#f0f0f0', // 灰色背景
-                                padding: '2px 4px', // 轻微内边距
-                                borderRadius: '2px', // 圆角边框
-                                display: 'inline-block', // 使得背景色仅围绕文本
-                                marginTop: '4px', // 上边距
-                            }}>
-                                <span style={{ fontWeight: 'bold' }}>内网IP:</span> {record.ip}
+                            <div
+                                style={{
+                                    fontSize: 'small', // 字体更小
+                                    background: '#f0f0f0', // 灰色背景
+                                    padding: '2px 4px', // 轻微内边距
+                                    borderRadius: '2px', // 圆角边框
+                                    display: 'inline-block', // 使得背景色仅围绕文本
+                                    marginTop: '4px', // 上边距
+                                }}
+                            >
+                                <span style={{ fontWeight: 'bold' }}>内网/公网 IP:</span>{' '}
+                                {record.ip}
                             </div>
                         </div>
                     ),
@@ -364,16 +403,19 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     title: '基线名称',
                     dataIndex: 'check_name',
 
-                    filterIcon: (filtered: boolean) => <SearchOutlined
-                        style={{ color: filtered ? '#1890ff' : undefined }} />,
+                    filterIcon: (filtered: boolean) => (
+                        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+                    ),
                     render: (text: string, record: baselineDetectColumnsType) => (
                         <Tooltip title={record.check_name}>
-                            <div style={{
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                maxWidth: '150px',
-                            }}>
+                            <div
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '150px',
+                                }}
+                            >
                                 {record.check_name}
                             </div>
                         </Tooltip>
@@ -386,28 +428,36 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 {
                     title: '调整建议',
                     dataIndex: 'adjustment_requirement',
-                    filters: [{ text: '建议调整', value: '建议调整' }, { text: '自行判断', value: '自行判断' },
+                    filters: [
+                        { text: '建议调整', value: '建议调整' },
+                        { text: '自行判断', value: '自行判断' },
                     ],
-                    onFilter: (value: string | number | boolean, record: any) => record.adjustment_requirement.includes(value as string),
+                    onFilter: (value: string | number | boolean, record: any) =>
+                        record.adjustment_requirement.includes(value as string),
 
                     render: (text: string, record: baselineDetectColumnsType) => (
-                        <Tooltip title={record.instruction}>
-                            {text}
-                        </Tooltip>
+                        <Tooltip title={record.instruction}>{text}</Tooltip>
                     ),
                 },
                 {
                     title: '状态',
                     dataIndex: 'status',
-                    filters: [{ text: 'true', value: 'true' }, { text: 'fail', value: 'fail' },
+                    filters: [
+                        { text: 'true', value: 'true' },
+                        { text: 'fail', value: 'fail' },
                     ],
-                    onFilter: (value: string | number | boolean, record: baselineDetectColumnsType) => record.status.includes(value as string),
+                    onFilter: (
+                        value: string | number | boolean,
+                        record: baselineDetectColumnsType
+                    ) => record.status.includes(value as string),
                 },
                 {
                     title: '最新扫描时间',
                     dataIndex: 'last_checked',
-                    render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-                    sorter: (a: any, b: any) => parseFloat(a.last_checked) - parseFloat(b.last_checked),
+                    render: (text: string) =>
+                        moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+                    sorter: (a: any, b: any) =>
+                        parseFloat(a.last_checked) - parseFloat(b.last_checked),
                 },
                 {
                     title: '操作',
@@ -424,22 +474,25 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             {/*        padding: '0 0',*/}
                             {/*    }} className="custom-link-button">详情</Button>*/}
                             {/*</Link>*/}
-                            <Button onClick={() => this.toggleBLOperationModal(record)} className="custom-link-button"
-                                    style={{
-                                        fontWeight: 'bold',
-                                        border: 'transparent',
-                                        backgroundColor: 'transparent',
-                                        color: '#4086FF',
-                                        padding: '0 0',
-                                    }}>忽略</Button>
+                            <Button
+                                onClick={() => this.toggleBLOperationModal(record)}
+                                className="custom-link-button"
+                                style={{
+                                    fontWeight: 'bold',
+                                    border: 'transparent',
+                                    backgroundColor: 'transparent',
+                                    color: '#4086FF',
+                                    padding: '0 0',
+                                }}
+                            >
+                                忽略
+                            </Button>
                         </div>
                     ),
-
                 },
             ],
             deleteIndex: -1,
             activeIndex: [-1, -1, -1, -1], // 假设有4个扇形图
-
 
             currentPanel: 'hostoverview', // 默认选中的面板
 
@@ -447,12 +500,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             areRowsSelected: false,
             panelSelectedRowKeys: {
                 HostOverview: [],
-                'hostAlertInfo': [],
-                'vulnerabilityalertlist': [],
-                'baselineDetectalertlist': [],
-                'runningalertlist': [],
-                'virusscanning': [],
-                'assetfingerprint': [],
+                hostAlertInfo: [],
+                vulnerabilityalertlist: [],
+                baselineDetectalertlist: [],
+                runningalertlist: [],
+                virusscanning: [],
+                assetfingerprint: [],
                 // 根据您的应用添加或删除面板
             },
         };
@@ -464,7 +517,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         this.setState({
             host_uuid,
         });
-
     }
 
     filteredData = (originData: any[], name: string) => {
@@ -474,7 +526,11 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 data: [],
                 error: (
                     <div>
-                        <Alert message={`No ${name} available for this host.`} type="warning" showIcon />
+                        <Alert
+                            message={`No ${name} available for this host.`}
+                            type="warning"
+                            showIcon
+                        />
                     </div>
                 ),
             };
@@ -486,19 +542,27 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 data: [],
                 error: (
                     <div>
-                        <Alert message={`No ${name} data available for this host.`} type="warning" showIcon />
+                        <Alert
+                            message={`No ${name} data available for this host.`}
+                            type="warning"
+                            showIcon
+                        />
                     </div>
                 ),
             };
         }
 
-        const filteredData = OriginDataArray.filter(Item => Item.uuid === this.state.host_uuid);
+        const filteredData = OriginDataArray.filter((Item) => Item.uuid === this.state.host_uuid);
         if (filteredData.length === 0) {
             return {
                 data: [],
                 error: (
                     <div>
-                        <Alert message={`No ${name} data available for this host.`} type="warning" showIcon />
+                        <Alert
+                            message={`No ${name} data available for this host.`}
+                            type="warning"
+                            showIcon
+                        />
                     </div>
                 ),
             };
@@ -507,17 +571,23 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         return { data: filteredData, error: null };
     };
 
-    getIgnoredBugExpsData = (ignoredBugExps_array: { [uuid: string]: string[] }, host_uuid: string) => {
+    getIgnoredBugExpsData = (
+        ignoredBugExps_array: { [uuid: string]: string[] },
+        host_uuid: string
+    ) => {
         // 使用 filter 方法过滤出 uuid 等于 host_uuid 的数据，并进行格式转换
         return Object.keys(ignoredBugExps_array)
-            .filter(uuid => uuid === host_uuid)
-            .map(uuid => ({
+            .filter((uuid) => uuid === host_uuid)
+            .map((uuid) => ({
                 uuid,
                 bugExps: ignoredBugExps_array[uuid].join(', '),
             }));
     };
 
-    getIgnoredVulnerabilitiesCount = (ignoredBugExps_array: { [uuid: string]: string[] }, host_uuid: string) => {
+    getIgnoredVulnerabilitiesCount = (
+        ignoredBugExps_array: { [uuid: string]: string[] },
+        host_uuid: string
+    ) => {
         // 使用 reduce 方法遍历 ignoredBugExps_array 中的值数组，并累加漏洞数量
         return Object.keys(ignoredBugExps_array).reduce((count, uuid) => {
             // 判断 uuid 是否等于 host_uuid，并累加相应的漏洞数量
@@ -557,7 +627,9 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     pagination={false}
                     rowKey="id"
                     title={() => '漏洞检测结果'}
-                    rowClassName={(record) => isIgnored(record.uuid, record.bug_exp) ? 'ignored-row' : ''}
+                    rowClassName={(record) =>
+                        isIgnored(record.uuid, record.bug_exp) ? 'ignored-row' : ''
+                    }
                 />
                 {/* 指纹识别结果子表格 */}
                 <Table
@@ -581,13 +653,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
     //对漏洞条目的操作
     toggleVulOperationModal = (record = null) => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             showModal: !prevState.showModal,
             currentRecord: record, // 设置当前记录，以便后续操作
         }));
     };
     toggleModal = (record = null) => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             showModal: !prevState.showModal,
             currentRecord: record, // 设置当前记录，以便后续操作
         }));
@@ -606,7 +678,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             this.setState({
                 currentRecord: null,
                 ignoredBugExps_array,
-                ignoredBugExpsData: this.getIgnoredBugExpsData(ignoredBugExps_array, this.state.host_uuid),
+                ignoredBugExpsData: this.getIgnoredBugExpsData(
+                    ignoredBugExps_array,
+                    this.state.host_uuid
+                ),
             });
         } catch (error) {
             console.error('请求错误:', error);
@@ -628,7 +703,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
             if (1) {
                 // 如果API调用成功，更新状态以增加累计忽略的漏洞计数
-                this.setState(prevState => ({
+                this.setState((prevState) => ({
                     doneVulnerabilitiesCount: prevState.doneVulnerabilitiesCount + 1,
                 }));
             } else {
@@ -664,8 +739,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         <Button key="back" onClick={this.handleCancel} {...blueButton}>
                             取消
                         </Button>,
-                        <Button key="submit"
-                                onClick={this.handleOk}>
+                        <Button key="submit" onClick={this.handleOk}>
                             是
                         </Button>,
                     ]}
@@ -677,21 +751,30 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         );
     };
 
-
     showIgnoredExpsModal = () => {
-        const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+        const ignoredBugExps_array = JSON.parse(
+            localStorage.getItem('ignoredBugExps_array') || '{}'
+        );
         this.setState({
             showIgnoredModal: true,
-            ignoredBugExpsData: this.getIgnoredBugExpsData(ignoredBugExps_array, this.state.host_uuid),
+            ignoredBugExpsData: this.getIgnoredBugExpsData(
+                ignoredBugExps_array,
+                this.state.host_uuid
+            ),
         });
     };
     handleRemoveIgnored = (uuid: string) => {
-        const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+        const ignoredBugExps_array = JSON.parse(
+            localStorage.getItem('ignoredBugExps_array') || '{}'
+        );
         delete ignoredBugExps_array[uuid];
         localStorage.setItem('ignoredBugExps_array', JSON.stringify(ignoredBugExps_array));
         this.setState({
             ignoredBugExps_array,
-            ignoredBugExpsData: this.getIgnoredBugExpsData(ignoredBugExps_array, this.state.host_uuid),
+            ignoredBugExpsData: this.getIgnoredBugExpsData(
+                ignoredBugExps_array,
+                this.state.host_uuid
+            ),
         });
     };
     renderIgnoreModal = () => {
@@ -704,7 +787,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     onCancel={() => this.setState({ showIgnoredModal: false })}
                     footer={null}
                     width={600}
-                    style={{ top: 20,fontFamily:'宋体' }}
+                    style={{ top: 20, fontFamily: '宋体' }}
                 >
                     <Table
                         className="customTable"
@@ -718,8 +801,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 key: 'uuid',
                                 render: (text: string, record: any) => (
                                     <div>
-                                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
-                                              target="_blank">
+                                        <Link
+                                            to={`/app/detailspage?uuid=${encodeURIComponent(
+                                                record.uuid
+                                            )}`}
+                                            target="_blank"
+                                        >
                                             <Button
                                                 style={{
                                                     fontWeight: 'bold',
@@ -738,7 +825,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             maxWidth: '150px', // 调整最大宽度
                                                         }}
                                                     >
-                                                        {record.uuid || '-'}
+                                                        {'充电桩' + record.uuid || '-'}
                                                     </div>
                                                 </Tooltip>
                                             </Button>
@@ -786,7 +873,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 ),
                             },
                         ]}
-
                         scroll={{ y: 240 }}
                     />
                 </Modal>
@@ -799,7 +885,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         this.setCurrentTime();
     };
     toggleDetailSidebar = (uuid: string) => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             isSidebarOpen: !prevState.isSidebarOpen,
             selectedVulnUuid: uuid,
         }));
@@ -811,7 +897,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     };
     //对基线检查条目的操作
     toggleBLOperationModal = (record: any) => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             showBLModal: !prevState.showBLModal,
             currentRecord: record, // 设置当前记录，以便后续操作
         }));
@@ -829,8 +915,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                         <Button key="back" onClick={this.handleblCancel} {...blueButton}>
                             取消
                         </Button>,
-                        <Button key="submit"
-                                onClick={this.handleblOk}>
+                        <Button key="submit" onClick={this.handleblOk}>
                             是
                         </Button>,
                     ]}
@@ -855,17 +940,23 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         this.toggleBLOperationModal([]); // 关闭模态框
     };
 
-    getIgnoredBLCheckItemData = (ignoredBLCheckItem_array: { [uuid: string]: string[] }, host_uuid: string) => {
+    getIgnoredBLCheckItemData = (
+        ignoredBLCheckItem_array: { [uuid: string]: string[] },
+        host_uuid: string
+    ) => {
         // 使用 filter 方法过滤出 uuid 等于 host_uuid 的数据，并进行格式转换
         return Object.keys(ignoredBLCheckItem_array)
-            .filter(uuid => uuid === host_uuid)
-            .map(uuid => ({
+            .filter((uuid) => uuid === host_uuid)
+            .map((uuid) => ({
                 uuid,
                 BLCheckItem: ignoredBLCheckItem_array[uuid].join(', '),
             }));
     };
 
-    getIgnoredBLItemCount = (ignoredBLCheckItem_array: { [uuid: string]: string[] }, host_uuid: string) => {
+    getIgnoredBLItemCount = (
+        ignoredBLCheckItem_array: { [uuid: string]: string[] },
+        host_uuid: string
+    ) => {
         // 使用 reduce 方法遍历 ignoredBLCheckItem_array 中的值数组，并累加数量
         return Object.keys(ignoredBLCheckItem_array).reduce((count, uuid) => {
             // 判断 uuid 是否等于 host_uuid，并累加相应的数量
@@ -885,31 +976,47 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             }
             // message.info("record.uuid:"+record.uuid)
             ignoredBLCheckItem_array[record.uuid].push(record.check_name);
-            localStorage.setItem('ignoredBLCheckItem_array', JSON.stringify(ignoredBLCheckItem_array));
+            localStorage.setItem(
+                'ignoredBLCheckItem_array',
+                JSON.stringify(ignoredBLCheckItem_array)
+            );
 
             this.setState({
                 currentRecord: null,
                 ignoredBLCheckItem_array,
-                ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array, this.state.host_uuid),
+                ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(
+                    ignoredBLCheckItem_array,
+                    this.state.host_uuid
+                ),
             });
         } catch (error) {
             console.error('请求错误:', error);
         }
     };
     showIgnoredBLCheckItemsModal = () => {
-        const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
+        const ignoredBLCheckItem_array = JSON.parse(
+            localStorage.getItem('ignoredBLCheckItem_array') || '{}'
+        );
         this.setState({
             showIgnoredModal: true,
-            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array, this.state.host_uuid),
+            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(
+                ignoredBLCheckItem_array,
+                this.state.host_uuid
+            ),
         });
     };
     handleRemoveBLIgnored = (uuid: string) => {
-        const ignoredBLCheckItem_array = JSON.parse(localStorage.getItem('ignoredBLCheckItem_array') || '{}');
+        const ignoredBLCheckItem_array = JSON.parse(
+            localStorage.getItem('ignoredBLCheckItem_array') || '{}'
+        );
         delete ignoredBLCheckItem_array[uuid];
         localStorage.setItem('ignoredBLCheckItem_array', JSON.stringify(ignoredBLCheckItem_array));
         this.setState({
             ignoredBLCheckItem_array,
-            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(ignoredBLCheckItem_array, this.state.host_uuid),
+            ignoredBLCheckItemData: this.getIgnoredBLCheckItemData(
+                ignoredBLCheckItem_array,
+                this.state.host_uuid
+            ),
         });
     };
     renderBLIgnoreModal = () => {
@@ -922,7 +1029,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     onCancel={() => this.setState({ showIgnoredModal: false })}
                     footer={null}
                     width={600}
-                    style={{ top: 20,fontFamily:'宋体' }}
+                    style={{ top: 20, fontFamily: '宋体' }}
                 >
                     <Table
                         className="customTable"
@@ -936,8 +1043,12 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 key: 'uuid',
                                 render: (text: string, record: any) => (
                                     <div>
-                                        <Link to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
-                                              target="_blank">
+                                        <Link
+                                            to={`/app/detailspage?uuid=${encodeURIComponent(
+                                                record.uuid
+                                            )}`}
+                                            target="_blank"
+                                        >
                                             <Button
                                                 style={{
                                                     fontWeight: 'bold',
@@ -956,7 +1067,7 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             maxWidth: '150px', // 调整最大宽度
                                                         }}
                                                     >
-                                                        {record.uuid || '-'}
+                                                        {'充电桩' + record.uuid || '-'}
                                                     </div>
                                                 </Tooltip>
                                             </Button>
@@ -1004,7 +1115,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 ),
                             },
                         ]}
-
                         scroll={{ y: 240 }}
                     />
                 </Modal>
@@ -1012,15 +1122,20 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
         );
     };
 
-
     setCurrentTime = () => {
         const now = new Date();
         // 格式化时间为 YYYY-MM-DD HH:MM:SS
-        const formattedTime = now.getFullYear() + '-' +
-            ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
-            ('0' + now.getDate()).slice(-2) + ' ' +
-            ('0' + now.getHours()).slice(-2) + ':' +
-            ('0' + now.getMinutes()).slice(-2) + ':' +
+        const formattedTime =
+            now.getFullYear() +
+            '-' +
+            ('0' + (now.getMonth() + 1)).slice(-2) +
+            '-' +
+            ('0' + now.getDate()).slice(-2) +
+            ' ' +
+            ('0' + now.getHours()).slice(-2) +
+            ':' +
+            ('0' + now.getMinutes()).slice(-2) +
+            ':' +
             ('0' + now.getSeconds()).slice(-2);
         this.setState({ currentTime: formattedTime });
     };
@@ -1031,29 +1146,54 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     handleMenuClick = (e: any) => {
         this.setState({ currentPanel: e.key });
     };
-    renderVulOrBLTable1 = (apiEndpoint: string, uuid: string, timeColumnIndex: string[], columns: any[], currentPanel: string, title: string, searchIndex: string[],
-                          VulOriginData: any[], WinBLOriginData: any[], LinuxBLOriginData: any[], os_type: string) => {
+    renderVulOrBLTable1 = (
+        apiEndpoint: string,
+        uuid: string,
+        timeColumnIndex: string[],
+        columns: any[],
+        currentPanel: string,
+        title: string,
+        searchIndex: string[],
+        VulOriginData: any[],
+        WinBLOriginData: any[],
+        LinuxBLOriginData: any[],
+        os_type: string
+    ) => {
         if (uuid !== undefined) {
             if (currentPanel == 'vulnerabilityDetailList') {
                 if (VulOriginData !== undefined) {
-                    const originDataArray = Array.isArray(VulOriginData) ? VulOriginData : [VulOriginData];
-                    const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+                    const originDataArray = Array.isArray(VulOriginData)
+                        ? VulOriginData
+                        : [VulOriginData];
+                    const filteredData = originDataArray.filter(
+                        (item) => item.uuid === this.state.host_uuid
+                    );
                     return (
                         <div style={{ width: '100%' }}>
                             <Col md={24} style={{ width: '100%', maxWidth: 2640, border: 'false' }}>
-                                <Row gutter={[8, 16]} style={{ marginTop: '0px', marginLeft: '-8px' }}>
+                                <Row
+                                    gutter={[8, 16]}
+                                    style={{ marginTop: '0px', marginLeft: '-8px' }}
+                                >
                                     <Col md={24}>
                                         <Card bordered={false}>
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                marginBottom: 10,
-                                            }}>
-                                                <h2 style={{
-                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                    fontSize: '18px',
-                                                    fontWeight: 'bold',
-                                                }}>{title}</h2>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    marginBottom: 10,
+                                                }}
+                                            >
+                                                <h2
+                                                    style={{
+                                                        fontFamily:
+                                                            'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                        fontSize: '18px',
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    {title}
+                                                </h2>
                                             </div>
 
                                             <DataDisplayTable
@@ -1068,7 +1208,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                 childrenColumnName="children" // 指定子数据的属性名称
                                                 searchColumns={['uuid', 'port']}
                                             />
-
                                         </Card>
                                     </Col>
                                 </Row>
@@ -1080,24 +1219,41 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             if (currentPanel == 'baseLineDetectDetailList') {
                 if (os_type == 'windows') {
                     if (WinBLOriginData !== undefined) {
-                        const originDataArray = Array.isArray(WinBLOriginData) ? WinBLOriginData : [WinBLOriginData];
-                        const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+                        const originDataArray = Array.isArray(WinBLOriginData)
+                            ? WinBLOriginData
+                            : [WinBLOriginData];
+                        const filteredData = originDataArray.filter(
+                            (item) => item.uuid === this.state.host_uuid
+                        );
                         return (
                             <div style={{ width: '100%' }}>
-                                <Col md={24} style={{ width: '100%', maxWidth: 2640, border: 'false' }}>
-                                    <Row gutter={[8, 16]} style={{ marginTop: '0px', marginLeft: '-8px' }}>
+                                <Col
+                                    md={24}
+                                    style={{ width: '100%', maxWidth: 2640, border: 'false' }}
+                                >
+                                    <Row
+                                        gutter={[8, 16]}
+                                        style={{ marginTop: '0px', marginLeft: '-8px' }}
+                                    >
                                         <Col md={24}>
                                             <Card bordered={false}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 10,
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '18px',
-                                                        fontWeight: 'bold',
-                                                    }}>{title}</h2>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 10,
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '18px',
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        {title}
+                                                    </h2>
                                                 </div>
 
                                                 <DataDisplayTable
@@ -1109,7 +1265,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                     currentPanel={currentPanel}
                                                     searchColumns={['uuid', 'check_name']}
                                                 />
-
                                             </Card>
                                         </Col>
                                     </Row>
@@ -1120,24 +1275,41 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 }
                 if (os_type == 'linux') {
                     if (LinuxBLOriginData !== undefined) {
-                        const originDataArray = Array.isArray(LinuxBLOriginData) ? LinuxBLOriginData : [LinuxBLOriginData];
-                        const filteredData = originDataArray.filter(item => item.uuid === this.state.host_uuid);
+                        const originDataArray = Array.isArray(LinuxBLOriginData)
+                            ? LinuxBLOriginData
+                            : [LinuxBLOriginData];
+                        const filteredData = originDataArray.filter(
+                            (item) => item.uuid === this.state.host_uuid
+                        );
                         return (
                             <div style={{ width: '100%' }}>
-                                <Col md={24} style={{ width: '100%', maxWidth: 2640, border: 'false' }}>
-                                    <Row gutter={[8, 16]} style={{ marginTop: '0px', marginLeft: '-8px' }}>
+                                <Col
+                                    md={24}
+                                    style={{ width: '100%', maxWidth: 2640, border: 'false' }}
+                                >
+                                    <Row
+                                        gutter={[8, 16]}
+                                        style={{ marginTop: '0px', marginLeft: '-8px' }}
+                                    >
                                         <Col md={24}>
                                             <Card bordered={false}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 10,
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '18px',
-                                                        fontWeight: 'bold',
-                                                    }}>{title}</h2>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 10,
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '18px',
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        {title}
+                                                    </h2>
                                                 </div>
 
                                                 <DataDisplayTable
@@ -1149,7 +1321,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                     currentPanel={currentPanel}
                                                     searchColumns={['uuid', 'check_name']}
                                                 />
-
                                             </Card>
                                         </Col>
                                     </Row>
@@ -1230,31 +1401,43 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
     //     }
     // };
 
-    renderTable = (OriginData: any[], apiUuid: (uuid: string) => string, uuid: string, title: string, timeColumnIndex: string[], column: any[], currentPanel: string,
-                   searchIndex: string[],
+    renderTable = (
+        OriginData: any[],
+        apiUuid: (uuid: string) => string,
+        uuid: string,
+        title: string,
+        timeColumnIndex: string[],
+        column: any[],
+        currentPanel: string,
+        searchIndex: string[]
     ) => {
-        const filteredData = (Array.isArray(OriginData) ? OriginData : [OriginData]);
+        const filteredData = Array.isArray(OriginData) ? OriginData : [OriginData];
         return (
             <div style={{ fontWeight: 'bolder', width: '100%' }}>
-                <Card bordered={true}
-                      style={{ backgroundColor: '#ffffff' }}>
+                <Card bordered={true} style={{ backgroundColor: '#ffffff' }}>
                     <Row>
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            marginBottom: 8,
-                            fontWeight: 'bold',
-                        }}>
-                            <h2 style={{
-                                fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                fontSize: '18px',
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginBottom: 8,
                                 fontWeight: 'bold',
-                                marginLeft: '0px',
-                            }}>{title}</h2>
+                            }}
+                        >
+                            <h2
+                                style={{
+                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                    fontSize: '18px',
+                                    fontWeight: 'bold',
+                                    marginLeft: '0px',
+                                }}
+                            >
+                                {title}
+                            </h2>
                         </div>
                     </Row>
-                    {currentPanel.includes("vul")?
-                        (<DataDisplayTable
+                    {currentPanel.includes('vul') ? (
+                        <DataDisplayTable
                             externalDataSource={filteredData}
                             apiEndpoint={''}
                             apiUuid={apiUuid}
@@ -1266,33 +1449,46 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                             columns={column}
                             currentPanel={currentPanel}
                             searchColumns={searchIndex}
-                        />):(
-                            <DataDisplayTable
-                                externalDataSource={filteredData}
-                                apiEndpoint={''}
-                                apiUuid={apiUuid}
-                                uuid={uuid}
-                                timeColumnIndex={timeColumnIndex}
-                                columns={column}
-                                currentPanel={currentPanel}
-                                searchColumns={searchIndex}
-                            />)
-                    }
+                        />
+                    ) : (
+                        <DataDisplayTable
+                            externalDataSource={filteredData}
+                            apiEndpoint={''}
+                            apiUuid={apiUuid}
+                            uuid={uuid}
+                            timeColumnIndex={timeColumnIndex}
+                            columns={column}
+                            currentPanel={currentPanel}
+                            searchColumns={searchIndex}
+                        />
+                    )}
                 </Card>
             </div>
         );
     };
 
-    renderCurrentPanel = (agentOriginData: any, linuxbaselineOriginData: any, windowsbaselineOriginData: any,
-                          vulOriginData: any[],
-                          HoneyPotOriginData: any[],
-                          bruteforceTTPsOriginData: any[], privilegeescalationTTPsOriginData: any[], defenseavoidanceTTPsOriginData: any[],
-                          HoneyPotHostCount: number, TTPsHostCount: number) => {
-
+    renderCurrentPanel = (
+        agentOriginData: any,
+        linuxbaselineOriginData: any,
+        windowsbaselineOriginData: any,
+        vulOriginData: any[],
+        HoneyPotOriginData: any[],
+        bruteforceTTPsOriginData: any[],
+        privilegeescalationTTPsOriginData: any[],
+        defenseavoidanceTTPsOriginData: any[],
+        HoneyPotHostCount: number,
+        TTPsHostCount: number
+    ) => {
         const { currentPanel, host_uuid } = this.state;
 
-        const ignoredVulnerabilitiesCount = this.getIgnoredVulnerabilitiesCount(this.state.ignoredBugExps_array, host_uuid);
-        const IgnoredBLItemCount = this.getIgnoredBLItemCount(this.state.ignoredBLCheckItem_array, host_uuid);
+        const ignoredVulnerabilitiesCount = this.getIgnoredVulnerabilitiesCount(
+            this.state.ignoredBugExps_array,
+            host_uuid
+        );
+        const IgnoredBLItemCount = this.getIgnoredBLItemCount(
+            this.state.ignoredBLCheckItem_array,
+            host_uuid
+        );
 
         // // 定义默认漏洞扫描结果数据
         // const defaultVulScanResultData = [
@@ -1305,19 +1501,29 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
         if (agentOriginData !== undefined) {
             // 确保agentOriginData总是作为数组处理
-            const originDataArray = Array.isArray(agentOriginData) ? agentOriginData : [agentOriginData];
+            const originDataArray = Array.isArray(agentOriginData)
+                ? agentOriginData
+                : [agentOriginData];
             if (originDataArray && originDataArray.length > 0) {
-                const filteredData = originDataArray.find(item => item.uuid === this.state.host_uuid) || {};
+                const filteredData =
+                    originDataArray.find((item) => item.uuid === this.state.host_uuid) || {};
 
                 // const os_version = filteredData.os_version.toLowerCase().includes('ubuntu') ? 'linux' : 'windows';
                 const os_version = determineOS(filteredData);
 
-                const baselineOriginData = os_version === 'linux' ? linuxbaselineOriginData : windowsbaselineOriginData;
+                const baselineOriginData =
+                    os_version === 'linux' ? linuxbaselineOriginData : windowsbaselineOriginData;
 
                 // 针对基线检查数据的筛选
-                const blDataArray = Array.isArray(baselineOriginData) ? baselineOriginData : [baselineOriginData];
-                const filteredBLData = blDataArray.filter(Item => Item.uuid === this.state.host_uuid) || defaultBLData;
-                const filteredAdjData = filteredBLData.filter(Item => Item.adjustment_requirement === '建议调整') || defaultAdjData;
+                const blDataArray = Array.isArray(baselineOriginData)
+                    ? baselineOriginData
+                    : [baselineOriginData];
+                const filteredBLData =
+                    blDataArray.filter((Item) => Item.uuid === this.state.host_uuid) ||
+                    defaultBLData;
+                const filteredAdjData =
+                    filteredBLData.filter((Item) => Item.adjustment_requirement === '建议调整') ||
+                    defaultAdjData;
                 const filteredAdjDataLength = filteredAdjData.length || 0;
                 const filteredBLDataLength = filteredBLData.length || 1; // 避免分母为0
                 let percentage = 100 * (1 - filteredAdjDataLength / filteredBLDataLength);
@@ -1329,8 +1535,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 const vulResult = this.filteredData(vulOriginData, 'Vuln');
                 const filteredvulData = vulResult.data || [];
                 let totalExpResultCount = 0;
-                filteredvulData.forEach(item => {
-                    totalExpResultCount += item.vul_detection_exp_result ? item.vul_detection_exp_result.length : 0;
+                filteredvulData.forEach((item) => {
+                    totalExpResultCount += item.vul_detection_exp_result
+                        ? item.vul_detection_exp_result.length
+                        : 0;
                 });
 
                 // const honeyPotResult = this.filteredData(HoneyPotOriginData, 'honeyPot');
@@ -1365,11 +1573,13 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 let lowRiskCount = 0;
 
                 // 从 localStorage 中读取被忽略的项
-                const ignoredBugExps_array = JSON.parse(localStorage.getItem('ignoredBugExps_array') || '{}');
+                const ignoredBugExps_array = JSON.parse(
+                    localStorage.getItem('ignoredBugExps_array') || '{}'
+                );
 
-                filteredvulData.forEach(record => {
+                filteredvulData.forEach((record) => {
                     if (record.vul_detection_exp_result) {
-                        record.vul_detection_exp_result.forEach((exp: { bug_exp: any; }) => {
+                        record.vul_detection_exp_result.forEach((exp: { bug_exp: any }) => {
                             // 检查是否该项被忽略
                             const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
                             if (ignoredBugExps.includes(exp.bug_exp)) {
@@ -1394,34 +1604,44 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     { color: '#468DFF', label: '低风险项', value: lowRiskCount },
                 ];
 
-
                 switch (currentPanel) {
                     case 'HostOverview':
-                        return (
-                            <HostOverview
-                                changePanel={this.changePanel}
-                            />
-                        );
+                        return <HostOverview changePanel={this.changePanel} />;
                     case 'hostAlertInfo':
                         return (
                             <div style={{ marginTop: '-20px' }}>
                                 <div style={{ fontWeight: 'bold' }}>
                                     <Col md={24}>
-                                        <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
+                                        <Row
+                                            gutter={[12, 6]}
+                                            style={{ width: '100%', margin: '0 auto' }}
+                                        >
                                             <Col md={24}>
-                                                <Card bordered={false}
-                                                      style={{ fontWeight: 'bolder', marginTop: '10px', height: 200 }}>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        marginBottom: 16,
-                                                        fontWeight: 'bold',
-                                                    }}>
-                                                        <h2 style={{
-                                                            fontSize: '18px',
+                                                <Card
+                                                    bordered={false}
+                                                    style={{
+                                                        fontWeight: 'bolder',
+                                                        marginTop: '10px',
+                                                        height: 200,
+                                                    }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            marginBottom: 16,
                                                             fontWeight: 'bold',
-                                                            marginTop: '0px',
-                                                        }}>告警概览</h2>
+                                                        }}
+                                                    >
+                                                        <h2
+                                                            style={{
+                                                                fontSize: '18px',
+                                                                fontWeight: 'bold',
+                                                                marginTop: '0px',
+                                                            }}
+                                                        >
+                                                            告警概览
+                                                        </h2>
                                                     </div>
                                                     <Row gutter={[6, 6]}>
                                                         <Col md={3} />
@@ -1438,14 +1658,37 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                 }}
                                                             >
                                                                 <Row style={{ width: '100%' }}>
-                                                                    <Col span={8}
-                                                                         style={{ transform: 'translateX(-180%) translateY(60px)' }}>
-                                                                        <Statistic title={<span
-                                                                            style={{ fontSize: '16px' }}>待处理告警</span>}
-                                                                                   value={HoneyPotHostCount + TTPsHostCount} />
+                                                                    <Col
+                                                                        span={8}
+                                                                        style={{
+                                                                            transform:
+                                                                                'translateX(-180%) translateY(60px)',
+                                                                        }}
+                                                                    >
+                                                                        <Statistic
+                                                                            title={
+                                                                                <span
+                                                                                    style={{
+                                                                                        fontSize:
+                                                                                            '16px',
+                                                                                    }}
+                                                                                >
+                                                                                    待处理告警
+                                                                                </span>
+                                                                            }
+                                                                            value={
+                                                                                HoneyPotHostCount +
+                                                                                TTPsHostCount
+                                                                            }
+                                                                        />
                                                                     </Col>
-                                                                    <Col span={8}
-                                                                         style={{ transform: 'translateX(-130%) translateY(45px)' }}>
+                                                                    <Col
+                                                                        span={8}
+                                                                        style={{
+                                                                            transform:
+                                                                                'translateX(-130%) translateY(45px)',
+                                                                        }}
+                                                                    >
                                                                         <CustomPieChart
                                                                             data={AlertData_uuid}
                                                                             innerRadius={30}
@@ -1456,33 +1699,75 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                             hasDynamicEffect={true}
                                                                         />
                                                                     </Col>
-                                                                    <Col span={8} style={{
-                                                                        height: '90px',
-                                                                        minWidth: '200px',
-                                                                        transform: 'translateX(100%) translateY(-30px)',
-                                                                    }}>
-                                                                        <StatusPanel statusData={AlertData_uuid}
-                                                                                     orientation="vertical" />
+                                                                    <Col
+                                                                        span={8}
+                                                                        style={{
+                                                                            height: '90px',
+                                                                            minWidth: '200px',
+                                                                            transform:
+                                                                                'translateX(100%) translateY(-30px)',
+                                                                        }}
+                                                                    >
+                                                                        <StatusPanel
+                                                                            statusData={
+                                                                                AlertData_uuid
+                                                                            }
+                                                                            orientation="vertical"
+                                                                        />
                                                                     </Col>
                                                                 </Row>
                                                             </Card>
                                                         </Col>
                                                         <Col md={3} />
                                                     </Row>
-
                                                 </Card>
                                             </Col>
                                         </Row>
-                                        <Row gutter={[12, 6]} style={{ width: '100%', margin: '0 auto' }}>
+                                        <Row
+                                            gutter={[12, 6]}
+                                            style={{ width: '100%', margin: '0 auto' }}
+                                        >
                                             <Col md={24}>
-                                                {this.renderTable(HoneyPotOriginData, Honey_uuid_Data_API, host_uuid, '蜜罐信息', [],
-                                                    Honeypotcolumns, 'HoneypotDefenselistDetails', ['uuid'])}
-                                                {this.renderTable(bruteforceTTPsOriginData, Brute_TTPs_uuid_Data_API, host_uuid, '威胁狩猎-暴力破解', [],
-                                                    threatHuntingColumns, 'brute-force-details', ['uuid', 'atk_ip'])}
-                                                {this.renderTable(privilegeescalationTTPsOriginData, Privilege_TTPs_uuid_Data_API, host_uuid, '威胁狩猎-权限提升', [],
-                                                    threatHuntingColumns_2, 'privilege-escalation-details', ['uuid', 'atk_ip'])}
-                                                {this.renderTable(defenseavoidanceTTPsOriginData, Defense_TTPs_uuid_Data_API, host_uuid, '威胁狩猎-防御规避', [],
-                                                    threatHuntingColumns_2, 'defense-avoidance-details', ['uuid', 'atk_ip'])}
+                                                {this.renderTable(
+                                                    HoneyPotOriginData,
+                                                    Honey_uuid_Data_API,
+                                                    host_uuid,
+                                                    '蜜罐信息',
+                                                    [],
+                                                    Honeypotcolumns,
+                                                    'HoneypotDefenselistDetails',
+                                                    ['uuid']
+                                                )}
+                                                {this.renderTable(
+                                                    bruteforceTTPsOriginData,
+                                                    Brute_TTPs_uuid_Data_API,
+                                                    host_uuid,
+                                                    '威胁狩猎-暴力破解',
+                                                    [],
+                                                    threatHuntingColumns,
+                                                    'brute-force-details',
+                                                    ['uuid', 'atk_ip']
+                                                )}
+                                                {this.renderTable(
+                                                    privilegeescalationTTPsOriginData,
+                                                    Privilege_TTPs_uuid_Data_API,
+                                                    host_uuid,
+                                                    '威胁狩猎-权限提升',
+                                                    [],
+                                                    threatHuntingColumns_2,
+                                                    'privilege-escalation-details',
+                                                    ['uuid', 'atk_ip']
+                                                )}
+                                                {this.renderTable(
+                                                    defenseavoidanceTTPsOriginData,
+                                                    Defense_TTPs_uuid_Data_API,
+                                                    host_uuid,
+                                                    '威胁狩猎-防御规避',
+                                                    [],
+                                                    threatHuntingColumns_2,
+                                                    'defense-avoidance-details',
+                                                    ['uuid', 'atk_ip']
+                                                )}
                                             </Col>
                                         </Row>
                                     </Col>
@@ -1495,21 +1780,36 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 {this.renderIgnoreModal()}
                                 <Row style={{ width: '100%', margin: '0 auto' }}>
                                     <Col md={24}>
-                                        <Card bordered={false}
-                                              style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                marginBottom: 16,
-                                                fontWeight: 'bold',
-                                            }}>
-                                                <h2 style={{
-                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                    fontSize: '18px',
+                                        <Card
+                                            bordered={false}
+                                            style={{
+                                                fontWeight: 'bolder',
+                                                width: '100%',
+                                                height: 220,
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    marginBottom: 16,
                                                     fontWeight: 'bold',
-                                                    marginLeft: '0px',
-                                                }}>漏洞概览</h2>
-                                                <Button onClick={this.showIgnoredExpsModal}>白名单</Button>
+                                                }}
+                                            >
+                                                <h2
+                                                    style={{
+                                                        fontFamily:
+                                                            'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                        fontSize: '18px',
+                                                        fontWeight: 'bold',
+                                                        marginLeft: '0px',
+                                                    }}
+                                                >
+                                                    漏洞概览
+                                                </h2>
+                                                <Button onClick={this.showIgnoredExpsModal}>
+                                                    白名单
+                                                </Button>
                                             </div>
                                             <Row gutter={[6, 6]}>
                                                 <Col span={2}></Col>
@@ -1526,24 +1826,45 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             backgroundColor: '#F6F7FB',
                                                         }}
                                                     >
-                                                        <Row style={{
-                                                            width: '100%',
-                                                            marginTop: '0px',
-                                                            paddingRight: '10px',
-                                                        }}>
-                                                            <Col span={8} style={{
-                                                                paddingTop: '20px',
-                                                                width: '400px',
-                                                                height: '90px',
-                                                            }}>
-                                                                <Statistic title={<span
-                                                                    style={{ fontSize: '16px' }}>待处理漏洞</span>}
-                                                                           value={totalExpResultCount - ignoredVulnerabilitiesCount} />
+                                                        <Row
+                                                            style={{
+                                                                width: '100%',
+                                                                marginTop: '0px',
+                                                                paddingRight: '10px',
+                                                            }}
+                                                        >
+                                                            <Col
+                                                                span={8}
+                                                                style={{
+                                                                    paddingTop: '20px',
+                                                                    width: '400px',
+                                                                    height: '90px',
+                                                                }}
+                                                            >
+                                                                <Statistic
+                                                                    title={
+                                                                        <span
+                                                                            style={{
+                                                                                fontSize: '16px',
+                                                                            }}
+                                                                        >
+                                                                            待处理漏洞
+                                                                        </span>
+                                                                    }
+                                                                    value={
+                                                                        totalExpResultCount -
+                                                                        ignoredVulnerabilitiesCount
+                                                                    }
+                                                                />
                                                             </Col>
-                                                            <Col span={9} style={{
-                                                                width: '400px',
-                                                                transform: 'translateX(0px) translateY(10px)',
-                                                            }}>
+                                                            <Col
+                                                                span={9}
+                                                                style={{
+                                                                    width: '400px',
+                                                                    transform:
+                                                                        'translateX(0px) translateY(10px)',
+                                                                }}
+                                                            >
                                                                 <CustomPieChart
                                                                     data={vulScanResultData}
                                                                     innerRadius={30}
@@ -1554,13 +1875,21 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                     hasDynamicEffect={true}
                                                                 />
                                                             </Col>
-                                                            <Col span={7} style={{
-                                                                width: '450px', height: '100px',
-                                                                paddingTop: '5px', marginTop: '10px',
-                                                                transform: 'translateX(-10px) translateY(0px)',
-                                                            }}>
-                                                                <StatusPanel statusData={vulScanResultData}
-                                                                             orientation="vertical" />
+                                                            <Col
+                                                                span={7}
+                                                                style={{
+                                                                    width: '450px',
+                                                                    height: '100px',
+                                                                    paddingTop: '5px',
+                                                                    marginTop: '10px',
+                                                                    transform:
+                                                                        'translateX(-10px) translateY(0px)',
+                                                                }}
+                                                            >
+                                                                <StatusPanel
+                                                                    statusData={vulScanResultData}
+                                                                    orientation="vertical"
+                                                                />
                                                             </Col>
                                                         </Row>
                                                     </Card>
@@ -1580,28 +1909,59 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                         }}
                                                     >
                                                         <Row>
-                                                            <Col pull={2} span={24} style={{
-                                                                marginRight: '50px',
-                                                                transform: 'translateX(-50%)',
-                                                            }}>
-                                                                <Statistic title={<span
-                                                                    style={{ fontSize: '16px' }}>累计忽略的漏洞</span>}
-                                                                           value={ignoredVulnerabilitiesCount} />
+                                                            <Col
+                                                                pull={2}
+                                                                span={24}
+                                                                style={{
+                                                                    marginRight: '50px',
+                                                                    transform: 'translateX(-50%)',
+                                                                }}
+                                                            >
+                                                                <Statistic
+                                                                    title={
+                                                                        <span
+                                                                            style={{
+                                                                                fontSize: '16px',
+                                                                            }}
+                                                                        >
+                                                                            累计忽略的漏洞
+                                                                        </span>
+                                                                    }
+                                                                    value={
+                                                                        ignoredVulnerabilitiesCount
+                                                                    }
+                                                                />
                                                             </Col>
                                                         </Row>
                                                     </Card>
                                                 </Col>
                                                 <div className="container">
                                                     <div
-                                                        className={this.state.isSidebarOpen ? 'overlay open' : 'overlay'}
-                                                        onClick={this.closeSidebar}></div>
+                                                        className={
+                                                            this.state.isSidebarOpen
+                                                                ? 'overlay open'
+                                                                : 'overlay'
+                                                        }
+                                                        onClick={this.closeSidebar}
+                                                    ></div>
                                                     <div
-                                                        className={this.state.isSidebarOpen ? 'sidebar open' : 'sidebar'}>
-                                                        <button onClick={() => this.toggleSidebar}
-                                                                className="close-btn">&times;</button>
+                                                        className={
+                                                            this.state.isSidebarOpen
+                                                                ? 'sidebar open'
+                                                                : 'sidebar'
+                                                        }
+                                                    >
+                                                        <button
+                                                            onClick={() => this.toggleSidebar}
+                                                            className="close-btn"
+                                                        >
+                                                            &times;
+                                                        </button>
                                                         <VulnerabilityDetailsSidebar
                                                             detailsPage={true}
-                                                            onDoneButtonClick={this.handleDoneButtonClick}
+                                                            onDoneButtonClick={
+                                                                this.handleDoneButtonClick
+                                                            }
                                                             toggleSidebar={this.toggleSidebar}
                                                             host_uuid={this.state.selectedVulnUuid}
                                                             isSidebarOpen={this.state.isSidebarOpen}
@@ -1619,8 +1979,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     {/*    '漏洞扫描结果', ['port'],*/}
                                     {/*    vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}*/}
 
-                                    {this.renderTable(vulOriginData, Vul_uuid_Data_API, host_uuid, '漏洞扫描结果', ['scanTime'],
-                                        this.state.vulnColumns, currentPanel, ['port'])}
+                                    {this.renderTable(
+                                        vulOriginData,
+                                        Vul_uuid_Data_API,
+                                        host_uuid,
+                                        '漏洞扫描结果',
+                                        ['scanTime'],
+                                        this.state.vulnColumns,
+                                        currentPanel,
+                                        ['port']
+                                    )}
                                 </Row>
                             </div>
                         );
@@ -1630,21 +1998,36 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                 {this.renderBLIgnoreModal()}
                                 <Row style={{ width: '100%', margin: '0 auto' }}>
                                     <Col md={24}>
-                                        <Card bordered={false}
-                                              style={{ fontWeight: 'bolder', marginTop: '0px', height: 200 }}>
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                marginBottom: 16,
-                                                fontWeight: 'bold',
-                                            }}>
-                                                <h2 style={{
-                                                    fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                    fontSize: '18px',
+                                        <Card
+                                            bordered={false}
+                                            style={{
+                                                fontWeight: 'bolder',
+                                                marginTop: '0px',
+                                                height: 200,
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    marginBottom: 16,
                                                     fontWeight: 'bold',
-                                                    marginTop: '0px',
-                                                }}>基线概览</h2>
-                                                <Button onClick={this.showIgnoredBLCheckItemsModal}>白名单</Button>
+                                                }}
+                                            >
+                                                <h2
+                                                    style={{
+                                                        fontFamily:
+                                                            'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                        fontSize: '18px',
+                                                        fontWeight: 'bold',
+                                                        marginTop: '0px',
+                                                    }}
+                                                >
+                                                    基线概览
+                                                </h2>
+                                                <Button onClick={this.showIgnoredBLCheckItemsModal}>
+                                                    白名单
+                                                </Button>
                                             </div>
                                             <Row gutter={[6, 6]}>
                                                 <Col md={1} />
@@ -1661,14 +2044,25 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             backgroundColor: '#F6F7FB',
                                                         }}
                                                     >
-                                                        <Row style={{ width: '100%',
-                                                            transform: 'translateX(-70px) translateY(5px)',  }}>
-                                                            <Statistic title={<span style={{
-                                                                fontSize: '16px',
-                                                            }}>最近检查通过率</span>}
-                                                                       value={percentageString}
+                                                        <Row
+                                                            style={{
+                                                                width: '100%',
+                                                                transform:
+                                                                    'translateX(-70px) translateY(5px)',
+                                                            }}
+                                                        >
+                                                            <Statistic
+                                                                title={
+                                                                    <span
+                                                                        style={{
+                                                                            fontSize: '16px',
+                                                                        }}
+                                                                    >
+                                                                        最近检查通过率
+                                                                    </span>
+                                                                }
+                                                                value={percentageString}
                                                             />
-
                                                         </Row>
                                                     </Card>
                                                 </Col>
@@ -1686,46 +2080,69 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             backgroundColor: '#F6F7FB',
                                                         }}
                                                     >
-                                                        <Row style={{
-                                                            width: '100%',
-                                                            marginTop: '0px',
-                                                            paddingRight: '10px',
-                                                        }}>
-                                                            <Col span={3} style={{
-                                                                paddingTop: '25px',
-                                                                paddingLeft: '20px',
-                                                                width: '440px',
-                                                                height: '100px',
-                                                            }}>
+                                                        <Row
+                                                            style={{
+                                                                width: '100%',
+                                                                marginTop: '0px',
+                                                                paddingRight: '10px',
+                                                            }}
+                                                        >
+                                                            <Col
+                                                                span={3}
+                                                                style={{
+                                                                    paddingTop: '25px',
+                                                                    paddingLeft: '20px',
+                                                                    width: '440px',
+                                                                    height: '100px',
+                                                                }}
+                                                            ></Col>
+                                                            <Col
+                                                                span={5}
+                                                                style={{
+                                                                    marginLeft: '20px',
+                                                                    paddingTop: '20px',
+                                                                    width: '180px',
+                                                                    height: '90px',
+                                                                }}
+                                                            >
+                                                                <Statistic
+                                                                    title={
+                                                                        <span
+                                                                            style={{
+                                                                                fontSize: '16px',
+                                                                            }}
+                                                                        >
+                                                                            检查项
+                                                                        </span>
+                                                                    }
+                                                                    value={filteredBLData.length}
+                                                                />
                                                             </Col>
-                                                            <Col span={5} style={{
-                                                                marginLeft: '20px',
-                                                                paddingTop: '20px',
-                                                                width: '180px',
-                                                                height: '90px',
-                                                            }}>
-                                                                <Statistic title={<span
-                                                                    style={{ fontSize: '16px' }}>检查项</span>}
-                                                                           value={filteredBLData.length} />
-                                                            </Col>
-                                                            <Col span={5} style={{
-                                                                marginLeft: '-20px',
-                                                                marginRight: '20px',
-                                                                width: '100px',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                transform: 'translateX(-10px) translateY(5px)',
-                                                            }}>
+                                                            <Col
+                                                                span={5}
+                                                                style={{
+                                                                    marginLeft: '-20px',
+                                                                    marginRight: '20px',
+                                                                    width: '100px',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    transform:
+                                                                        'translateX(-10px) translateY(5px)',
+                                                                }}
+                                                            >
                                                                 <CustomPieChart
                                                                     data={[
                                                                         {
                                                                             label: '风险项',
-                                                                            value: filteredAdjData.length,
+                                                                            value:
+                                                                                filteredAdjData.length,
                                                                             color: '#EA635F',
                                                                         },
                                                                         {
                                                                             label: '通过项',
-                                                                            value: filteredBLData.length - filteredAdjData.length,
+                                                                            value:
+                                                                                filteredBLData.length -
+                                                                                filteredAdjData.length,
                                                                             color: '#468DFF',
                                                                         },
                                                                     ]}
@@ -1737,22 +2154,28 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                                     hasDynamicEffect={true}
                                                                 />
                                                             </Col>
-                                                            <Col span={8} style={{
-                                                                paddingTop: '15px',
-                                                                width: '450px',
-                                                                height: '100px',
-                                                                transform: 'translateY(5px)',
-                                                            }}>
+                                                            <Col
+                                                                span={8}
+                                                                style={{
+                                                                    paddingTop: '15px',
+                                                                    width: '450px',
+                                                                    height: '100px',
+                                                                    transform: 'translateY(5px)',
+                                                                }}
+                                                            >
                                                                 <StatusPanel
                                                                     statusData={[
                                                                         {
                                                                             label: '风险项',
-                                                                            value: filteredAdjData.length,
+                                                                            value:
+                                                                                filteredAdjData.length,
                                                                             color: '#EA635F',
                                                                         },
                                                                         {
                                                                             label: '通过项',
-                                                                            value: filteredBLData.length - filteredAdjData.length,
+                                                                            value:
+                                                                                filteredBLData.length -
+                                                                                filteredAdjData.length,
                                                                             color: '#E5E8EF',
                                                                         },
                                                                     ]}
@@ -1776,12 +2199,25 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                                             backgroundColor: '#F6F7FB',
                                                         }}
                                                     >
-                                                        <Row style={{ width: '100%',
-                                                            transform: 'translateX(-100px) translateY(5px)', }}>
-                                                            <Statistic title={<span style={{
-                                                                fontSize: '16px',
-                                                            }}>白名单</span>}
-                                                                       value={IgnoredBLItemCount} />
+                                                        <Row
+                                                            style={{
+                                                                width: '100%',
+                                                                transform:
+                                                                    'translateX(-100px) translateY(5px)',
+                                                            }}
+                                                        >
+                                                            <Statistic
+                                                                title={
+                                                                    <span
+                                                                        style={{
+                                                                            fontSize: '16px',
+                                                                        }}
+                                                                    >
+                                                                        白名单
+                                                                    </span>
+                                                                }
+                                                                value={IgnoredBLItemCount}
+                                                            />
                                                         </Row>
                                                     </Card>
                                                 </Col>
@@ -1796,19 +2232,25 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                     {/*    this.state.host_uuid, ['last_checked'], this.state.blColumns, currentPanel, '基线内容', ['check_name'],*/}
                                     {/*    vulOriginData, windowsbaselineOriginData, linuxbaselineOriginData, os_version)}*/}
 
-                                    {this.renderTable(baselineOriginData,
-                                        os_version==='linux'?BaseLine_linux_uuid_Data_API:BaseLine_windows_uuid_Data_API,
-                                        host_uuid, '基线扫描结果', ['last_checked'],
-                                        this.state.blColumns, currentPanel, ['check_name'])}
+                                    {this.renderTable(
+                                        baselineOriginData,
+                                        os_version === 'linux'
+                                            ? BaseLine_linux_uuid_Data_API
+                                            : BaseLine_windows_uuid_Data_API,
+                                        host_uuid,
+                                        '基线扫描结果',
+                                        ['last_checked'],
+                                        this.state.blColumns,
+                                        currentPanel,
+                                        ['check_name']
+                                    )}
                                 </Row>
                             </div>
                         );
                     case 'virusscanning':
                         return (
                             <div style={{ marginTop: '-20px' }}>
-                                <VirusScanning
-                                    hostuuid={this.state.host_uuid}
-                                />
+                                <VirusScanning hostuuid={this.state.host_uuid} />
                             </div>
                         );
                     case 'honeyPot':
@@ -1824,16 +2266,10 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
 
                     case 'performancemonitor':
                         return (
-                            <div style={{ marginTop: '-20px' }}>
-                                {/* <PerformanceMonitor /> */}
-                            </div>
+                            <div style={{ marginTop: '-20px' }}>{/* <PerformanceMonitor /> */}</div>
                         );
                     default:
-                        return (
-                            <HostOverview
-                                changePanel={this.changePanel}
-                            />
-                        );
+                        return <HostOverview changePanel={this.changePanel} />;
                 }
             }
         }
@@ -1843,7 +2279,6 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
             </div>
         );
     };
-
 
     setTimerForUuidData = () => {
         this.setState({ dataInitialized: true });
@@ -1858,9 +2293,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                 {(context: DataContextType | undefined) => {
                     if (!context) {
                         return (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <LoadingOutlined style={{ fontSize: '3em' }} />
-                            </div>); // 或者其他的加载状态显示
+                            </div>
+                        ); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
@@ -1915,32 +2357,47 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                     const privilegeescalationTTPsOriginData = privilegeTTPsUuidOriginData;
                     const defenseavoidanceTTPsOriginData = defenseTTPsUuidOriginData;
 
-
-                    const HoneyPotHostCount = (HoneyPotMetaData_uuid && HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
-                    const bruteforceTTPsHostCount = (
-                        (bruteforceTTPsMetaData_uuid && bruteforceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
-                    );
-                    const privilegeEscalationTTPsHostCount = (
-                        (privilegeescalationTTPsMetaData_uuid && privilegeescalationTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
-                    );
-                    const defenseAvoidanceTTPsHostCount = (
-                        (defenseavoidanceTTPsMetaData_uuid && defenseavoidanceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0
-                    );
-                    const TTPsHostCount = bruteforceTTPsHostCount + privilegeEscalationTTPsHostCount + defenseAvoidanceTTPsHostCount;
+                    const HoneyPotHostCount =
+                        (HoneyPotMetaData_uuid &&
+                            HoneyPotMetaData_uuid.typeCount.get(this.state.host_uuid)) ||
+                        0;
+                    const bruteforceTTPsHostCount =
+                        (bruteforceTTPsMetaData_uuid &&
+                            bruteforceTTPsMetaData_uuid.typeCount.get(this.state.host_uuid)) ||
+                        0;
+                    const privilegeEscalationTTPsHostCount =
+                        (privilegeescalationTTPsMetaData_uuid &&
+                            privilegeescalationTTPsMetaData_uuid.typeCount.get(
+                                this.state.host_uuid
+                            )) ||
+                        0;
+                    const defenseAvoidanceTTPsHostCount =
+                        (defenseavoidanceTTPsMetaData_uuid &&
+                            defenseavoidanceTTPsMetaData_uuid.typeCount.get(
+                                this.state.host_uuid
+                            )) ||
+                        0;
+                    const TTPsHostCount =
+                        bruteforceTTPsHostCount +
+                        privilegeEscalationTTPsHostCount +
+                        defenseAvoidanceTTPsHostCount;
                     // const VirusHostCount = (VirusMetaData_uuid && VirusMetaData_uuid.typeCount.get(this.state.host_uuid)) || 0;
 
-
                     return (
-                        <div style={{
-                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                            fontFamily: '宋体, sans-serif', fontWeight: 'bold',
-                        }}>
+                        <div
+                            style={{
+                                // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                fontFamily: '宋体, sans-serif',
+                                fontWeight: 'bold',
+                            }}
+                        >
                             <BreadcrumbCustom />
-                            <span>
-                                {this.props.host_name}
-                            </span>
+                            <span>{this.props.host_name}</span>
                             <div>
-                                <Row gutter={[12, 6]} style={{ marginTop: '10px', width: '100%', margin: '0 auto' }}>
+                                <Row
+                                    gutter={[12, 6]}
+                                    style={{ marginTop: '10px', width: '100%', margin: '0 auto' }}
+                                >
                                     <Col md={24}>
                                         <Menu
                                             onClick={this.handleMenuClick}
@@ -1949,11 +2406,16 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                             style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                                         >
                                             <Menu.Item key="hostoverview">主机概览</Menu.Item>
-                                            <Menu.Item key="hostAlertInfo">安全告警（Alert Total）</Menu.Item>
+                                            <Menu.Item key="hostAlertInfo">
+                                                安全告警（Alert Total）
+                                            </Menu.Item>
                                             {/*<Menu.Item key="virusscanning">病毒查杀（VirusTotal）</Menu.Item>*/}
-                                            <Menu.Item key="vulnerabilityDetailList">漏洞风险（Vulnerability Total）</Menu.Item>
-                                            <Menu.Item
-                                                key="baseLineDetectDetailList">基线风险（Baseline Total）</Menu.Item>
+                                            <Menu.Item key="vulnerabilityDetailList">
+                                                漏洞风险（Vulnerability Total）
+                                            </Menu.Item>
+                                            <Menu.Item key="baseLineDetectDetailList">
+                                                基线风险（Baseline Total）
+                                            </Menu.Item>
                                             {/*<Menu.Item key="honeyPot">蜜罐防御（HoneyPot）</Menu.Item>*/}
                                             {/*<Menu.Item key="TTPs">威胁狩猎（TTPs）</Menu.Item>*/}
                                             {/*<Menu.Item key="microIsolation">文件隔离（MicroIsolate）</Menu.Item>*/}
@@ -1962,24 +2424,35 @@ class DetailsPage extends React.Component<DetailsPageProps, DetailsPageState> {
                                             {/* 可以根据需要添加更多的Menu.Item */}
                                             {/* 使用透明div作为flex占位符 */}
                                             <div style={{ flexGrow: 1 }}></div>
-
                                         </Menu>
                                         {/* 渲染当前激活的子面板,HoneyPotHostCount, TTPsHostCount, VirusHostCount */}
-                                        <Card bordered={false}
-                                              style={{ backgroundColor: '#F6F7FB', margin: '0 auto', width: '90%' }}>
-                                            {this.renderCurrentPanel(agentOriginData, linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData, vulnOriginData,
+                                        <Card
+                                            bordered={false}
+                                            style={{
+                                                backgroundColor: '#F6F7FB',
+                                                margin: '0 auto',
+                                                width: '90%',
+                                            }}
+                                        >
+                                            {this.renderCurrentPanel(
+                                                agentOriginData,
+                                                linuxBaseLineCheckOriginData,
+                                                windowsBaseLineCheckOriginData,
+                                                vulnOriginData,
                                                 honeyPotOriginData,
-                                                bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData,
+                                                bruteforceTTPsOriginData,
+                                                privilegeescalationTTPsOriginData,
+                                                defenseavoidanceTTPsOriginData,
 
                                                 HoneyPotHostCount,
-                                                TTPsHostCount)}
+                                                TTPsHostCount
+                                            )}
                                         </Card>
                                     </Col>
                                 </Row>
                             </div>
                         </div>
                     );
-
                 }}
             </DataContext.Consumer>
         );

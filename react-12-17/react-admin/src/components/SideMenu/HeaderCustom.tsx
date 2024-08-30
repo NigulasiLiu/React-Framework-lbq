@@ -3,9 +3,7 @@ import { useAlita } from 'redux-alita';
 import umbrella from 'umbrella-storage';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useSwitch } from '../../utils/hooks';
-import {LogoutOutlined,
-    ArrowsAltOutlined,
-} from '@ant-design/icons';
+import { LogoutOutlined, ArrowsAltOutlined } from '@ant-design/icons';
 import { Row, Col, message } from 'antd';
 import axios from 'axios';
 import { Menu, Layout, Popover, Tooltip, Dropdown, Avatar } from 'antd';
@@ -17,7 +15,6 @@ import screenfull from 'screenfull';
 import avater from '../../style/imgs/user1.png';
 import logo from '../../style/imgs/logo_new.png';
 import { APP_Server_URL } from '../../service/config';
-
 
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -68,7 +65,6 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                 user: storageUser,
             });
             // message.info(`props.user: ${props.user}`); // 显示用户信息
-
         }
     }, []);
     const screenFull = () => {
@@ -93,7 +89,7 @@ const HeaderCustom = (props: HeaderCustomProps) => {
     const logout = async () => {
         try {
             // 调用后端登出API
-            await axios.get(APP_Server_URL+'/api/logout', {
+            await axios.get(APP_Server_URL + '/api/logout', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwt_token')}`, // 发送当前JWT
                 },
@@ -132,7 +128,6 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                 <LogoutOutlined /> 登出
             </Menu.Item>
         </Menu>
-
     );
 
     //用于隐藏左侧菜单
@@ -145,23 +140,27 @@ const HeaderCustom = (props: HeaderCustomProps) => {
         '/app/virusscan_detail',
     ];
 
-    const hideSiderMenu = pagesWithoutSiderMenu.some(page =>
-        location.pathname.includes(page),
-    );
+    const hideSiderMenu = pagesWithoutSiderMenu.some((page) => location.pathname.includes(page));
 
     //const isDetailPage = pagesWithoutSiderMenu.includes(location.pathname);
     return (
-        <div style={{ background: '#FFFFFF', borderBottom: '3px solid #F6F7FB',
-            fontFamily: '宋体, sans-serif', fontWeight: 'bold'
-        }} >
+        <div
+            style={{
+                background: '#FFFFFF',
+                borderBottom: '3px solid #F6F7FB',
+                fontFamily: '宋体, sans-serif',
+                fontWeight: 'bold',
+            }}
+        >
             <Row align="middle" className="header-row">
                 <Col span={24}>
-                    <Header className="header-row  header-border"
-                            style={{
-                                zIndex: 2, // 设置顶侧栏的z-index为2
-                                //borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
-                                // 其他已有样式
-                            }}
+                    <Header
+                        className="header-row  header-border"
+                        style={{
+                            zIndex: 2, // 设置顶侧栏的z-index为2
+                            //borderBottom: '2px solid #E5E6EB', // 添加了底轮廓线
+                            // 其他已有样式
+                        }}
                     >
                         <Row>
                             {/*{hideSiderMenu ? null : (responsive?.isMobile ? (*/}
@@ -195,42 +194,68 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                             {/*        />*/}
                             {/*    </Tooltip>*/}
                             {/*))}*/}
-                            {!hideSiderMenu && (//backgroundColor:'#F6F7FB',
-                                <div style={{
-                                    color: '#00367a', marginLeft: '-35px', fontSize: '20px', fontStyle: 'italic',border:'solid 0px #F6F7FB',
-                                    fontFamily: 'FZDaHei-B01S, sans-serif',
-                                }}>
-                                    <img src={logo} alt="Logo"
-                                         style={{ zoom: 0.15, marginRight: '20px', }} />
-                                    用电全域安全监测平台
+                            {!hideSiderMenu && ( //backgroundColor:'#F6F7FB',
+                                <div
+                                    style={{
+                                        color: '#00367a',
+                                        marginLeft: '-35px',
+                                        fontSize: '20px',
+                                        fontStyle: 'italic',
+                                        border: 'solid 0px #F6F7FB',
+                                        fontFamily: 'FZDaHei-B01S, sans-serif',
+                                    }}
+                                >
+                                    <img
+                                        src={logo}
+                                        alt="Logo"
+                                        style={{ zoom: 0.15, marginRight: '20px' }}
+                                    />
+                                    充电全域安全监测平台
                                 </div>
                             )}
                             {hideSiderMenu && (
-                                <div className="logo-title-container" style={{
-                                    margin: '0px,0px',
-                                    marginLeft: '-40px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'start',
-                                }}>
-                                    <img src={logo} alt="Logo"
-                                         style={{ zoom:0.15,marginRight:'20px' }} />
+                                <div
+                                    className="logo-title-container"
+                                    style={{
+                                        margin: '0px,0px',
+                                        marginLeft: '-40px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'start',
+                                    }}
+                                >
+                                    <img
+                                        src={logo}
+                                        alt="Logo"
+                                        style={{ zoom: 0.15, marginRight: '20px' }}
+                                    />
                                     <Link to="/app/dashboard" style={{ textDecoration: 'none' }}>
-                                        <h2 style={{fontFamily: 'FZDaHei-B01S, sans-serif',fontStyle: 'italic',
-                                            fontWeight: 'bold',
-                                            padding: '22px,6px',
-                                            margin: '10px,0px',
-                                            color: 'rgba(0, 54, 122, 1)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            fontSize: '20px',
-                                        }}>用电全域安全监测平台</h2>
+                                        <h2
+                                            style={{
+                                                fontFamily: 'FZDaHei-B01S, sans-serif',
+                                                fontStyle: 'italic',
+                                                fontWeight: 'bold',
+                                                padding: '22px,6px',
+                                                margin: '10px,0px',
+                                                color: 'rgba(0, 54, 122, 1)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                fontSize: '20px',
+                                            }}
+                                        >
+                                            充电全域安全监测平台
+                                        </h2>
                                     </Link>
                                 </div>
                             )}
                             <Menu
                                 mode="horizontal"
-                                style={{ lineHeight: '64px', float: 'right', marginLeft: 'auto', marginRight: '0px' }}
+                                style={{
+                                    lineHeight: '64px',
+                                    float: 'right',
+                                    marginLeft: 'auto',
+                                    marginRight: '0px',
+                                }}
                                 onClick={menuClick}
                             >
                                 {/*<Menu.Item key="pwa">*/}
@@ -245,18 +270,27 @@ const HeaderCustom = (props: HeaderCustomProps) => {
                                 </Badge>
                             </Menu.Item> */}
                                 <Dropdown overlay={logoutmenu} trigger={['click']}>
-                                    <a onClick={e => e.preventDefault()}>
-                                        <Avatar src={user?.avatar || avater} style={{ marginRight: 20 }} />
-                                        <span style={{
-                                            color: 'black',
-                                            fontWeight: 'bold',
-                                            marginRight: 20,
-                                        }}
-                                              onMouseEnter={(e) => e.currentTarget.style.color = '#4086FF'}
-                                              onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>
-                                        {props.userName || 'Default'}
+                                    <a onClick={(e) => e.preventDefault()}>
+                                        <Avatar
+                                            src={user?.avatar || avater}
+                                            style={{ marginRight: 20 }}
+                                        />
+                                        <span
+                                            style={{
+                                                color: 'black',
+                                                fontWeight: 'bold',
+                                                marginRight: 20,
+                                            }}
+                                            onMouseEnter={(e) =>
+                                                (e.currentTarget.style.color = '#4086FF')
+                                            }
+                                            onMouseLeave={(e) =>
+                                                (e.currentTarget.style.color = 'black')
+                                            }
+                                        >
+                                            {props.userName || 'Default'}
                                             {/*user?.userName*/}
-                                    </span>
+                                        </span>
                                     </a>
                                 </Dropdown>
                             </Menu>

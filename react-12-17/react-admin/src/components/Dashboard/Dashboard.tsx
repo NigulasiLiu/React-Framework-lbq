@@ -9,19 +9,16 @@ import {
     LoadingOutlined,
     MailOutlined,
     PhoneOutlined,
-    RightOutlined,EnvironmentOutlined
+    RightOutlined,
+    EnvironmentOutlined,
 } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-import {
-    AreaChart, Area, XAxis,
-    Legend, Tooltip, ResponsiveContainer,
-} from 'recharts';
+import { AreaChart, Area, XAxis, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import DataCard from '../CustomAntd/DataCard';
 import CustomPieChart from '../CustomAntd/CustomPieChart';
 import DisplaySettingsGuide from './DisplaySettingsGuide';
 import { cveData } from '../ContextAPI/DataService';
-
 
 interface ProgressPanelProps {
     labels: string[];
@@ -42,7 +39,7 @@ interface DashboardProps extends RouteComponentProps {
     open_port_number: number;
     service_number: number;
     RASP_number: number;
-    alert_undone: number[];//长度为1+x，总的待处理的告警数量+各个等级的待处理告警数量
+    alert_undone: number[]; //长度为1+x，总的待处理的告警数量+各个等级的待处理告警数量
     vulnerability_number: number[];
     baseliineDetect_number: number[];
 }
@@ -58,24 +55,37 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ labels, values, co
                 const color = colors[index] || 'red'; // 默认颜色为红色，如果没有指定颜色
 
                 return (
-                    <div key={index} style={{ marginBottom: '40px' }}> {/* 增加行与行之间的距离 */}
+                    <div key={index} style={{ marginBottom: '40px' }}>
+                        {' '}
+                        {/* 增加行与行之间的距离 */}
                         {/* Label with sequence number and YouYuan font */}
-                        <div style={{
-                            // fontFamily: 'YouYuan',
-                            // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                            marginBottom: '10px' }}>
+                        <div
+                            style={{
+                                // fontFamily: 'YouYuan',
+                                // fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                marginBottom: '10px',
+                            }}
+                        >
                             {`${label}`} {/* 添加序号 {`${index + 1}. ${label}`}*/}
                         </div>
                         {/* Progress bar in a separate row */}
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-                            <div style={{
-                                flexGrow: 1,
-                                marginRight: '10px',
-                                backgroundColor: '#f0f0f0',
-                                borderRadius: '4px',
-                                overflow: 'hidden',
-                            }}>
-                                <div style={{ height: '10px', width: `${percentage}%`, backgroundColor: color }}></div>
+                            <div
+                                style={{
+                                    flexGrow: 1,
+                                    marginRight: '10px',
+                                    backgroundColor: '#f0f0f0',
+                                    borderRadius: '4px',
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        height: '10px',
+                                        width: `${percentage}%`,
+                                        backgroundColor: color,
+                                    }}
+                                ></div>
                             </div>
                             <span>{value}</span>
                         </div>
@@ -178,31 +188,52 @@ const renderBLPieChart = (
     ];
 
     // Ensure linuxOriginData and winOriginData are arrays
-    const originDataArray1 = linuxOriginData ? (Array.isArray(linuxOriginData) ? linuxOriginData : [linuxOriginData]) : [];
-    const originDataArray2 = winOriginData ? (Array.isArray(winOriginData) ? winOriginData : [winOriginData]) : [];
+    const originDataArray1 = linuxOriginData
+        ? Array.isArray(linuxOriginData)
+            ? linuxOriginData
+            : [linuxOriginData]
+        : [];
+    const originDataArray2 = winOriginData
+        ? Array.isArray(winOriginData)
+            ? winOriginData
+            : [winOriginData]
+        : [];
 
-    const needAdjItems1 = originDataArray1.filter(item => item.adjustment_requirement === '建议调整');
-    const needAdjItems2 = originDataArray2.filter(item => item.adjustment_requirement === '建议调整');
+    const needAdjItems1 = originDataArray1.filter(
+        (item) => item.adjustment_requirement === '建议调整'
+    );
+    const needAdjItems2 = originDataArray2.filter(
+        (item) => item.adjustment_requirement === '建议调整'
+    );
 
     // Calculate unique UUID count
-    const calculateUniqueUuidCount = (items: any[]) => items.reduce((acc, current) => {
-        if (!acc.some((item: { uuid: any; }) => item.uuid === current.uuid)) {
-            acc.push(current);
-        }
-        return acc;
-    }, []).length;
+    const calculateUniqueUuidCount = (items: any[]) =>
+        items.reduce((acc, current) => {
+            if (!acc.some((item: { uuid: any }) => item.uuid === current.uuid)) {
+                acc.push(current);
+            }
+            return acc;
+        }, []).length;
 
     const uniqueUuidCount1 = calculateUniqueUuidCount(needAdjItems1);
     const uniqueUuidCount2 = calculateUniqueUuidCount(needAdjItems2);
 
     const baselineAlertData: StatusItem[] = [
         { label: title1, value: uniqueUuidCount1 + uniqueUuidCount2, color: '#E5E8EF' }, // GREY
-        { label: title2, value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2), color: '#4086FF' }, // BLUE
+        {
+            label: title2,
+            value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+            color: '#4086FF',
+        }, // BLUE
     ];
 
     return (
         <CustomPieChart
-            data={needAdjItems1.length > 0 || needAdjItems2.length > 0 ? baselineAlertData : defaultAlertData}
+            data={
+                needAdjItems1.length > 0 || needAdjItems2.length > 0
+                    ? baselineAlertData
+                    : defaultAlertData
+            }
             title={'基线'}
             innerRadius={inner}
             deltaRadius={delta}
@@ -215,9 +246,11 @@ const renderBLPieChart = (
 };
 
 class Dashboard extends React.Component<DashboardProps> {
-
     getIgnoredVulnerabilitiesCount = (ignoredBugExps_array: { [uuid: string]: string[] }) => {
-        return Object.values(ignoredBugExps_array).reduce((count, bugExps) => count + bugExps.length, 0);
+        return Object.values(ignoredBugExps_array).reduce(
+            (count, bugExps) => count + bugExps.length,
+            0
+        );
     };
     renderVulDataCard = (OriginData: any[], last7totalVulsum: number) => {
         let highRiskCount = 0;
@@ -232,7 +265,7 @@ class Dashboard extends React.Component<DashboardProps> {
             // 确保 OriginData 总是作为数组处理
             const originDataArray = Array.isArray(OriginData) ? OriginData : [OriginData];
 
-            originDataArray.forEach(item => {
+            originDataArray.forEach((item) => {
                 if (item.vul_detection_exp_result) {
                     totalExpResultCount += item.vul_detection_exp_result.length;
                 }
@@ -245,34 +278,35 @@ class Dashboard extends React.Component<DashboardProps> {
                 return 'low'; // 默认风险等级为低
             };
 
-
             const currentTime = new Date().getTime(); // 当前时间的时间戳
             const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 七天的时间戳毫秒数
 
-            originDataArray.forEach(record => {
+            originDataArray.forEach((record) => {
                 if (record.vul_detection_exp_result) {
-                    record.vul_detection_exp_result.forEach((exp: { bug_exp: any, scanTime: any }) => {
-                        // 检查是否该项被忽略---------现在仍然展示包括被忽略的项的计数
-                        // const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
-                        // if (ignoredBugExps.includes(exp.bug_exp)) {
-                        //     return; // 如果被忽略，跳过计数
-                        // }
+                    record.vul_detection_exp_result.forEach(
+                        (exp: { bug_exp: any; scanTime: any }) => {
+                            // 检查是否该项被忽略---------现在仍然展示包括被忽略的项的计数
+                            // const ignoredBugExps = ignoredBugExps_array[record.uuid] || [];
+                            // if (ignoredBugExps.includes(exp.bug_exp)) {
+                            //     return; // 如果被忽略，跳过计数
+                            // }
 
-                        // 计算数据的时间戳
-                        const expScanTime = new Date(exp.scanTime * 1000).getTime();
-                        if ((currentTime - expScanTime) > sevenDaysInMillis) {
-                            return; // 如果数据不在七天以内，跳过计数
-                        }
+                            // 计算数据的时间戳
+                            const expScanTime = new Date(exp.scanTime * 1000).getTime();
+                            if (currentTime - expScanTime > sevenDaysInMillis) {
+                                return; // 如果数据不在七天以内，跳过计数
+                            }
 
-                        const riskLevel = getRiskLevel(exp.bug_exp);
-                        if (riskLevel === 'high') {
-                            highRiskCount++;
-                        } else if (riskLevel === 'medium') {
-                            mediumRiskCount++;
-                        } else if (riskLevel === 'low') {
-                            lowRiskCount++;
+                            const riskLevel = getRiskLevel(exp.bug_exp);
+                            if (riskLevel === 'high') {
+                                highRiskCount++;
+                            } else if (riskLevel === 'medium') {
+                                mediumRiskCount++;
+                            } else if (riskLevel === 'low') {
+                                lowRiskCount++;
+                            }
                         }
-                    });
+                    );
                 }
             });
         } else {
@@ -289,13 +323,28 @@ class Dashboard extends React.Component<DashboardProps> {
                     title="待处理漏洞"
                     value={last7totalVulsum}
                     valueItem={[
-                        { value: highRiskCount, backgroundColor: '#E53F3F', fontSize: '14px', color: 'white' },
-                        { value: mediumRiskCount, backgroundColor: '#846CCE', fontSize: '14px', color: 'white' },
-                        { value: lowRiskCount, backgroundColor: '#FEC746', fontSize: '14px', color: 'white' },
+                        {
+                            value: highRiskCount,
+                            backgroundColor: '#E53F3F',
+                            fontSize: '14px',
+                            color: 'white',
+                        },
+                        {
+                            value: mediumRiskCount,
+                            backgroundColor: '#846CCE',
+                            fontSize: '14px',
+                            color: 'white',
+                        },
+                        {
+                            value: lowRiskCount,
+                            backgroundColor: '#FEC746',
+                            fontSize: '14px',
+                            color: 'white',
+                        },
                     ]}
                     panelId="/app/RiskManagement/VulnerabilityList"
                     height="75px"
-                    width={"220px"}
+                    width={'220px'}
                     backgroundColor="#ffffff"
                     navigate={true}
                     showTopBorder={false}
@@ -321,7 +370,7 @@ class Dashboard extends React.Component<DashboardProps> {
 
                 // 格式化日期并创建所需的数据对象
                 alertData.push({
-                    day: `${date.getMonth() + 1}-${date.getDate() + 1}`,//formatDay(date),
+                    day: `${date.getMonth() + 1}-${date.getDate() + 1}`, //formatDay(date),
                     value: alertsCount[i].toString(),
                 });
             }
@@ -329,77 +378,109 @@ class Dashboard extends React.Component<DashboardProps> {
             return alertData;
         };
 
-
         return (
             <DataContext.Consumer>
                 {(context: DataContextType | undefined) => {
                     if (!context) {
                         return (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <LoadingOutlined style={{ fontSize: '3em' }} />
-                            </div>); // 或者其他的加载状态显示
+                            </div>
+                        ); // 或者其他的加载状态显示
                     }
                     // 从 context 中解构出 topFiveFimData 和 n
                     const {
                         HoneyPotHostCount,
-                        bruteforceTTPsOriginData, privilegeescalationTTPsOriginData, defenseavoidanceTTPsOriginData,
+                        bruteforceTTPsOriginData,
+                        privilegeescalationTTPsOriginData,
+                        defenseavoidanceTTPsOriginData,
                         TTPsHostCount,
                         virusOriginData,
-                        last7defenceForceValue,last7brutForceValue,last7privValue,
-                        last7VirusValue,last7HoneyPotValue,
+                        last7defenceForceValue,
+                        last7brutForceValue,
+                        last7privValue,
+                        last7VirusValue,
+                        last7HoneyPotValue,
 
                         processMetaData_userName,
 
                         agentOriginData,
                         portMetaData_port_state,
                         assetMetaData_service,
-                        vulnHostCount, hostCount,
+                        vulnHostCount,
+                        hostCount,
                         vulnOriginData,
                         last7VulValue,
-                        linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
+                        linuxBaseLineCheckOriginData,
+                        windowsBaseLineCheckOriginData,
                         blLinuxHostCount,
                         blWindowsHostCount,
                         blLinuxNeedAdjustmentItemCount,
                         blWindowsNeedAdjustmentItemCount,
-                        blLinuxNeedAdjustmentItemCount_pass, blWindowsNeedAdjustmentItemCount_pass,
+                        blLinuxNeedAdjustmentItemCount_pass,
+                        blWindowsNeedAdjustmentItemCount_pass,
 
-                        agentAVGCPUUse, agentAVGMEMUse,
+                        agentAVGCPUUse,
+                        agentAVGMEMUse,
                     } = context;
                     const uniqueUUIDs_1 = new Set();
                     const uniqueUUIDs_2 = new Set();
-                    agentOriginData.forEach(item => {
-                        if (item.status === "1") {
+                    agentOriginData.forEach((item) => {
+                        if (item.status === '1') {
                             uniqueUUIDs_1.add(item.uuid);
-                        }
-                        else{
-                            uniqueUUIDs_2.add(item.uuid)
+                        } else {
+                            uniqueUUIDs_2.add(item.uuid);
                         }
                     });
                     const agentOnlineCount = uniqueUUIDs_1.size;
                     const hostOfflineCount = uniqueUUIDs_2.size;
 
-
                     // console.log('过去7日漏洞风险:'+last7VulValue);
                     const vulAlertData = generateAlertData(last7VulValue);
                     // 转换value为DataItem类型
-                    const vulProcessedData = vulAlertData.map(item => ({ ...item, Vulnerability: Number(item.value) }));
+                    const vulProcessedData = vulAlertData.map((item) => ({
+                        ...item,
+                        Vulnerability: Number(item.value),
+                    }));
 
                     const last7totalVulSum = last7VulValue.reduce((acc, currentValue) => {
                         return acc + currentValue;
                     }, 0); // 初始化累加器为0
 
-                    const bruteforceTTPsCount = Array.isArray(bruteforceTTPsOriginData) ? bruteforceTTPsOriginData.flat().length : 0;
-                    const privilegeescalationTTPsCount = Array.isArray(privilegeescalationTTPsOriginData) ? privilegeescalationTTPsOriginData.flat().length : 0;
-                    const defenseavoidanceTTPsCount = Array.isArray(defenseavoidanceTTPsOriginData) ? defenseavoidanceTTPsOriginData.flat().length : 0;
+                    const bruteforceTTPsCount = Array.isArray(bruteforceTTPsOriginData)
+                        ? bruteforceTTPsOriginData.flat().length
+                        : 0;
+                    const privilegeescalationTTPsCount = Array.isArray(
+                        privilegeescalationTTPsOriginData
+                    )
+                        ? privilegeescalationTTPsOriginData.flat().length
+                        : 0;
+                    const defenseavoidanceTTPsCount = Array.isArray(defenseavoidanceTTPsOriginData)
+                        ? defenseavoidanceTTPsOriginData.flat().length
+                        : 0;
 
                     const ttpsClassData: StatusItem[] = [
                         { color: '#846CCE', label: '暴力破解捕获 ', value: bruteforceTTPsCount },
-                        { color: '#FEC746', label: '权限提升捕获 ', value: privilegeescalationTTPsCount },
-                        { color: '#468DFF', label: '防御规避捕获 ', value: defenseavoidanceTTPsCount },
+                        {
+                            color: '#FEC746',
+                            label: '权限提升捕获 ',
+                            value: privilegeescalationTTPsCount,
+                        },
+                        {
+                            color: '#468DFF',
+                            label: '防御规避捕获 ',
+                            value: defenseavoidanceTTPsCount,
+                        },
                         // { color: '#FBB12E', label: '运行异常 ', value: 2 },
                         // { color: '#E5E8EF', label: '未安装 ', value: 1 },
                     ];
-                                        // 假设 last7brutForceValue, last7privValue, last7defenceForceValue 都是等长的数组
+                    // 假设 last7brutForceValue, last7privValue, last7defenceForceValue 都是等长的数组
                     const summedValues = last7brutForceValue.map((value, index) => {
                         return value + last7privValue[index] + last7defenceForceValue[index];
                     });
@@ -418,17 +499,26 @@ class Dashboard extends React.Component<DashboardProps> {
 
                     const ttpsAlertData = generateAlertData(summedValues);
                     // 转换value为DataItem类型
-                    const ttpsProcessedData = ttpsAlertData.map(item => ({ ...item, TTPs: Number(item.value) }));
+                    const ttpsProcessedData = ttpsAlertData.map((item) => ({
+                        ...item,
+                        TTPs: Number(item.value),
+                    }));
 
                     const honeypotAlertData = generateAlertData(last7HoneyPotValue);
-                    const honeypotProcessedData = honeypotAlertData.map(item => ({ ...item, HoneyPot: Number(item.value) }));
+                    const honeypotProcessedData = honeypotAlertData.map((item) => ({
+                        ...item,
+                        HoneyPot: Number(item.value),
+                    }));
 
                     const last7totalHoneyPotSum = last7HoneyPotValue.reduce((acc, currentValue) => {
                         return acc + currentValue;
                     }, 0); // 初始化累加器为0
 
                     const virusAlertData = generateAlertData(last7VirusValue);
-                    const virusProcessedData = virusAlertData.map(item => ({ ...item, Virus: Number(item.value) }));
+                    const virusProcessedData = virusAlertData.map((item) => ({
+                        ...item,
+                        Virus: Number(item.value),
+                    }));
 
                     const last7totalVirusSum = last7VirusValue.reduce((acc, currentValue) => {
                         return acc + currentValue;
@@ -437,33 +527,45 @@ class Dashboard extends React.Component<DashboardProps> {
                     // 将三类威胁狩猎数据合并
                     const combinedData = ttpsProcessedData.map((item, index) => {
                         return {
-                            day: item.day,  // 确保两个数据集中都有相同的日期格式
+                            day: item.day, // 确保两个数据集中都有相同的日期格式
                             TTPs: item.TTPs,
                             HoneyPot: honeypotProcessedData[index].HoneyPot,
                             Virus: virusProcessedData[index].Virus,
                         };
                     });
-                    const noAlertHostCount =hostCount-HoneyPotHostCount-TTPsHostCount;
+                    const noAlertHostCount = hostCount - HoneyPotHostCount - TTPsHostCount;
                     // 第二类告警的数据集，'#FEC746','#846CCE','#468DFF',
                     const alertHostPieChartData = [
-                        { label: '无告警主机', value: noAlertHostCount||0, color: '#E5E8EF' },
-                        { label: '蜜罐告警', value: HoneyPotHostCount||0, color: '#FFBB28' },
-                        { label: 'TTPs告警', value: TTPsHostCount||0, color: '#468DFF' },
+                        { label: '无告警主机', value: noAlertHostCount || 0, color: '#E5E8EF' },
+                        { label: '蜜罐告警', value: HoneyPotHostCount || 0, color: '#FFBB28' },
+                        { label: 'TTPs告警', value: TTPsHostCount || 0, color: '#468DFF' },
                         // { label: '病毒扫描告警', value: VirusHostCount||0, color: '#846CCE' },
                     ];
                     //漏洞检测
                     const vulAlertPieChartData = [
-                        { label: '无漏洞风险主机', value: hostCount - vulnHostCount, color: '#E5E8EF' },//GREY
-                        { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' },//RED
+                        {
+                            label: '无漏洞风险主机',
+                            value: hostCount - vulnHostCount,
+                            color: '#E5E8EF',
+                        }, //GREY
+                        { label: '存在漏洞主机', value: vulnHostCount, color: '#EA635F' }, //RED
                     ];
                     //基线检查，进度条型展示时，使用一个各项值为1的panel
                     const baselineLineChartLabelUseData: StatusItem[] = [
-                        { color: '#faad14', label: '建议调整 ', value: 1 },//蓝色E53F3F
+                        { color: '#faad14', label: '建议调整 ', value: 1 }, //蓝色E53F3F
                         { color: '#52c41a', label: '自行判断 ', value: 1 },
                         // { color: '#468DFF', label: '低风险 ', value: 2 },
                     ];
-                    const labels = ['Windows主机基线检查建议调整项', 'Linux主机基线检查建议调整项', '基线检查通过项'];
-                    const values = [blWindowsNeedAdjustmentItemCount || 0, blLinuxNeedAdjustmentItemCount || 0, blLinuxNeedAdjustmentItemCount_pass + blWindowsNeedAdjustmentItemCount_pass];
+                    const labels = [
+                        'Windows主机基线检查建议调整项',
+                        'Linux主机基线检查建议调整项',
+                        '基线检查通过项',
+                    ];
+                    const values = [
+                        blWindowsNeedAdjustmentItemCount || 0,
+                        blLinuxNeedAdjustmentItemCount || 0,
+                        blLinuxNeedAdjustmentItemCount_pass + blWindowsNeedAdjustmentItemCount_pass,
+                    ];
                     const colors = ['#faad14', '#faad14', '#52c41a']; // 指定每个进度条的颜色,弃用的绿色'#52c41a'，红ff4d4f
 
                     return (
@@ -476,21 +578,34 @@ class Dashboard extends React.Component<DashboardProps> {
                                 <Col md={17}>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false}
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 200 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        // fontFamily: '宋体, SimHei, Arial, sans-serif',
-                                                        fontSize: '19px',
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 200,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>资产概览</h2>
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            // fontFamily: '宋体, SimHei, Arial, sans-serif',
+                                                            fontSize: '19px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                        }}
+                                                    >
+                                                        资产概览
+                                                    </h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col md={4}>
@@ -508,11 +623,20 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         >
                                                             <Row>
                                                                 <Col span={24}>
-                                                                    <Statistic title={<span
-                                                                        style={{ fontSize: '18px' }}>主机</span>}
-                                                                               value={hostCount} />
+                                                                    <Statistic
+                                                                        title={
+                                                                            <span
+                                                                                style={{
+                                                                                    fontSize:
+                                                                                        '18px',
+                                                                                }}
+                                                                            >
+                                                                                主机
+                                                                            </span>
+                                                                        }
+                                                                        value={hostCount}
+                                                                    />
                                                                 </Col>
-
                                                             </Row>
                                                         </Card>
                                                     </Col>
@@ -532,11 +656,22 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         >
                                                             <Row>
                                                                 <Col span={24}>
-                                                                    <Statistic title={<span
-                                                                        style={{ fontSize: '18px' }}>开放端口</span>}
-                                                                               value={portMetaData_port_state.typeCount.get('open')} />
+                                                                    <Statistic
+                                                                        title={
+                                                                            <span
+                                                                                style={{
+                                                                                    fontSize:
+                                                                                        '18px',
+                                                                                }}
+                                                                            >
+                                                                                开放端口
+                                                                            </span>
+                                                                        }
+                                                                        value={portMetaData_port_state.typeCount.get(
+                                                                            'open'
+                                                                        )}
+                                                                    />
                                                                 </Col>
-
                                                             </Row>
                                                         </Card>
                                                     </Col>
@@ -556,11 +691,22 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         >
                                                             <Row>
                                                                 <Col span={24}>
-                                                                    <Statistic title={<span
-                                                                        style={{ fontSize: '18px' }}>系统服务</span>}
-                                                                               value={assetMetaData_service.tupleCount} />
+                                                                    <Statistic
+                                                                        title={
+                                                                            <span
+                                                                                style={{
+                                                                                    fontSize:
+                                                                                        '18px',
+                                                                                }}
+                                                                            >
+                                                                                系统服务
+                                                                            </span>
+                                                                        }
+                                                                        value={
+                                                                            assetMetaData_service.tupleCount
+                                                                        }
+                                                                    />
                                                                 </Col>
-
                                                             </Row>
                                                         </Card>
                                                     </Col>
@@ -579,11 +725,22 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             }}
                                                         >
                                                             <Col span={24}>
-                                                                <Statistic title={<span
-                                                                    style={{ fontSize: '18px' }}>运行进程</span>}
-                                                                           value={processMetaData_userName.typeCount.size} />
+                                                                <Statistic
+                                                                    title={
+                                                                        <span
+                                                                            style={{
+                                                                                fontSize: '18px',
+                                                                            }}
+                                                                        >
+                                                                            运行进程
+                                                                        </span>
+                                                                    }
+                                                                    value={
+                                                                        processMetaData_userName
+                                                                            .typeCount.size
+                                                                    }
+                                                                />
                                                             </Col>
-
                                                         </Card>
                                                     </Col>
                                                     <Col md={1} />
@@ -601,64 +758,106 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             }}
                                                         >
                                                             <Col span={24}>
-                                                                <Statistic title={<span
-                                                                    style={{ fontSize: '18px' }}>系统用户</span>}
-                                                                           value={processMetaData_userName.tupleCount} />
+                                                                <Statistic
+                                                                    title={
+                                                                        <span
+                                                                            style={{
+                                                                                fontSize: '18px',
+                                                                            }}
+                                                                        >
+                                                                            系统用户
+                                                                        </span>
+                                                                    }
+                                                                    value={
+                                                                        processMetaData_userName.tupleCount
+                                                                    }
+                                                                />
                                                             </Col>
-
                                                         </Card>
                                                     </Col>
-
                                                 </Row>
-
                                             </Card>
                                         </Col>
                                     </Row>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false}
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 350 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '19px',
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 350,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>主机告警</h2>
-                                                    <h2 style={{
-                                                        fontSize: '15px', color: 'grey',
-                                                        marginLeft: '0px',
-                                                        marginRight: 'auto',
-                                                        marginTop: '5px',
-                                                    }}>(近7日)</h2>
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '19px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                        }}
+                                                    >
+                                                        主机告警
+                                                    </h2>
+                                                    <h2
+                                                        style={{
+                                                            fontSize: '15px',
+                                                            color: 'grey',
+                                                            marginLeft: '0px',
+                                                            marginRight: 'auto',
+                                                            marginTop: '5px',
+                                                        }}
+                                                    >
+                                                        (近7日)
+                                                    </h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={18}>
-                                                        <div style={{
-                                                            // borderTop: '2px solid #E5E6EB',
-                                                            borderBottom: '1px solid #E5E6EB',
-                                                            // borderLeft: '2px solid #E5E6EB',line shape="circle"
-                                                            borderRight: '3px solid #E5E6EB',
-                                                        }}>
-                                                            <ResponsiveContainer width="98%" height={250}>
-                                                                <AreaChart data={combinedData} margin={{
-                                                                    top: 10,
-                                                                    right: 30,
-                                                                    left: 0,
-                                                                    bottom: 0,
-                                                                }}
+                                                        <div
+                                                            style={{
+                                                                // borderTop: '2px solid #E5E6EB',
+                                                                borderBottom: '1px solid #E5E6EB',
+                                                                // borderLeft: '2px solid #E5E6EB',line shape="circle"
+                                                                borderRight: '3px solid #E5E6EB',
+                                                            }}
+                                                        >
+                                                            <ResponsiveContainer
+                                                                width="98%"
+                                                                height={250}
+                                                            >
+                                                                <AreaChart
+                                                                    data={combinedData}
+                                                                    margin={{
+                                                                        top: 10,
+                                                                        right: 30,
+                                                                        left: 0,
+                                                                        bottom: 0,
+                                                                    }}
                                                                 >
                                                                     {/*<CartesianGrid strokeDasharray="3 3" />*/}
-                                                                    <XAxis dataKey="day" hide={true} />
+                                                                    <XAxis
+                                                                        dataKey="day"
+                                                                        hide={true}
+                                                                    />
                                                                     {/* <YAxis /> */}
                                                                     <Tooltip />
-                                                                    <Legend align="left" verticalAlign="top"
-                                                                            wrapperStyle={{ left: 0, top: 0 }} />
+                                                                    <Legend
+                                                                        align="left"
+                                                                        verticalAlign="top"
+                                                                        wrapperStyle={{
+                                                                            left: 0,
+                                                                            top: 0,
+                                                                        }}
+                                                                    />
                                                                     <Area
                                                                         fillOpacity={0.5}
                                                                         stroke="#4086FF" // 设置线条颜色为#4086FF
@@ -719,7 +918,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             ]}
                                                             panelId="/app/threat-hunting"
                                                             height="75px"
-                                                            width={"220px"}
+                                                            width={'220px'}
                                                             backgroundColor="#ffffff"
                                                             navigate={true}
                                                             showTopBorder={false}
@@ -758,7 +957,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             ]}
                                                             panelId="/app/VirusScanning/VirusScanning"
                                                             height="75px"
-                                                            width={"220px"}
+                                                            width={'220px'}
                                                             backgroundColor="#ffffff"
                                                             navigate={true}
                                                             showTopBorder={false}
@@ -797,7 +996,7 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             ]}
                                                             panelId="/app/RiskManagement/honeypot"
                                                             height="75px"
-                                                            width={"220px"}
+                                                            width={'220px'}
                                                             backgroundColor="#ffffff"
                                                             navigate={true}
                                                             showTopBorder={false}
@@ -807,56 +1006,89 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         />
                                                     </Col>
                                                 </Row>
-
                                             </Card>
                                         </Col>
                                     </Row>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         {/* 每个 Col 组件占据 6 份，以确保在一行中平均分布 */}
                                         <Col md={24}>
-
-                                            <Card bordered={false}
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 350 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '19px',
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 350,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>漏洞风险</h2>
-                                                    <h2 style={{
-                                                        fontSize: '15px', color: 'grey',
-                                                        marginLeft: '0px',
-                                                        marginRight: 'auto',
-                                                        marginTop: '5px',
-                                                    }}>(近7日)</h2>
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '19px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                        }}
+                                                    >
+                                                        漏洞风险
+                                                    </h2>
+                                                    <h2
+                                                        style={{
+                                                            fontSize: '15px',
+                                                            color: 'grey',
+                                                            marginLeft: '0px',
+                                                            marginRight: 'auto',
+                                                            marginTop: '5px',
+                                                        }}
+                                                    >
+                                                        (近7日)
+                                                    </h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={18}>
-                                                        <div style={{
-                                                            // borderTop: '2px solid #E5E6EB',
-                                                            // borderBottom: '2px solid #E5E6EB',
-                                                            // borderLeft: '2px solid #E5E6EB',
-                                                            borderRight: '3px solid #E5E6EB',
-                                                        }}>
-                                                            <ResponsiveContainer width="98%" height={250}>
-                                                                <AreaChart data={vulProcessedData} margin={{
-                                                                    top: 10,
-                                                                    right: 30,
-                                                                    left: 0,
-                                                                    bottom: 0,
-                                                                }}>
+                                                        <div
+                                                            style={{
+                                                                // borderTop: '2px solid #E5E6EB',
+                                                                // borderBottom: '2px solid #E5E6EB',
+                                                                // borderLeft: '2px solid #E5E6EB',
+                                                                borderRight: '3px solid #E5E6EB',
+                                                            }}
+                                                        >
+                                                            <ResponsiveContainer
+                                                                width="98%"
+                                                                height={250}
+                                                            >
+                                                                <AreaChart
+                                                                    data={vulProcessedData}
+                                                                    margin={{
+                                                                        top: 10,
+                                                                        right: 30,
+                                                                        left: 0,
+                                                                        bottom: 0,
+                                                                    }}
+                                                                >
                                                                     {/*<CartesianGrid strokeDasharray="3 3" />*/}
-                                                                    <XAxis dataKey="day" hide={true} />
+                                                                    <XAxis
+                                                                        dataKey="day"
+                                                                        hide={true}
+                                                                    />
                                                                     {/* <YAxis /> */}
                                                                     <Tooltip />
-                                                                    <Legend align="left" verticalAlign="top"
-                                                                            wrapperStyle={{ left: 0, top: 0 }} />
+                                                                    <Legend
+                                                                        align="left"
+                                                                        verticalAlign="top"
+                                                                        wrapperStyle={{
+                                                                            left: 0,
+                                                                            top: 0,
+                                                                        }}
+                                                                    />
                                                                     <Area
                                                                         fillOpacity={0.5}
                                                                         stroke="#4086FF" // 设置线条颜色为#4086FF
@@ -867,46 +1099,62 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                     />
                                                                 </AreaChart>
                                                             </ResponsiveContainer>
-
                                                         </div>
                                                     </Col>
                                                     <Col span={6}>
-                                                        {this.renderVulDataCard(vulnOriginData, last7totalVulSum)}
+                                                        {this.renderVulDataCard(
+                                                            vulnOriginData,
+                                                            last7totalVulSum
+                                                        )}
                                                     </Col>
                                                 </Row>
-
                                             </Card>
                                         </Col>
                                     </Row>
                                     <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false}
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 350 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '19px',
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 350,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                        marginBottom: '10px',
-                                                    }}>基线风险</h2>
-                                                    <StatusPanel statusData={baselineLineChartLabelUseData}
-                                                                 orientation="horizontal" />
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '19px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                            marginBottom: '10px',
+                                                        }}
+                                                    >
+                                                        基线风险
+                                                    </h2>
+                                                    <StatusPanel
+                                                        statusData={baselineLineChartLabelUseData}
+                                                        orientation="horizontal"
+                                                    />
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={24}>
-                                                        <ProgressPanel labels={labels}
-                                                                       values={values}
-                                                                       colors={colors}
+                                                        <ProgressPanel
+                                                            labels={labels}
+                                                            values={values}
+                                                            colors={colors}
                                                         />
                                                     </Col>
                                                 </Row>
-
                                             </Card>
                                         </Col>
                                     </Row>
@@ -915,45 +1163,77 @@ class Dashboard extends React.Component<DashboardProps> {
                                 <Col md={7}>
                                     <Col md={24}>
                                         <Row gutter={[12, 6]} style={{ marginTop: '10px' }}>
-                                            <Card bordered={false} /*title="OWL 介绍*/
-                                                  style={{
-                                                      fontWeight: 'bolder',
-                                                      width: '100%',
-                                                      height: 350,
-                                                      backgroundColor: '#ffffff',
-                                                  }}>
-                                                <div style={{
-                                                    marginTop: '-10px',
-                                                    marginBottom: '5px',
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h1 style={{
-                                                        fontSize: '24px',
-                                                        margin: '0',
-                                                        fontFamily: 'FZDaHei-B01S, sans-serif',
+                                            <Card
+                                                bordered={false} /*title="OWL 介绍*/
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 350,
+                                                    backgroundColor: '#ffffff',
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        marginTop: '-10px',
+                                                        marginBottom: '5px',
                                                         fontWeight: 'bold',
-                                                    }}>用电全域安全监测平台</h1>
+                                                    }}
+                                                >
+                                                    <h1
+                                                        style={{
+                                                            fontSize: '24px',
+                                                            margin: '0',
+                                                            fontFamily: 'FZDaHei-B01S, sans-serif',
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        充电全域安全监测平台
+                                                    </h1>
                                                 </div>
 
-                                                <div style={{
-                                                    marginBottom: '6px',
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontSize: '14px',
-                                                        fontFamily: '宋体, sans-serif',//由<strong>主站安全监测功能模块</strong>和<strong>边缘控制终端安全监测模块</strong>组成。<br />其设计目标是
-                                                    }}>
-                                                        <strong>用电全域安全监测平台为</strong><strong><a
-                                                        style={{ color: '#1964F5' }}
-                                                        href="https://baike.baidu.com/item/车网互动"
-                                                        target="_blank">车网互动</a></strong>及<strong>智能量测</strong>场景提供了全面的安全监测解决方案。<br />
-                                                        安全监测解决方案提供了<strong>资产测绘</strong>、<strong>基线检查</strong>、<strong>运行监测</strong>、<strong>风险监测</strong>、
-                                                        <strong>攻击溯源</strong>和<strong>安全狩猎</strong>等功能。<br />
+                                                <div
+                                                    style={{
+                                                        marginBottom: '6px',
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontSize: '14px',
+                                                            fontFamily: '宋体, sans-serif', //由<strong>主站安全监测功能模块</strong>和<strong>边缘控制终端安全监测模块</strong>组成。<br />其设计目标是
+                                                        }}
+                                                    >
+                                                        <strong>充电全域安全监测平台为</strong>
+                                                        <strong>
+                                                            <a
+                                                                style={{ color: '#1964F5' }}
+                                                                href="https://baike.baidu.com/item/车网互动"
+                                                                target="_blank"
+                                                            >
+                                                                车网互动
+                                                            </a>
+                                                        </strong>
+                                                        及<strong>智能量测</strong>
+                                                        场景提供了全面的安全监测解决方案。
+                                                        <br />
+                                                        安全监测解决方案提供了
+                                                        <strong>资产测绘</strong>、
+                                                        <strong>基线检查</strong>、
+                                                        <strong>运行监测</strong>、
+                                                        <strong>风险监测</strong>、
+                                                        <strong>攻击溯源</strong>和
+                                                        <strong>安全狩猎</strong>等功能。
+                                                        <br />
                                                         本平台旨在实现对车网互动及智能量测系统的全面感知与统一监控，以确保系统的安全和稳定运行。
                                                     </h2>
-
                                                 </div>
-                                                <div style={{ marginBottom: '3px', transform: 'translateX(-12px) translateY(14px)' }}>
+                                                <div
+                                                    style={{
+                                                        marginBottom: '3px',
+                                                        transform:
+                                                            'translateX(-12px) translateY(14px)',
+                                                    }}
+                                                >
                                                     {/*<div style={{*/}
                                                     {/*    display: 'flex',*/}
                                                     {/*    justifyContent: 'space-between',*/}
@@ -966,63 +1246,102 @@ class Dashboard extends React.Component<DashboardProps> {
                                                     {/*        target="_blank"*/}
                                                     {/*        rel="noopener noreferrer">GitHub</a></p>*/}
                                                     {/*</div>*/}
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        marginLeft: 16,
-                                                        fontWeight: 'bold',
-                                                    }}>
-                                                        <p><GlobalOutlined /> <a
-                                                            style={{ color: '#1964F5' }}
-                                                            href="http://www.sepri.csg.cn/" target="_blank"
-                                                            rel="noopener noreferrer">南方电网科学研究院</a></p>
-                                                    </div>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        marginLeft: 16,
-                                                        fontWeight: 'bold',
-                                                    }}>
-                                                        <p><MailOutlined /> <a
-                                                            style={{ color: '#1964F5' }}
-                                                            href="mailto:kyyzzbs@csg.cn">kyyzzbs@csg.cn</a>
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            marginLeft: 16,
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        <p>
+                                                            <GlobalOutlined />{' '}
+                                                            <a
+                                                                style={{ color: '#1964F5' }}
+                                                                href="http://www.sepri.csg.cn/"
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                南方电网科学研究院
+                                                            </a>
                                                         </p>
                                                     </div>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        marginLeft: 16,
-                                                        fontWeight: 'bold',
-                                                    }}>
-                                                        <p><PhoneOutlined /> <a
-                                                            style={{ color: '#1964F5' }}>020-36625237</a>(业务合作联系电话)
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            marginLeft: 16,
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        <p>
+                                                            <MailOutlined />{' '}
+                                                            <a
+                                                                style={{ color: '#1964F5' }}
+                                                                href="mailto:kyyzzbs@csg.cn"
+                                                            >
+                                                                kyyzzbs@csg.cn
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            marginLeft: 16,
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        <p>
+                                                            <PhoneOutlined />{' '}
+                                                            <a style={{ color: '#1964F5' }}>
+                                                                020-36625237
+                                                            </a>
+                                                            (业务合作联系电话)
                                                         </p>
                                                     </div>
                                                 </div>
-
-
-
                                             </Card>
                                         </Row>
                                     </Col>
                                     <Row gutter={[12, 6]} style={{ marginTop: '9px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false} /*title="主机风险扇形图" */
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 220 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '16px',
+                                            <Card
+                                                bordered={false} /*title="主机风险扇形图" */
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 220,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>主机风险分布</h2>
-                                                    <Col pull={0} span={2}
-                                                         style={{ position: 'relative', top: '-6px', right: '210px' }}>
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '16px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                        }}
+                                                    >
+                                                        主机风险分布
+                                                    </h2>
+                                                    <Col
+                                                        pull={0}
+                                                        span={2}
+                                                        style={{
+                                                            position: 'relative',
+                                                            top: '-6px',
+                                                            right: '210px',
+                                                        }}
+                                                    >
                                                         <Button
                                                             type="link"
                                                             style={{
@@ -1032,7 +1351,11 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 color: '#88878C',
                                                             }}
                                                             icon={<RightOutlined />}
-                                                            onClick={() => this.props.history.push('/app/AssetsCenter/HostInventory')}
+                                                            onClick={() =>
+                                                                this.props.history.push(
+                                                                    '/app/AssetsCenter/HostInventory'
+                                                                )
+                                                            }
                                                         />
                                                     </Col>
                                                 </div>
@@ -1059,9 +1382,20 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             hasDynamicEffect={true}
                                                         />
                                                     </Col>
-                                                    <Col span={8} style={{transform: 'translateX(-45px) translateY(-25px)'}}>
-                                                        {renderBLPieChart(linuxBaseLineCheckOriginData, windowsBaseLineCheckOriginData,
-                                                            '无基线风险主机', '存在高危基线主机', hostCount)}
+                                                    <Col
+                                                        span={8}
+                                                        style={{
+                                                            transform:
+                                                                'translateX(-45px) translateY(-25px)',
+                                                        }}
+                                                    >
+                                                        {renderBLPieChart(
+                                                            linuxBaseLineCheckOriginData,
+                                                            windowsBaseLineCheckOriginData,
+                                                            '无基线风险主机',
+                                                            '存在高危基线主机',
+                                                            hostCount
+                                                        )}
                                                     </Col>
                                                 </Row>
                                             </Card>
@@ -1069,20 +1403,33 @@ class Dashboard extends React.Component<DashboardProps> {
                                     </Row>
                                     <Row gutter={[12, 6]} style={{ marginTop: '9px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false} /*title="Agent 概览*/
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 330 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '16px',
+                                            <Card
+                                                bordered={false} /*title="Agent 概览*/
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 330,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>Agent概览</h2>
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '16px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                        }}
+                                                    >
+                                                        Agent概览
+                                                    </h2>
                                                 </div>
                                                 <Row gutter={[6, 6]}>
                                                     <Col span={12}>
@@ -1103,19 +1450,20 @@ class Dashboard extends React.Component<DashboardProps> {
                                                             />
                                                         </div>
                                                         <div>
-                                                        <DataCard
-                                                            title="离线 Agent"
-                                                            value={hostCount - agentOnlineCount}
-                                                            valueItem={[]}
-                                                            panelId=""
-                                                            height="100px"
-                                                            width="155px"
-                                                            backgroundColor="#F6F7FB"
-                                                            navigate={false}
-                                                            showTopBorder={false}
-                                                            showBottomBorder={false}
-                                                            showLeftBorder={false}
-                                                            showRightBorder={false} />
+                                                            <DataCard
+                                                                title="离线 Agent"
+                                                                value={hostCount - agentOnlineCount}
+                                                                valueItem={[]}
+                                                                panelId=""
+                                                                height="100px"
+                                                                width="155px"
+                                                                backgroundColor="#F6F7FB"
+                                                                navigate={false}
+                                                                showTopBorder={false}
+                                                                showBottomBorder={false}
+                                                                showLeftBorder={false}
+                                                                showRightBorder={false}
+                                                            />
                                                         </div>
                                                     </Col>
                                                     <Col span={12}>
@@ -1132,9 +1480,10 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 showTopBorder={false}
                                                                 showBottomBorder={false}
                                                                 showLeftBorder={false}
-                                                                showRightBorder={false} />
+                                                                showRightBorder={false}
+                                                            />
                                                         </div>
-                                                        <div >
+                                                        <div>
                                                             <DataCard
                                                                 title="Mem AVG"
                                                                 value={agentAVGMEMUse}
@@ -1147,35 +1496,52 @@ class Dashboard extends React.Component<DashboardProps> {
                                                                 showTopBorder={false}
                                                                 showBottomBorder={false}
                                                                 showLeftBorder={false}
-                                                                showRightBorder={false} />
-                                                            </div>
+                                                                showRightBorder={false}
+                                                            />
+                                                        </div>
                                                     </Col>
-
                                                 </Row>
                                             </Card>
                                         </Col>
                                     </Row>
                                     <Row gutter={[12, 6]} style={{ marginTop: '9px' }}>
                                         <Col md={24}>
-                                            <Card bordered={false}
-                                                  style={{ fontWeight: 'bolder', width: '100%', height: 350 }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: 16,
-                                                    fontWeight: 'bold',
-                                                }}>
-                                                    <h2 style={{
-                                                        fontFamily: 'Microsoft YaHei, SimHei, Arial, sans-serif',
-                                                        fontSize: '19px',
+                                            <Card
+                                                bordered={false}
+                                                style={{
+                                                    fontWeight: 'bolder',
+                                                    width: '100%',
+                                                    height: 350,
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 16,
                                                         fontWeight: 'bold',
-                                                        marginLeft: '0px',
-                                                    }}>威胁狩猎概览</h2>
+                                                    }}
+                                                >
+                                                    <h2
+                                                        style={{
+                                                            fontFamily:
+                                                                'Microsoft YaHei, SimHei, Arial, sans-serif',
+                                                            fontSize: '19px',
+                                                            fontWeight: 'bold',
+                                                            marginLeft: '0px',
+                                                        }}
+                                                    >
+                                                        威胁狩猎概览
+                                                    </h2>
                                                 </div>
                                                 <Row gutter={0}>
                                                     <Col span={12}>
                                                         <div
-                                                            style={{ transform: 'translateX(-20px) translateY(20px)' }}>
+                                                            style={{
+                                                                transform:
+                                                                    'translateX(-20px) translateY(20px)',
+                                                            }}
+                                                        >
                                                             <CustomPieChart
                                                                 data={ttpsClassData}
                                                                 innerRadius={54}
@@ -1188,22 +1554,25 @@ class Dashboard extends React.Component<DashboardProps> {
                                                         </div>
                                                     </Col>
                                                     <Col span={12}>
-                                                        <div style={{ transform: 'translateY(70px)' }}>
-                                                            <StatusPanel statusData={ttpsClassData}
-                                                                         orientation="vertical" />
+                                                        <div
+                                                            style={{
+                                                                transform: 'translateY(70px)',
+                                                            }}
+                                                        >
+                                                            <StatusPanel
+                                                                statusData={ttpsClassData}
+                                                                orientation="vertical"
+                                                            />
                                                         </div>
                                                     </Col>
                                                 </Row>
-
                                             </Card>
                                         </Col>
                                     </Row>
                                 </Col>
                             </Row>
-
                         </div>
                     );
-
                 }}
             </DataContext.Consumer>
         );
