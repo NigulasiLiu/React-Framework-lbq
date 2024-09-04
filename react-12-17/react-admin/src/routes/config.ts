@@ -110,6 +110,11 @@ const menus: {
             component: 'Provenance'
         },
         {
+            key: '/app/ThreatBook',
+            title: '域名检测',
+            component: 'ThreatBook'
+        },
+        {
             key: '/app/Management',
             title: '系统管理',
             icon: 'setting',
@@ -134,6 +139,11 @@ const menus: {
             title: '详情页面',
             icon: 'file',
             component: 'DetailsPage', // 组件名称
+        },
+        {
+            key: '/app/domaindetails',
+            title: '域名检测详情',
+            component: 'DomainDetails', // 组件名称
         },
         {
             key: '/app/create_agent_task',

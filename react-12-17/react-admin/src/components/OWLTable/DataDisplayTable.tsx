@@ -327,7 +327,7 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                             </Button>
                                                         </Link>)}
                                                     {(['HoneypotDefenselist', 'threathuntinglist', 'UserManagementlist', 'memHorseList',
-                                                        'brute-force','privilege-escalation','defense-avoidance'].includes(this.props.currentPanel)) && (
+                                                        'brute-force','privilege-escalation','defense-avoidance','ThreatBooklist',].includes(this.props.currentPanel)) && (
                                                         <Button
                                                             onClick={this.props.additionalButton}
                                                             {...blueButton}
@@ -388,23 +388,6 @@ class DataDisplayTable extends React.Component<DataDisplayTableProps, DataDispla
                                                 </Col>
                                             </Row>
                                         </div>
-                                        {/* {(data.length===0)?(                
-                        <Card bordered={true}
-                            style={{display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: '#ffffff', width: '100%' }}>
-                            <LoadingOutlined style={{ fontSize: '3em' }} />
-                        </Card>)
-                        :(<Table
-                            className={selectedTableStyle}
-                            rowSelection={rowSelection}
-                            rowKey={this.props.columns[0].key}//使用第一个字段区分各个row，最好是PK
-                            dataSource={data}
-                            columns={this.props.columns}
-                            childrenColumnName={this.props.childrenColumnName}
-                            expandedRowRender={this.props.expandedRowRender}
-                            //indentSize={this.props.indentSize}
-                            locale={(this.state.dataSourceChanged) && (this.props.externalDataSource.length === 0) 
-                                ? customLocale:undefined}
-                        />)} */}
                                         <Table
                                             className={selectedTableStyle}
                                             rowSelection={rowSelection}

@@ -22,6 +22,8 @@ import ThreatHunting from './HostProtection/ThreatHunting';
 import MicroIsolation from './HostProtection/MicroIsolation';
 import ScheduleTask from './Management/ScheduleTask';
 import InstantTask from './Management/InstantTask';
+import ThreatBook from './ThreatBook/ThreatBook';
+import DomainDetails from './ThreatBook/DomainDetails';
 
 
 const WysiwygBundle = Loadable({
@@ -31,6 +33,8 @@ const WysiwygBundle = Loadable({
 });
 
 export default {
+    ThreatBook,
+    DomainDetails,
     InstantTask,
     Dashboard,
     AssetFingerprint,
