@@ -363,15 +363,6 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                 <Col span={12}>
                                     <Table<DataItem>
                                         className="customTable"
-                                        dataSource={topFiveUserCounts}//系统用户
-                                        columns={columns[1]}
-                                        pagination={false}
-                                        rowKey="id"
-                                    />
-                                </Col>
-                                <Col span={12}>
-                                    <Table<DataItem>
-                                        className="customTable"
                                         dataSource={topFiveServiceCounts}//系统服务
                                         columns={columns[2]}
                                         pagination={false}
@@ -392,6 +383,15 @@ class OverviewPanel extends React.Component<OverviewPanelProps, OverviewPanelSta
                                         className="customTable"
                                         dataSource={topFiveFimData}//fim
                                         columns={columns[4]}
+                                        pagination={false}
+                                        rowKey="id"
+                                    />
+                                </Col>
+                                <Col span={12}>
+                                    <Table<DataItem>
+                                        className="customTable"
+                                        dataSource={topFiveUserCounts}//系统用户
+                                        columns={columns[1]}
                                         pagination={false}
                                         rowKey="id"
                                     />

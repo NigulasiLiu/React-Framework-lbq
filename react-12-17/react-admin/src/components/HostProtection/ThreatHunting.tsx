@@ -79,7 +79,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
         ttps: [],
         isModalOpen: false,
         columns: [],
-        currentPanel: 'brute-force',
+        currentPanel: 'privilege-escalation',
     };
 
     componentDidMount() {
@@ -228,6 +228,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={bruteforceTTPsOriginData}
+                        // externalDataSource={logData1}
                         apiEndpoint={Brute_TTPs_API}
                         timeColumnIndex={[]}
                         columns={threatHuntingColumns}
@@ -242,6 +243,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={privilegeescalationTTPsOriginData}
+                        // externalDataSource={logData2}
                         apiEndpoint={Privilege_TTPs_API}
                         timeColumnIndex={[]}
                         columns={threatHuntingColumns_2}
@@ -256,6 +258,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                     <DataDisplayTable
                         key={currentPanel}
                         externalDataSource={defenseavoidanceTTPsOriginData}
+                        // externalDataSource={logData3}
                         apiEndpoint={Defense_TTPs_API}
                         timeColumnIndex={[]}
                         columns={threatHuntingColumns_2}
@@ -324,7 +327,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
 
                         bruteforceTTPsOriginData,
                         privilegeescalationTTPsOriginData,
-                        defenseavoidanceTTPsOriginData, vulnOriginData,
+                        defenseavoidanceTTPsOriginData, bf_atkip_count, ps_atkip_count, de_atkip_count,
                     } = context;
                     const brutCount = Array.isArray(bruteforceTTPsOriginData) ? bruteforceTTPsOriginData.flat().length : 0;
                     const privCount = Array.isArray(privilegeescalationTTPsOriginData) ? privilegeescalationTTPsOriginData.flat().length : 0;
@@ -353,7 +356,7 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                     }}>威胁狩猎概览</h2>
                                                 </div>
                                                 <Row>
-                                                    <Col span={9} style={{ marginLeft: '10px' }}>
+                                                    <Col span={9} style={{ marginLeft: '10px',marginRight:'10px' }}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
@@ -370,12 +373,12 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                                 '暴力破解', '权限提升', '防御规避')}
                                                         </Card>
                                                     </Col>
-                                                    <Col span={5} style={{ marginLeft: '0px' }}>
+                                                    <Col span={7} style={{ marginLeft: '0px' }}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
                                                                 height: '100px',
-                                                                width: '240px',
+                                                                width: '340px',
                                                                 minWidth: '200px', // 最小宽度300px，而非100px
                                                                 display: 'flex',
                                                                 alignItems: 'center',
@@ -386,20 +389,20 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
                                                                     <Statistic title={<span
-                                                                        style={{ fontSize: '16px' }}>暴力破解</span>}
-                                                                               value={brutCount}
+                                                                        style={{ fontSize: '16px' }}>捕获攻击者IP</span>}
+                                                                               value={bf_atkip_count+ps_atkip_count+de_atkip_count}
                                                                     />
                                                                 </Col>
 
                                                             </Row>
                                                         </Card>
                                                     </Col>
-                                                    <Col span={5} style={{ marginLeft: '0px' }}>
+                                                    <Col span={7} style={{ marginLeft: '0px' }}>
                                                         <Card
                                                             bordered={false}
                                                             style={{
                                                                 height: '100px',
-                                                                width: '240px',
+                                                                width: '340px',
                                                                 minWidth: '200px', // 最小宽度300px，而非100px
                                                                 display: 'flex',
                                                                 alignItems: 'center',
@@ -410,36 +413,36 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                             <Row>
                                                                 <Col pull={2} span={24} style={{ marginRight: '50px' }}>
                                                                     <Statistic title={<span
-                                                                        style={{ fontSize: '16px' }}>权限提升</span>}
-                                                                               value={privCount} />
+                                                                        style={{ fontSize: '16px' }}>近7日捕获</span>}
+                                                                               value={brutCount+privCount+ defensCount} />
                                                                 </Col>
 
                                                             </Row>
                                                         </Card>
                                                     </Col>
-                                                    <Col span={4} style={{ marginLeft: '0px' }}>
-                                                        <Card
-                                                            bordered={false}
-                                                            style={{
-                                                                height: '100px',
-                                                                width: '240px',
-                                                                minWidth: '200px', // 最小宽度300px，而非100px
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                backgroundColor: '#F6F7FB', // 设置Card的背景颜色
-                                                            }}
-                                                        >
-                                                            <Row>
-                                                                <Col pull={2} span={24} style={{ marginRight: '50px' }}>
-                                                                    <Statistic title={<span
-                                                                        style={{ fontSize: '16px' }}>防御规避</span>}
-                                                                               value={defensCount} />
-                                                                </Col>
+                                                    {/*<Col span={4} style={{ marginLeft: '0px' }}>*/}
+                                                    {/*    <Card*/}
+                                                    {/*        bordered={false}*/}
+                                                    {/*        style={{*/}
+                                                    {/*            height: '100px',*/}
+                                                    {/*            width: '240px',*/}
+                                                    {/*            minWidth: '200px', // 最小宽度300px，而非100px*/}
+                                                    {/*            display: 'flex',*/}
+                                                    {/*            alignItems: 'center',*/}
+                                                    {/*            justifyContent: 'center',*/}
+                                                    {/*            backgroundColor: '#F6F7FB', // 设置Card的背景颜色*/}
+                                                    {/*        }}*/}
+                                                    {/*    >*/}
+                                                    {/*        <Row>*/}
+                                                    {/*            <Col pull={2} span={24} style={{ marginRight: '50px' }}>*/}
+                                                    {/*                <Statistic title={<span*/}
+                                                    {/*                    style={{ fontSize: '16px' }}>防御规避</span>}*/}
+                                                    {/*                           value={defensCount} />*/}
+                                                    {/*            </Col>*/}
 
-                                                            </Row>
-                                                        </Card>
-                                                    </Col>
+                                                    {/*        </Row>*/}
+                                                    {/*    </Card>*/}
+                                                    {/*</Col>*/}
                                                 </Row>
                                             </Card>
                                         </Col>
@@ -466,9 +469,9 @@ class ThreatHunting extends React.Component<{}, ThreatHuntingState> {
                                                     mode="horizontal"
                                                     style={{ display: 'flex', width: '100%' }} // 设置Menu为flex容器
                                                 >
-                                                    <Menu.Item key="brute-force">TTPs-暴力破解</Menu.Item>
                                                     <Menu.Item key="privilege-escalation">TTPs-权限提升</Menu.Item>
                                                     <Menu.Item key="defense-avoidance">TTPs-防御规避</Menu.Item>
+                                                    <Menu.Item key="brute-force">TTPs-暴力破解</Menu.Item>
                                                     <div style={{ flexGrow: 1 }}></div>
                                                 </Menu>
                                                 <Card bordered={false}>{

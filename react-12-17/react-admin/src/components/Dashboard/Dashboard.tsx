@@ -466,15 +466,15 @@ class Dashboard extends React.Component<DashboardProps> {
                         : 0;
 
                     const ttpsClassData: StatusItem[] = [
-                        { color: '#846CCE', label: '暴力破解捕获 ', value: bruteforceTTPsCount },
+                        { color: '#846CCE', label: '暴力破解 ', value: bruteforceTTPsCount },
                         {
                             color: '#FEC746',
-                            label: '权限提升捕获 ',
+                            label: '权限提升 ',
                             value: privilegeescalationTTPsCount,
                         },
                         {
                             color: '#468DFF',
-                            label: '防御规避捕获 ',
+                            label: '防御规避 ',
                             value: defenseavoidanceTTPsCount,
                         },
                         // { color: '#FBB12E', label: '运行异常 ', value: 2 },

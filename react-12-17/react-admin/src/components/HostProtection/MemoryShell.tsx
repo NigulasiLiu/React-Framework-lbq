@@ -141,7 +141,7 @@ class MemoryShell extends React.Component<MemmoryShellProps, MemmoryShellStates>
 
             const response = await axios.post(APP_Server_URL+'/api/memoryshell/check', formData,config);
             console.log('response.data:' + JSON.stringify(response.data, null, 2));
-            message.success('已保存内存马信息');
+            // message.success('已保存内存马信息');
             this.hideMemoryShellModal(); // 关闭Modal
 
             this.setState({

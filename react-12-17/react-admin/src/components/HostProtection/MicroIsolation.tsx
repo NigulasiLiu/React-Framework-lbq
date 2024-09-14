@@ -210,48 +210,33 @@ class MicroIsolation extends React.Component<MicroIsolationProps, MicroIsolation
                     key: 'uuid',
                     render: (text: string, record: any) => (
                         <div>
-                            <div>
-                                <Link
-                                    to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
-                                    target="_blank"
-                                >
-                                    <Button
-                                        style={{
-                                            fontWeight: 'bold',
-                                            border: 'transparent',
-                                            backgroundColor: 'transparent',
-                                            color: '#4086FF',
-                                            padding: '0 0',
-                                        }}
-                                    >
-                                        <Tooltip title={record.uuid}>
-                                            <div
-                                                style={{
-                                                    whiteSpace: 'nowrap',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    maxWidth: '80px',
-                                                }}
-                                            >
-                                                {'充电桩' + record.uuid || '-'}
-                                            </div>
-                                        </Tooltip>
-                                    </Button>
-                                </Link>
-                            </div>
-                            <div
-                                style={{
-                                    fontSize: 'small', // 字体更小
-                                    background: '#f0f0f0', // 灰色背景
-                                    padding: '2px 4px', // 轻微内边距
-                                    borderRadius: '2px', // 圆角边框
-                                    display: 'inline-block', // 使得背景色仅围绕文本
-                                    marginTop: '4px', // 上边距
-                                }}
+                            <Link
+                                to={`/app/detailspage?uuid=${encodeURIComponent(record.uuid)}`}
+                                target="_blank"
                             >
-                                <span style={{ fontWeight: 'bold' }}>内网/公网 IP:</span>{' '}
-                                {record.agent_ip}
-                            </div>
+                                <Button
+                                    style={{
+                                        fontWeight: 'bold',
+                                        border: 'transparent',
+                                        backgroundColor: 'transparent',
+                                        color: '#4086FF',
+                                        padding: '0 0',
+                                    }}
+                                >
+                                    <Tooltip title={record.uuid}>
+                                        <div
+                                            style={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '80px',
+                                            }}
+                                        >
+                                            {'充电桩' + record.uuid || '-'}
+                                        </div>
+                                    </Tooltip>
+                                </Button>
+                            </Link>
                         </div>
                     ),
                 },
@@ -259,26 +244,77 @@ class MicroIsolation extends React.Component<MicroIsolationProps, MicroIsolation
                     title: '文件名称',
                     dataIndex: 'origin_filename',
                     key: 'origin_filename',
+                    render: (text: string) => (
+                        <Tooltip title={text}>
+                            <div
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '150px', // 你可以根据需要调整列的最大宽度
+                                }}
+                            >
+                                {text}
+                            </div>
+                        </Tooltip>
+                    ),
                 },
                 {
                     title: '文件位置',
                     dataIndex: 'origin_filepath',
                     key: 'origin_filepath',
+                    render: (text: string) => (
+                        <Tooltip title={text}>
+                            <div
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '150px',
+                                }}
+                            >
+                                {text}
+                            </div>
+                        </Tooltip>
+                    ),
                 },
-                // {
-                //   title: '加密密钥',
-                //   dataIndex: 'aes_key',
-                //   key: 'aes_key',
-                // },
                 {
                     title: '隔离文件名',
                     dataIndex: 'encrypted_filename',
                     key: 'encrypted_filename',
+                    render: (text: string) => (
+                        <Tooltip title={text}>
+                            <div
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '150px',
+                                }}
+                            >
+                                {text}
+                            </div>
+                        </Tooltip>
+                    ),
                 },
                 {
                     title: '隔离文件路径',
                     dataIndex: 'encrypted_filepath',
                     key: 'encrypted_filepath',
+                    render: (text: string) => (
+                        <Tooltip title={text}>
+                            <div
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: '150px',
+                                }}
+                            >
+                                {text}
+                            </div>
+                        </Tooltip>
+                    ),
                 },
                 {
                     title: '操作',
@@ -290,8 +326,6 @@ class MicroIsolation extends React.Component<MicroIsolationProps, MicroIsolation
                                 padding: '0 0',
                                 border: 'transparent',
                                 backgroundColor: 'transparent',
-                                // color: record.status === 'Online' ? '#4086FF' : 'rgba(64, 134, 255, 0.5)', // 动态改变颜色
-                                // cursor: record.status === 'Online' ? 'pointer' : 'default' // 当按钮被禁用时，更改鼠标样式
                             }}
                             onClick={() => this.showDecryptModal(record)}
                         >
@@ -299,7 +333,7 @@ class MicroIsolation extends React.Component<MicroIsolationProps, MicroIsolation
                         </Button>
                     ),
                 },
-            ],
+            ]
         };
     }
 

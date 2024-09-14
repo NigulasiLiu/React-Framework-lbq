@@ -57,25 +57,26 @@ class Login extends React.Component<LoginProps> {
             const response = await axios.post(Login_API, requestBody, config);
 
             // 检查 response.data 是否符合预期格式和内容
-            if (
-                response.data &&
-                response.data.message === 'Accept' &&
-                response.data.token === 'fake-jwt-token'
-            ) {
-                // 更新状态和本地存储
-                this.props.setAlitaState({
-                    //funcName: 'login',
-                    stateName: 'auth',
-                    data: response.data,
-                });
-                localStorage.setItem('user', JSON.stringify(response.data));
-                //this.props.history.push("/");
-                this.props.history.push('/app/Dashboard');
-            } else {
-                // 处理意外的响应或显示错误消息
-            }
+            // if (
+            //     response.data &&
+            //     response.data.message === 'Accept' &&
+            //     response.data.token === 'fake-jwt-token'
+            // ) {
+            //     // 更新状态和本地存储
+            //     this.props.setAlitaState({
+            //         //funcName: 'login',
+            //         stateName: 'auth',
+            //         data: response.data,
+            //     });
+            //     localStorage.setItem('user', JSON.stringify(response.data));
+            //     //this.props.history.push("/");
+            //     this.props.history.push('/app/Dashboard');
+            // } else {
+            //     message.success('Received JWT:', response.data.access_token); // 输出接收到的JWT
+            // }
             if (response.data && response.data.access_token) {
                 console.log('Received JWT:', response.data.access_token); // 输出接收到的JWT
+                // message.success('Received JWT:', response.data.access_token); // 输出接收到的JWT
                 // 存储JWT到localStorage
                 localStorage.setItem('jwt_token', response.data.access_token);
                 // umbrella.setLocalStorage("jwt_token", response.data.access_token)
@@ -84,7 +85,7 @@ class Login extends React.Component<LoginProps> {
                     stateName: 'auth',
                     data: { uid: response.data.access_token },
                 });
-                console.log('登陆成功');
+                message.success('登陆成功',5);
                 // 跳转到主页或其他适当页面
                 this.props.history.push('/app/Dashboard');
             } else {
@@ -93,7 +94,7 @@ class Login extends React.Component<LoginProps> {
             }
         } catch (error) {
             console.error('登录失败', error);
-            message.error('登录异常: ' + error.message);
+            message.error('登录失败: ' + error.message);
             this.props.history.push('/login'); // 确保登录失败时用户留在登录页面
         }
     };

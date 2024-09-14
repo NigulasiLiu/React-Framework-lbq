@@ -125,7 +125,9 @@ export interface DataContextType {
 
     transformedData: FilteredDataResult_new[],
 
-
+    bf_atkip_count: number;
+    ps_atkip_count: number;
+    de_atkip_count: number;
     hostCount: number;
     vulnHostCount: number;
     blLinuxHostCount: number;
@@ -532,7 +534,6 @@ const DataManager: React.FC = ({ children }) => {
     //     };
     // }, []);
     // 监听 vulnOriginData 的变化来更新风险等级计数
-
     //vulnOriginData发生变化时，引起风险等级计数
     // useEffect(() => {
     //     if (vulnOriginData && riskLevels.current) {
@@ -677,6 +678,14 @@ const DataManager: React.FC = ({ children }) => {
     const bruteforceTTPsMetaData_uuid = useExtractOrigin('uuid', bruteforceTTPsOriginData);
     const privilegeescalationTTPsMetaData_uuid = useExtractOrigin('uuid', privilegeescalationTTPsOriginData);
     const defenseavoidanceTTPsMetaData_uuid = useExtractOrigin('uuid', defenseavoidanceTTPsOriginData);
+    //威胁狩猎捕获敌手IP数量
+    const bruteforceTTPsMetaData_atkip = useExtractOrigin('atk_ip', bruteforceTTPsOriginData);
+    const privilegeescalationTTPsMetaData_ip = useExtractOrigin('atk_ip', privilegeescalationTTPsOriginData);
+    const defenseavoidanceTTPsMetaData_ip = useExtractOrigin('atk_ip', defenseavoidanceTTPsOriginData);
+    const bf_atkip_count = bruteforceTTPsMetaData_atkip.typeCount.size;
+    const ps_atkip_count = privilegeescalationTTPsMetaData_ip.typeCount.size;
+    const de_atkip_count = defenseavoidanceTTPsMetaData_ip.typeCount.size;
+
 
     // const VirusMetaData_uuid = useExtractOrigin('uuid', virusOriginData);
     const HoneyPotMetaData_uuid = useExtractOrigin('uuid', honeyPotOriginData);
@@ -702,6 +711,10 @@ const DataManager: React.FC = ({ children }) => {
 
     return (
         <DataContext.Provider value={{
+            bf_atkip_count: bf_atkip_count || 0,
+            ps_atkip_count: ps_atkip_count || 0,
+            de_atkip_count: de_atkip_count || 0,
+
             highRiskCount: highRiskCount || 0,
             mediumRiskCount: mediumRiskCount || 0,
             lowRiskCount: lowRiskCount || 0,

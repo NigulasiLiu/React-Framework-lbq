@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Button, Badge, Input, Menu, Card, Row, Dropdown } from 'antd';
+import { Tooltip, Button, Badge, Card, Row, } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import '../Style.css';
@@ -1527,15 +1527,61 @@ export const threatHuntingColumns = [
         title: '扫描时刻',
         dataIndex: 'scan_time',
         key: 'scan_time',
-        render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
-        sorter: (a: any, b: any) => parseFloat(b.scan_time) - parseFloat(a.scan_time),
+        // render: (text: string) => moment.unix(parseInt(text)).format('YYYY-MM-DD HH:mm:ss'),
+        // sorter: (a: any, b: any) => parseFloat(b.scan_time) - parseFloat(a.scan_time),
     },
+    // {
+    //     title: '告警类型',
+    //     dataIndex: 'atk_type',
+    //     key: 'atk_type',
+    //     render: (text: string, record: any) => <Badge status={'error'} text={'Brute-Force'} />,
+    // },
+    // {
+    //     title: '告警类型',
+    //     dataIndex: 'atk_type',
+    //     filters: [
+    //         {
+    //             text: '暴力破解',
+    //             value: 'False',
+    //         },
+    //         {
+    //             text: 'Yes',
+    //             value: 'True',
+    //         },
+    //     ],
+    //     // 修改这里使用record参数，确保函数能访问到当前行的数据
+    //     render: (text: string, record: runningProcessesColumnsType) => (
+    //         <Badge
+    //             status={record.highRisk === 'True' ? 'error' : 'processing'}
+    //             text={record.highRisk}
+    //         />
+    //     ),
+    //     onFilter: (value: string | number | boolean, record: runningProcessesColumnsType) =>
+    //         record.highRisk.includes(value as string),
+    // },
     {
         title: '告警类型',
         dataIndex: 'atk_type',
         key: 'atk_type',
-        render: (text: string, record: any) => <Badge status={'error'} text={'Brute-Force'} />,
+        render: (text: number, record: any) => {
+            let atkText = '';
+            switch (text) {
+                case 1:
+                    atkText = 'Brute-Force';
+                    break;
+                case 2:
+                    atkText = 'Privilege-Escalation';
+                    break;
+                case 3:
+                    atkText = 'Defense-Avoidance';
+                    break;
+                default:
+                    atkText = 'Unknown';
+            }
+            return <Badge status={'error'} text={atkText} />;
+        },
     },
+
     // 其他需要的列
 ];
 
@@ -1623,56 +1669,6 @@ export const threatHuntingColumns_2 = [
     },
     // 其他需要的列
 ];
-
-// 假设这是FilterDropdownProps类型的定义，为了方便演示，我将其简化了
-// interface FilterDropdownProps {
-//     setSelectedKeys: (keys: string[]) => void;
-//     selectedKeys: string[];
-//     confirm: () => void;
-//     clearFilters?: () => void;
-//   }
-// export const generate_new_columns = (columns: any[], search_index: string[]): any[] => {
-//     // 遍历this.props.columns中的每一列
-//     return columns.map((column: any) => {
-//         // 如果列名在search_index中
-//         if (search_index.includes(column.dataIndex)) {
-//             // 为这列添加搜索功能
-//             return {
-//                 ...column,
-//                 filterDropdown: (filterDropdownProps: FilterDropdownProps) => (
-//                     <div style={{ padding: 8 }}>
-//                         <Input
-//                             autoFocus
-//                             placeholder={`搜索${column.title}...`}
-//                             value={filterDropdownProps.selectedKeys[0]}
-//                             onChange={e => filterDropdownProps.setSelectedKeys(e.target.value ? [e.target.value] : [])}
-//                             onPressEnter={() => filterDropdownProps.confirm()}
-//                             style={{ width: 188, marginBottom: 8, display: 'block' }}
-//                         />
-//                         <Button
-//                             onClick={() => filterDropdownProps.confirm()}
-//                             size="small"
-//                             style={{ width: 90, marginRight: 8, backgroundColor: '#1664FF', color: 'white' }}
-//                         >
-//                             搜索
-//                         </Button>
-//                         <Button
-//                             disabled={filterDropdownProps.clearFilters === undefined}
-//                             onClick={() => filterDropdownProps.clearFilters?.()}
-//                             size="small"
-//                             style={{ width: 90 }}
-//                         >
-//                             重置
-//                         </Button>
-//                     </div>
-//                 ),
-//             };
-//         } else {
-//             // 如果不在search_index中，直接返回原列
-//             return column;
-//         }
-//     });
-// };
 
 export const virusscannigAllTasksColumns = [
     { title: '任务名称', dataIndex: 'task_name', key: 'task_name' },
@@ -2035,253 +2031,6 @@ export const Honeypotcolumns = [
         sorter: (a: any, b: any) => parseFloat(b.atk_time) - parseFloat(a.atk_time),
     },
 ];
-
-export const threatBookDGAData = [
-    {
-        domain: 'bankofamerica.secure-auth.com',
-        maliciousType: '恶意软件',
-        threatLevel: '高',
-        detectionTime: '2023-08-01 12:00:00',
-        resolvedIPCount: 35,
-        relatedSamples: '1200+',
-        subdomainCount: 850,
-        domainRegistrar: 'GoDaddy',
-        registrationTime: '2021-01-01 13:50:07',
-        expirationTime: '2025-01-01 13:50:07',
-    },
-    {
-        domain: 'paypal-security-login.com',
-        maliciousType: '木马',
-        threatLevel: '中',
-        detectionTime: '2023-08-10 14:30:00',
-        resolvedIPCount: 20,
-        relatedSamples: '950+',
-        subdomainCount: 400,
-        domainRegistrar: 'Namecheap',
-        registrationTime: '2022-02-15 09:20:00',
-        expirationTime: '2026-02-15 09:20:00',
-    },
-    {
-        domain: 'apple-id-verify.com',
-        maliciousType: '勒索软件',
-        threatLevel: '低',
-        detectionTime: '2023-08-15 10:45:00',
-        resolvedIPCount: 28,
-        relatedSamples: '700+',
-        subdomainCount: 300,
-        domainRegistrar: 'Tucows',
-        registrationTime: '2021-05-10 11:15:00',
-        expirationTime: '2026-05-10 11:15:00',
-    },
-    {
-        domain: 'google-account-secure.com',
-        maliciousType: '蠕虫病毒',
-        threatLevel: '高',
-        detectionTime: '2023-08-20 09:00:00',
-        resolvedIPCount: 40,
-        relatedSamples: '1400+',
-        subdomainCount: 1200,
-        domainRegistrar: 'Bluehost',
-        registrationTime: '2020-06-01 15:30:00',
-        expirationTime: '2024-06-01 15:30:00',
-    },
-    {
-        domain: 'facebook-security-check.com',
-        maliciousType: '恶意广告',
-        threatLevel: '中',
-        detectionTime: '2023-08-25 16:45:00',
-        resolvedIPCount: 15,
-        relatedSamples: '600+',
-        subdomainCount: 500,
-        domainRegistrar: 'Enom',
-        registrationTime: '2019-09-25 08:15:00',
-        expirationTime: '2023-09-25 08:15:00',
-    },
-    {
-        domain: 'microsoft-update-security.com',
-        maliciousType: '木马下载器',
-        threatLevel: '高',
-        detectionTime: '2023-09-01 11:30:00',
-        resolvedIPCount: 50,
-        relatedSamples: '1500+',
-        subdomainCount: 1400,
-        domainRegistrar: 'NameSilo',
-        registrationTime: '2021-12-01 10:45:00',
-        expirationTime: '2026-12-01 10:45:00',
-    },
-    {
-        domain: 'amazon-login-secure.com',
-        maliciousType: '数据盗窃',
-        threatLevel: '中',
-        detectionTime: '2023-09-05 13:00:00',
-        resolvedIPCount: 22,
-        relatedSamples: '800+',
-        subdomainCount: 750,
-        domainRegistrar: 'Hover',
-        registrationTime: '2020-03-10 09:00:00',
-        expirationTime: '2024-03-10 09:00:00',
-    },
-    {
-        domain: 'netflix-account-update.com',
-        maliciousType: '间谍软件',
-        threatLevel: '低',
-        detectionTime: '2023-09-10 17:30:00',
-        resolvedIPCount: 10,
-        relatedSamples: '500+',
-        subdomainCount: 400,
-        domainRegistrar: 'Google Domains',
-        registrationTime: '2019-11-15 12:00:00',
-        expirationTime: '2023-11-15 12:00:00',
-    },
-    {
-        domain: 'github-security-warning.com',
-        maliciousType: '网络钓鱼',
-        threatLevel: '高',
-        detectionTime: '2023-09-15 19:00:00',
-        resolvedIPCount: 30,
-        relatedSamples: '1000+',
-        subdomainCount: 900,
-        domainRegistrar: 'Dynadot',
-        registrationTime: '2022-04-20 14:30:00',
-        expirationTime: '2026-04-20 14:30:00',
-    },
-    {
-        domain: 'twitter-security-check.com',
-        maliciousType: '广告劫持',
-        threatLevel: '中',
-        detectionTime: '2023-09-20 20:00:00',
-        resolvedIPCount: 18,
-        relatedSamples: '650+',
-        subdomainCount: 500,
-        domainRegistrar: 'HostGator',
-        registrationTime: '2020-07-05 18:45:00',
-        expirationTime: '2024-07-05 18:45:00',
-    }
-];
-
-export const threatBookC2Data = [
-    {
-        domain: 'malicious-command-control.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '高',
-        detectionTime: '2023-07-15 08:00:00',
-        resolvedIPCount: 60,
-        relatedSamples: '2000+',
-        subdomainCount: 3200,
-        domainRegistrar: 'GoDaddy',
-        registrationTime: '2020-11-20 16:00:00',
-        expirationTime: '2025-11-20 16:00:00',
-    },
-    {
-        domain: 'c2-server.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '低',
-        detectionTime: '2023-07-20 09:30:00',
-        resolvedIPCount: 10,
-        relatedSamples: '600+',
-        subdomainCount: 700,
-        domainRegistrar: 'Namecheap',
-        registrationTime: '2019-08-08 12:45:00',
-        expirationTime: '2024-08-08 12:45:00',
-    },
-    {
-        domain: 'control-panel-malicious.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '中',
-        detectionTime: '2023-08-05 07:15:00',
-        resolvedIPCount: 25,
-        relatedSamples: '900+',
-        subdomainCount: 1500,
-        domainRegistrar: 'Tucows',
-        registrationTime: '2021-07-18 18:30:00',
-        expirationTime: '2026-07-18 18:30:00',
-    },
-    {
-        domain: 'secure-access-malware.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '高',
-        detectionTime: '2023-08-10 06:45:00',
-        resolvedIPCount: 50,
-        relatedSamples: '1200+',
-        subdomainCount: 2200,
-        domainRegistrar: 'Bluehost',
-        registrationTime: '2020-12-05 17:15:00',
-        expirationTime: '2025-12-05 17:15:00',
-    },
-    {
-        domain: 'c2-dynamic.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '中',
-        detectionTime: '2023-08-15 08:30:00',
-        resolvedIPCount: 20,
-        relatedSamples: '700+',
-        subdomainCount: 1100,
-        domainRegistrar: 'Enom',
-        registrationTime: '2021-03-22 14:45:00',
-        expirationTime: '2026-03-22 14:45:00',
-    },
-    {
-        domain: 'malicious-access.net',
-        maliciousType: 'C2命令控制',
-        threatLevel: '低',
-        detectionTime: '2023-08-20 10:00:00',
-        resolvedIPCount: 15,
-        relatedSamples: '500+',
-        subdomainCount: 900,
-        domainRegistrar: 'NameSilo',
-        registrationTime: '2019-06-25 16:30:00',
-        expirationTime: '2024-06-25 16:30:00',
-    },
-    {
-        domain: 'malicious-operations.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '高',
-        detectionTime: '2023-08-25 12:15:00',
-        resolvedIPCount: 40,
-        relatedSamples: '1500+',
-        subdomainCount: 2400,
-        domainRegistrar: 'Hover',
-        registrationTime: '2020-05-10 11:00:00',
-        expirationTime: '2025-05-10 11:00:00',
-    },
-    {
-        domain: 'secure-command.net',
-        maliciousType: 'C2命令控制',
-        threatLevel: '中',
-        detectionTime: '2023-08-30 14:00:00',
-        resolvedIPCount: 22,
-        relatedSamples: '750+',
-        subdomainCount: 1400,
-        domainRegistrar: 'Google Domains',
-        registrationTime: '2021-08-15 13:30:00',
-        expirationTime: '2026-08-15 13:30:00',
-    },
-    {
-        domain: 'remote-access-secure.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '高',
-        detectionTime: '2023-09-05 15:30:00',
-        resolvedIPCount: 30,
-        relatedSamples: '1000+',
-        subdomainCount: 1600,
-        domainRegistrar: 'Dynadot',
-        registrationTime: '2020-10-05 09:15:00',
-        expirationTime: '2025-10-05 09:15:00',
-    },
-    {
-        domain: 'c2-operations.com',
-        maliciousType: 'C2命令控制',
-        threatLevel: '低',
-        detectionTime: '2023-09-10 16:45:00',
-        resolvedIPCount: 12,
-        relatedSamples: '450+',
-        subdomainCount: 1100,
-        domainRegistrar: 'HostGator',
-        registrationTime: '2019-02-20 17:00:00',
-        expirationTime: '2024-02-20 17:00:00',
-    }
-];
-
 
 export const constRenderTable = (
     OriginData: any[],

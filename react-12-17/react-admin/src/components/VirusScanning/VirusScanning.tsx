@@ -736,45 +736,41 @@ class VirusScanning extends React.Component<VirusScanningProps, VirusScanningSta
                                                     <Col span={5} style={{ marginLeft: '15px', marginTop: '10px' }}>
                                                         <div className="container">
                                                             <Row gutter={24}>
-                                                                <h2 style={{ fontSize: '16px' }}>最近扫描时间: </h2>
-                                                                <span className="currentTime" style={{
-                                                                    marginRight: '10px',
-                                                                    marginBottom: '8px',
-                                                                }}>{currentTime}</span>
-                                                                <Row>
-                                                                    <Button
-                                                                        onClick={this.handleOpenUpload}
-                                                                        {...blueButton}>
-                                                                        立即扫描
-                                                                    </Button>
-                                                                    {/*<Link to={"/app/create_virusscan_task"}*/}
-                                                                    {/*      target="_blank">*/}
-                                                                    {/*    <Button*/}
-                                                                    {/*        onClick={this.handleScan}*/}
-                                                                    {/*        // onClick={this.handleOpenUpload}*/}
-                                                                    {/*        {...blueButton}>*/}
-                                                                    {/*        立即扫描</Button>*/}
-                                                                    {/*</Link>*/}
-                                                                    <Button style={{
-                                                                        marginRight: '10px',
-                                                                    }}
-                                                                            onClick={this.showIgnoredVirusModal}>白名单
-                                                                    </Button>
-                                                                    {/*<Button */}
-                                                                    {/*        onClick={this.toggleTaskSidebar}>扫描记录*/}
-                                                                    {/*</Button>*/}
+                                                                <Row style={{marginTop: '-18px',}}>
+                                                                    <h2 style={{ fontSize: '16px' }}>病毒库最近更新时间: </h2>
+                                                                    <span className="currentTime" style={{marginTop: '-12px',}}>{"2024/8/13 15:42:09"}</span>
                                                                 </Row>
-                                                                {/*<Row>*/}
-                                                                {/*    <Button*/}
-                                                                {/*        style={{*/}
-                                                                {/*            marginLeft: '0px',*/}
-                                                                {/*            marginTop: '10px',*/}
-                                                                {/*        }}*/}
-                                                                {/*        onClick={this.handleOpenUpload}*/}
-                                                                {/*    >*/}
-                                                                {/*        上传并扫描单个文件*/}
-                                                                {/*    </Button>*/}
-                                                                {/*</Row>*/}
+                                                                <Row>
+                                                                    <h2 style={{ fontSize: '16px',
+                                                                        marginRight: '5px', }}>最近扫描时间: </h2>
+                                                                    <span className="currentTime" style={{
+                                                                        marginRight: '10px',
+                                                                        marginBottom: '8px',
+                                                                    }}>{"2024/8/15 11:44:55"}</span>
+                                                                </Row>
+                                                                    <Row>
+                                                                        <Button
+                                                                            onClick={this.handleOpenUpload}
+                                                                            {...blueButton}>
+                                                                            立即扫描
+                                                                        </Button>
+                                                                        {/*<Link to={"/app/create_virusscan_task"}*/}
+                                                                        {/*      target="_blank">*/}
+                                                                        {/*    <Button*/}
+                                                                        {/*        onClick={this.handleScan}*/}
+                                                                        {/*        // onClick={this.handleOpenUpload}*/}
+                                                                        {/*        {...blueButton}>*/}
+                                                                        {/*        立即扫描</Button>*/}
+                                                                        {/*</Link>*/}
+                                                                        <Button style={{
+                                                                            marginRight: '10px',
+                                                                        }}
+                                                                                onClick={this.showIgnoredVirusModal}>白名单
+                                                                        </Button>
+                                                                        {/*<Button */}
+                                                                        {/*        onClick={this.toggleTaskSidebar}>扫描记录*/}
+                                                                        {/*</Button>*/}
+                                                                    </Row>
                                                             </Row>
                                                             <div
                                                                 className={isScanningProcessSidebarOpen ? 'overlay open' : 'overlay'}

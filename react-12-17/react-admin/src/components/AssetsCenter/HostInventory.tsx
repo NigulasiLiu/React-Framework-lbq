@@ -285,7 +285,7 @@ const renderPieChart = (
     const baselinePieChartData = [
         {
             label: '无基线风险主机',
-            value: wholeCount - (uniqueUuidCount1 + uniqueUuidCount2),
+            value: hostCount - (uniqueUuidCount1 + uniqueUuidCount2),
             color: '#E5E8EF',
         },
         {
