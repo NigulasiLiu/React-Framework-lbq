@@ -120,7 +120,7 @@ const App: React.FC<{ buttonText: string }> = ({ buttonText }) => {
     };
 
     return (//className="custom-modal"
-        <div>
+        <>
             <Button onClick={() => setIsModalOpen(true)} className="upload-button"
                     {...buttonStyle}
             >
@@ -128,10 +128,10 @@ const App: React.FC<{ buttonText: string }> = ({ buttonText }) => {
             </Button>
             <Modal title={buttonText} visible={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1800}>
                 {buttonText === '使用帮助' ? (
-                    <div style={{ fontFamily: '宋体, sans-serif', fontWeight: 'bold' }} dangerouslySetInnerHTML={{ __html: modalContent }} />
+                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
                 ) : (
                     <>
-                        <div style={{ marginBottom: 16,fontFamily: '宋体, sans-serif', fontWeight: 'bold' }}>
+                        <div style={{ marginBottom: 16 }}>
                             <h2 style={{
                                 fontSize: '20px',
                                 fontWeight: 'bold',
@@ -152,7 +152,6 @@ const App: React.FC<{ buttonText: string }> = ({ buttonText }) => {
                             <h2 style={{
                                 fontSize: '20px',
                                 fontWeight: 'bold',
-                                fontFamily:'宋体, sans-serif',
                                 textAlign: 'center',
                             }}>CamFlow捕获到的边数据</h2>
                             <Button onClick={() => exportToCSV(tableData2, columns2, 'edge_log.csv')}
@@ -169,7 +168,7 @@ const App: React.FC<{ buttonText: string }> = ({ buttonText }) => {
                     </>
                 )}
             </Modal>
-        </div>
+        </>
     );
 };
 

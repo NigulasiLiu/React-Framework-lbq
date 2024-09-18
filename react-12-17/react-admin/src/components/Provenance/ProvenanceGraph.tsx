@@ -55,6 +55,7 @@ const ProvenanceGraph = () => {
             if (myChart === null) {
                 initializeChart();
             }
+            console.log('update chart')
             myChart.hideLoading();
             type Weight = "normal" | "bold" | "bolder" | "lighter" | "100" | "200" | "300" | "400" | undefined;
             let font_weight: Weight;
@@ -66,7 +67,6 @@ const ProvenanceGraph = () => {
             var filteredLinks = graph_data.links.filter(function (link: any) {
                 return link.relation_type !== 'terminate_proc' && link.relation_type !== 'terminate_task';
             });
-    
             // 计算边的曲率
             calculateCurveness(filteredLinks);
 
@@ -124,8 +124,8 @@ const ProvenanceGraph = () => {
                     },
                     textStyle: {
                         color: '#000000', // 图例文字颜色
-                        fontFamily: 'Microsoft YaHei', // 图例文字字体
-                        fontSize: 22, // 图例文字大小
+                        // fontFamily: 'Microsoft YaHei', // 图例文字字体
+                        fontSize: 20, // 图例文字大小
                         fontWeight: font_weight //  图例文字粗细
                     },
                     itemHeight: 30, // 设置图例项的高度
@@ -154,11 +154,11 @@ const ProvenanceGraph = () => {
                         
                         label: {
                             show: true,
-                            fontSize: 20, // 设置字体大小
+                            fontSize: 18, // 设置字体大小
                             offset: [0, 0],
                             align: 'center',
                             color: '#000000', // 设置字体颜色
-                            fontFamily: 'Microsoft YaHei', // 设置字体为微软雅黑
+                            // fontFamily: 'Microsoft YaHei', // 设置字体为微软雅黑
                             fontWeight: 'bold', // 设置加粗
                             draggable: true // 启用标签拖拽
                         },
@@ -195,16 +195,16 @@ const ProvenanceGraph = () => {
                             rich: {
                                 a: {
                                     // 第一行的样式
-                                    fontSize: 18, // 设置字体大小
+                                    fontSize: 16, // 设置字体大小
                                     color: '#1B8A87', // 设置字体颜色
-                                    fontFamily: 'Microsoft YaHei', // 设置字体为微软雅黑
+                                    // fontFamily: 'Microsoft YaHei', // 设置字体为微软雅黑
                                     fontWeight: 'bold', // 设置加粗
                                 },
                                 b: {
                                     // 第二行的样式
-                                    fontSize: 17, // 设置字体大小
+                                    fontSize: 15, // 设置字体大小
                                     color: '#7F7F7F', // 设置字体颜色
-                                    fontFamily: 'Microsoft YaHei', // 设置字体为微软雅黑
+                                    // fontFamily: 'Microsoft YaHei', // 设置字体为微软雅黑
                                     fontWeight: 'bold', // 设置加粗
                                 }
                             },
@@ -216,6 +216,7 @@ const ProvenanceGraph = () => {
             };
     
             myChart.setOption(option);
+            console.log('update chart successfully');
         }
 
 
@@ -223,29 +224,31 @@ const ProvenanceGraph = () => {
         let graph_data : any = {"nodes":[], "links":[], "categories":[]}
         const evtSource = new EventSource(Provenance_New_Graph_Data_Event_API);
         console.log("建立链接")
-        evtSource.onmessage = function (event) {
-            console.log("接收到数据")
-            // 解析整个 event.data 字符串为对象
-            console.log(event.data)
-            const parsed_data_temp = JSON.parse(event.data);
-            
-            // 进一步解析 nodes 和 links 字段
-            // const parsed_graph_data = {
-            //     nodes: JSON.parse(parsed_data_temp.nodes),
-            //     links: JSON.parse(parsed_data_temp.links),
-            //     categories: parsed_data_temp.categories
-            // };
-            const parsed_graph_data = {
-                "nodes": parsed_data_temp.nodes,
-                "links": parsed_data_temp.links,
-                "categories": parsed_data_temp.categories
-            };
-            console.log("解析后的图数据")
-            console.log(parsed_graph_data)
-            updateChart(parsed_graph_data);
-            // myChart.hideLoading();
+        // evtSource.onmessage = function (event) {
+        //     console.log("接收到数据")
+        //     // 解析整个 event.data 字符串为对象
+        //     console.log(event.data)
+        //     const parsed_data_temp = JSON.parse(event.data);
+        //     const parsed_graph_data = {
+        //         "nodes": parsed_data_temp.nodes,
+        //         "links": parsed_data_temp.links,
+        //         "categories": parsed_data_temp.categories
+        //     };
+        //     console.log("解析后的图数据")
+        //     console.log(parsed_graph_data)
+        //     updateChart(parsed_graph_data);
+        // };
+
+        //固定测试数据
+        const parsed_data_temp = JSON.parse(`{"nodes": [{"id": 11, "gid": -1, "ino": -1, "pid": 2477, "uid": -1, "mode": "NaN", "name": "task: 2477", "tgid": -1, "uuid": "NaN", "vpid": 2477, "taint": 0, "value": "NaN", "id_str": "AQAAAAAAAEBZrwEAAAAAAAUAAAC/MbUKAQAAAAAAAAA=", "secctx": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023", "cf_date": "2024:09:10T00:08:51", "category": "Activity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "task"}, {"id": 13, "gid": 1000, "ino": 478, "pid": -1, "uid": 1000, "mode": "0x81b4", "name": "file", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AAEAAAAAACD9EgIAAAAAAAEAAAC/MbUKAgAAAAAAAAA=", "secctx": "unconfined_u:object_r:user_home_t:s0", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "file"}, {"id": 1, "gid": -1, "ino": -1, "pid": -1, "uid": -1, "mode": "NaN", "name": "path: /home/zwb/.ssh/authorized_keys", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AABAAAAAACRT1jv5zbzXGwUAAAC/MbUKAAAAAAAAAAA=", "secctx": "NaN", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "/home/zwb/.ssh/authorized_keys", "machine_id": "cf:179646911", "object_type": "path"}, {"id": 10, "gid": 0, "ino": -1, "pid": -1, "uid": 0, "mode": "0x0", "name": "iattr", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AAAEAAAAACBerwEAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "secctx": "NaN", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "iattr"}, {"id": 9, "gid": 1000, "ino": 478, "pid": -1, "uid": 1000, "mode": "0x81b4", "name": "file", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AAEAAAAAACD9EgIAAAAAAAEAAAC/MbUKAQAAAAAAAAA=", "secctx": "unconfined_u:object_r:user_home_t:s0", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "file"}, {"id": 8, "gid": 1000, "ino": -1, "pid": -1, "uid": 1000, "mode": "NaN", "name": "process_memory", "tgid": 2477, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AAAIAAAAACBarwEAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "secctx": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "process_memory"}, {"id": 12, "gid": -1, "ino": -1, "pid": 2477, "uid": -1, "mode": "NaN", "name": "task: 2477", "tgid": -1, "uuid": "NaN", "vpid": 2477, "taint": 0, "value": "NaN", "id_str": "AQAAAAAAAEBZrwEAAAAAAAUAAAC/MbUKAgAAAAAAAAA=", "secctx": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023", "cf_date": "2024:09:10T00:08:51", "category": "Activity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "task"}, {"id": 5, "gid": 1000, "ino": -1, "pid": -1, "uid": 1000, "mode": "NaN", "name": "process_memory", "tgid": 2477, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AAAIAAAAACBarwEAAAAAAAUAAAC/MbUKAQAAAAAAAAA=", "secctx": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "process_memory"}, {"id": 7, "gid": -1, "ino": -1, "pid": 2477, "uid": -1, "mode": "NaN", "name": "task: 2477", "tgid": -1, "uuid": "NaN", "vpid": 2477, "taint": 0, "value": "NaN", "id_str": "AQAAAAAAAEBZrwEAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "secctx": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023", "cf_date": "2024:09:10T00:08:51", "category": "Activity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "task"}, {"id": 6, "gid": 1000, "ino": 478, "pid": -1, "uid": 1000, "mode": "0x81b4", "name": "file", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AAEAAAAAACD9EgIAAAAAAAEAAAC/MbUKAAAAAAAAAAA=", "secctx": "unconfined_u:object_r:user_home_t:s0", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "file"}, {"id": 0, "gid": -1, "ino": -1, "pid": -1, "uid": -1, "mode": "NaN", "name": "machine", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "EAAAAAAAABQFFQAAAAAAAAUAAAC/MbUKAQAAAAAAAAA=", "secctx": "NaN", "cf_date": "2024:09:10T00:08:07", "category": "Entity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "machine"}, {"id": 3, "gid": -1, "ino": -1, "pid": -1, "uid": -1, "mode": "NaN", "name": "path: /home/zwb/Documents/ChangeSSHKey/change_ssh_key", "tgid": -1, "uuid": "NaN", "vpid": -1, "taint": 0, "value": "NaN", "id_str": "AABAAAAAACS2kFqsgIo3pQUAAAC/MbUKAAAAAAAAAAA=", "secctx": "NaN", "cf_date": "2024:09:10T00:08:51", "category": "Entity", "pathname": "/home/zwb/Documents/ChangeSSHKey/change_ssh_key", "machine_id": "cf:179646911", "object_type": "path"}, {"id": 4, "gid": -1, "ino": -1, "pid": 2477, "uid": -1, "mode": "NaN", "name": "task: 2477", "tgid": -1, "uuid": "NaN", "vpid": 2477, "taint": 0, "value": "NaN", "id_str": "AQAAAAAAAEBZrwEAAAAAAAUAAAC/MbUKAwAAAAAAAAA=", "secctx": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023", "cf_date": "2024:09:10T00:08:51", "category": "Activity", "pathname": "NaN", "machine_id": "cf:179646911", "object_type": "task"}], "links": [{"id": "BAAAAAAAEIAPAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasInformedBy", "source": "4", "target": "12", "machine_id": "cf:179646911", "id_increment": "0", "relation_type": "terminate_task"}, {"id": "ACAAAAAAgIAQAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasDerivedFrom", "source": "5", "target": "8", "machine_id": "cf:179646911", "id_increment": "1", "relation_type": "terminate_proc"}, {"id": "AQAAAAAAgIABAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasDerivedFrom", "source": "6", "target": "1", "machine_id": "cf:179646911", "id_increment": "2", "relation_type": "named"}, {"id": "gAAAAAAAIIACAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "Used", "source": "7", "target": "6", "machine_id": "cf:179646911", "id_increment": "3", "relation_type": "open"}, {"id": "AQAAAAAABIADAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasAssociatedWith", "source": "7", "target": "0", "machine_id": "cf:179646911", "id_increment": "4", "relation_type": "ran_on"}, {"id": "gAAAAAAAQIAEAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasGeneratedBy", "source": "8", "target": "7", "machine_id": "cf:179646911", "id_increment": "5", "relation_type": "memory_write"}, {"id": "AQAAAAAAgIAFAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasDerivedFrom", "source": "8", "target": "3", "machine_id": "cf:179646911", "id_increment": "6", "relation_type": "named"}, {"id": "AgAAAAAAgIAGAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasDerivedFrom", "source": "9", "target": "6", "machine_id": "cf:179646911", "id_increment": "7", "relation_type": "version_entity"}, {"id": "gAAAAAAAgIAHAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasDerivedFrom", "source": "9", "target": "10", "machine_id": "cf:179646911", "id_increment": "8", "relation_type": "setattr_inode"}, {"id": "AgAAAAAAEIAIAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasInformedBy", "source": "11", "target": "7", "machine_id": "cf:179646911", "id_increment": "9", "relation_type": "version_activity"}, {"id": "AAgAAAAAIIAJAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "Used", "source": "11", "target": "9", "machine_id": "cf:179646911", "id_increment": "10", "relation_type": "getattr"}, {"id": "gAAAAAAAQIAKAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasGeneratedBy", "source": "8", "target": "11", "machine_id": "cf:179646911", "id_increment": "11", "relation_type": "memory_write"}, {"id": "AgAAAAAAEIALAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasInformedBy", "source": "12", "target": "11", "machine_id": "cf:179646911", "id_increment": "12", "relation_type": "version_activity"}, {"id": "BAAAAAAAIIAMAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "Used", "source": "12", "target": "8", "machine_id": "cf:179646911", "id_increment": "13", "relation_type": "memory_read"}, {"id": "AgAAAAAAgIANAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasDerivedFrom", "source": "13", "target": "9", "machine_id": "cf:179646911", "id_increment": "14", "relation_type": "version_entity"}, {"id": "IAAAAAAAQIAOAAAAAAAAAAUAAAC/MbUKAAAAAAAAAAA=", "date": "2024:09:10T00:08:51", "type": "WasGeneratedBy", "source": "13", "target": "12", "machine_id": "cf:179646911", "id_increment": "15", "relation_type": "write"}], "categories": [{"name": "Activity", "itemStyle": {"color": "#22BC44"}}, {"name": "Entity", "itemStyle": {"color": "#EA635F"}}, {"name": "Agent", "itemStyle": {"color": "#FBB12E"}}]}`)
+        const parsed_graph_data = {
+            "nodes": parsed_data_temp.nodes,
+            "links": parsed_data_temp.links,
+            "categories": parsed_data_temp.categories
         };
-    
+        console.log("解析后的图数据")
+        console.log(parsed_graph_data)
+        updateChart(parsed_graph_data);
  
         return () => {
             evtSource.close();
@@ -256,8 +259,8 @@ const ProvenanceGraph = () => {
 
     }, []);
 
-    // return <div ref={chartRef} style={{ width: 830, height: 860}}></div>;
-    return <div ref={chartRef} ></div>;
+    return <div ref={chartRef} style={{ width: '100%', height: '100%'}}></div>;
+    // return <div ref={chartRef} ></div>;
 };
 
 export default ProvenanceGraph;

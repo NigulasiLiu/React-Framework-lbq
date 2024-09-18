@@ -16,6 +16,7 @@
     /*width: 1480px !important;*/
     /*height: 1100px !important;*/
     padding: 1% 1% !important; /* 上下内边距10px，左右内边距15px */
+
 }
 .head {
     display: flex;
@@ -117,7 +118,6 @@
     background-color: #bbbdc0 !important;
     color: #ffffff !important;
     width: 252px !important;
-    /* max-width: 300px !important; */
     height: 100% !important;
     font-size: 18px !important; /* 设置为您希望的字体大小 */
     font-weight: bold; /* 设置字体粗细为粗体 */
@@ -136,7 +136,7 @@
 
 
 .time_range .ant-picker-range {
-    width: 100%;
+    width: 100%; /* 或您希望的任何宽度 */
     height: 100%;
     font-size: 20px;
     margin-top: -12px;
@@ -152,7 +152,6 @@
 
 /* 调整列表宽度 */
 .ant-transfer-list {
-    /*width: 320px !important; !* 单个列表的宽度 *!*/
     width: 100% !important; /* 单个列表的宽度 */
     height: 200px !important;
     font-size: 12px;
@@ -166,6 +165,17 @@
 ant-space ant-space-vertical time_range {
     box-sizing: border-box;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 .track_table {
     font-family: 'Microsoft YaHei', sans-serif; /* 指定字体 */

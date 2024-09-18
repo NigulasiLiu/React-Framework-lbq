@@ -59,7 +59,6 @@ const App: React.FC = () => {
     <Select
       className='selector'
       showSearch
-      // style={{ maxWidth: 200, width: '100%' }}
       placeholder="选择要监控的主机"
       optionFilterProp="children"
       onChange={onChange}

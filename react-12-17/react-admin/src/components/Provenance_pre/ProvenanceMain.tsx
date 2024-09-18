@@ -46,7 +46,7 @@ class Provenance extends Component {
                             <TransforBox useVertexData={true} />
                             <TransforBox useVertexData={false} />
                             <div className='two_button)'>
-                                <ShortButton buttonText="节点/边过滤配置修改" />
+                                <ShortButton buttonText="节点/边过滤配置修改"/>
                                 <CollectTrackObject />
                             </div>
                             <TrackedFileTable />
